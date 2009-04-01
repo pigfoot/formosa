@@ -19,9 +19,12 @@ util/Makefile
 src/tsbbsproto.h
 
 bbsweb/bbsweb
+csbbs/csbbsd
 src/bbsd
 src/bbschatd
 src/genlogin
+src/util/list_postno
+src/util/moduser
 util/bbs-news
 util/bbs2g4
 util/bbsfingerd
