@@ -5,7 +5,7 @@
 SUBDIRS = lib src csbbs util bbsweb
 CLEANDIRS = $(SUBDIRS) bbsweb/util src/util
 VERSION = 1.4.0
-HOMEBBS = /apps/bbs
+HOMEBBS = @prefix@
 
 all:
 	@for i in $(SUBDIRS); do \

@@ -5,7 +5,7 @@
 # This Makefile for "@systype@"
 
 # The home directory for the user 'bbs'
-HOMEBBS = @HOMEBBS@
+HOMEBBS = @prefix@
 
 DEFINES  = @OS_DEF@ $(SITE_DEF)
 CC       = @CC@

@@ -2,6 +2,7 @@ madnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/bbs.h)
 AC_CONFIG_AUX_DIR(cfgaux)
 AC_VALIDATE_CACHED_SYSTEM_TUPLE(rm -f config.cache)
+AC_CANONICAL_SYSTEM
 
 dnl echo " ........................... "
 dnl echo " ... testing system type ... "
@@ -101,9 +102,17 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PATH_PROG(TRUE,true)
-AC_PATH_PROG(PERL,perl,$TRUE)
-AC_PATH_PROG(STRIP,strip,$TRUE)
+AC_PATH_PROG(PERL,perl)
+AC_PATH_PROG(STRIP,strip)
 AC_PATH_PROG(CPROTO,cproto)
+
+if test -z "${CPROTO}"; then
+	echo
+	echo "*******************************"
+	echo "* Must have cproto installed. *"
+	echo "*******************************"
+	exit
+fi
 
 dnl XXX: is this macro depreated?
 dnl AC_PROG_ECHO
@@ -184,7 +193,7 @@ AC_CACHE_CHECK(if sys_siglist is already defined, ac_cv_needs_sys_siglist,
     ac_cv_needs_sys_siglist="no",
     ac_cv_needs_sys_siglist="yes")
 )
-if test "$ac_cv_needs_sys_siglist" = "yes" ; then
+if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
   AC_DEFINE(NEED_SYS_SIGLIST)
 fi
  
@@ -194,11 +203,10 @@ ECHO_C=${ac_c}
 ECHO_T=${ac_t}
 
 AC_PREFIX_DEFAULT(/home/bbs)
-HOMEBBS=${ac_default_prefix}
 
 #AC_SUBST(BBS_UID)
 #AC_SUBST(BBS_GID)
-AC_SUBST(HOMEBBS)
+#AC_SUBST(HOMEBBS)
 #AC_SUBST(BBS_NAME)
 #AC_SUBST(BBS_ID)
 #AC_SUBST(MAXACTIVE)
@@ -208,7 +216,6 @@ AC_SUBST(HOMEBBS)
 #AC_SUBST(SITE_DEF)
 #AC_SUBST(WEBBBSLIBS)
 
-
 AC_SUBST(systype)
 AC_SUBST(OS_DEF)
 
@@ -217,8 +224,8 @@ AC_SUBST(ac_n)
 
 dnl
 
-AC_OUTPUT(bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile
-          util/Makefile bbsweb/util/Makefile)
+AC_OUTPUT(Makefile bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile
+          src/util/Makefile util/Makefile bbsweb/util/Makefile)
 
 cat << EOF
 

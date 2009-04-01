@@ -1,7 +1,7 @@
 # Makefile for Formosa BBS v1.0.0
 #
 
-HOMEBBS   = @HOMEBBS@
+HOMEBBS   = @prefix@
 
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@

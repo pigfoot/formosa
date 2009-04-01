@@ -188,5 +188,7 @@
 
 /* If on Linux, maybe need define this for bbsweb --by lmj */
 #if defined(LINUX)
-# define HAVE_STRERROR
+#ifndef HAVE_STRERROR
+#define HAVE_STRERROR
+#endif
 #endif

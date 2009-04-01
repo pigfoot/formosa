@@ -112,13 +112,14 @@
     成功以後, 會建出一個目錄 FormosaBBS-1.1.1 內有 BBS 的原始程式碼.
 
       bbs% cd FormosaBBS-1.1.1
+      bbs% ./autogen              # 依照各系統環境產生 configure
       bbs% ./configure            # 依照各系統環境產生 Makefile, config.h
                                   # 及 Install.sh ... 等檔案
 
     接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數.
 
       bbs% make                   # 編譯原始程式, 如有問題，進行除錯
-      bbs% make install HOMEBBS=/home/bbs           # 安裝編譯完成的程式
+      bbs% make install           # 安裝編譯完成的程式
 
     (1b)
 
