@@ -11,6 +11,7 @@ config.h
 bbsweb/Makefile
 bbsweb/util/Makefile
 src/Makefile
+src/util/Makefile
 lib/Makefile
 csbbs/Makefile
 util/Makefile
