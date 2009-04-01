@@ -101,10 +101,10 @@ extern void move();
 extern int read_max(), read_get();
 extern void read_entry(), read_btitle();
 extern void init_alarm();
-extern void printchatline(char *str);
+extern void printchatline(const char *str);
 extern int cmp_userid();
 extern void *malloc_str(char *str);
-extern void *xstrdup(char *str);
+extern void *xstrdup(const char *str);
        
 #endif	/* !_BBS_PROTO_H */
 

@@ -61,7 +61,7 @@ unsigned char *chatid;
 {
 	char *p;
 
-	if ((p = strstr(chatid, "¡@")))		/* lthuang */
+	if ((p = strstr((const char *)chatid, (const char *)"¡@")))		/* lthuang */
 		memcpy(p, "__", 2);
 	while (*chatid)
 	{

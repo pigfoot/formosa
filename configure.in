@@ -105,8 +105,8 @@ AC_PATH_PROG(PERL,perl,$TRUE)
 AC_PATH_PROG(STRIP,strip,$TRUE)
 AC_PATH_PROG(CPROTO,cproto)
 
-dnl
-AC_PROG_ECHO_N
+dnl XXX: is this macro depreated?
+dnl AC_PROG_ECHO
 
 dnl Checks for libraries.
 dnl Replace `main' with a function in -lbbs:

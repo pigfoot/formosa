@@ -9,7 +9,7 @@
 #endif
 #endif
 
-#if defined(SOLARIS) || defined(__FreeBSD__)
+#if defined(SOLARIS) || defined(__FreeBSD__) || defined(__MACH__)
 #define USE_POLL
 #include <poll.h>
 #endif
