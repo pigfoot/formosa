@@ -1,0 +1,24 @@
+
+KNOWN BUGS
+----------
+
+If you change (MAX_SIG_LINES * MAX_SIG_NUM) > 24, the screen will
+be broken.
+
+bbsweb: 
+	cannot bind specified address
+previw signature: 
+	6 lines
+bbs-news:
+	articles may be re-get again as unwanted posts
+auto-forward:
+	check wether if null e-mail address
+expire + packbbs:
+	if these two program are running at the same, it may cause some 
+	problems, eg: .DIR disappeared.
+
+csbbs:
+	已收到通過身份認證通知, 個人資料卻是顯示未通過身份認證!
+
+post:
+    未通過認證或等級未達時, 仍可張貼於看板上

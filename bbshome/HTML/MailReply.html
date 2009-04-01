@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 回信</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if(document.MAIL.ADDRESS.value.indexOf("@",0) > 0 && "<!BBS_User_Ident!>" == "未完成身份認證")
+	{
+		alert("警告：未通過身份認證者無法寄信至站外");
+
+	}
+    else
+        document.MAIL.submit();
+}
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0">
+<TR>
+<TD BGCOLOR="#12AFFF" colspan=2>
+<B><FONT SIZE="+2" COLOR="#FFFFFF">回信</FONT></B>
+&nbsp;&nbsp;<FONT SIZE="3" COLOR="#FFFFFF">請確實填好收信人位址 (注意大小寫)</FONT>
+</TD>
+</TR>
+
+<TR>
+<FORM NAME="MAIL" METHOD="POST" ACTION="MailSend">
+<td colspan=2>
+收信人：<INPUT TYPE="TEXT" NAME="ADDRESS" MAXLENGTH="50" SIZE="40" VALUE="<!BBS_Post_Sender!>">&nbsp;&nbsp;
+簽名檔：
+<SELECT NAME="SIGN">
+<OPTION VALUE="1" SELECTED>1</OPTION>
+<OPTION VALUE="2">2</OPTION>
+<OPTION VALUE="3">3</OPTION>
+<OPTION VALUE="0">不採用</OPTION>
+</SELECT>
+</td>
+<TR>
+<td colspan=2>
+標題：&nbsp;<INPUT TYPE="TEXT" NAME="SUBJECT" MAXLENGTH="50" SIZE=50 VALUE="<!BBS_Post_ReplySubject!>">
+</td>
+<TR>
+<TD colspan=2>
+內容：<br>
+<TEXTAREA COLS="70" ROWS="10" NAME="CONTENT" WRAP=OFF">
+<!BBS_Post_ReplyContent!>
+</TEXTAREA></TD>
+<TR>
+<td colspan=2>
+<input type="button" value="寄出" onClick="check()">&nbsp;&nbsp;
+<input type="button" value="放棄" onclick="history.back()">&nbsp;&nbsp;
+
+</td>
+</FORM>
+</TABLE>
+</CENTER>
+
+</BODY>
+</HTML>

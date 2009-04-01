@@ -1,0 +1,89 @@
+
+chroot 安全環境設定
+===================
+
+      ### 目前 Binary Package, RPM 不支援 CHROOT_BBS, 故此章可略過不看 ###
+
+
+      由於 config.h 預設 bbs 在非 chroot 的環境下執行.
+      若您想要加強系統安全, 可自行修改 config.h 檔案. 啟動 chroot 環境.
+
+      若您不了解 chroot 或不想使用, 此小節說明請忽略不看
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+      修改 config.h 將其中的一行
+
+      #undef CHROOT_BBS
+
+      改為 
+
+      #define CHROOT_BBS
+
+      再按照下列步驟, 重新編譯原始程式.
+
+        bbs% make clean    
+        bbs% make all
+        bbs% make installbin
+    
+      OK 以後，請先別急著執行 bbs，必須先完成下列步驟
+
+      ******<<<< 製作重要目錄 >>>>*********
+      如 /etc, /dev, /var 等等，依照各系統不同而有不同做法。
+
+      ******<<<< 製作動態系統函式庫 >>>>*********
+
+      ## 以 SunOS 4.1.x 為例:
+
+        (1) 在 /etc/fstab 內加入以下三行:
+
+            /usr/lib   /home/bbs/usr/lib lo ro 0 0
+            /usr/share /home/bbs/usr/share lo ro 0 1
+            /usr/5lib  /home/bbs/usr/5lib lo ro 0 2
+                       ^^^^^^^^^---> 請依自己的 BBS Home 修改
+
+        (2) 在 /etc/rc.local 內加入
+
+            /etc/mount -at lo
+       
+        (3) 以 root 身份立刻執行 
+
+            % mount -at lo
+
+      ## 以 Solaris 2.x 為例:
+
+        (1) % vi /etc/vfstab   加入下列三行
+/usr/lib        -       /home/bbs/usr/lib       lofs    -       yes     ro
+/dev            -       /home/bbs/dev           lofs    -       yes     ro
+/devices        -       /home/bbs/devices       lofs    -       yes     ro
+				        ^^^^^^^^^---> 請依自己的 BBS Home 修改
+                                      並請先建好以上三個空目錄。
+
+        (2) 
+            % mkdir -p /home/bbs/usr/share/lib/terminfo/v
+            % cp /usr/share/lib/terminfo/v/vt100 \
+                 /home/bbs/usr/share/lib/terminfo/v
+
+      ## 以 AIX 4.x 為例:
+
+        (1) mkdir /home/bbs/usr
+            cd /usr
+            tar cf - lib |(cd /home/bbs/usr ; tar xf -) &
+
+      ## 以 RedHat Linux 6.0 為例:
+
+      /etc/termcap
+	  /etc/localtime
+
+      /usr/share/lib/terminfo/v/vt100
+
+      /lib/libcrypt.so.1
+      /lib/libtermcap.so.2
+      /lib/libc.so.6
+      /lib/libdl.so.2
+      /etc/nsswitch.conf
+      /lib/libnss_files.so.2
+      /etc/hosts.conf
+      /etc/hosts
+      /dev/null
+
+      ## 其它系統請自行處理動態函式庫的問題

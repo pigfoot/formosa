@@ -1,0 +1,77 @@
+
+Big Endian <=> Little Endian
+----------------------------
+
+If you want to change your platfrom from PC to Workstation,
+you'll need do byteorder converting.
+
+If not, please skip to next section, don't run the folllowing 
+commands (NOTE!!), or your system will be crash.
+
+cd ~bbs/boards
+dotdir 1
+cd ~bbs/mail
+dotdir 2
+cd ~bbs/treasure
+dotdir 11
+
+cd ~bbs/home
+userec 2
+cd ~bbs/home
+readrc
+
+cp ~bbs/conf/.BOARDS ~bbs/conf/.BOARDS.11x
+cd ~bbs/conf
+dotboard
+
+
+FormosaBBS 1.1.x -> FormosaBBS 1.2.x
+-------------------------------------
+
+cp ~bbs/conf/class.cf ~bbs/conf/class.cf.old
+trclass ~bbs/conf/class.cf
+
+cp ~bbs/conf/.BOARDS ~bbs/conf/.BOARDS.11x
+trboards ~bbs/conf/.BOARDS
+
+
+cp src/lang.h ~bbs/conf/clang.cf
+cp src/lang.h ~bbs/conf/elang.cf
+
+cp trclass ~bbs/bin
+
+
+NOTE:
+-----
+The following files are IMPORTANT:
+
+conf/class.cf (須轉換)
+conf/class.cf.old
+conf/expire.cf
+conf/menushow
+conf/welcome
+conf/.BOARDS (須轉換)
+conf/.PASSWDS (須轉換?)
+conf/.USERIDX
+
+doc/Welcome
+doc/Welcome0
+doc/VOTE_HELP
+doc/ident
+doc/idented
+doc/ID_Check_Doc
+doc/NewGuide
+
+news/bbs-news.conf
+
+boards/
+treasure/
+home/
+log/
+mail/
+realuser/
+
+crontab
+
+mv -f vote/NEWMSG doc/NewVote
+rm -f vote/

@@ -1,0 +1,9 @@
+00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail;
+   /home/bbs/bin/userstat -c ; /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
+10 5 * * * /home/bbs/bin/deluser /home/bbs 10 30 90 365
+0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
+30 8 * * * (/home/bbs/bin/expire 3500 500; 
+   /home/bbs/bin/packbbs -b ID > /dev/null; 
+   /home/bbs/bin/userstat -k -p sysop; )
+0,10,20,30,40,50 * * * * /home/bbs/bin/idcheck
+00,20,40 * * * * /home/bbs/bin/menushow 0

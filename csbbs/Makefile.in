@@ -1,0 +1,79 @@
+##########################################
+# Makefile for Formosa Client BBS Server #
+##########################################
+#
+# This Makefile for "@systype@"
+
+# The home directory for the user 'bbs'
+HOMEBBS = @HOMEBBS@
+
+DEFINES  = @OS_DEF@ $(SITE_DEF)
+CC       = @CC@
+CFLAGS	 = @CFLAGS@ -I../include -I../lib
+LDLIBS	 = @LIBS@
+
+STRIP      = @STRIP@
+CPROTO     = @CPROTO@
+
+ifeq (-DANIMEBBS,$(SITE_DEF))
+  LDLIBS  = -ltermcap -lcrypt
+  DEFINES = -DLINUX -DTERMIOS $(SITE_DEF)
+  CPROTO  = /usr/bin/cproto
+endif
+ifneq (,$(findstring NSYSUBBS,$(SITE_DEF)))
+  CFLAGS   := -O2 -mcpu=athlon -march=athlon -Wall -I../include -I../lib
+  HOMEBBS  := /apps/bbs
+  LDLIBS   += -lgnumalloc
+endif
+ifeq (-DNSYSUBBS1,$(SITE_DEF))
+  CFLAGS  = -O2 -mcpu=athlon -march=athlon -Wall -I../include -I../lib
+  LDLIBS  = -ltermcap -lcrypt
+  DEFINES = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF)
+  CPROTO  = cproto
+endif
+
+
+LIBFILE  = ../lib/libbbs.a
+LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
+           ../lib/mod_article.c ../lib/mod_board.c ../lib/mod_mail.c \
+           ../lib/mod_net.c ../lib/mod_pass.c ../lib/mod_post.c \
+           ../lib/mod_readrc.c ../lib/mod_record.c ../lib/mod_sem.c \
+           ../lib/mod_shm.c ../lib/mod_user.c ../lib/mod_zap.c \
+           ../lib/modetype.c
+
+PROGNAME = csbbsd
+
+SRCS     = board.c formore.c formosa.c forstr.c login.c mail.c main.c \
+           netio.c post.c protocol.c talk.c xyz.c # chat.c file.c
+OBJS     = $(SRCS:.c=.o)
+			
+.SUFFIXES: .o .c
+
+.c.o:  ;   $(CC) $(CFLAGS) $(DEFINES) -c $*.c
+
+
+all: $(PROGNAME)
+
+$(PROGNAME): csbbsproto.h $(OBJS) $(LIBFILE)
+	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
+	$(STRIP) $@
+
+csbbsproto.h: $(SRCS)
+	if [  "@systype@" != "LINUX" ]; then \
+	echo '#include "struct.h"' > csbbsproto.h; \
+	if [ -n "$(CPROTO)" ]; then \
+		$(CPROTO) -O /dev/null -m -E"$(CC) -pipe -E" -I../include \
+			$(SRCS) >> csbbsproto.h; \
+	fi \
+	fi 
+
+install installbin installcsbbsd: $(PROGNAME)
+	(cd $(HOMEBBS); [ ! -f ./bin/$? ] || mv -f ./bin/$? ./bin/$?.old)
+	-cp -p $? $(HOMEBBS)/bin
+	cp -p $(PROGNAME) $(HOMEBBS)/bin
+
+$(LIBFILE): $(LIBSRCS)
+	cd ../lib; make
+
+clean:
+	rm -f *.o $(PROGNAME) core a.out

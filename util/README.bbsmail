@@ -1,0 +1,123 @@
+==========================================================================
+====  !!!! 請注意看本篇說明, 即使您已經會了 !!!! (因為有些是新的功能) ====
+==========================================================================
+    為了增加自動 uudecode E-mail (自動解碼) 的功能, 我們重寫了 BBSMAIL
+的程式, 採用不同的處理判斷, 因此請各位仔細看:
+
+一. E-mail to Post :  (用 E-mail 的方式來 post)
+
+    1. 首先編輯一本文檔, 例如  mpost.txt 如下:
+
+       #name:   wind
+       #password: hahahaha
+       #board: test
+       #title:test test test
+       本文內容.........
+
+    2. 存檔之後, 使用  mail  bbs@bbs.nsysu.edu.tw  <  mpost.txt
+       就可以收到.
+
+    3. !!! 請注意 !!! 如果你那邊的系統無法寄出 8 bits 的中文 E-mail,
+       請先執行下列步驟:
+
+                      uuencode  mpost.txt  mpost.txt  >  mpost.uu
+
+       然後把 mpost.uu 照 2. 的步驟寄出去就好了...
+
+                      mail   bbs@bbs.nsysu.edu.tw  <  mpost.uu
+
+    4. 細項規則說明:
+       (1). #name, #password, #board.... 等等 標頭行不計較先後順序,
+            在 ":" (冒號) 後有空格也無所謂, 只是這樣一來就不可以用空
+            白做密碼的第一個字元.
+       (2). "#name:" , "#password:", "#board:".... 等標頭的提示字串
+            大小寫都可以, 也不一定要寫在每行行首.
+       (3). 您的 id name 跟 password 大小寫是不同的, 所以 wind != Wind
+            請特別注意 !!  否則 id name & password 的比對就會錯誤. post
+            就會失敗.
+       (4). E-mail to Post 只要求 id name, password, board name 三項都
+            正確無誤即可成功.  title 有沒有都沒關係.
+       (5). 如果您希望本站不要自動把你的 uuencode E-mail 解碼, 只要把
+            標頭行改寫在 mpost.uu 的 begin 行之前幾行, 然後再寄出, 本
+            程式就不會去 uudecode 你的 E-mail. (如果你這樣做, 就不用
+            把標頭行 uuencode 在編碼部份, 切記!! 否則被解碼出來的第二
+            份標頭行會被 post 出去)
+
+二. E-mail to 站內使用者:
+
+     1. 建議使用:   mail   userid.bbs@bbs.nsysu.edu.tw
+
+            例如    mail   wind.bbs@bbs.nsysu.edu.tw
+              or    mail   wind.bbs@bbs.nsysu.edu.tw  <  mmail.txt
+
+            雖然舊方法 (#type:mail) 還是能用, 但是上述方法會比較方便.
+
+     2. 如果你的系統不能寄 8 bits 中文 E-mail, 請先把你要寄的信打成一個
+        檔案, 譬如  mmail.txt  然後先
+
+                   uuencode   mmail.txt  mmail.txt  >  mmail.uu
+              再   mail  userid.bbs@bbs.nsysu.edu.tw  <  mmail.uu
+
+        本站也會自動幫您解碼後再送給 userid 這位使用者.
+
+     3. 如果你不希望本站自動把你的 uuencode E-mail 解碼, 你只要在 mmail.uu
+        的 begin 行之前一行隨便打三, 四個字就好了.
+
+三. Email to 精華區 (For 板主)
+
+     1. #board: #your_board_name	--> 注意 your_board_name 前的 #
+     
+	在板名前加上 # 符號就可將檔案 Post 到精華區     
+
+三. Email to 簽名檔 
+
+     1. #type: s
+     
+四. Email to 名片檔
+
+     1. #type: l    
+     
+
+==============================================================================
+==== 以上說明如有不明之處, 請到 sysop board 詢問
+==============================================================================
+
+#type:post
+#name:wind
+#board:test
+#title:用 mail userid.bbs@bbs.nsysu.edu.tw 寄給本站 user
+Hi, 各位站友:
+
+    由於從 Internet 寄 E-mail 給本站的 Users 並不需要很多資料 (因為只需
+要 userid 收信人) , 使用現有 #type:mail  #name:..... 等的格式來收私人
+E-mail 好像太麻煩, 而且很難教會站外或國外的人, 所以今天改了收 E-mail 的
+部份, 以下是改變:
+
+(1). 舊有的 E-mail To Post & To User 功能依然沒變. 即 mail bbs@bbs....
+     且本文需有 #name 這一行.
+
+(2). 增加如下功能:
+         假設你要從 Internet 寄 E-mail 給本站的某位使用者 test123
+     可寫成
+                 ==>   mail test123.bbs@bbs.nsysu.edu.tw
+                            ^^^^^^^|^^^
+                            |      |  |
+        收信人的 userid ----       |   ----> 別忘了這三個字
+                            別忘了'.'句點
+
+     本方法不需要 #type #name #title..... 等等諸行.... 所以可以收來自 tin
+     或是 gopher 的 E-mail.
+     也就是說, 各位站友在本站的 E-mail address 就是 yourid.bbs@bbs.nsysu.edu.tw
+
+(3). 使用 (2). 的方法時, 該封 E-mail 的 Subject 比 #title line 優先成為
+     真正的 Title. 但是如果你的 E-mail 發出時 Subject 不方便寫中文, 你可以不寫
+     Subject, 然後在本文第一行寫:
+
+         #title: 你的中文 Title
+
+     就可以了.
+
+(4). 由於 E-mail To Post 必須核對密碼, 所以不採用 (2) 的方式. 只能用 (1) 方法.
+
+(5). 若有 Bug, 還請各位貼到這裡來告訴我.
+

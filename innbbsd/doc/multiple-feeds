@@ -1,0 +1,91 @@
+Subject: [FAQ] innbbsd 的 multiple feed 設定
+Date: 17 Jul 1995 01:31:43 GMT
+
+由於 innbbsd 的 README 太過簡略, 關於 nodelist.bbs 和 newsfeeds.bbs
+的說明不多, 造成大家裝設不便. 現在有空就上來 post 一點. 累積多了, 
+說不定下一個版本就能附上 "男人(man)" 了.
+先前已有 post 說明:
+1. innbbsd 選擇性轉信設定
+2. innbbsd mailing-list 和 moderated newsgroups reply 的設定.
+這個部份再說明 
+3. innbbsd multiple feed 設定.
+
+所謂 multiple feed 必須從幾方面來說明:
+  1. 接收(receive) multiple feeds  
+  2. 餵送(feed)    multiple sites
+  3. multiple feeds 的優點.
+
+1. 如何接收 multiple feeds
+   innbbsd 雖然是 single process server, 但他的設計是允許同時有多個
+news feed 來源 (connection). 只要把完整 domainname 加入 nodelist.bbs 
+即可. 以 bbs.xxx.nctu.edu.tw 為例, 假設想同時接收 aaa.xxx1.edu.tw 和
+bbb.xxx2.edu.tw 的 feed, 則在 bbs.xxx.nctu.edu.tw 的 nodelist.bbs 加入: 
+
+aaa.xxx1 aaa.xxx1.edu.tw IHAVE(119) News Server in aaa.xxx1
+bbb.xxx2 bbb.xxx2.edu.tw IHAVE(119) News Server in bbb.xxx2
+
+再請 aaa.xxx1.edu.tw 和 bbb.xxx2.edu.tw 餵 news 過來. 所餵送的 news
+討論區可以重複. 此時可再跑任意數量的 bbsnnrp process (即任意數量的 
+bbsnnrp feeds.) 
+bbsnnrp 和 news feed 之討論區互相重疊都無所謂. 例如你可以請
+aaa.xxx1 餵 tw.bbs.*,tw.ecom.*, bbb.xxx2 餵 tw.bbs.*, 
+再用 bbsnnrp 到 ccc.xxx3 取 tw.bbs.*. 
+這樣會不會浪費三倍的網路 traffic 或造成 BBS server 太大的負擔 ?
+  1. 即使有多個 feed 來源, 真正在網路上傳的只會有一份. 因此不會造成
+     浪費三倍網路 traffic.
+  2. 關於對 BBS server 的影響. 因為 innbbsd 採用 dbz 查詢, 真正需要
+     access disk 的時後不多, 對 load 影響應該不大. 至於在文章處理上,
+     不管接收多少重複的 feeds, 都只會收到一份, 所以沒有影響.
+
+2. 如何餵送(feed) multiple sites
+   這個部份是 bntplink 處理的. 以上例說明如下
+(並加入 POST, DATA protocol 以做說明):
+# nodelist.bbs
+aaa.xxx1      aaa.xxx1.edu.tw IHAVE(119) News Server in aaa.xxx1
+bbb.xxx2      bbb.xxx2.edu.tw IHAVE(119) News Server in bbb.xxx2
+ccc.xxx3      ccc.xxx3.edu.tw POST(119)  News Server in ccc.xxx3
+mail-list.xxx ddd@xxx4.edu.tw DATA(25)   Mailing List Server in xxx4
+
+假設 
+ 1. board zzz (tw.bbs.abc.xxx) feed 給  
+    aaa.xxx1 bbb.xxx2 ccc.xxx3 和 mail-list.xxx4
+ 2. board www (tw.bbs.def.xxx) feed 給
+    aaa.xxx1 ccc.xxx3
+則在 newsfeeds.bbs 加入
+tw.bbs.abc.xxx  zzz  aaa.xxx1 bbb.xxx2 ccc.xxx3 mail-list.xxx4
+tw.bbs.def.xxx  www  aaa.xxx1 ccc.xxx3
+
+這樣 zzz board 的信件會用 IHAVE (server gateway) feed 給 aaa.xxx1.edu.tw, 
+bbb.xxx2.edu.tw, 用 POST (client gateway) feed 給 ccc.xxx3.edu.tw
+和送 E-mail 給 ddd@xxx4.edu.tw. 同樣地, www board 的信件則送到
+aaa.xxx1.edu.tw 和 ccc.xxx3.edu.tw
+
+同樣有幾個疑慮,
+  1. 會不會重複 post 並浪費 traffic ?
+  2. 對 BBS server 的影響.
+關於 1. 的解答是: 不會有重複的 post. 會浪費 local LAN 的 traffic, 但對
+        overall 轉信的大環境則沒有增加 traffic. 因為你的文章丟給 
+        aaa.xxx1 和 bbb.xxx2 之後, aaa.xxx1 或 bbb.xxx2 就不會再從其
+        上游站收取同樣的文章.
+     2. bntplink 對 server 的影響主要是在 "visit" 新信. 不管 feed 幾個
+        sites, 都只要 visit 一次. 影響比較大的部份是外送的文章要被 open
+        多次. 但這與正常情況下 BBS user 的 "open" 次數相比實在微不足道.
+
+3. multiple feeds 的優點.
+   以上談這麼多有關 multiple feed 的設定, 並評估 traffic 和 server load
+影響, 問題是到底 multiple feeds 有何好處 ?
+   1. 增加可靠度. 有多個上下游站, 不用擔心 server (feed process) fail 或
+      網路斷線以至轉信停頓. 
+   2. 提高轉信效率. 即使不收 multiple server 的 feed, 也可以由一個
+      server 同時跑多個 feed process (link), 可減少 server 之間 
+      protocol 協商造成的延遲. 對低速網路或者遠方連線站(如美國) 
+      幫助很大. 
+   3. 轉信的彈性增加, 容易管理, 可隨時切換,增減 feed server.
+   4. 如果不想架設 News server, 幾個 BBS 站之間也能不透過 news server,
+      使用星狀連結, 達成連線的目的.
+      但倘若連線站數量很大, 最好還是架設一台 News server. 由 News server 來
+      handle news 傳遞. 畢竟 innbbsd 並不想(也不能)取代 "innd". 
+      (2-3 個 BBS 站用 innbbsd 來連線應該是適合的, 再多就最好架一個 news server) 
+--
+Shih-Kun Huang
+EC638, CSIE, NCTU, Taiwan, R.O.C. Phone: 886-35-712121 (x54709)

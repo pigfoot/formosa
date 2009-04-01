@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 修改個人資料</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if("<!BBS_User_ID!>" == "")
+	{
+		alert("警告：尚未登入系統");
+	}
+	else if(document.UserData.PASSWORD.value != document.UserData.PASSWORD1.value)
+	{
+		alert("警告：兩次密碼輸入不一致！\n\n 請重新輸入");
+		document.UserData.PASSWORD.value="";
+		document.UserData.PASSWORD1.value="";
+	}
+    else
+        document.UserData.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+
+<FORM NAME="UserData" METHOD="POST" ACTION="UserData">
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0" width="80%">
+<TR>
+<TD BGCOLOR="Orange"><FONT color=blue>個人設定 / 顯示&修改個人資料</FONT></TD>
+</TR>
+<TR>
+<TR><TD height="32">帳號：<!BBS_User_ID!></TD></TR>
+<TR><TD height="32">暱稱：<INPUT TYPE="TEXT" NAME="NICKNAME" SIZE="20" MAXLENGTH="20" VALUE="<!BBS_User_Name!>"></TD></TR>
+<TR><TD height="32">
+新密碼：<INPUT TYPE="PASSWORD" NAME="PASSWORD" SIZE="8" MAXLENGTH="8">&nbsp;&nbsp;
+確認密碼：<INPUT TYPE="PASSWORD" NAME="PASSWORD1" SIZE="8" MAXLENGTH="8">
+</TD></TR>
+<TR><TD height="32">&nbsp;&nbsp;&nbsp;&nbsp;(要修改密碼請直接輸入新密碼兩次, 空白表示不修改密碼)</TD></TR>
+<TR><TD height="32">等級：<!BBS_User_Level!></TD></TR>
+<TR><TD height="32">身份認證：<!BBS_User_Ident!></TD></TR>
+<TR><TD height="32">上站次數：<!BBS_User_Login!></TD></TR>
+<TR><TD height="32">張貼文章：<!BBS_User_Post!></TD></TR>
+<TR><TD height="32">電子郵件信箱：<INPUT TYPE="TEXT" NAME="EMAIL" SIZE="34" MAXLENGTH="34" VALUE="<!BBS_User_Email!>"></TD></TR>
+<TR><TD height="32">郵件自動轉寄：<INPUT TYPE="RADIO" NAME="MAIL_FORWARD" VALUE="ON">開啟<INPUT TYPE="RADIO" NAME="MAIL_FORWARD" VALUE="OFF">關閉</TD></TR>
+<TR>
+<TD>
+<HR>
+<input type=button value="修改" onClick="check()">&nbsp;&nbsp;
+<input type=button value="放棄" onclick='location.href="<!BBS_SubDir!>UserMenu.html"'>&nbsp;&nbsp;
+</TD>
+</TR>
+</FORM>
+</TABLE>
+
+</CENTER>
+<Script Language="JavaScript">
+
+if("<!BBS_User_MailForward!>" == "ON")
+	document.UserData.MAIL_FORWARD[0].checked = true;
+else
+	document.UserData.MAIL_FORWARD[1].checked = true;
+
+</Script>
+</BODY>
+</HTML>

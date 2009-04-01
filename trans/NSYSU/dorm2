@@ -1,0 +1,24 @@
+#!/bin/sh
+awk 'BEGIN{LEVEL1=0;LEVEL2=0;}{
+
+  N=split($0, ARRA, "*");
+
+  if (ARRA[1]=="/" && N==2) {
+     LEVEL2=1;
+  }
+  else if ($1=="/*--" || $1=="/*---") {
+     next;
+  }
+
+##  if ($1=="/*" || $1=="/*--" || $1=="/*---") LEVEL2++;
+
+  if ($1=="#if" && LEVEL1==0 && $2=="0") LEVEL1=1;
+  else if ($1=="#ifdef" || $1=="#if" || $1=="#ifndef") {
+       if (LEVEL1>0) LEVEL1++;
+  }
+  if (LEVEL1==0 && LEVEL2==0) print;
+
+  if ($1=="#endif" && LEVEL1>0) LEVEL1--;
+
+  if (((ARRA[2]=="/" && N==2) || ($NF=="*/")) && LEVEL2>0) LEVEL2--;
+}' $1 > $1.out

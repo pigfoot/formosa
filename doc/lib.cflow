@@ -1,0 +1,286 @@
+1	PublishPost {/apps/Formosa-1.2.0/lib/mod_post.c 18}
+2		mycp {/apps/Formosa-1.2.0/lib/bbslib.c 37}
+3		append_record {/apps/Formosa-1.2.0/lib/mod_record.c 38}
+4		setboardfile {/apps/Formosa-1.2.0/lib/bbslib.c 324}
+5		append_article {/apps/Formosa-1.2.0/lib/mod_article.c 110}
+6			get_only_name {/apps/Formosa-1.2.0/lib/mod_article.c 76}
+7			mycp ... {2}
+8			memset {}
+9			xstrncpy {/apps/Formosa-1.2.0/lib/bbslib.c 222}
+10			get_only_postno {/apps/Formosa-1.2.0/lib/bbslib.c 476}
+11			flock {}
+12		rewind_board {/apps/Formosa-1.2.0/lib/bbslib.c 439}
+13			flock {}
+14		append_news {/apps/Formosa-1.2.0/lib/bbslib.c 391}
+15			fileno {}
+16			flock {}
+17			setboardfile ... {4}
+18			mycp ... {2}
+19	ReadRC_Addlist {/apps/Formosa-1.2.0/lib/mod_readrc.c 189}
+20		mymod {/apps/Formosa-1.2.0/lib/bbslib.c 508}
+21	ReadRC_Expire {/apps/Formosa-1.2.0/lib/mod_readrc.c 94}
+22		sethomefile {}
+23		myrename {/apps/Formosa-1.2.0/lib/bbslib.c 118}
+24			mycp ... {2}
+25	ReadRC_Refresh {/apps/Formosa-1.2.0/lib/mod_readrc.c 312}
+26		get_board {/apps/Formosa-1.2.0/lib/mod_shm.c 285}
+27			resolve_brdshm {/apps/Formosa-1.2.0/lib/mod_shm.c 216}
+28				attach_shm {/apps/Formosa-1.2.0/lib/mod_shm.c 32}
+29					shmget {}
+30					attach_err {/apps/Formosa-1.2.0/lib/mod_shm.c 21}
+31					shmat {}
+32					memset {}
+33				memset {}
+34		memset {}
+35		setboardfile ... {4}
+36		get_num_records {/apps/Formosa-1.2.0/lib/mod_record.c 21}
+37		get_record {/apps/Formosa-1.2.0/lib/mod_record.c 72}
+38		ReadRC_Clean {/apps/Formosa-1.2.0/lib/mod_readrc.c 270}
+39			ReadRC_Mod {/apps/Formosa-1.2.0/lib/mod_readrc.c 241}
+40			memset {}
+41	ReadRC_UnRead {/apps/Formosa-1.2.0/lib/mod_readrc.c 217}
+42		mymod ... {20}
+43	ReadRC_Visit {/apps/Formosa-1.2.0/lib/mod_readrc.c 385}
+44		ReadRC_Init {/apps/Formosa-1.2.0/lib/mod_readrc.c 145}
+45			ReadRC_Update {/apps/Formosa-1.2.0/lib/mod_readrc.c 18}
+46				sethomefile {}
+47				myrename ... {23}
+48			sethomefile {}
+49			memset {}
+50		memset {}
+51		_xstat {}
+52		_fxstat {}
+53		_xmknod {}
+54	SendMail {/apps/Formosa-1.2.0/lib/mod_mail.c 296}
+55		is_emailaddr {/apps/Formosa-1.2.0/lib/mod_mail.c 257}
+56			gethostname {}
+57			gethostbyname {}
+58			xstrncpy ... {9}
+59			InvalidEmailAddr {/apps/Formosa-1.2.0/lib/mod_mail.c 17}
+60		qp_encode_file {/apps/Formosa-1.2.0/lib/mod_codec.c 133}
+61			qp_encode_str {/apps/Formosa-1.2.0/lib/mod_codec.c 104}
+62				high_low_bits {/apps/Formosa-1.2.0/lib/mod_codec.c 92}
+63		SendMail_Internet {/apps/Formosa-1.2.0/lib/mod_mail.c 49}
+64			CreateMailSocket {/apps/Formosa-1.2.0/lib/mod_mail.c 324}
+65				ConnectServer {/apps/Formosa-1.2.0/lib/mod_net.c 43}
+66					memset {}
+67					htons {}
+68					gethostbyname {}
+69					inet_addr {}
+70					socket {}
+71					connect {}
+72				net_gets {}
+73				CloseMailSocket {/apps/Formosa-1.2.0/lib/mod_mail.c 363}
+74					net_printf {/apps/Formosa-1.2.0/lib/mod_net.c 194}
+75						memset {}
+76						select {}
+77						_xstat {}
+78						_fxstat {}
+79						_xmknod {}
+80					net_gets {}
+81					DisconnectServer {/apps/Formosa-1.2.0/lib/mod_net.c 85}
+82				net_printf ... {74}
+83			DirectSMTPMail {/apps/Formosa-1.2.0/lib/mod_mail.c 151}
+84				net_printf ... {74}
+85				net_gets {}
+86				base64_encode_str {/apps/Formosa-1.2.0/lib/mod_codec.c 360}
+87					alphabet_convert {/apps/Formosa-1.2.0/lib/mod_codec.c 334}
+88						ch_ascii {/apps/Formosa-1.2.0/lib/mod_codec.c 319}
+89			CloseMailSocket ... {73}
+90		SendMail_Local {/apps/Formosa-1.2.0/lib/mod_mail.c 86}
+91			get_passwd {/apps/Formosa-1.2.0/lib/mod_user.c 13}
+92				sethomefile {}
+93			is_emailaddr ... {55}
+94			SendMail_Internet ... {63}
+95			setmailfile {/apps/Formosa-1.2.0/lib/bbslib.c 346}
+96				tolower {}
+97			isdir {/apps/Formosa-1.2.0/lib/bbslib.c 144}
+98			append_article ... {5}
+99	ZapRC_DoUnZap {/apps/Formosa-1.2.0/lib/mod_zap.c 93}
+100		mymod ... {20}
+101	ZapRC_DoZap {/apps/Formosa-1.2.0/lib/mod_zap.c 84}
+102		mymod ... {20}
+103	ZapRC_Init {/apps/Formosa-1.2.0/lib/mod_zap.c 25}
+104		memset {}
+105		sethomefile {}
+106	ZapRC_IsZapped {/apps/Formosa-1.2.0/lib/mod_zap.c 71}
+107		mymod ... {20}
+108	ZapRC_Update {/apps/Formosa-1.2.0/lib/mod_zap.c 48}
+109		sethomefile {}
+110	ZapRC_ValidBid {/apps/Formosa-1.2.0/lib/mod_zap.c 102}
+111	append_file {/apps/Formosa-1.2.0/lib/bbslib.c 688}
+112	apply_brdshm {/apps/Formosa-1.2.0/lib/mod_shm.c 267}
+113		resolve_brdshm ... {27}
+114	apply_ulist {/apps/Formosa-1.2.0/lib/mod_shm.c 115}
+115		resolve_utmp {/apps/Formosa-1.2.0/lib/mod_shm.c 74}
+116			attach_shm ... {28}
+117	ask_online_user {/apps/Formosa-1.2.0/lib/mod_shm.c 141}
+118		resolve_utmp ... {115}
+119	base64_decode_file {/apps/Formosa-1.2.0/lib/mod_codec.c 437}
+120		bzero {}
+121		base64_decode_str {/apps/Formosa-1.2.0/lib/mod_codec.c 278}
+122			ascii_to_value {/apps/Formosa-1.2.0/lib/mod_codec.c 238}
+123			bzero {}
+124			divide_long {/apps/Formosa-1.2.0/lib/mod_codec.c 255}
+125		_xstat {}
+126		_fxstat {}
+127		_xmknod {}
+128	base64_encode_file {/apps/Formosa-1.2.0/lib/mod_codec.c 389}
+129		bzero {}
+130		base64_encode_str ... {86}
+131	can_override {/apps/Formosa-1.2.0/lib/bbslib.c 779}
+132		sethomefile {}
+133	can_see_board {/apps/Formosa-1.2.0/lib/mod_board.c 12}
+134	cmp_class {/apps/Formosa-1.2.0/lib/mod_shm.c 322}
+135	cmp_userid {/apps/Formosa-1.2.0/lib/mod_user.c 329}
+136	cmpd_array {/apps/Formosa-1.2.0/lib/bbslib.c 945}
+137	decode_header {/apps/Formosa-1.2.0/lib/mod_codec.c 15}
+138		strstr {}
+139		base64_decode_str ... {121}
+140		qp_decode_str {/apps/Formosa-1.2.0/lib/mod_codec.c 69}
+141			combine_high_low_bits {/apps/Formosa-1.2.0/lib/mod_codec.c 55}
+142	delete_one_article {/apps/Formosa-1.2.0/lib/mod_article.c 381}
+143		xstrncpy ... {9}
+144		memset {}
+145		_xstat {}
+146		_fxstat {}
+147		_xmknod {}
+148	delete_record {/apps/Formosa-1.2.0/lib/mod_record.c 101}
+149		flock {}
+150	free_array {/apps/Formosa-1.2.0/lib/bbslib.c 863}
+151	genpasswd {/apps/Formosa-1.2.0/lib/mod_pass.c 14}
+152		crypt {}
+153	host_deny {/apps/Formosa-1.2.0/lib/bbslib.c 616}
+154		memset {}
+155		host_deny_init {/apps/Formosa-1.2.0/lib/bbslib.c 559}
+156			memset {}
+157	include_ori {/apps/Formosa-1.2.0/lib/mod_article.c 169}
+158	include_sig {/apps/Formosa-1.2.0/lib/mod_article.c 277}
+159		sethomefile {}
+160	init_bbsenv {/apps/Formosa-1.2.0/lib/bbslib.c 518}
+161		setgid {}
+162	isFriend {/apps/Formosa-1.2.0/lib/bbslib.c 1032}
+163		load_friend {/apps/Formosa-1.2.0/lib/bbslib.c 994}
+164			sethomefile {}
+165			GetNumFileLine {/apps/Formosa-1.2.0/lib/bbslib.c 813}
+166			malloc_array {/apps/Formosa-1.2.0/lib/bbslib.c 917}
+167			add_array {/apps/Formosa-1.2.0/lib/bbslib.c 890}
+168		cmp_array {/apps/Formosa-1.2.0/lib/bbslib.c 839}
+169	isfile {/apps/Formosa-1.2.0/lib/bbslib.c 133}
+170	lstat {/usr/include/sys/stat.h 473}
+171		_lxstat {}
+172		_fxstat {}
+173		_xmknod {}
+174	make_treasure_folder {/apps/Formosa-1.2.0/lib/mod_post.c 77}
+175		setdotfile {/apps/Formosa-1.2.0/lib/bbslib.c 364}
+176			bbslog {/apps/Formosa-1.2.0/lib/bbslib.c 298}
+177				tolower {}
+178		memset {}
+179		flock {}
+180		_xstat {}
+181		_fxstat {}
+182		_xmknod {}
+183	malloc_str {/apps/Formosa-1.2.0/lib/bbslib.c 977}
+184	message_user {/apps/Formosa-1.2.0/lib/bbslib.c 1044}
+185		memset {}
+186		xstrncpy ... {9}
+187		setuserfile {/apps/Formosa-1.2.0/lib/bbslib.c 316}
+188		append_record ... {3}
+189	myunlink {/apps/Formosa-1.2.0/lib/bbslib.c 71}
+190		... myunlink ... {189}
+191	net_write {/apps/Formosa-1.2.0/lib/mod_net.c 154}
+192	new_user {/apps/Formosa-1.2.0/lib/mod_user.c 146}
+193		invalid_userid {/apps/Formosa-1.2.0/lib/bbslib.c 718}
+194			tolower {}
+195			strstr {}
+196			xgrep {/apps/Formosa-1.2.0/lib/bbslib.c 237}
+197				strtok {}
+198				strstr {}
+199		is_duplicate_userid {/apps/Formosa-1.2.0/lib/mod_user.c 118}
+200			sethomefile {}
+201			tolower {}
+202			seekstr_in_file {/apps/Formosa-1.2.0/lib/bbslib.c 154}
+203				strtok {}
+204		get_passwd ... {91}
+205		flock {}
+206		memset {}
+207		sethomefile {}
+208	qp_decode_file {/apps/Formosa-1.2.0/lib/mod_codec.c 175}
+209		bzero {}
+210		qp_decode_str ... {140}
+211	query_user {/apps/Formosa-1.2.0/lib/bbslib.c 1089}
+212		get_passwd ... {91}
+213		search_ulist {/apps/Formosa-1.2.0/lib/mod_shm.c 91}
+214			resolve_utmp ... {115}
+215		modestring {/apps/Formosa-1.2.0/lib/modetype.c 72}
+216		pagerstring {/apps/Formosa-1.2.0/lib/bbslib.c 1071}
+217		Ctime {/apps/Formosa-1.2.0/lib/bbslib.c 767}
+218			localtime {}
+219			strftime {}
+220		check_newmail {/apps/Formosa-1.2.0/lib/mod_mail.c 378}
+221			setmailfile ... {95}
+222			_xstat {}
+223			_fxstat {}
+224			_xmknod {}
+225		_xstat {}
+226		_fxstat {}
+227		_xmknod {}
+228	rebuild_brdshm {/apps/Formosa-1.2.0/lib/mod_shm.c 308}
+229		resolve_brdshm ... {27}
+230	rebuild_classhm {/apps/Formosa-1.2.0/lib/mod_shm.c 414}
+231		resolve_classhm {/apps/Formosa-1.2.0/lib/mod_shm.c 334}
+232			attach_shm ... {28}
+233			memset {}
+234			get_board_bid {/apps/Formosa-1.2.0/lib/mod_shm.c 246}
+235				resolve_brdshm ... {27}
+236			qsort {}
+237		_xstat {}
+238		_fxstat {}
+239		_xmknod {}
+240		_xstat {}
+241		_fxstat {}
+242		_xmknod {}
+243	reserve_one_article {/apps/Formosa-1.2.0/lib/mod_article.c 327}
+244	seekstr_in_string {/apps/Formosa-1.2.0/lib/bbslib.c 188}
+245	sem_init {/apps/Formosa-1.2.0/lib/mod_sem.c 12}
+246		semget {}
+247		semctl {}
+248	settreafile {/apps/Formosa-1.2.0/lib/bbslib.c 335}
+249	substitute_record {/apps/Formosa-1.2.0/lib/mod_record.c 175}
+250	update_ulist {/apps/Formosa-1.2.0/lib/mod_shm.c 168}
+251	user_login {/apps/Formosa-1.2.0/lib/mod_user.c 221}
+252		new_utmp {/apps/Formosa-1.2.0/lib/mod_shm.c 176}
+253			sem_lock {/apps/Formosa-1.2.0/lib/mod_sem.c 48}
+254				semop {}
+255			resolve_utmp ... {115}
+256		get_passwd ... {91}
+257		purge_ulist {/apps/Formosa-1.2.0/lib/mod_shm.c 150}
+258			sem_lock ... {253}
+259			resolve_utmp ... {115}
+260			memset {}
+261		checkpasswd {/apps/Formosa-1.2.0/lib/mod_pass.c 42}
+262			crypt {}
+263			_xstat {}
+264			_fxstat {}
+265			_xmknod {}
+266		xstrncpy ... {9}
+267		bbslog ... {176}
+268		sethomefile {}
+269		ctime {}
+270	user_logout {/apps/Formosa-1.2.0/lib/mod_user.c 342}
+271		purge_ulist ... {257}
+272		setmailfile ... {95}
+273		pack_article {/apps/Formosa-1.2.0/lib/mod_article.c 14}
+274			flock {}
+275			setdotfile ... {175}
+276			myrename ... {23}
+277		get_passwd ... {91}
+278		xstrncpy ... {9}
+279		update_passwd {/apps/Formosa-1.2.0/lib/mod_user.c 45}
+280			sethomefile {}
+281			flock {}
+282		update_user_passfile {/apps/Formosa-1.2.0/lib/mod_user.c 85}
+283			flock {}
+284		search_ulist ... {213}
+285		setuserfile ... {187}
+286	write_article_header {/apps/Formosa-1.2.0/lib/mod_article.c 358}

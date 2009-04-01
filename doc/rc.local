@@ -1,0 +1,19 @@
+#
+# please add into rc file
+# like: 
+#   for Linux       /etc/rc2.d/rc.local
+#   for SunOS#      /etc/rc
+#   for IBM AIX     /etc/rc.tcpip
+#   for Solaris     /etc/rc2.d/S72inetsvc 
+#
+/home/bbs/bin/bbsd 23 check               # telnet-based bbs daemon
+/home/bbs/bin/bbs2g4 70 60                # bbs to gopher gateway
+/home/bbs/bin/bbspop3d                    # bbs pop3 gateway
+/home/bbs/bin/bbsfingerd                  # bbs finger daemon
+/home/bbs/bin/bbsweb                      # bbs web server
+/apps/bbs/bin/onlinesrv
+/sbin/su bbs -c /home/bbs/bin/csbbsd          # client-server-based bbs
+/sbin/su bbs -c /home/bbs/bin/bbs-news        # bbs news process
+/sbin/su bbs -c "/home/bbs/bin/menushow 0"
+/sbin/su bbs -c /home/bbs/bin/onlinesrv
+/bin/rm -fr /home/bbs/tmp/* &

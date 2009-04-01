@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 編輯名片檔</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if("<!BBS_User_ID!>" == "")
+	{
+		alert("警告：尚未登入系統");
+	}
+    else
+        document.PLAN.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="PLAN" METHOD="POST" ACTION="UserPlan">
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0" width="80%">
+<TR>
+<TD BGCOLOR="Orange"><FONT color=blue>個人設定 / 編輯名片檔</FONT></TD>
+</TR>
+<TR>
+<TD>
+<BR>內容：
+<TEXTAREA COLS="60" ROWS="10" MAXLENGTH="70" NAME="CONTENT"><!BBS_User_Plan!></TEXTAREA>
+</TD>
+<TR>
+<TD>
+<HR>
+<INPUT TYPE="RADIO" NAME="ACT" VALUE="MODIFY" CHECKED>修改名片檔
+<INPUT TYPE="RADIO" NAME="ACT" VALUE="DELETE">刪除名片檔
+<HR>
+</TD>
+</TR>
+<TR>
+<TD>
+<input type="button" value="確定" onClick="check()">&nbsp;&nbsp;
+<input type="button" value="放棄" onclick='location.href="<!BBS_SubDir!>UserMenu.html"'>&nbsp;&nbsp;
+</TD>
+</TR>
+</TABLE>
+</FORM>
+
+</CENTER>
+<BR><br>
+</BODY>
+</HTML>

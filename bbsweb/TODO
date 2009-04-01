@@ -1,0 +1,27 @@
+add webbbs configure file
+vote from web
+http-equiv='refresh' for idle timeout
+board zap
+佈告張貼: 轉信與否
+佈告主題閱讀
+佈告回覆: 至看板/原作者
+spell checking
+張貼表情: from kimo
+第一頁/最末頁
+board list sorting
+signatures: 讓簽名檔有名稱, 而不是簽名檔一、簽名檔二
+
+====
+support pop3 external mail box
+file attachment
+sorting by from, to, subject, date
+keyword search by from, to, content, subject
+filter & anti-spam
+big5/gb
+通訊錄 by 個人/群組
+vacation (auto-reply)
+sent-folder
+
+anti-mirror: "Teleport Pro/1.28"
+"Mosaic"
+信箱滿了: forward 信件只能 forward 舊信

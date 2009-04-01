@@ -1,0 +1,92 @@
+
+手動建立 ~bbs/conf/class.cf
+
+1: 舊英文板名: 
+2: 新英文板名:
+3: 新中文板名:
+4: 舊板主ID:
+5: 新板主ID:
+6: 新張貼等級
+7: 新認證可張貼與否
+8: 新轉信與否
+9: 新轉信群組
+10: 新板助名單: 以空白字元隔開 (最多三位)
+#11: 是否轉精華區: yes 或 no
+
+
+bbs=/apps/bbs
+bbs2=/apps/bbs2
+PATH=$PATH=/mnt/bbs/FormosaBBS-1.3.1/trans/bbs2         # dotdir is here
+
+        while [ 1 ]
+        do
+           read line
+           obname=`echo $line | cut -d\t -f1`
+           bname=`echo $line | cut -d\t -f2`
+           title=`echo $line | cut -d\t -f3`
+           # 轉?
+           obm=`echo $line | cut -d\t -f4`
+           bm=`echo $line | cut -d\t -f5`
+           level=`echo $line | cut -d\t -f6`
+           ident=`echo $line | cut -d\t -f7`
+           news=`echo $line | cut -d\t -f8`
+           newsgroup=`echo $line | cut -d\t -f9`
+#           treasure=`echo $line | cut -d\t -f10`
+           bmases=`echo $line | cut -d\t -f11`
+
+           # conf/.BOARDS
+           # 若看板已存在?
+           (cd $bbs; newboard "$bname" "$title" "$bm" "$level" "$ident" "$news")
+
+           # boards/
+           cp -pr $bbs2/boards/$obname $bbs/boards/$bname
+    	   (cd $bbs/boards/$bname; dotdir 0)
+
+           # treasure/
+           # 將 bbs2 /treasure/xxx 整個 copy 到 bbs1 /treasure/xxx/M.time(0).A
+           # 並且在 bbs1 /treasure/.DIR 中加入一筆 record 
+#           if [ "$treasure" = "yes" ]; then
+#              dirname=`mvtreasure`
+#		      cp -pr $bbs2/treasure/$bname $bbs/$dirname
+#             (cd $bbs/$dirname; dotdir 10)
+#           fi
+		    cp -pr $bbs2/treasure/$bname $bbs/treasure
+             (cd $bbs/treasure/$bname; dotdir 10)
+
+           # news/
+           # 將 bbs-news.conf 設定 copy 過來, 但需作一次 update lastno. only
+           if [ -n $newsgroup ]; then
+               echo "$bname $newsgroup both yes no no" >> $bbs/news/bbs-news.conf
+           fi
+
+           # 板主助手
+           # 最多三位?
+           if [ -n $bmases]; then
+                for $bm in $bmases
+                do
+                    echo  $bmas >> $bbs/boards/$bname/.bm_assistant
+                done
+           fi
+
+        done
+        < boards_list
+
+home/  
+        先檢查帳號是否已存在
+        for $userid in `cat pure_userid`
+        do
+             $leadc=`echo $userid | cut -c1 | tr -s [A-Z] [a-z]`
+             cp -pr $bbs2/home/$leadc/$userid $bbs/home/$leadc
+             (cd $bbs/home/$leadc/$userid; rm -f readrc; userec 0)
+        done
+        說明: 
+        readrc 不轉
+mail/
+        先檢查帳號是否已存在
+        單純轉帳號
+        for $userid in `cat pure_userid`
+        do
+            $leadc=`echo $userid | cut -c1 | tr -s [A-Z] [a-z]`
+            cp -pr $bbs2/mail/$leadc/$userid $bbs/mail/$leadc
+            (cd $bbs/mail/$leadc/$userid; dotdir 0)
+        done

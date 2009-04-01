@@ -1,0 +1,25 @@
+Fomorsa BBS 編輯器命令說明: (特殊按鍵以 VT100 為準)
+----------------------------------------------------------------------------
+(一)基本命令:
+        Ctrl-X  (Ctrl-W) 儲存並結束編輯.
+        Ctrl-R  立刻儲存, 但是繼續編輯, 不離開.
+        Ctrl-L  重畫螢幕. 若畫面亂掉可用此功能恢復.
+        Ctrl-Z  顯示本說明畫面.
+        Ctrl-V  ANSI 控制碼 (ESC) (Ascii code 27)
+        Ctrl-Q  預覽 ANSI 編輯畫面
+(二)游標與移動的相關命令:
+        [PgUp] ,  Ctrl-P  上一頁.
+        [PgDown], Ctrl-N  下一頁.
+        [Tab]             Tab 跳格鍵. (每次跳 8 格).
+        Ctrl-B            前一個字元.
+        Ctrl-F            下一個字元.
+        Ctrl-U            上一行.
+        Ctrl-O            下一行.
+        Ctrl-S            跳到篇首. 
+        Ctrl-T            跳到篇末.
+        [Home], Ctrl-A    跳到行首. 
+        [End],  Ctrl-E    跳到行尾. 
+(三)刪除的命令:
+	BackSpace, CTRL-H 將游標左邊字元刪除
+        Ctrl-D            刪除游標所在的字元. 
+        Ctrl-Y , Ctrl-K   刪除一整行. (請先將游標移到行首).

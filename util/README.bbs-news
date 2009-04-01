@@ -1,0 +1,62 @@
+
+ BBS-News 交流轉換程式
+ =====================
+
+    [注意] 以下指令執行, 若無特別說明, 皆使用 bbs 份執行.
+
+    (1) bbs% make bbs-news
+        bbs% cp bbs-news ~bbs/bin
+        確定以下五個目錄已存在, 若無, 請自行建立.
+            ~bbs/news/cancel
+            ~bbs/news/current
+            ~bbs/news/input
+            ~bbs/news/output
+            ~bbs/news/record
+
+    (2) 編輯 ~bbs/news/bbs-news.conf
+        注意: 1.第一次啟動時, 請先設一兩個 BNLink line 先測試看看.
+              2.如果不想拿舊的 News article, GET 欄請寫 no
+              3.請選定一個 News Server, 選定後就別再改變, 所以請謹慎選擇.
+              4.你必須在選定的 News Server 有 post article 的權力,
+                才能 output bbs posts.
+
+    (3) bbs-news 程式設計上是不會死的, 所以如無意外, bbs-news process
+        可以一直活到 reboot 為止. 但是, 為了避免 bbs-news process
+        意外死亡, 可以每隔一段時間自動執行一次 bbs-news,
+        新的 bbs-news process 若查知舊的 bbs-news process 仍然活著,
+        新的 bbs-news process 就會自動消失, 所以您就可以不用操心
+        bbs-news 是死是活了.
+
+        1. 加在 crontab 自動定時執行.
+        bbs% crontab -e
+        00 0,4,8,12,16,20 * * * /apps/bbs/bin/bbs-news &
+        讓 ~bbs/bin/bbs-news 每隔四個小時自動執行一次. (只是舉例)
+
+        2. 寫在開機自動執行檔中: (以 SunOS 4.1.x 為例)
+           bbs% vi /etc/rc
+           在最後的 exit 0 之前加入一行
+           /apps/bbs/bin/bbs-news
+
+        [註: 此步驟請使用 root 身份執行]
+
+     (4) bbs-news.conf 的更改:
+         bbs-news process 每處理完一輪迴 B-N-Link 之後, 會重讀一次
+         bbs-news.conf 內容. 所以開機以後, 若想更動 bbs-news.conf 設定,
+         只要在 bbs 的 (A)dmin 選項中編修, 或是從系統直接編修 
+         ~bbs/news/bbs-news.conf
+         改好以後, 不必做任何動作, 等下一輪啟動時, 自然會執行新的設定.
+
+ 功能
+ ====
+      1. 支援單一 News Server 轉信
+      2. 支援單一看板對多 Newsgroup 互轉信
+      3. 單一設定檔案 bbs-news.conf
+      4. 使用 NNTP 'XOVER' command 改善程式執行效率.
+
+
+ Feedback
+ ========
+
+ 本文作者: lmj@cc.nsysu.edu.tw 梁明章 (wind)
+ 本文修改: lthuang@cc.nsysu.edu.tw 黃立德 (lasehu)
+

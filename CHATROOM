@@ -1,0 +1,25 @@
+
+% telnet localhost 6177
+s> Formosa Chatroom Server Version. 1.0.0 by NSYSU
+s> 12060                     --> random_number
+c> USRID userid 12061        --> random_number + 1
+s> +OK OK !!
+c> LISTCHAN [channel] or DefaultChannel
+c> WHOALL
+s> qggb    aoe
+s> lagol   Iamlagol
+s> lthuang lthuang
+s> .
+c> WHO [channel]
+s> VBX vbx
+s> .
+c> JOIN [channel] [password]
+s> +OK OK !!
+c> TOPIC [channel]
+s> +OK OK !!
+c> MSG [userid] [message]
+s> +OK OK !!
+c> SPEAK [message]
+c> QUIT
+Connection closed by foreign host.
+

@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 編輯簽名檔</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if("<!BBS_User_ID!>" == "")
+	{
+		alert("警告：尚未登入系統");
+	}
+    else
+		document.UserSign.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0" width="80%">
+<TR>
+<TD BGCOLOR="Orange">
+<FONT color=blue>個人設定 / 編輯簽名檔</FONT></TD>
+</TR><TR><TD>
+<FONT COLOR="Red">每個簽名檔以四行為限，超過的部份取前四行</FONT>
+<HR>
+</TD></TR>
+<FORM NAME="UserSign" METHOD="POST" ACTION="UserSign">
+<TR>
+<TD>簽名檔 1 內容：
+<INPUT TYPE="RADIO" NAME="ACT1" VALUE="MODIFY" CHECKED>修改
+<INPUT TYPE="RADIO" NAME="ACT1" VALUE="DELETE">刪除
+<TEXTAREA COLS="70" ROWS="4" NAME="SIGN1"><!BBS_User_Sign NUM="1"!></TEXTAREA>
+</TD>
+</TR>
+<TR><TD><BR>簽名檔 2 內容：
+<INPUT TYPE="RADIO" NAME="ACT2" VALUE="MODIFY" CHECKED>修改
+<INPUT TYPE="RADIO" NAME="ACT2" VALUE="DELETE">刪除
+<TEXTAREA COLS="70" ROWS="4" NAME="SIGN2"><!BBS_User_Sign NUM="2"!></TEXTAREA>
+</TD>
+</TR>
+<TR><TD><BR>簽名檔 3 內容：
+<INPUT TYPE="RADIO" NAME="ACT3" VALUE="MODIFY" CHECKED>修改
+<INPUT TYPE="RADIO" NAME="ACT3" VALUE="DELETE">刪除
+<TEXTAREA COLS="70" ROWS="4" NAME="SIGN3"><!BBS_User_Sign NUM="3"!></TEXTAREA>
+</TD>
+</TR>
+<TR>
+<TD>
+<HR>
+<input type="button" value="確定" onClick="check()">&nbsp;&nbsp;
+<input type="button" value="放棄" onclick='location.href="<!BBS_SubDir!>UserMenu.html"'>&nbsp;&nbsp;
+</TD>
+</TR>
+</FORM>
+</TABLE>
+
+</CENTER>
+<BR><BR>
+</BODY>
+</HTML>

@@ -1,0 +1,34 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 分類佈告看版列表</TITLE>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<!-------------- Start of Main Menu ---------------------------------->
+<TABLE ALIGN="LEFT">
+<TR><TD bgcolor="#12AFFF"><FONT color=blue>『主選單』</FONT></TD></TR>
+<TR><TD BGCOLOR="Orange"><a href="<!BBS_SubDir!>class.html">分類佈告</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>treaclass.html">分類精華</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>TalkMenu.html">休閒聊天</a></TD></TR>
+<TR><TD><!BBS_Mail_New VALUE2="個人郵件"!></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>UserMenu.html">個人設定</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>">重新登入</a></TD></TR>
+</TABLE>
+<!-------------- End   of Main Menu ---------------------------------->
+
+<TABLE align="Left" width="90%">
+<TR>
+<td BGCOLOR="Orange" colspan="5"><FONT color=blue>分類佈告看版列表</FONT></td>
+</TR>
+<TR><TD>編號</TD><TD>板名</TD><TD>等級</TD><TD>中文說明</TD><TD>版主</TD></TR>
+<!BBS_BoardList CLASS="*" FORMAT="<TR><TD>%NUM% (%CLASS%)</TD><TD><a href=%BBS_SubDir%boards/%E-BNAME-LINK%>%E-BNAME%</a></TD><TD>%LEVEL%</TD><TD>%C-BNAME%</TD><TD>%BM%</TD></TR>"!>
+<td BGCOLOR="Orange" colspan="5" align="right">
+<FONT size=4 color=blue><a href="<!BBS_SubDir!>treasure/"><FONT size=4>[分類精華看版列表]</FONT></a></FONT>
+</td>
+</TABLE>
+
+</BODY>
+</HTML>

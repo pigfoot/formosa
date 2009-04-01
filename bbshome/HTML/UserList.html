@@ -1,0 +1,49 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 大陸冒險者列表</TITLE>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<!-------------- Start of Main Menu ---------------------------------->
+<TABLE align=left>
+<TR><TD bgcolor="#12AFFF"><FONT color=blue>『主選單』</FONT></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>class.html">分類佈告</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>treaclass.html">分類精華</a></TD></TR>
+<TR><TD BGCOLOR="Orange">休閒聊天</TD></TR>
+<TR><td><!BBS_Mail_New VALUE2="個人郵件"!></td></TR>
+<TR><TD><a href="<!BBS_SubDir!>UserMenu.html">個人設定</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>">重新登入</a></TD></TR>
+</TABLE>
+<!-------------- End   of Main Menu ---------------------------------->
+
+<TABLE align="Left" cellspacing="0" width="85%" border="0">
+<TR BGCOLOR="Orange">
+	<TD COLSPAN="5">
+	<FONT color="Blue">線上使用者列表<font size="-1">(不包括web使用者)</a></FONT>
+	</TD>
+	<TD>
+	<FONT color="Blue">總人數：<!BBS_UserList TotalRec!></FONT>
+	</TD>
+</TR>
+<TR>
+	<TD >編號</TD><TD colspan="2">探險者</TD><TD>來自</TD><td>狀態</td><TD>發呆</TD></TR>
+<!BBS_UserList FORMAT="<TR><TD>%NUM%</TD><TD><a href=%BBS_SubDir%users/%USERID%>%USERID%</a></TD><TD>%USERNAME% </TD><TD>%FROM%</TD><TD>%STATUS%</TD><TD>%IDLE%</TD></TR>"!>
+
+<TR>
+	<td colspan="6">
+	<HR>
+	&nbsp;&nbsp;<!BBS_UserList_PageUp!>
+	&nbsp;&nbsp;<!BBS_UserList_PageDown!>
+	&nbsp;&nbsp;<a href="<!BBS_SubDir!>TalkMenu.html">回聊天選單</a>
+	<HR>
+	</td>
+</TR>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+</HTML>

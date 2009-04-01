@@ -1,0 +1,49 @@
+#!/bin/sh
+HOMEBBS=
+
+mkdir ${HOMEBBS}
+chown bbs ${HOMEBBS}
+chgrp bbs ${HOMEBBS}
+
+cp lang.h ${HOMEBBS}/conf/clang.cf
+cp lang.h ${HOMEBBS}/conf/elang.cf
+
+mkdir ${HOMEBBS}/home
+chown bbs ${HOMEBBS}/home
+mkdir ${HOMEBBS}/mail
+chown bbs ${HOMEBBS}/mail
+for i in 0 a b c d e f g h i j k l m n o p q r s t u v w x y z ;
+do
+	mkdir ${HOMEBBS}/home/$i
+	chown bbs ${HOMEBBS}/home/$i
+	chgrp bbs ${HOMEBBS}/home/$i
+	mkdir ${HOMEBBS}/mail/$i
+	chown bbs ${HOMEBBS}/mail/$i
+	chgrp bbs ${HOMEBBS}/mail/$i
+done
+
+
+for i in current output cancel input record ;
+do
+	mkdir ${HOMEBBS}/news/$i
+	chown bbs ${HOMEBBS}/news/$i
+	chgrp bbs ${HOMEBBS}/news/$i
+done
+
+
+chown -R bbs ${HOMEBBS}
+chgrp -R bbs ${HOMEBBS}
+
+for i in bin boards edit log realuser tmp treasure write ID ;
+do
+	mkdir ${HOMEBBS}/$i
+	chown bbs ${HOMEBBS}/$i
+	chgrp bbs ${HOMEBBS}/$i
+done
+
+(cd ${HOMEBBS}; gzip -dc FormosaBBS-${VERSION}-bin.tar.gz | tar xf - )
+
+for i in edit log realuser tmp write ID ;
+do 
+	chmod 0700 ${HOMEBBS}
+done

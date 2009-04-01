@@ -1,0 +1,51 @@
+BBS <-> News gateway 比較
+
+以前 Post 過. 怕大家忘記 server gateway/client gateway
+的區別, 因此再 post 一次.
+
+------------------------------------------------------------
+主動式 (client gateway) 和被動式 (server gateway) 轉信的比較
+
+目前與 tw.bbs 轉信的 BBS 站所用之程式依照傳信的方式
+可區分為兩類:
+1. 主動取信的, 或稱為 client gateway.
+   一般經由 modem 電話撥接的 BBS站多用此方式主動以
+   news client 的身份向 news server 定時讀取.
+   NSYSU Formosa BBS 所用之轉信程式是一種 client gateway.
+2. 被動等信的, 或稱為 server gateway.    
+   BBS 站跑一個 server, 只能被動地等待上游站餵送,
+   是一般 news server 用來傳送 news article 的方法.
+   Phoenix BBS 所附之 in.bntpd 就是一種 server gateway.
+
+這兩種 gateway 各有優缺點. 分析如下:
+1. client gateway 必須 maintain 讀取的記錄, 與一般
+   news reader 的 newsrc 類似.  client 自主性高, 可以
+   主動決定何時去取信, 要那些討論區. 
+2. server gateway 無須 maintain 讀取記錄, 只要被動地等待上游站
+   把新信送過來. server gateway 比較難自主, 送信時機和餵送之討論區.
+   由上游站設定.
+
+BBS 站必須衡量需求和維護之困難度, 以決定採用那一種 gateway.
+1. 收取之討論區多寡. 
+   若不多, client gateway 比較合適. 如果很多, 應考慮採用 server gateway.   
+   讀取記錄不好維護, 尤其是 news server 定期會有 renumber active 的
+   動作, client 可能誤判.
+2. 是否想連線同步轉信, 某站一有新信送出, 其他站馬上可看到.
+   這個只能由 server gateway 達成.
+3. 是否要跨站砍信. 若由 client gateway 來做比較難. 
+   如果要做到能接受別站送來的砍信訊息, 
+     a. 還要收取一個 稱為 "control" 或 "control.cancel" 的 news 討論區. 
+        通常這個區的量相當大, 可能遠大於 BBS 站想轉的正常區.  
+     b. 記錄 artno 與 BBS article path 的對應關係, 再 stat news server.  
+     c. extract header (xhdr Control)
+     
+   server gateway 不用再收額外的討論區即可跨站砍信.
+   
+4. 個人使用或使用者不多的 BBS 站建議採用 client gateway.
+   用戶多的, 轉信不正常影響比較大, 
+   建議採用 server gateway. 
+5. 想要自主性高的用 client gateway.
+   想要有緊密相連, 有整體連成一線感覺者用 server gateway.
+   
+-------------------------------------------------------------------   
+

@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!></TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function stopError()
+{
+	return true;
+}
+
+window.onerror = stopError;
+
+document.cookie = "Name=";
+document.cookie = "Password=";
+
+function GOnext(loginname,loginpasswd)
+{
+	var pass;
+	pass = escape(loginpasswd);
+
+	document.cookie = "Name="+loginname;
+	document.cookie = "Password="+pass;
+
+	location.href="Announce.html";
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="#000000" LINK="12AFFF" VLINK="129F9F">
+
+<center>
+<FONT size="5" color="Orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+
+<FORM NAME="LOGINBBS">
+<TABLE CELLSPACING="0" BORDER="0" width="50%">
+<TR>
+	<TD BGCOLOR="#121265">
+	<FONT COLOR="#FFFFFF" SIZE="5">
+	<STRONG>WEB-BBS login</STRONG>
+	</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD BGCOLOR="#C0C0C0">
+	<BR>
+	<H3>請在下面欄位中填入您的帳號與密碼</H3>
+	</TD>
+</TR>
+
+<TR>
+	<TD BGCOLOR="#C0C0C0" ALIGN=CENTER>
+	帳號：<INPUT TYPE="text" NAME="ID" SIZE="20"><BR><BR>
+	密碼：<INPUT TYPE="password" NAME="PASSWD" SIZE="20">
+	<BR><BR>
+	<INPUT TYPE="button" NAME="NEXT" VALUE="登入系統" onclick="GOnext(document.LOGINBBS.ID.value,document.LOGINBBS.PASSWD.value)">
+	<br>
+	<HR>
+	<FONT SIZE=>如果您是新使用者，請依指示註冊新的帳號</FONT><BR><BR>
+	<INPUT TYPE="BUTTON" NAME="NEW_USER" VALUE="註冊新帳號" onClick="location.href='<!BBS_SubDir!>users/UserNew.html'">
+	<br>
+	<hr>
+	<a href="Announce.html">或是您只想參觀一下,請走這裡</a><br><br>
+	</TD>
+</TR>
+</TABLE>
+</FORM>
+
+</center>
+
+</BODY>
+</HTML>

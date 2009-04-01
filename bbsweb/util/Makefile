@@ -1,0 +1,60 @@
+# Generated automatically from Makefile.in by configure.
+################################
+# Makefile for Formosa WEB BBS #
+################################
+#
+# This Makefile for "LINUX"
+#
+# The home directory for the user 'bbs'
+HOMEBBS    = /apps/bbs
+
+DEFINES    = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF)
+CC         = gcc
+CFLAGS	   := -DNSYSUBBS3 -O2 -mtune=i686 -march=i686 -fomit-frame-pointer -Wall -I../../include -I../../lib -I../
+LDLIBS	   = -lcrypt 
+LDLIBS     := $(filter-out -ltermcap,$(LDLIBS))
+
+
+ifneq (,$(filter -DNSYSUBBS% -DANIMEBBS -DULTRABBS,$(SITE_DEF)))
+  CFLAGS   := -O2 -mpentiumpro -Wall -I../../include -I../../lib -I../
+  HOMEBBS  := "/apps/bbs"
+  LDLIBS   += -lmmalloc
+endif
+ifeq (-DANIMEBBS,$(SITE_DEF))
+  LDLIBS     := $(filter-out -lmmalloc,$(LDLIBS))
+  DEFINES = -DLINUX -DTERMIOS $(SITE_DEF) -DHAVE_CONFIG_H
+endif
+
+
+LIBFILE    = ../../lib/libbbs.a
+LIBSRCS    = ../../lib/bbslib.c ../../lib/misc.c ../../lib/conf.c\
+             ../../lib/mod_article.c ../../lib/mod_board.c \
+             ../../lib/mod_mail.c ../../lib/mod_net.c \
+             ../../lib/mod_pass.c ../../lib/mod_post.c \
+             ../../lib/mod_readrc.c ../../lib/mod_record.c \
+             ../../lib/mod_sem.c ../../lib/mod_shm.c \
+             ../../lib/mod_user.c ../../lib/mod_zap.c ../../lib/modetype.c
+
+SRCS       = top10.c weblog_analyzer.c postcount.c
+OBJS       = $(SRCS:.c=.o)
+PROG       = top10 weblog_analyzer postcount saveuser
+
+.c.o:  ; $(CC) $(CFLAGS) $(DEFINES) -c $*.c
+
+
+all: $(PROG)
+
+weblib.o: ../weblib.c
+	$(CC) $(CFLAGS) $(DEFINES) -c ../weblib.c
+
+$(LIBFILE): $(LIBSRCS)
+	cd ../../lib; make
+
+%:  %.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $* $*.c $(LDLIBS) $(LIBFILE)
+
+install installbin: $(PROG)
+	-cp -p $(PROG) $(HOMEBBS)/bin
+
+clean:
+	-rm -f *.o $(PROG) a.out core 

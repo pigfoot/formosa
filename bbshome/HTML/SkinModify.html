@@ -1,0 +1,102 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 編輯看板介面</TITLE>
+<SCRIPT language="JavaScript">
+
+function GetSkin()
+{
+	var board;
+	var index = document.Board.SKIN.selectedIndex;
+	var skin = document.Board.SKIN[index].value;
+//	alert("skin="+skin);
+
+	if("<!BBS_Board_Name!>"=="")
+		board = document.Board.BOARDNAME.value;
+	else
+		board = "<!BBS_Board_Name!>";
+
+	document.location.href="<!BBS_SubDir!>boards/"+board+"/"+skin+"/SkinModify.html";
+
+//	document.cookie = "BOARD="+board;
+//	document.cookie = "SKIN="+skin;
+//	document.location.reload();
+	
+}
+
+
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="Board" METHOD="POST" ACTION="SkinModify">
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0" >
+<TR>
+<TD BGCOLOR="Orange"><FONT color="blue">板主功能 / 自訂看板介面</FONT></TD>
+</TR>
+<TR>
+	<TD>要編輯的看板：<!BBS_Board_Name!>
+	<input type="hidden" name="BOARDNAME" value="<!BBS_Board_Name!>"></TD>
+</TR>
+<TR>
+	<TD>
+	要編輯的檔案：
+	<SELECT NAME="SKIN">
+	<OPTION VALUE="BmWelcome.html">進板畫面</OPTION>
+	<OPTION VALUE="PostList.html">分類佈告列表</OPTION>
+	<OPTION VALUE="Post.html">分類佈告內容</OPTION>
+	<OPTION VALUE="TreaList.html">分類精華列表</OPTION>
+	<OPTION VALUE="TreaPost.html">分類精華內容</OPTION>
+	<OPTION VALUE="PostSend.html">張貼佈告</OPTION>
+	<OPTION VALUE="PostReply.html">回應佈告</OPTION>
+	<OPTION VALUE="PostDelete.html">刪除佈告</OPTION>
+	<OPTION VALUE="PostForward.html">轉寄佈告</OPTION>
+	</SELECT>
+	<input type="button" value="GetSkin" onClick="GetSkin()">
+	</TD>
+</TR>
+<TR BGCOLOR="Orange">
+	<TD>
+	<font color="blue">
+	步驟：選取要編輯的檔案 → 按下『GetSkin』鍵→ 編寫內容 → 按下『修改』鍵<BR>
+	</font>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	<font color="red">注意事項: <BR>
+	1.HTML 檔內有些以 &lt;BBS&gt; 為開頭的 tag 為 WEBBBS 系統關鍵字，請先不要修改<BR>
+	2.盡量少用 FrontPage 之類的 HTML 產生器以免發生問題<BR>
+	3.剪貼或是拷貝之後請檢查 HTML 碼是否有換行 (有些瀏覽器會不換行)<BR>
+	4.如果有用 Java Script 請注意換行問題<BR>
+	5.由於 &lt;TEXTAREA&gt; tag 與本頁相衝，故轉為 &lt;TEXT-AREA&gt; 顯示
+	</font>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	<BR>內容：<BR>
+	<TEXTAREA COLS="70" ROWS="20" NAME="CONTENT" WRAP="OFF"><!BBS_Post_Content!></TEXTAREA>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	<HR>
+	建議開兩個瀏覽器一邊改一邊看會比較方便！！
+	<HR>
+	</TD>
+</TR>
+<TR>
+	<TD>
+	<input type="submit" value="修改">&nbsp;&nbsp;
+	<input type="button" value="回看板" onclick='location.href="<!BBS_SubDir!>boards/<!BBS_Board_Name!>/"'>&nbsp;&nbsp;
+	</TD>
+</TR>
+</TABLE>
+</FORM>
+
+</CENTER>
+</BODY>
+</HTML>

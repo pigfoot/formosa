@@ -1,0 +1,529 @@
+
+                        連線 BBS 站轉信程式安裝說明
+
+                                        by: mfchen@csie.nctu.edu.tw
+
+前言
+
+            由於本轉信程式發展時間倉促, 未盡完善之處請多多包涵. 目前在各
+        校的 news server 內有一 tw.bbs.admin.installbbs 討論區, 並且已經
+        與各大 BBS 站的 installbbs 討論區互相轉信. 各位 BBS 管理者可透過
+        此討論區與其它 BBS 站的管理者互相討論, 交換系統與管理方面的心得,
+        歡迎大家多多利用.
+
+
+第一章、簡介
+   1-1. BBS 站簡介
+            所謂 BBS 是 Bulletin Board System 的縮寫, 也就是指電子佈告欄
+        系統，這套系統提供使用者透過電腦網路連到 BBS 站，透過站內各種不同
+        種類的討論區交換訊息。
+
+
+   1-2. 轉信程式簡介
+            轉信程式主要的目的是 "將不同 BBS 站內討論區的文章互相交換，
+        達到資訊交流的目的。" 本轉信程式架在 Eagle BBS 與 Internet News
+        Server 上，將 BBS 站的文章與 News Server 上的文章互相交換，再透
+        過 News Server 與全世界互通訊息。
+
+
+   1-3. 安裝前注意事項
+            請特別注意，在您開始下一章的安裝之前，請一定要將整個 BBS 站
+        做最完整的備份，尤其是使用者的資料與各討論區的文章，由於轉信程式
+        將更改使用者資料與新增討論區文章，一不小心就可能將原先系統內的資
+        料破壞掉，請一定要做好備份，以免遭受不可預期之損失。
+
+            此套轉信程式利用 perl 寫成, 請事先安裝好 /usr/local/bin/perl,
+        此外 parsedate 原始碼由 yacc 寫成, 一般系統應已具備 yacc compiler.
+
+
+
+-----------------------------------------------------------------------------
+第二章、安裝轉信程式
+   2-1. 如何取得轉信程式 package
+            要轉信首先得拿到 bbsinnd 的 package, 此 package 可由交通大學
+        資訊工程系的 ftp server 上取得, 請 ftp ftp.csie.nctu.edu.tw,
+        取回 /pub/bbs/src/bbsinnd.tar.gz
+            如果貴站的 BBS 程式取自於交大資工 ftp 之 PhoenixBBS.*,
+        該 package 之 bbs_src/innd 目錄下即附有轉信程式所需之檔案.
+
+   2-2. 檔案列表與功能介紹
+            將 bbsinnd.tar.gz 取回後用 gunzip 和 tar 將程式解開, 詳細動
+        作請看 2-3 說明. 此 package 包括下列檔案. 
+
+        目錄一: innd/
+          Makefile ------- 造出 bbspost & parsedate 程式的 makefile.
+          README --------- 本說明文件.
+          bbslib.pl ------ 轉信程式函數庫.
+          bntplink* ------ 將文章從 bbs 轉到 news 的轉信程式.
+          expire.ctl ----- 設定特殊討論區的文章保留天數.
+          expirepost* ---- 砍掉討論區內過期的文章.
+          in.bntpd* ------ 接受 news server 文章之 daemon 程式.
+          inntobbs* ------ 將文章從 news 轉到 bbs 的程式.
+          mailpost* ------ 將 e-mail post 的文章轉到 bbs 的程式.
+          rfc931.pl ------ 呼叫 remote host 的 identd, 檢查身份用.
+          tcp.pl --------- 使用 tcp port 當 server/client 的 library.
+
+        目錄二: innd/src/
+          bbspost.c ------ bbs 站文章處理程式.
+          modify.doc ----- 跨站砍信設定方式 (更改 bbs source)
+          parsedate.c ---- 日期轉換程式 (c language)
+          parsdate.y ----- 日期轉換程式 (yacc language)
+
+
+   2-3. 安裝轉信程式
+            以下詳細說明如何將砍信 package 安裝好, "cmd>" 為 unix 提示符號,
+        假設 bbs 的目錄在 /home/bbs, 系統 source 放在 /home/bbsroot/bbs_src,
+        bbsinnd.tar.gz 放在 /tmp.
+
+        cmd> cd /tmp
+        cmd> gunzip bbsinnd.tar.gz
+        cmd> cd /home/bbsroot/bbs_src
+        cmd> tar xvf /tmp/bbsinnd.tar           # 將 bbsinnd.tar 解開
+
+        註: 如果您使用的 BBS 程式是交大資工 Phoenix BBS, 可跳過以上步驟,
+            /home/bbsroot/bbs_src/innd 已經附上轉信程式了.
+
+        cmd> cd /home/bbsroot/bbs_src/innd
+        cmd> make                               # 造出 parsedate & bbsroot
+
+        註: 如果 make 的過程出現 structure has no member named `tm_gmtoff'
+            請改用 'make CFLAGS=-DDONT_HAVE_TM_GMTOFF' 命令.
+
+        cmd> mkdir /home/bbs/innd               # 造出 ~bbs/innd 目錄
+        cmd> cp * /home/bbs/innd                # 將轉信程式放入 bbs 中.
+        cp: src: Is a directory (not copied).   # src 是目錄, 不須 copy
+
+
+            接下來到 /home/bbs/innd 目錄下編輯以下檔案:
+
+        a. bbsname.bbs
+           設定貴站的英文代號, 這個代號必須是一個字, 不能有空白, 也不能與
+           其它站相同, 轉信之後不得更改. 請謹慎為您的 BBS 站命名.
+           檔案中只能有一個英文字,
+           例如: 測試站可命名為
+
+abcbbs
+
+        b. nodelist.bbs
+           記錄自己的 BBS 站中文站名與轉信站的位址, 每一行包括三個欄位,
+           第一個欄位是名稱, 第二欄位是機器位址, 第三個欄位是中文名稱.
+           通常第一行放自己的 BBS 站站名 (bbsname.bbs 中所定的名稱),
+           機器位址 (通常是用 hostname + domainname) 以及貴站中文全名.
+           其它 (第二) 行記錄轉信的 news server 名稱、位址及名稱.
+           例如:
+
+abcbbs    bbs.???.????.edu.tw             請自行設定 BBS 站中文全名
+bbsroute  gopher.csie.nctu.edu.tw         交大資工 News server
+
+        c. newsfeeds.bbs
+           記錄 news server 的 newsgroups 與 bbs 的 boards 轉信設定.
+           每一行包括三個欄位, 第一個欄位是 newsgroup 全名, 第二欄位
+           是 board 名稱, 第三個欄位是轉信站名稱.
+           例如:
+
+tw.bbs.test     test            bbsroute
+
+
+
+-----------------------------------------------------------------------------
+第三章、測試轉信程式
+   3-1. 將 news server 之文章送給 BBS
+            首先測試 perl 轉信程式是否能夠正確執行, 請使用 bbs 身份的帳號
+        (參考 PhoenixBBS.README, 3.1 設定與 BBS 相關的帳號, bbsuser 的設定)
+        執行 'in.bntpd', 觀察能否正常執行:
+
+   【注意】 不能用 root 執行.)
+
+        cmd> innd/in.bntpd
+        Usage: bbsinnd bbs_home                           # 正確訊息.
+
+        PS: in.bntpd 必須由 inetd 執行才正確, 直接執行會有錯誤訊息.
+            cmd> innd/in.bntpd /home/bbs
+            x outside of string at /home/bbs/innd/tcp.pl line 461.
+
+
+            能夠執行 in.bntpd 後, 請將 in.bntpd 加入 inetd services 中,
+        請設定以下檔案: (假設使用 post 7777 接收轉信)
+
+   【注意】 有上 yp 者請至 yp server 更改 services.
+
+        a. 在 /etc/services 檔案中加入
+bbsinnd     7777/tcp                # For BBS innd
+
+        b. 在 /etc/inetd.conf 檔案中加入
+bbsinnd stream tcp nowait bbs /home/bbs/innd/in.bntpd in.bntpd /home/bbs 
+
+            設定好之後必須讓 inetd 重新啟動, 如果有 identd 請先將 identd
+        的 process kill 掉, 然後執行 kill -1 xxxx (inetd 的 pid), 然後試著 
+        telnet 到 bbsinnd port, 如果能夠 connect 並出現 502 錯誤訊息就行了.
+
+        cmd> telnet bbs bbsinnd
+        Connected to bbs.csie.nctu.edu.tw.
+        Escape character is '^]'.
+	502 You are not in my access file. (???@???.???.edu.tw).
+
+        Connection closed by foreign host.
+
+   【注意】 出現 "bbsinnd: bad port number" 表示 services 設定有問題,
+            請再次檢查 /etc/services 或 yp 的 services 是否設定正確.
+
+            接下來測試 news server 到 bbs 的轉信功能, 請將 nodelist.bbs,
+        newsfeeds.bbs, tcp port # 和 hostname.domainname 的資訊 post 到
+        tw.bbs.admin.installbbs 討論區 (或各 BBS 站的 installbbs 討論區)
+        請求區域網路內的 news server 幫忙轉信. 如果有問題請與 news server
+        的管理者聯絡, 設法解決問題. 詳細設定方法請參考第四章之說明
+
+
+   3-2. 將 BBS 之文章送給 news server
+            如果收信都沒問題之後, 請依照以下步驟測試送信:
+
+        cmd> cd /home/bbs
+        cmd> innd/bbspost visit /home/bbs       # 第一次執行會非常久
+        New article listed:
+        test    M.770323413.A   SYSOP   測試文章 ...
+        ....                                    # 列出所有未送信文章
+
+            接下來到 test board post 一篇測試文章, 然後執行下列命令
+
+        cmd> innd/bntplink /home/bbs
+
+        執行後請到 tw.bbs.test 討論區看看文章是否轉過去了, 如果有問題
+        請再與 news server 管理者聯絡, 找出問題 所在.
+
+            手動轉信成功之後, 可將送信程式加入 cron 中. 使用 bbs 身份的
+        帳號 (ex: PhoenixBBS 的 bbsuser 帳號) 執行 crontab -e, 設定每隔
+        十分鐘到一小時轉信一次. 例如:
+
+        cmd> crontab -e
+        5,15,25,35,45,55 * * * * innd/bntplink /home/bbs > /tmp/portnum
+
+        然後再到 test board post 測試文章, 等系統用 cron 將文章送出去
+        如果在 tw.bbs.test 能看到該測試文章, 那就沒問題了.
+
+
+   3-3. 設定跨站砍信功能
+            請參考 innd/src/modify.doc 所示, 將 cancelpost() 加入 BBS 站
+        source 中的 bbs.c 程式內, 日後 user 砍信時會將討論區和檔案名稱
+        記錄在 ~bbs/cancelpost.lst 中, 下次執行 bntplink 時就會送出這些
+        文章的 control message, 將轉信出去的文章砍掉.
+
+            修改 bbs.c 完成後請到 test board 將一篇 "已經轉信出去的文章"
+        砍掉, 然後到 ~bbs 看看是否有 cancelpost.lst 檔案存在, 等 cron 將
+        cancel message 送出去後再到 aidebbs 的 test board 看看該篇測試文
+        章是否已經被砍掉. 跨站砍信後該篇文章的 userid 會加上 "-" 變成:
+
+          331   -wolfchen      Re: IBM test ...
+                ^^^^^^^^^
+        發信人: wolfchen.bbs@ccibm1.csie.nctu (資工小蜜蜂), 信區: test
+        標  題: Re: IBM test ...
+        發信站: 交大資工 IBM BBS (Wed Jun  1 14:00:00 1994)
+        轉信站: cuckoo!bbsroute!csie_ibm
+
+        Article cancelled from wolfchen@csie_ibm within bbs [v1.0]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+            為了讓砍信的動作快一點, 此篇文章仍然會出現在 title 畫面,
+        原來的 article 會放在 M.7704xxxxx.A.cancel 檔案內, 直到下次執行
+        砍舊信 (expirepost) 的動作時才會和 title 一起被砍掉, 詳細情形
+        請看 3-5 節 定期砍舊文章.
+
+
+   3-4. 利用 email post 文章
+            首先設定 BBS 的 .forward, 使收到的 email post 文章轉向給
+        mailpost, .forward 檔格式如下: (包括前後的引號!)
+
+        "| /home/bbs/innd/mailpost /home/bbs"
+
+        利用 email post 可接受一般 8-bits 的信件, 也可以接受 uuencode
+        過的信件, mailpost 程式遇到 uuencode 格式的信件會自動將文章
+        decode 之後再 parse 信件格式.
+
+            信件格式必須包括四個項目, 格式及說明如下:
+
+        #name: guest            使用者帳號, 必須事先註冊過才行.
+        #password: guestpwd     使用者密碼, 程式會檢查密碼是否正確.
+        #board: test            討論區英文名稱, 文章會放入該討論區內.
+        #title: 測試文章標題    文章標題, 可用 8-bits 中文標題.
+
+        如果檢查 password 無誤, 就會將文章直接放入 boards 中, 值得一提
+        的是在此並不檢查 user 在該討論區是否有 post 的權力. 因為 email
+        post 可查出使用者的帳號, 基於網路互信互利的原則, 不多做限制,
+        如果有 user 濫用此權力, 可再考慮加以限制.
+
+            此外, 為了避免干擾其它 news 使用者閱讀文章, 利用 email post
+        的文章標題將不允許使用 ansi 控制碼, 所有 ESC (27) code 都會自動
+        轉換為 "^[" 兩個字元.
+
+            如果要限制某些特定的使用者不能 email post, 可將這些使用者的
+	email address 放在 ~bbs/innd/email.deny 檔案內, 此 user 的 email
+	將不被接受, 並 post 到 junk board 內.
+
+
+   3-5. 定期砍舊文章
+            本轉信程式提供定期砍舊信的程式 (expirepost), 這個程式能夠限制
+        系統內各討論區的文章只能保留 "一定天數" 和 "一定篇數", 舉例來說,
+        如果只要保留最近一個月, 最多 2000 封文章, 最少 100 封文章,
+        就在 crontab 中加入:
+
+        0 6 * * * innd/expirepost /home/bbs 30 2000 100 >> delmsg.lst
+
+            每天凌晨 6:00 就會自動執行 expirepost, 將超過 30 天或是超過
+        2000 封的 "舊信" 砍掉, 如果該篇文章已經用 Mark 功能保留下來了,
+        就永遠不會被砍掉. 如果該文章已被跨站砍信了, 那會馬上被砍掉. 由於
+        跨站砍信的文章會出現在很後面, 因此會造成文章數目計算的錯誤, 那就
+        不用太在意了.
+
+            如果有特殊的討論區不想用 default 的保留天數, 要保留很久或是
+        很短的天數, 請修改 innd/expire.ctl, 例如:
+
+        cmd> cat expire.ctl
+        test            2    300 20
+        sysop           1000
+
+        也就是說 test board 只要保留兩天, 最多 300 封, 最少 20 封文章.
+        sysop board 要保留 1000 天.
+
+
+-----------------------------------------------------------------------------
+第四章、設定轉信討論區
+   4-1. 加入 tw.bbs.* 轉信討論區
+            以下皆以 inn news 為例, 目前 tw.bbs.* 已成立上百個不同性質的
+        討論區 (詳細列表請參閱附錄), 與這些討論區設立轉信包括兩方面, 首先
+        介紹 inn server 部分, 必須設定的檔案包括:
+
+        a. newsfeeds
+           請參照與其它 news server 轉信的設定, 並指定選定的 tcp port.
+           以下為交大資工的 newsfeeds 設定, 提供參考:
+
+           # 交大資工鳳凰城資訊站
+           phoenix\
+             :!*,tw.bbs.*,csie.bbs.adm.*\
+             :Tc,Wnm,S4096\
+             :/home/inn/news/bin/nntplink -P 7777 -k bbs.csie.nctu.edu.tw
+
+           第一行的 phoenix 就是 BBS 站的 bbsid (innd/bbsname.bbs 內容),
+           第二行的 !*,tw.bbs.*,csie.bbs.adm.* 指定只將 tw.bbs.* 和
+             csie.bbs.adm.* 轉送給 bbs.csie.nctu.edu.tw, 避免一般的討論區
+             文章也和 BBS 站互相轉信, 造成困擾.
+           最後一行 -P 7777 指定使用 tcp port 7777 轉信.
+
+        b. hosts.nntp
+           此檔案限制哪些 news server/BBS 站可傳送哪些討論區, 舉例如下:
+
+           # 交大資工鳳凰城資訊站
+           bbs.csie.nctu.edu.tw::!*,tw.bbs.*,csie.bbs.*
+
+           以 ":" 區格欄位, 第一欄為 news server/BBS 站的 hostname,
+           第三欄放可接受的討論區, 設定方法同 newsfeeds
+
+
+        設定好上列兩個檔案後, 必須再執行 ctlinnd 將檔案載入, 命令如下:
+
+        cmd> ctlinnd reload newsfeeds 'the reason of reload ...'
+        cmd> ctlinnd reload hosts.nntp 'some text ...'
+
+        此時 inn server 的設定已經完成, 接下來到 bbs 站設定收信程式,
+        必須設定的檔案包括:
+
+        a. innd/bbsname.bbs
+           放貴站的英文名稱, 請用一個簡短的純英文字, 例如交大資工 BBS 的
+           phoenix, 此 id 用來辨別轉信的路徑, 檢查是否造成 loop, 請避免
+           重覆. 並與 inn server 的設定相對應.
+
+        b. innd/nodelist.bbs
+           設定 news server/BBS 的 id, hostname 和中文名稱. 以本站為例:
+
+           # This is a sample nodelist.bbs
+           # name          hostname & domainname       full name
+           #-------        --------------------------  ------------
+           phoenix         csie.nctu.edu.tw            交大資工鳳凰城資訊站
+           bbsroute        gopher.csie.nctu.edu.tw     交大資工 News server
+
+           第一行設定 phoenix 的中文名稱為 "交大資工鳳凰城資訊站", 所有文章
+             的 header 都會加上 "發信站: 交大資工鳳凰城資訊站". 並設定
+             hostname 為 csie.nctu.edu.tw, 轉送到 inn server 的文章發信人
+             將變成 "userid.bbs@csie.nctu.edu.tw", 各站可依此設定 email.
+           第二行設定 news server 為 bbsroute, 位址 gopher.csie.nctu.edu.tw,
+             轉信將連到此機器的 nntp port (port 119).
+
+        c. innd/newsfeeds.bbs
+           設定哪些 newsgroups 要和 BBS 站的哪些 boards 轉信, 設定方法如下:
+
+           # This is a sample of newsfeeds.bbs
+           #  newsgroups                   board           news server
+           #-----------------------------  --------------  -----------
+           local.sysop                     sysop
+
+           tw.bbs.alumni                   schoolmates     bbsroute
+           tw.bbs.alumni.hchs              hchs
+           tw.bbs.campus                   campus          bbsroute
+           tw.bbs.campus.activity          activity        bbsroute
+           tw.bbs.campus.advancededu       advancededu     bbsroute
+           ...
+
+           轉信完全透過此檔案控制, 此例中, tw.bbs.alumni 討論區將與站內的
+           schoolmates 透過 bbsroute 這個 news server 轉信, newsgroups 和 
+           boards 名稱不必相同, 也可透過不同的 news server 轉信.
+           sysop board 是 local 的討論區, 不必轉信, 因此設定 local.sysop
+           和 sysop 不透過任何 news server 轉信. (第三欄空白)
+           tw.bbs.alumni.hchs 並沒有相對應的 local 討論區, 因此也將第三欄
+           留白. 收到 news server 的文章時 (因為 news 設定 tw.bbs.* 全送)
+           就會自動將文章丟棄.
+
+
+   4-2. 同時與多個 news server 轉信
+            如果要同時與多個 news server 轉信, 首先要將合法的 news server
+        address 放到 nodelist.bbs 中, 才能連上轉信程式. 如果不清楚 news
+        server 的 address 是什麼, 可以直接用 telnet 試看看, 例如:
+
+            cmd> telnet bbs.csie.nctu.edu.tw 7777
+            Connected to bbs.csie.nctu.edu.tw.
+            Escape character is '^]'.
+            502 You are not in my access file. (nobody@news)
+            Connection closed by foreign host.
+
+        在這個例子中, 502 You are not in my access file 就是不合法的轉信,
+        之後的 (nobody@news) 表示這次的 connection 是 nobody 從 news 這部
+	機器連到轉信程式. 如果要讓 nobody@news 可以連到轉信程式, 必須在
+        nodelist.bbs 檔案內加入一行:
+
+           xxxx            news				交大資工 News Server
+
+        系統就允許 news 的轉信了.
+
+        為了使 path 簡短一點, 轉信程式會自動將 address 最後的 .edu.tw 砍掉,
+        假設同時與 bbsroute (gopher.csie.nctu.edu.tw), news.csie.nctu.edu.tw
+        轉信, 則相關設定如下:
+
+        a. innd/nodelist.bbs
+           # This is a sample nodelist.bbs
+           # name          hostname & domainname       full name
+           #-------        --------------------------  ------------
+           phoenix         csie.nctu.edu.tw            交大資工鳳凰城資訊站
+           bbsroute        gopher.csie.nctu.edu.tw     交大資工 News server
+           news.csie.nctu  news.csie.nctu.edu.tw       交大資工 News server
+
+        b. innd/newsfeeds.bbs
+           # This is a sample of newsfeeds.bbs
+           #  newsgroups                   board           news server
+           #-----------------------------  --------------  -----------
+           csie.bbs.sysop                  sysop           news.csie.nctu
+
+           tw.bbs.alumni                   schoolmates     bbsroute
+           tw.bbs.alumni.hchs              hchs
+           ....
+
+        則同時與 bbsroute 和 news.csie.nctu 互相轉信.
+
+
+   4-3. 設定轉信: 一對多, 多對一, 只轉入, 或只轉出
+
+        a. 一對多轉信: (ex: nctu board --> nctu.talk + tw.bbs.campus.nctu)
+           由於 newsfeeds.bbs 只會轉給第一個 news server, 因此無法寫兩行,
+           目前作法是透過 inn server, 將文章送給一個專門 crosspost 的程式,
+           相關設定可向 help@csie.nctu.edu.tw 詢問.
+
+        b. 多對一轉信: (ex: tw.bbs.test + csie.test --> test board)
+           tw.bbs.test                     test            bbsroute
+           csie.test                       test            bbsroute
+
+           此例中, tw.bbs.test 或 csie.test 的文章都會送給 test board,
+           但是 test board 只會送給 tw.bbs.test. (first match)
+
+        c. 只轉入不轉出: (ex: tw.bbs.campus --> campus)
+           local.campus                    campus
+           tw.bbs.campus                   campus          bbsroute
+
+           此例中, tw.bbs.campus 會送給 campus, 但 campus 不會送給任何
+           討論區. (local.campus 第三欄空白)
+
+        d. 只轉出不轉入: (ex: newboards -> tw.bbs.newgroups)
+           tw.bbs.newgroups                null
+           tw.bbs.newgroups                newboards       bbsroute
+
+           此例中, newboards 會送給 tw.bbs.newgroups, 但 tw.bbs.newsgroups 
+           不轉信 (null 第三欄空白), 
+
+
+-----------------------------------------------------------------------------
+附錄 A. 目前已加入轉信之 BBS 站及 SYSOPs 列表:
+
+[台北]
+  省教育廳 AIDE 資訊站    mfchen, jjyang, ckhuang
+  台大計中椰林風情站      Muyi, jjshen, samlee
+                          (退休：JoeChen)
+  台大電機 Maxwell 站     karl, ke, dos, Gamma
+  工技電子 BBS            torch, (副長：tarco)
+                          (退休：idle, fuzzy)
+  師大資訊 ice BBS        tsung, cclljj, guava
+  祕密情人資訊站          ariel, Jackey, Alamy, seaprince, Gary, games
+  大同資工超級玩家資訊站  dennies, Prince, alarm, aresu
+                          (退休：games, Alamy, Rainman, jie, deer)
+  銘傳資管 BBS 站         jlwang (副長：head)
+                          (退休：Chong)
+  ☆中興法商北極星☆      yuki, kk, stock, Jinn, kids,
+                          (幕後黑手：juru, kftseng 退休: games, Alamy)
+  中國工商資訊站          chrisc, jasonc
+
+[中壢, 桃園]
+  中央資管龍貓資訊天地    icebaby, newtype, xfish, Pentium
+  中央大學松濤風情資訊站  jeffer, mhchang, sch
+  中正理工學院 BBS        chenkow, kevin
+  ▲▽中原方向站△▼      kaien
+  中原大學 BBS            kaien, francis, bee, tawei, awe
+                          (幕後黑手：pony)
+
+[新竹]
+  交大資工鳳凰城資訊站    denia, yisho
+                          (退休：mfchen, jjyang, ckhuang, cuteyu, ucc)
+  交大資科 BBS            helios, seafish, william, dwyan, bear
+                          (退休：hugo, Atlantis, byte, ming)
+  阿拉伯一號              PHey, OSKy, bactery, root, Jiang
+                          (退休：CHe, foxfair, Tristan, BW)
+  ☆清華電機☆            Sun, Wind, chef, Frank
+                          (幕後黑手：ax, batman, biker, yann)
+  清大電子數學通訊        simon, Pachinko
+  清華資訊楓橋驛站        chp, pilot, chiayi, opus
+  中華工學院方城資訊站    Samson.Chen, Einstein.Lin, Marcus.Hsu, Jones.Tsai
+                          (退休：Codex.Chen, Anada.Chien, Aquarius.Kuo,
+                                 Henry.Chen)
+
+[台中]
+  中興大學天樞資訊網      alexfish, (副長: KP, DS)
+                          (幕後黑手：kftseng)
+  逢甲蒼穹資訊網          foxes, scke, Richie, LAI, YUNG
+
+[嘉義]
+  中正大學寂寞芳心小站    BBSLouis, Custom, Jimmy, kftseng, wyw, shchen
+
+[台南]
+  成大資訊所_BBS          juru, lindj, foxfair, amychen
+
+-----------------------------------------------------------------------------
+附錄 B. tw.bbs.* 討論區列表:
+
+[討論群介紹]
+csie.bbs.adm.*                  連線 BBS 站協調區
+tw.bbs.alumni.*                 校友聯誼討論群
+tw.bbs.campus.*                 校園相關討論群
+tw.bbs.comp.*                   電腦相關討論群
+tw.bbs.forsale.*                跳蚤市場
+tw.bbs.lang.*                   語言討論群
+tw.bbs.literal.*                文學、文字討論群
+tw.bbs.music.*                  音樂討論群
+tw.bbs.rec.*                    休閒、育樂討論群
+tw.bbs.sci.*                    專門學科討論群
+tw.bbs.soc.*                    社會人文討論區
+tw.bbs.sports.*                 各類運動討論群
+tw.bbs.talk.*                   談天說地‧話古道今
+
+[一覽表]
+csie.bbs.adm.manager            連線 BBS 站討論區管理
+csie.bbs.adm.sysop              連線 BBS 站長討論區
+tw.bbs.alumni                   校友聯誼
+...
+tw.bbs.test                     測試專用
+
+註: tw.bbs.* 討論區的詳細列表請至 tw.bbs.config newsgroup 或各大 BBS 站
+    的 config board 內向網路協調者查詢.
+

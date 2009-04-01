@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 註冊新帳號</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if(document.NEWUSER.PASSWORD.value != document.NEWUSER.PASSWORD1.value)
+    {
+		alert("警告：兩次密碼輸入不一致！\n\n 請重新輸入");
+        document.NEWUSER.PASSWORD.value="";
+        document.NEWUSER.PASSWORD1.value="";
+    }
+    else
+		document.NEWUSER.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="000000" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+
+<CENTER>
+
+<FORM NAME="NEWUSER" METHOD="POST" ACTION="UserNew">
+<TABLE CELLSPACING="0" CELLPADDING="2" BORDER="0">
+<TD BGCOLOR="#12AFFF" COLSPAN=2>
+<FONT COLOR="#FFFFFF">
+<STRONG>☆☆ 註冊新帳號 ☆☆</STRONG>
+</FONT>
+</TD>
+
+<TR>
+<TD BGCOLOR="#C0C0C0" COLSPAN="2">
+<FONT SIZE="4">請依說明在下列欄位填入資料：</FONT>
+<FONT SIZE="2" COLOR="BLUE">（有*者為必填欄位）</FONT>
+<HR>
+</TD>
+<TR>
+
+<TD BGCOLOR="#C0C0C0" ALIGN=RIGHT><FONT SIZE=4>*新帳號：</FOMT></TD>
+<TD BGCOLOR="#C0C0C0">
+<INPUT TYPE="text" NAME="ID" SIZE="12" MAXLENGTH="12">
+</TD><TR>
+<TD BGCOLOR="C0C0C0" COLSPAN=2 ALIGN=RIGHT>
+<FONT SIZE=2 COLOR=BLUE>（2-12位<font color="red">英文ID</font>，不可有<font
+color="red">特殊符號，空白，數字，不雅字眼</font>等）</FONT>
+</TD>
+<TR>
+
+<TD BGCOLOR="#C0C0C0" ALIGN=RIGHT><FONT SIZE=4>*密碼：</FONT></TD>
+<TD BGCOLOR="#C0C0C0">
+<INPUT TYPE="password" NAME="PASSWORD" SIZE="8" MAXLENGTH="8">
+<FONT SIZE=2 COLOR=BLUE>（4-8位英數字或符號）</FONT>
+</TD>
+
+<TR>
+<TD BGCOLOR="#C0C0C0" ALIGN=RIGHT><FONT SIZE=4>*確認密碼：</FONT></TD>
+<TD BGCOLOR="#C0C0C0">
+<INPUT TYPE="password" NAME="PASSWORD1" SIZE="8" MAXLENGTH="8">
+<FONT SIZE=2 COLOR=BLUE>（4-8位英數字或符號）</FONT>
+</TD>
+<TR>
+
+<TD BGCOLOR="#C0C0C0" ALIGN=RIGHT><FONT SIZE=4>暱稱：</FONT></TD>
+<TD BGCOLOR="#C0C0C0">
+<INPUT TYPE="text" NAME="NICKNAME" SIZE="20" MAXLENGTH="20">
+<FONT SIZE=2 COLOR=BLUE>（中英文暱稱皆可）</FONT>
+</TD>
+<TR>
+
+<TD BGCOLOR="#C0C0C0" ALIGN=RIGHT><FONT SIZE=4>電子郵件地址：</FONT></TD>
+<TD BGCOLOR="#C0C0C0">
+<INPUT TYPE="text" NAME="EMAIL" SIZE="35" MAXLENGTH="35">
+</TD>
+<TR>
+
+<TD BGCOLOR="#C0C0C0" COLSPAN=2 ALIGN=CENTER>
+<HR>
+<INPUT TYPE=BUTTON  VALUE=送出註冊資料 onClick="check()">
+<INPUT TYPE=BUTTON VALUE=放棄註冊 onclick="location.href='<!BBS_SubDir!>'">
+</TD>
+</TABLE>
+</FORM>
+
+</center>
+</BODY>
+</HTML>

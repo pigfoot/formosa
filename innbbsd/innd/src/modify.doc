@@ -1,0 +1,72 @@
+/*
+ *			如何設定跨站砍信功能
+ *	================================================================
+ *
+ *	1. 如果您用的 bbs 程式是交通大學資訊工程系的 PhoenixBBS, 請跳過
+ *	   此步驟. 交大資工版的 BBS 已作好相關修改.
+ *
+ *	2. 如果您用的版本是標準 Eagle BBS 2.0, 請參考以下說明更改程式.
+ *
+ *	3. 如果您用的是其它版本, 請向發展者查詢如何設定跨站砍信.
+ *
+ */
+
+/*
+ *	請修改 bbs.c, 找出原來砍信的副程式 del_post(), 找到刪除檔案的
+ *	程式碼, 然後加入以下  /* add by mfchen ... */  之間的程式碼.
+ *	[修改內容為]
+ *		1. 在 unlink 檔案之前呼叫 cancelpost().
+ *		2. 將文章的 討論區名稱, 檔案名稱, 砍信者, 原發表者,
+ *		   以及 轉信路徑 記錄到 cancelpost.lst 檔案.
+ *		3. 轉信程式 (bntplink) 會自動檢查 cancelpost.lst 內容,
+ *		   送出砍信訊息, 通知其它 news server/BBS 站 砍信.
+ */
+
+del_post(ent,fileinfo,direct)
+{
+    ...
+            if(!delete_file(direct,sizeof(struct fileheader),ent,cmpfilename)) {
+/* add by mfchen, cancel tin's post */
+                cancelpost( currboard, currfile, currentuser.userid );
+/* add by mfchen, cancel tin's post */
+                sprintf(genbuf,"%s/%s",buf,fileinfo->filename) ;
+                unlink(genbuf) ;
+    ...
+}
+
+/* Add by mfchen -- cancel post file begin */
+cancelpost( board, file, userid )
+char *board, *file, *userid;
+{
+    FILE        *fh;
+    char        from[ STRLEN ], path[ STRLEN ];
+    char        *ptr;
+    int         len;
+
+    sprintf( genbuf, "boards/%s/%s", board, file );
+    if( (fh = fopen( genbuf, "r" )) != NULL ) {
+        from[0] = path[0] = '\0';
+        while( fgets( genbuf, sizeof( genbuf ), fh ) != NULL ) {
+            len = strlen( genbuf ) - 1;
+            genbuf[ len ] = '\0';
+            if( len <= 8 ) {
+                break;
+            } else if( strncmp( genbuf, "發信人: ", 8 ) == 0 ) {
+                if( (ptr = rindex( genbuf, ',' )) != NULL )
+                    *ptr = '\0';
+                strcpy( from, genbuf + 8 );
+            } else if( strncmp( genbuf, "轉信站: ", 8 ) == 0 ) {
+                strcpy( path, genbuf + 8 );
+            }
+        }
+        fclose( fh );
+        sprintf( genbuf, "%s\t%s\t%s\t%s\t%s\n",
+                 board, file, userid, from, path );
+        if( (fh = fopen( "cancelpost.lst", "a" )) != NULL ) {
+            fputs( genbuf, fh );
+            fclose( fh );
+        }
+    }
+}
+/* Add by mfchen -- cancel post file end */
+

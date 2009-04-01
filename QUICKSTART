@@ -1,0 +1,155 @@
+
+  FormosaBBS v1.3.0 安裝手冊 <簡易版> for Linux
+
+
+ 作業系統需求 
+ ============ 
+  
+  SunOS 4.1.x, Solaris 2.x, IBM AIX 4.x, Linux (Slackware), FreeBSD
+    
+ 
+ 安裝步驟
+ ========
+
+  1. bbs% groupadd -g 999 bbs
+     bbs% useradd -u 9999 -g bbs -d /home/bbs -s /bin/false bbs
+     bbs% mkdir ~bbs
+     bbs% chown bbs ~bbs
+     bbs% chgrp bbs ~bbs
+
+  2. bbs% cd ~bbs/
+     bbs% ftp ftp.nsysu.edu.tw
+          ftp> username: ftp
+          ftp> password: ftp@localhost
+          ftp> cd /NSYSU/BBS
+          ftp> bin
+          ftp> get FormosaBBS-1.1.1.src.tar.gz
+          ftp> get FormosaBBS-1.3.0-bin.tar.gz
+          ftp> get FormosaBBS-1.3.0-1.i386.rpm
+          ftp> quit
+
+  3. 
+
+     bbs% cd ~bbs/
+
+     (1a) 設定原始程式, 編譯與安裝：
+     bbs% gzip -dc FormosaBBS-1.1.1.tar.gz | tar xf -
+     bbs% cd FormosaBBS-1.1.1
+     bbs% ./configure             
+
+     接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數, 
+     最多看板個數, 主機 domain, IP Address, 是否採用身份認證系統.
+
+     bbs% make                   
+     bbs% make install           
+
+     (1b)
+     bbs% rpm -ivh FormosaBBS-1.3.0-1.i386.rpm
+
+     (1c)
+     bbs% tar zxpf FormosaBBS-1.3.0-bin.tar.gz
+
+     (2)
+     bbs% vi /etc/hosts
+          140.117.11.2 bbs.nsysu.edu.tw # your_ip your_domain
+
+  4. 測試上線：
+
+     所以請以 root 身份執行下列指令:
+
+     bbs% /home/bbs/bin/bbsd 5555
+     bbs% telnet localhost 5555
+
+     最重要的是, 您必須先以 'SYSOP' 上站成為第一位 sysop，以後別的 sysop 就
+     由你來提昇等級。'SYSOP' 的上站密碼為 'SYSOP'. 並請一定記得, 上站後立刻
+     修改 SYSOP 的密碼. 以防止他人盜用 SYSOP 帳號.
+
+  5. Internet E-mail 收信程式 (bbsmail) 的設定：
+
+    'bbsmail' 的特殊張貼格式, 請參考 util/README.bbsmail 說明.
+
+    (1) bbs% vi /etc/sendmail.cf
+
+         - 以 SunOS 4.1.3 的 /etc/sendmail.cf 為例:
+
+             修改下行 : (在 S0 Rule Block 中)
+# everything else is a local name
+R$+                     $#local $:$1                    local names
+
+             複製一行, 改成為:
+# everything else is a local name
+R$*.bbs                 $#local $:bbsmail               local names
+R$+                     $#local $:$1                    local names
+
+         - 以 BSD sendmail 8.x.x 的 /etc/sendmail.cf 為例:
+
+             修改下列兩處 : (在 S0 Rule Block 中)
+# handle local hacks
+R$*.bbs                 $: $>98 bbsmail      <--- 加入這一行
+R$*                     $: $>98 $1
+
+# short circuit local delivery so forwarded email works
+#R$+ . USENET < @ $=w . >       $#usenet $: $1          handle usenet specially
+R$=L < @ $=w . >        $#local $: @ $1         special local names
+R$*.bbs < @ $=w . >     $#local $: bbsmail      regular local name <--- 加此行
+R$+ < @ $=w . >         $#local $: $1           regular local name
+
+    (2) bbs% kill -1 `ps aux | grep sendmail | awk '{print $2}'`
+
+  6. bbs% vi ~bbs/news/bbs-news.conf
+     bbs%  ~bbs/bin/bbs-news
+
+  7. 身份認證自動回函系統
+     bbs% useradd -u 9999 -o -g bbs -d /home/bbs -s /home/bbs/bin/syscheck 
+            syscheck
+
+  8. bbs - gopher, pop3, finger 服務
+
+     bbs% /home/bbs/bin/bbs2g4
+     bbs% /home/bbs/bin/bbspop3d
+     bbs% /home/bbs/bin/bbsfingerd
+
+  9. 編修秀圖模式設定檔
+     bbs% vi ~bbs/conf/menushow
+
+ 10. 編修進站畫面
+     bbs% vi ~bbs/conf/welcome 
+
+ 11. 系統維護與管理(開機自動執行檔,crontab)：
+    
+      (1) 將各程式加入開機自動執行檔：
+
+          ＃＃ Linux 2.x.x
+          /etc/rc.d/rc.local 加入下列數行：
+          ＃＃ Solaris 2.x
+          /etc/rc2.d/S72inetsvc 加入下列數行：
+          ＃＃ SunOS 4.1.x
+          /etc/rc 加入下列數行：
+          ＃＃ AIX 4.x
+          /etc/rc.tcpip 加入下列數行：
+
+          /home/bbs/bin/bbsd 23                     # telnet-based bbs daemon
+          /home/bbs/bin/bbs2g4 70 60                # bbs to gopher gateway
+          /home/bbs/bin/bbspop3d                    # bbs pop3 gateway
+          /home/bbs/bin/bbsfingerd                  # bbs finger daemon
+          /home/bbs/bin/bbsweb                      # bbs web server
+          /home/bbs/bin/csbbsd                      # client-server-based bbs
+          /home/bbs/bin/bbs-news                    # bbs news process
+          /home/bbs/bin/menushow 0                  
+          /home/bbs/bin/onlinesrv
+
+      (2) 設定 crontab
+
+            bbs% crontab -e
+00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail;
+   /home/bbs/bin/userstat -c;
+   /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
+10 5 * * * /home/bbs/bin/deluser 10 30 90 365
+0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
+30 8 * * * (/home/bbs/bin/expire 3500 500; 
+   /home/bbs/bin/packbbs -b ID > /dev/null; 
+   /home/bbs/bin/userstat -k -p sysop )
+0,10,20,30,40,50 * * * * /home/bbs/bin/idcheck
+00,20,40 * * * * /home/bbs/bin/menushow 0
+10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1 
+	-exec /bin/rm -f {}; > /dev/null 2>&1)

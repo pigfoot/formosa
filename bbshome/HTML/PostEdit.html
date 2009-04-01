@@ -1,0 +1,55 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 修改佈告</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=big5">
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="#cfcfcf" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="POST" METHOD="POST" ACTION="PostEdit">
+<TABLE border="0">
+<TR>
+	<TD BGCOLOR="#12AFFF">
+	<B><FONT SIZE="+2" COLOR="#FFFFFF">修改佈告</FONT></B>
+	&nbsp;&nbsp;<FONT SIZE=3 COLOR="#FFFFFF">(原作者才可修改)</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD>
+	<FONT SIZE="4">標題：</FONT>
+	<INPUT TYPE="TEXT" NAME="SUBJECT" SIZE="45" MAXLENGTH="70" VALUE="<!BBS_Post_Subject!>">
+	簽名檔：
+	<SELECT NAME="SIGN">
+	<OPTION VALUE="1" SELECTED>1</OPTION>
+	<OPTION VALUE="2">2</OPTION>
+	<OPTION VALUE="3">3</OPTION>
+	<OPTION VALUE="0">不採用</OPTION>
+	</SELECT>
+	</TD>
+</TR>
+<TR>
+	<TD><FONT SIZE="4">內容</FONT><FONT SIZE="-1">（WEB-BBS目前貼佈告不支援ANSI色彩功能）</FONT></TD>
+</TR>
+<TR>
+	<TD><TEXTAREA COLS="70" ROWS="10" NAME="CONTENT" WRAP="OFF"><!BBS_Post_Body!></TEXTAREA></TD>
+</TR>
+<TR>
+	<TD><HR></TD>
+</TR>
+<script language="JavaScript">
+if(!(parseInt(<!BBS_User_Level!>) < <!BBS_Board_Level!>))
+	document.write("<TR><TD><INPUT TYPE=\"SUBMIT\" VALUE=\"修改佈告\">&nbsp;&nbsp;<INPUT TYPE=\"BUTTON\" VALUE=\"放棄\" onClick=\"history.back()\"></TD></TR>");
+else
+	document.write("<TR><TD>很抱歉！您的等級不能張貼佈告<INPUT TYPE=\"BUTTON\" VALUE=\"回看板\" onClick=\"history.back()\"></TD></TR>");
+</script>
+
+</TABLE>
+</FORM>
+
+</CENTER>
+
+</BODY>
+</HTML>

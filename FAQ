@@ -1,0 +1,278 @@
+
+FormosaBBS - Frequently Asked Questions (FAQ)
+
+First updated:1998/06/27
+Last updated: 1999/06/17
+
+Any suggestion or question, please mail to 
+bbsmaster@cc.nsysu.edu.tw
+
+
+1. ¦pªG²{¦b¬O¥ÎÂÂª©ªºFormosa¡A¨º¬O¤£¬O¤£¥Î±N¤§§R°£¡A¥i
+   ¥Hª½±µ¦A­«·s»\¤W¥h©O¡H©Î¬O­n±N¤§§R°£¤ñ¸û¦n©O¡H
+Ans:
+   §ó´«©Ò¦³°õ¦æÀÉ§Y¥i.
+
+   (cd src; make installbbsd; make installbbschatd)
+   (cd csbbs; make installcsbbsd)
+   (cd util; make install)
+
+
+2. ½Ð°Ý¨º­Ó¡§¬¡°Ê¬Ýª©¡¨ªº¥\¯à¬O¥Î¶}±Òªº¶Ü¡HÁÙ¬O¥~±¾¡H
+   ­n¦p¦ó°µ©O¡H
+Ans:
+   ¦w¸Ë¤â¥U (ftp://ftp.nsysu.edu.tw/NSYSU/BBS/INSTALL) ¤¤
+
+   ¤Q¥|¡B¨q¹Ï¼Ò¦¡³]©w(menushow)¡G
+
+         (1) ½s­×³]©wÀÉ ~bbs/conf/menushow
+
+           #¨q¹Ï¼Ò¦¡³]©wÀÉ
+           # Usage: boards/boardname : mark or all : hours
+           #        ª©©ÎºëµØ°Ï/ª©¦W : «O¯d©Î¥þ³¡ : ®É¼Æ
+           # mark ¬O»¡¥u¦³ 'G' «O¯dªº¤~°µ¡Aall «hªí¥Ü¥þ°µ
+           # hours ¬O»¡´X¤p®É¥H¤ºªº¥¬§i¤~°µ¡A0 ªí¥ÜµL­­¨î
+           #
+           boards/main-menu:mark:720
+           treasure/main-menu:all:0
+
+
+3. §Ú§âFormosaBBS1.1.1§ì¦^¨Ó½sÄ¶¹L, ¨S¦³¥X²{¿ù»~...
+   ¥i¬O¦b¥Îroot°õ¦æ®É«o¥X²{
+   cmd bbsd pid 3290 tried to use non-present SYSVSEM ªº°T®§
+   ¤£ª¾¨ì¦bfreeBSD¤W¦³¨S¦³¤H¤]¦³¦¹°ÝÃD......??
+Ans:
+   FormosaBBS ¨t²Î¥²¶·¨Ï¥Î¨ì IPC shared memory »P semaphore
+   ©Ò¥H§A¥²¶·¦³ sysvsem »P sysvshm ¨âºØ¼Ò²Õ¸ü¤J kernel.
+   semaphore ¬O¦b mutual exclusive ®É, «OÃÒ¸ê®Æ¥¿½T¤§¥Î.
+
+
+4. ½Ð°Ý¦³¨Ç¤Hªºª¬ºA¬O¥¼©w¸q, ¨º¬O«ü¤°»ò·N«ä©O? ¬Ý¤£¤ÓÀ´
+
+Ans:
+   ¦³¨Ç®É­Ô, user ¦b°µ¬Y¥ó¨Æ, ¦p: ±N«H¥ó½s½X, ¶}±Ò²á¤Ñ«Ç,
+   ¤£·Q§â³o¨Ç¤Ó¹L²Ó³¡ªºª¬ºA­p¿ý¤U¨Ó, ©Ò¥H´N³]©wª¬ºA¬°
+   ¥¼©w¸q.
+
+
+5. ¦p¦ó³]©w¤ÀÃþ¬ÝªOªº¶µ¥Ø? ¦b¨º¸Ì³]©w?
+Ans:
+   ¥D¿ï³æ ==> (a)ºÞ²zªÌ¿ì¤½«Ç ==> (s)³]©w¤ÀÃþ¿ï³æ
+
+   ³]©wÀÉ®æ¦¡¦p¤U:
+
+   +cccccccc.XXXXXXXXX           ==> ªí¥Ü¬°¤@¤ÀÃþ¥Ø¿ý
+    ^^^^^^^^ ^^^^^^^^^
+      (1)      (2)
+
+    (1) ¤@¦ê¦r¤¸, ³Ì¤jªø«×¬° 8 ­Ó¦r¤¸. ªí¥Ü¬Y¤@¤ÀÃþ¦b¦¹¿ï³æ¤¤ªº¥N¸¹
+    (2) ¸Ó¤ÀÃþªº´y­z
+
+
+   -ccccccc-.XXXXXXXXX           ==> ªí¥Ü¬°¤@¬ÝªO
+    ^^^^^^^  ^^^^^^^^^
+      (3)      (4)
+
+    (3) ¤@¦ê¦r¤¸, ³Ì¤j±«×¬° 7 ­Ó¦r¤¸, ªí¥Ü¬Y¤@¬ÝªO¦b¦¹¿ï³æ¤¤ªº¥N¸¹
+    (4) ¸Ó¬ÝªOªº­^¤åªO¦W
+
+
+   ³]©wÀÉ½d¨Ò:
+
+
+   +1.[BBS]
+       -1-.Announce
+       -1-.sysop
+       -1-.test
+       -1-.newboard
+   +2.[Computer]
+       +21.[OS]
+           -21-.linux
+           -21-.unix
+           -21-.mswindows95
+       +22.[Program]
+           -22-.java
+           -22-.delphi
+       -2-.hacker
+       -2-.multimedia
+       -2-.shareware
+       -2-.software
+       -2-.virus
+       -2-.x-window
+
+
+6. ½Ð°Ý¤@¤U¡A§Ú¦b make ªº®É­Ô¡A¥X²{«Ü¦h¤U¦C³oºØ°T®§
+   post.c:89: warning: passing arg 2 of free_wlist' from incompatible pointer
+              type
+   ³o¬O¤°»ò°T®§©O¡H­n«ç»ò¿ì (in Linux)
+Ans:
+   warning ¬OÄµ§i, ¦b¦¹¥i©¿²¤¤£ºÞ :)
+
+
+7. ¬°¤°»ò§Ú·Q¸ò¤H¥æ½Í³£·|"§@·~¥¢±Ñ"?
+Ans:
+   ¥»¯¸¨Ï¥ÎªÌµ¥¯Å 20 ¥H¤W©Î³q¹L¨­¥÷»{ÃÒ¤~¯à¨Ï¥Î²á¤Ñ¥\¯à.
+
+
+8. ¦p¦ó³]©w¬ÝªO¬°ÁôÂÃ ?
+Ans:
+   ======================================================================
+   (1) ­^¤åªO¦W :  DT-Internet-Web                   (A) »{ÃÒ¥i±i¶K : No
+   (2) ¤¤¤å»¡©ú :  »·¶Z±Ð¾Ç¡Gºô»Úºô¸ô»P¥þ²y¸ê°Tºô    (B) Âà«H       : No
+   (3) ¬ÝªOµ¥¯Å :  254                               (C) ¤£¥iZAP    : No
+   (4) ¬ÝªOÃþ§O :  1                                 (D) ¤£­p±i¶K¼Æ : No
+   (5) ªO    ¥D :  nschen                            (E) ¤½§iÄæ     : No
+                                                     (F) ÁôÂÃ       : No
+   ======================================================================
+
+   µ¥¯Å(100,250,254,255)¥Ø«e¤wµL¯S®í·N¸q, ¥u¦³°ª§C¤§¤À.
+
+   ­Y­nÁôÂÃ¬ÝªO, »Ý³]¤W¬ÝªOÄÝ©Ê (F) ÁôÂÃ : Yes
+   ¥u¦³¨Ï¥ÎªÌµ¥¯Å°ª©ó¬ÝªOµ¥¯ÅªÌ, ¤~¯à¬Ý¨ì¸Ó¬ÝªO.
+
+
+9. §Ú¸Ë¤F Formosa 1.1.1 °õ¦æ menushowªº®É­Ô³£segmentaion fault
+   µM«á´Ncore dump¤F¡A¯à§_½Ð±Ð¬O«ç»ò¦^¨Æ©O!?
+   §Úªº¨t²Î¬O FreeBSD 2.2.6
+Ans:
+   ½ÐÀË¬d ~bbs/conf/menushow
+
+   ½d¨Ò:
+
+# Usage: boards/boardname : mark or all : hours
+#        ª©©ÎºëµØ°Ï/ª©¦W : «O¯d©Î¥þ³¡ : ®É¼Æ
+# mark ¬O»¡¥u¦³ 'G' «O¯dªº¤~°µ¡Aall «hªí¥Ü¥þ°µ
+# hours ¬O»¡´X¤p®É¥H¤ºªº¥¬§i¤~°µ¡A0 ªí¥ÜµL­­¨î
+#
+boards/main-menu:mark:720
+treasure/main-menu:all:0
+boards/cna-today:all:12
+
+
+10. ¥Ø«e¦³¨º¨Ç¯¸¥x¨Ï±Ä¥Î FormosaBBS ¨t²Î©Ò¬[³]ªº?
+Ans:
+    bbs.nsysu.edu.tw     ¤¤¤s¤j¾Ç¬üÄR¤§®q
+    bbs2.nsysu.edu.tw    ¤¤¤s¤j¾Ç«n­·(¤w©ó99/07/01Ãö¯¸)
+    bbs3.nsysu.edu.tw    ¤¤¤s¤j¾Ç¦èÆW
+    bbs.irradiance.net   ¨Ì²úµ^´µ
+    bbs.kh.edu.tw        °ª¥«¸ê±Ð
+    bbs.kghs.kh.edu.tw   °ª¶¯¤k¤¤
+    bbs.shute.kh.edu.tw  ¾ð¼w§Þ³N¾Ç°|
+    bbs.nkimt.edu.tw     °ê¥ß°ª¶¯®ü¬v§Þ³N¾Ç°|
+    bbs.dmhs.kh.edu.tw   °ª¶¯¹D©ú¤¤¾Ç (Closed)
+    bbs.ykjhs.tpc.edu.tw ¥x¥_¿¤Åaºq°ê¤¤ http://bbs.ykjhs.tpc.edu.tw:8080/ 
+    bbs.mcsh.kh.edu.tw   °ª¶¯©ú¸Û¤¤¾Ç (Closed)
+    bbs.ph.edu.tw        ¼ê´ò¸ê±Ð
+    hkhs.twbbs.org.tw    °ª¶¯¤p´ä°ª¤¤
+
+
+11. ­Y BBS ­n¹ï¨â­Ó¥H¤Wªº News Server ¶i¦æÂà«H, bbs-news.conf
+    ¸Ó¦p¦ó³]©w?
+Ans:
+    ¥Ø«e bbs-news ¨Ã¥¼¤ä´©¦¹¥\¯à.
+
+
+12. §Ú·ÓµÛ­n¥h½s­×.DIRªºÀÉ¡A¦ý¬O«o¬O¬Ý¤£À´­C¡I¥Îvi¬Ý¨ìªº¦p
+    ¤U¦CªºªF¦è......
+    M.922177121.A^@^@^@^@^@^@^@^@^@^@^@^@^@^
+    ³o¼Ë¤£ª¾¹D­n¦p¦ó¥h½s¿è¥¦­C¡I¥i§_§i¶D§Ú¦p¦ó½s¿è¥¦©O¡H
+Ans:
+    ¦pªG¦³ªÅªº¸Ü¡A¥i¥H¬Ý¬ÝFormosaBBS-1.1.1/include/struct.hÀÉ¤¤ªº
+    /* Flags used in fileheader accessed */³¡¥÷(À³¸Ó¬O105¦æ§a¡C)
+    ¤Î¥H¤Uªºstruct fileheader³¡¥÷¡A¤]³\·|¦³¨ÇÀ°§U­ò¡ã
+
+
+13. ¨Ï¥Îªº«H½c»P­Ó¤H¸ê®ÆÂ\¦b­þ­Ó¥Ø¿ý¤U?
+Ans:
+    ~bbs/home/[0,a-z]/userid/
+    ~bbs/mail/[0,a-z]/userid/
+
+    ¨Ò¦p: 
+    SYSOP ªº­Ó¤H¸ê®Æ¦b ~bbs/home/s/SYSOP/
+    SYSOP ªº­Ó¤H«H½c¦b ~bbs/mail/s/SYSOP/
+
+
+14. Âà«HµLªk¥¿±`±Ò¥Î, ¤£ª¾¹D¬O­þ¸Ì¥X¤F°ÝÃD?
+Ans:
+    ½Ð¥ýÀË¬d bbs-news ¬O§_¤w±Ò°Ê
+
+    % ps -ef | grep bbs-news
+    ©Î
+    % ps aux | grep bbs-news
+
+    ­Y¤w±Ò°Ê, ¦A¬d¬Ý ~bbs/news/bbs-news.log ªº°O¿ý
+    ­Y¥X²{ 
+    411 No such group 
+    «hªí¥Ü±z©Ò³]©wªº News Server ¨ÃµL¦¹ group ¦s¦b, 
+    ©Î±zµLÅv­­Åª¨ú¸Ó group.
+
+
+15. §Ú·ÓµÛ Installªº¤º®e³]©w¦n¤§«á¡Asendmail§â«H±H¨ì bbsmail³o­Ó±b¸¹
+    ¸Ìªº«H½c¡A bbsmail«o¤£¯à§â¨º¨Ç«H²¾¦Ü/home/bbs/mailªº­Ó¤H¥Ø¿ý¸Ì¡C
+    (/var/spool/mail/bbsmail)
+    ¥t¥~¡A·í§Ú¹Á¸Õ°õ¦æ /home/bbs/bin/bbsmail®É¡A¤S¥X²{¤F¿ù»~ªº°T®§¡G
+    Segmentation fault¡CµM¦Ó­Y¬O¥[¤W¤F°Ñ¼Æ debug¡AÁöµM¨S¦³¿ù»~°T®§¡A
+    «o¤]¨S¦³¨£¨ì¥ô¦ó¤ÏÀ³¡C½Ð°Ý¡G§Ú¸Ó«ç»ò¿ì©O¡H
+Ans:
+    ½Ð¤U¸ü ftp://ftp.nsysu.edu.tw/NSYSU/BBS/1.1.1/bbsmail.c
+    
+    % cd util
+    % make clean
+    % make 
+    % make install
+
+    ¥t¥~ ftp://ftp.nsysu.edu.tw/NSYSU/BBS/1.1.1/bbsmail-antispam.c
+    ¬O¨ã¦³Â²³æªº¾×¼s§i«H¥\¯à
+
+
+16. Formosa Client BBS for MS-Windows ³o®M³nÅé­n¨ì­þ¸Ì¤U¸ü?
+Ans:
+    ftp://ftp.nsysu.edu.tw/NSYSU/Client-Server-BBS/csbbs-u13.exe
+
+    ¬ÛÃöºô­¶    
+    http://ftp/NSYSU/BBS/docs/csbbs.html
+
+    ³Ì·sª©¥» Ultra PreRelease 13 ·s¥\¯à
+    * ¦^ÅU½u¤W°T®§¥[¤J¥i¥H½Æ»sªº¥\¯à¡C
+    * ¦b±H·s«H¥H¤Î¶K§G§iªº¦a¤è¡A¤ä´©Drag&Drop¡C
+      ¥i¥H±qÀÉ®×ÁºÞ©Î¬Owin98®à­±¤W¥ô¦ó¦a¤è¡A§â²{¦¨ªº¤å¦rÀÉ©ì¨ì±H·s«H©Î¬O
+      ¶K§G§iªºµøµ¡©ñ¤U¡A´N·|§â¸ÓÀÉ®×ªº¤º®eÅª¶i¨Ó¤F¡C
+    * ¦A¦C¥X§G§i¼ÐÃDªºµøµ¡¡A¥[¤J¤@¬d¸ßªº«ö¶s¡A¥i¥H¤è«Kªº°¨¤W¬d¸ß©Ò¿ï¾Üªº
+      ¸Ó½g§G§iªº§@ªÌ¸ê®Æ¡C 
+    * ¨Ï¥Î·sªº±Æ§Ç¤èªk¡A¤j´T§ï¶i¦C¥X½u¤W¤H®É¡A±Æ§Çªº³t«×¡C
+
+
+17. Web BBS login ¦pªG¿é¤J¿ù»~ªº±K½X¡A¤]·|¶iªº¥h?
+Ans:
+    ­Y±K½X±b¸¹¿ù»~, ¤´¥i¶i¤J, ¦ýµø¦P guest °ÑÆ[±b¸¹ login.
+
+
+18. ¦bÀË¬d TALK on-line user ®É´Ý¦s«Ü¦h¤wÂ÷¯¸¥Î¤áªºÂÜ¼v,
+    ¦p login ®É¨t²Î¥u³ø§i¦³ [2/512], on-line user ½T¦³ 200 ¦h¤H.
+    ½Ð°ÝÀ³¦p¦ó¸Ñ¨M?
+Ans:
+    ½Ð¤U¸ü
+    ftp://ftp.nsysu.edu.tw/NSYSU/BBS/1.1.1/onlinesrv.c
+    ½Ð¬Ý¸ÓÀÉ®×, ¤º¦³Â²³æ»¡©ú.
+
+
+FormosaBBS 1.3.0
+================
+
+1. ¬ÝªO©Î«H½cªº .DIR §G§i/«H¥ó¯Á¤ÞÀÉ·l·´¤F, ¸Ó¦p¦ó±Ï¦^¨Ó?
+Ans:
+    ¨Ï¥Î fixdir -r <path>
+  
+    ¨Ò¦p: 
+    ±Ï¦^ sysop ªOªº .DIR  
+    % fixdir -r ~bbs/boards/sysop
+    ±Ï¦^ SYSOP ­Ó¤H«H½cªº .DIR
+    % fixdir -r ~bbs/mail/s/SYSOP
+
+
+2. ­n¦p¦ó­«·s§ó§ï BBS ¯¸¦W?
+Ans:
+   1) ½s¿è ~bbs/conf/bbs.conf
+   2) §R°£ ~bbs/conf/bbs.img
+   3) ­«·s±Ò°Ê bbs ¯¸©Ò¦³¬ÛÃö daemon
+

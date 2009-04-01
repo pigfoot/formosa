@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 分類精華 / <!BBS_Board_Name!></TITLE>
+<!--META HTTP-EQUIV="content-type" CONTENT="text/html; charset=big5"-->
+<script language="JavaScript">
+<!--//
+var DefaultPage = 15;
+
+function PostJump()
+{
+	var index = prompt("請輸入欲跳至佈告篇數\t($ = 跳至最後一篇)","");
+
+	if(index == '$')
+	{
+		document.location.href='$';
+	}
+	else if(index != "")
+	{
+		var index1 = parseInt(index);
+
+		if(index1>=0 && index1<=4000)
+		{
+		    index = (index1 - ((index1-1) % DefaultPage));
+    		index1 = index + DefaultPage - 1;
+
+			document.location.href=index+'-'+index1;
+		}
+	}
+	
+}
+//-->
+</script>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<!-------------- Start of Main Menu ---------------------------------->
+<TABLE ALIGN="LEFT">
+<TR><TD bgcolor="#12AFFF"><FONT color=blue>『主選單』</FONT></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>class.html">分類佈告</a></TD></TR>
+<TR><TD BGCOLOR="Orange"><a href="<!BBS_SubDir!>treaclass.html">分類精華</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>TalkMenu.html">休閒聊天</a></TD></TR>
+<TR><TD><!BBS_Mail_New VALUE2="個人郵件"!></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>UserMenu.html">個人設定</a></TD></TR>
+<TR><TD><a href="<!BBS_SubDir!>">重新登入</a></TD></TR>
+</TABLE>
+<!-------------- End   of Main Menu ---------------------------------->
+
+<TABLE align="Left" border="0" cellspacing="0">
+
+<TR BGCOLOR="Orange">
+	<TD COLSPAN="4">
+	<FONT color="Blue">
+	『<!BBS_Board_Title!>』&nbsp;&nbsp;&nbsp;&nbsp;
+	管理員：
+<script language="JavaScript">
+<!--//
+	var bm = "<!BBS_Board_BM!>";
+	if(bm == "")
+		document.write("徵求中");
+	else
+		document.write("<a href=\"<!BBS_SubDir!>users/"+bm+"\">"+bm+"</a>");
+//-->
+</script>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	文章總數：<!BBS_PostList_TotalRec!>
+	</FONT></TD>
+</TR>
+<TR>
+	<TD width="5%">篇號</TD><TD width="15%">作者</TD><TD width="10%">張貼日</TD><TD width="70%">標題</TD>
+</TR>
+<!BBS_PostList FORMAT="<TR><TD>%NUM%  </TD><TD>%SENDER% </TD><TD>%DATE%</TD><TD>%TITLE% </TD></TR>"!>
+
+<TR>
+	<td colspan="4">
+	<HR>
+	<!BBS_PostList_PageUp!>&nbsp;&nbsp;
+	<!BBS_PostList_PageDown!>&nbsp;&nbsp;
+	<a href="JavaScript:PostJump()">選擇佈告</a>&nbsp;&nbsp;
+	<!BBS_PostList_Send VALUE="張貼佈告"!>&nbsp;&nbsp;
+	<a href="<!BBS_SubDir!>boards/<!BBS_Board_Name!>/">[本板一般區]</a>&nbsp;&nbsp;
+	<a href="<!BBS_SubDir!>treaclass.html">回分類精華總表</a>
+	<HR>
+	</td>
+</TR>
+</TABLE>
+
+</center>
+
+</BODY>
+</HTML>

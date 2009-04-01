@@ -1,0 +1,42 @@
+
+ * VoteMent: 定長度 record (即 IDLEN)
+
+ * boards/<boardname>/.<owner>
+   更名為 
+   boards/<boardname>/.bmwel
+ 
+ * type 不再使用, type 為 'B' 或 'I' 或 'O' 時
+   brdtype |= BRD_NEWS
+
+  struct o_boardheader {
+	char filename[BNAME_LEN+4];
+	time_t	rewind_time;      /*lasehu:last refresh boardrc time */
+	unsigned int bid;         /*lasehu:board unique number, always increasing */
+	int  firstartno;          /*lasehu:the first article's artno, excluding reserved articles */
+	char unused1[STRLEN-BNAME_LEN-19];
+	char class;               /* 板面分類 */
+	char type;                /* 轉信類別  */
+	unsigned char brdtyepe;     /* 看板屬性旗標 */
+	char owner[STRLEN];
+	char title[CBNAME_LEN+4];	
+	char unused2[STRLEN-CBNAME_LEN-4] ; 
+	unsigned int level;	
+	unsigned char accessed[10000]; /* -ToDo- remove this big array */
+  } ;
+ 
+ * big array: accessed[10000] 被拿掉
+  struct o_boardheader {
+	char filename[BNAME_LEN+4];
+	time_t	rewind_time;      /*lasehu:last refresh boardrc time */
+	unsigned int bid;         /*lasehu:board unique number, always increasing */
+	int  firstartno;          /*lasehu:the first article's artno, excluding reserved articles */
+	char unused1[STRLEN-BNAME_LEN-19];
+	char class;               /* 板面分類 */
+	char type;                /* 轉信類別  */
+	unsigned char attrib;     /* 看板屬性旗標 */
+	char owner[STRLEN];
+	char title[CBNAME_LEN+4];	
+	char unused2[STRLEN-CBNAME_LEN-4] ; 
+	unsigned int level;	
+	unsigned char accessed[10000]; /* -ToDo- remove this big array */
+} ;

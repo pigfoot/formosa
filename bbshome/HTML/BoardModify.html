@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 管理者選單</TITLE>
+<Script Language="JavaScript">
+
+function GoBack()
+{
+	document.location.href='<!BBS_SubDir!>boards/<!BBS_Board_Name!>/';
+}
+
+</Script>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="Orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+
+<FORM NAME="Board" METHOD="POST" ACTION="BoardModify">
+<TABLE width="80%" border="1">
+<TR><TD>BOARD ID：</TD><TD><!BBS_Board_ID!></TD></TR>
+<TR><TD>英文板名：</TD><TD><INPUT TYPE="TEXT" NAME="BNAME" SIZE="17" VALUE="<!BBS_Board_Name!>"></TD></TR>
+<TR><TD>中文說明：</TD><TD><INPUT TYPE="TEXT" NAME="CBNAME" SIZE="36" VALUE="<!BBS_Board_Title!>"></TD></TR>
+<TR><TD>看板等級：</TD><TD><INPUT TYPE="TEXT" NAME="LEVEL" VALUE="<!BBS_Board_level!>"></TD></TR>
+<TR><TD>看板類別：</TD><TD><INPUT TYPE="TEXT" NAME="CLASS" VALUE="<!BBS_Board_Class!>"></TD></TR>
+<TR><TD>板主：</TD><TD><INPUT TYPE="TEXT" NAME="BM" VALUE="<!BBS_Board_BM!>"></TD></TR>
+
+<TR><TD>認證可張貼：</TD><TD><INPUT TYPE="RADIO" NAME="IDENT" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="IDENT" VALUE="NO">NO</TD></TR>
+<TR><TD>轉信：</TD><TD><INPUT TYPE="RADIO" NAME="NEWS" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="NEWS" VALUE="NO">NO</TD></TR>
+<TR><TD>不可ZAP：</TD><TD><INPUT TYPE="RADIO" NAME="UNZAP" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="UNZAP" VALUE="NO">NO</TD></TR>
+<TR><TD>不計張貼數：</TD><TD><INPUT TYPE="RADIO" NAME="NOPOSTNUM" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="NOPOSTNUM" VALUE="NO">NO</TD></TR>
+<TR><TD>公告欄：</TD><TD><INPUT TYPE="RADIO" NAME="ANNOUNCE" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="ANNOUNCE" VALUE="NO">NO</TD></TR>
+<TR><TD>隱藏：</TD><TD><INPUT TYPE="RADIO" NAME="PRIVATE" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="PRIVATE" VALUE="NO">NO</TD></TR>
+<TR><TD>WEB SKIN：</TD><TD><INPUT TYPE="RADIO" NAME="WEBSKIN" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="WEBSKIN" VALUE="NO">NO</TD></TR>
+<TR><TD>WEB ONLY：</TD><TD><INPUT TYPE="RADIO" NAME="WEBONLY" VALUE="YES">Yes<INPUT TYPE="RADIO" NAME="WEBONLY" VALUE="NO">NO</TD></TR>
+<TR>
+<TD ALIGN="RIGHT" COLSPAN="2">
+<INPUT TYPE="SUBMIT" VALUE="修改看板設定">
+<INPUT TYPE="BUTTON" VALUE="回看板" onClick="GoBack()">
+
+
+</TD>
+</TR>
+</TABLE>
+<Script Language="JavaScript">
+if("<!BBS_Board_IDENT!>" == "YES")
+	document.Board.IDENT[0].checked = true;
+else
+	document.Board.IDENT[1].checked = true;
+
+if("<!BBS_Board_NEWS!>" == "YES")
+	document.Board.NEWS[0].checked = true;
+else
+	document.Board.NEWS[1].checked = true;
+
+if("<!BBS_Board_UNZAP!>" == "YES")
+	document.Board.UNZAP[0].checked = true;
+else
+	document.Board.UNZAP[1].checked = true;
+
+if("<!BBS_Board_NOPOSTNUM!>" == "YES")
+	document.Board.NOPOSTNUM[0].checked = true;
+else
+	document.Board.NOPOSTNUM[1].checked = true;
+
+if("<!BBS_Board_ANNOUNCE!>" == "YES")
+	document.Board.ANNOUNCE[0].checked = true;
+else
+	document.Board.ANNOUNCE[1].checked = true;
+
+if("<!BBS_Board_PRIVATE!>" == "YES")
+	document.Board.PRIVATE[0].checked = true;
+else
+	document.Board.PRIVATE[1].checked = true;
+
+if("<!BBS_Board_WEBSKIN!>" == "YES")
+	document.Board.WEBSKIN[0].checked = true;
+else
+	document.Board.WEBSKIN[1].checked = true;
+
+if("<!BBS_Board_WEBONLY!>" == "YES")
+	document.Board.WEBONLY[0].checked = true;
+else
+	document.Board.WEBONLY[1].checked = true;
+
+</Script>
+
+</BODY>
+</HTML>

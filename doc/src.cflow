@@ -1,0 +1,1532 @@
+1	Boards {/apps/Formosa-1.2.0/src/board.c 457}
+2		MakeBoardList {/apps/Formosa-1.2.0/src/board.c 83}
+3			CreateBoardList {/apps/Formosa-1.2.0/src/board.c 59}
+4				free_wlist {}
+5				ZapRC_Init {}
+6				apply_brdshm {}
+7				qsort {}
+8		cursor_menu {/apps/Formosa-1.2.0/src/cursor.c 1009}
+9			cm_max {}
+10			cm_get {}
+11			clear {/apps/Formosa-1.2.0/src/screen.c 260}
+12				move {/apps/Formosa-1.2.0/src/screen.c 331}
+13			cm_title {}
+14			move ... {12}
+15			clrtobot {/apps/Formosa-1.2.0/src/screen.c 301}
+16			outs {/apps/Formosa-1.2.0/src/screen.c 465}
+17				outc {}
+18			cm_entry {}
+19			clrtoeol {/apps/Formosa-1.2.0/src/screen.c 279}
+20			cm_btitle {}
+21			talkreply {/apps/Formosa-1.2.0/src/talk.c 503}
+22				setpagerequest {/apps/Formosa-1.2.0/src/talk.c 438}
+23					searchuserlist {/apps/Formosa-1.2.0/src/talk.c 424}
+24						search_ulist {}
+25					xstrncpy {}
+26				xstrncpy {}
+27				clear ... {11}
+28				getdata {/apps/Formosa-1.2.0/src/io.c 315}
+29					move ... {12}
+30					clrtoeol ... {19}
+31					outs ... {16}
+32					getyx {/apps/Formosa-1.2.0/src/screen.c 340}
+33					igetch {/apps/Formosa-1.2.0/src/io.c 128}
+34						memset {}
+35						select {}
+36						oflush {/apps/Formosa-1.2.0/src/io.c 53}
+37						refresh {/apps/Formosa-1.2.0/src/screen.c 179}
+38							num_in_buf {/apps/Formosa-1.2.0/src/io.c 119}
+39							abs {}
+40							redoscr {/apps/Formosa-1.2.0/src/screen.c 134}
+41								output {/apps/Formosa-1.2.0/src/io.c 64}
+42								rel_move {/apps/Formosa-1.2.0/src/screen.c 72}
+43									ochar {/apps/Formosa-1.2.0/src/io.c 78}
+44									tputs {}
+45									do_move {/apps/Formosa-1.2.0/src/term.c 250}
+46										tgoto {}
+47										tputs {}
+48										_xstat {}
+49										_fxstat {}
+50										_xmknod {}
+51										_xstat {}
+52										_fxstat {}
+53										_xmknod {}
+54								standoutput {/apps/Formosa-1.2.0/src/screen.c 112}
+55									output ... {41}
+56								oflush ... {36}
+57							rel_move ... {42}
+58							output ... {41}
+59							ochar ... {43}
+60							standoutput ... {54}
+61							oflush ... {36}
+62						longjmp {}
+63						update_ulist {}
+64						redoscr ... {40}
+65					bell {}
+66					ochar ... {43}
+67					outc {}
+68					tolower {}
+69					_xstat {}
+70					_fxstat {}
+71					_xmknod {}
+72				QueryUser {/apps/Formosa-1.2.0/src/talk.c 113}
+73					xstrncpy {}
+74					update_umode {/apps/Formosa-1.2.0/src/stuff.c 790}
+75						update_ulist {}
+76						_xstat {}
+77						_fxstat {}
+78						_xmknod {}
+79					query_user {}
+80					move ... {12}
+81					clrtobot ... {15}
+82					outs ... {16}
+83					pressreturn {}
+84					sethomefile {}
+85					clrtoeol ... {19}
+86					igetkey {/apps/Formosa-1.2.0/src/io.c 301}
+87						getkey {/apps/Formosa-1.2.0/src/io.c 257}
+88							igetch ... {33}
+89				memset {}
+90				ntohs {}
+91				ConnectServer {}
+92				outs ... {16}
+93				pressreturn {}
+94				prints {/apps/Formosa-1.2.0/src/screen.c 508}
+95					move ... {12}
+96					clrtoeol ... {19}
+97					outs ... {16}
+98					pressreturn {}
+99				getkey ... {87}
+100				do_talk {/apps/Formosa-1.2.0/src/talk.c 723}
+101					update_umode ... {74}
+102					get_passwd {}
+103					clear ... {11}
+104					move ... {12}
+105					prints ... {94}
+106					add_io {/apps/Formosa-1.2.0/src/io.c 96}
+107					add_flush {/apps/Formosa-1.2.0/src/io.c 112}
+108					servicepage {/apps/Formosa-1.2.0/src/talk.c 450}
+109						searchuserlist ... {23}
+110						move ... {12}
+111						outs ... {16}
+112						printchatline {/apps/Formosa-1.2.0/src/chat.c 340}
+113							move ... {12}
+114							clrtoeol ... {19}
+115							outc {}
+116							standout {}
+117							outs ... {16}
+118							standend {}
+119						memset {}
+120						setpagerequest ... {22}
+121						prints ... {94}
+122					save_screen {}
+123					ReplyLastCall {/apps/Formosa-1.2.0/src/talk.c 1013}
+124						get_num_records {}
+125						msg {/apps/Formosa-1.2.0/src/stuff.c 28}
+126						getkey ... {87}
+127						save_screen {}
+128						get_records {/apps/Formosa-1.2.0/src/cursor.c 19}
+129						ParseMesgStr {/apps/Formosa-1.2.0/src/talk.c 914}
+130							localtime {}
+131							strftime {}
+132						move ... {12}
+133						clrtoeol ... {19}
+134						outs ... {16}
+135						clrtobot ... {15}
+136						prints ... {94}
+137						igetkey ... {86}
+138						xstrncpy {}
+139						update_umode ... {74}
+140						SendMesgToSomeone {/apps/Formosa-1.2.0/src/talk.c 970}
+141							set_message {/apps/Formosa-1.2.0/src/talk.c 936}
+142								ask_online_user {}
+143								getdata ... {28}
+144								msg ... {125}
+145								igetkey ... {86}
+146								getkey ... {87}
+147							search_ulist {}
+148							msg ... {125}
+149							getkey ... {87}
+150							check_perm {/apps/Formosa-1.2.0/src/article.c 12}
+151							message_user {}
+152							memset {}
+153							xstrncpy {}
+154							append_record {}
+155						restore_screen {}
+156					restore_screen {}
+157					getkey ... {87}
+158					do_talk_char {/apps/Formosa-1.2.0/src/talk.c 594}
+159						move ... {12}
+160						prints ... {94}
+161						clrtoeol ... {19}
+162						bell {}
+163						outs ... {16}
+164					getyx ... {32}
+165					outs ... {16}
+166					clrtoeol ... {19}
+167					igetkey ... {86}
+168					talkflush {/apps/Formosa-1.2.0/src/talk.c 713}
+169					do_talk_string {/apps/Formosa-1.2.0/src/talk.c 699}
+170						do_talk_char ... {158}
+171					update_ulist {}
+172					bell {}
+173			ReplyLastCall ... {123}
+174			getkey ... {87}
+175			t_query {/apps/Formosa-1.2.0/src/talk.c 163}
+176				move ... {12}
+177				clrtoeol ... {19}
+178				outs ... {16}
+179				getdata ... {28}
+180				QueryUser ... {72}
+181			getdata ... {28}
+182			atoi {}
+183			bell {}
+184			cm_findkey {}
+185			update_umode ... {74}
+186			_xstat {}
+187			_fxstat {}
+188			_xmknod {}
+189	CheckID {/apps/Formosa-1.2.0/src/ident.c 224}
+190		more {/apps/Formosa-1.2.0/src/more.c 65}
+191			fileno {}
+192			clear ... {11}
+193			readln {/apps/Formosa-1.2.0/src/more.c 13}
+194				__filbuf {}
+195			outs ... {16}
+196			scroll {}
+197			move ... {12}
+198			prints ... {94}
+199			igetkey ... {86}
+200			save_screen {}
+201			ReplyLastCall ... {123}
+202			restore_screen {}
+203			clrtoeol ... {19}
+204			refresh ... {37}
+205			fseek {}
+206			getdata ... {28}
+207			atoi {}
+208			pressreturn {}
+209			_xstat {}
+210			_fxstat {}
+211			_xmknod {}
+212		clear ... {11}
+213		outs ... {16}
+214		igetkey ... {86}
+215		pressreturn {}
+216		getdata ... {28}
+217		check_cname {/apps/Formosa-1.2.0/src/ident.c 207}
+218		id_num_check {/apps/Formosa-1.2.0/src/ident.c 154}
+219			toupper {}
+220		move ... {12}
+221		clrtobot ... {15}
+222		tolower {}
+223		showmsg {}
+224		xgrep {}
+225		strstr {}
+226		ctime {}
+227		append_article {}
+228		send_checkmail {/apps/Formosa-1.2.0/src/ident.c 184}
+229			SendMail {}
+230			log_usies {/apps/Formosa-1.2.0/src/stuff.c 367}
+231		_xstat {}
+232		_fxstat {}
+233		_xmknod {}
+234	Class {/apps/Formosa-1.2.0/src/board.c 525}
+235		MakeBoardList ... {2}
+236		resolve_classhm {}
+237		cursor_menu ... {8}
+238		_xstat {}
+239		_fxstat {}
+240		_xmknod {}
+241	Formosa {/apps/Formosa-1.2.0/src/formosa.c 580}
+242		setrlimit {}
+243		setjmp {}
+244		shutdown {}
+245		init_tty {/apps/Formosa-1.2.0/src/term.c 38}
+246			memset {}
+247		lang_init {/apps/Formosa-1.2.0/src/lang.c 111}
+248			resolve_elangshm {/apps/Formosa-1.2.0/src/lang.c 82}
+249				attach_shm {}
+250				parse_lang_cf {/apps/Formosa-1.2.0/src/lang.c 21}
+251					strstr {}
+252					atoi {}
+253			resolve_clangshm {/apps/Formosa-1.2.0/src/lang.c 96}
+254				attach_shm {}
+255				parse_lang_cf ... {250}
+256			_xstat {}
+257			_fxstat {}
+258			_xmknod {}
+259		xstrncpy {}
+260		login_query {/apps/Formosa-1.2.0/src/formosa.c 275}
+261			outs ... {16}
+262			ask_online_user {}
+263			prints ... {94}
+264			oflush ... {36}
+265			shutdown {}
+266			getdata ... {28}
+267			new_register {/apps/Formosa-1.2.0/src/formosa.c 175}
+268				memset {}
+269				outs ... {16}
+270				getdata ... {28}
+271				invalid_userid {}
+272				prints ... {94}
+273				get_passwd {}
+274				is_duplicate_userid {}
+275				xstrncpy {}
+276				genpasswd {}
+277				new_user {}
+278				oflush ... {36}
+279			user_login {}
+280		log_visitor {/apps/Formosa-1.2.0/src/formosa.c 401}
+281			xstrncpy {}
+282			append_record {}
+283		term_init {/apps/Formosa-1.2.0/src/term.c 152}
+284			tgetent {}
+285			tgetstr {}
+286			tgetnum {}
+287			tgetflag {}
+288			tputs {}
+289		initscr {/apps/Formosa-1.2.0/src/screen.c 44}
+290		init_alarm {/apps/Formosa-1.2.0/src/io.c 43}
+291		multi_user_check {/apps/Formosa-1.2.0/src/formosa.c 563}
+292			apply_ulist {}
+293		user_init {/apps/Formosa-1.2.0/src/formosa.c 77}
+294			setmailfile {}
+295			sethomefile {}
+296			setuserfile {}
+297			ReadRC_Expire {}
+298			pack_article {}
+299			lang_init ... {247}
+300		setuserfile {}
+301		isfile {}
+302		clear ... {11}
+303		printxy {}
+304		pressreturn {}
+305		more ... {190}
+306		Announce {/apps/Formosa-1.2.0/src/formosa.c 413}
+307			more ... {190}
+308		x_viewnote {/apps/Formosa-1.2.0/src/xyz.c 666}
+309			clear ... {11}
+310			outs ... {16}
+311			msg ... {125}
+312			igetkey ... {86}
+313			move ... {12}
+314			clrtobot ... {15}
+315			pressreturn {}
+316		domenu {/apps/Formosa-1.2.0/src/menu.c 444}
+317			CheckNewSysVote {/apps/Formosa-1.2.0/src/vote.c 188}
+318				UnSeenVote {/apps/Formosa-1.2.0/src/vote.c 150}
+319					setboardfile {}
+320					get_num_records {}
+321					get_record {}
+322					atol {}
+323				DisplayNewVoteMesg {/apps/Formosa-1.2.0/src/vote.c 203}
+324					more ... {190}
+325			memset {}
+326			cursor_menu ... {8}
+327			Goodbye {}
+328			_xstat {}
+329			_fxstat {}
+330			_xmknod {}
+331		_xstat {}
+332		_fxstat {}
+333		_xmknod {}
+334	MainRead {/apps/Formosa-1.2.0/src/cursor.c 880}
+335		MakeBoardList ... {2}
+336		Read {/apps/Formosa-1.2.0/src/cursor.c 898}
+337			ReadRC_Init {}
+338			ReadRC_Refresh {}
+339			DisplayNewVoteMesg ... {323}
+340			setboardfile {}
+341			more ... {190}
+342			clear ... {11}
+343			display_bmas {/apps/Formosa-1.2.0/src/post.c 48}
+344				move ... {12}
+345				setboardfile {}
+346				outs ... {16}
+347			pressreturn {}
+348			settreafile {}
+349			memset {}
+350			seekstr_in_file {}
+351			free_wlist {}
+352			update_umode ... {74}
+353			cursor_menu ... {8}
+354			ReadRC_Update {}
+355	Select {/apps/Formosa-1.2.0/src/cursor.c 868}
+356		select_board {/apps/Formosa-1.2.0/src/board.c 140}
+357			namecomplete_board {/apps/Formosa-1.2.0/src/board.c 94}
+358				MakeBoardList ... {2}
+359				move ... {12}
+360				clrtobot ... {15}
+361				outs ... {16}
+362				add_wlist {/apps/Formosa-1.2.0/src/stuff.c 390}
+363				namecomplete {/apps/Formosa-1.2.0/src/stuff.c 589}
+364					get_subwlist {/apps/Formosa-1.2.0/src/stuff.c 542}
+365						add_wlist ... {362}
+366					getyx ... {32}
+367					getkey ... {87}
+368					outs ... {16}
+369					num_wlist {/apps/Formosa-1.2.0/src/stuff.c 518}
+370					move ... {12}
+371					clrtoeol ... {19}
+372					pressreturn {}
+373					free_wlist {}
+374					prints ... {94}
+375					bell {}
+376					maxlen_wlist {/apps/Formosa-1.2.0/src/stuff.c 565}
+377					clrtobot ... {15}
+378					standout {}
+379					standend {}
+380					outc {}
+381					shutdown {}
+382					refresh ... {37}
+383			SearchBoardList {/apps/Formosa-1.2.0/src/board.c 123}
+384		Read ... {336}
+385	Users {/apps/Formosa-1.2.0/src/formosa.c 426}
+386		getdata ... {28}
+387		atoi {}
+388		move ... {12}
+389		clrtobot ... {15}
+390		prints ... {94}
+391		outs ... {16}
+392		igetkey ... {86}
+393		getkey ... {87}
+394	a_board {/apps/Formosa-1.2.0/src/admin.c 283}
+395		getdata ... {28}
+396		namecomplete_board ... {357}
+397		get_board {}
+398		showmsg {}
+399		outdoor {/apps/Formosa-1.2.0/src/stuff.c 146}
+400			update_ulist {}
+401			do_exec {/apps/Formosa-1.2.0/src/stuff.c 62}
+402				xstrncpy {}
+403				vfork {}
+404				bbssetenv {}
+405				waitpid {}
+406		show_board {/apps/Formosa-1.2.0/src/admin.c 28}
+407			move ... {12}
+408			clrtobot ... {15}
+409			outc {}
+410			prints ... {94}
+411		outs ... {16}
+412		igetkey ... {86}
+413		memset {}
+414		substitute_record {}
+415		log_usies ... {230}
+416		setboardfile {}
+417		myunlink {}
+418		settreafile {}
+419		set_board {/apps/Formosa-1.2.0/src/admin.c 90}
+420			xstrncpy {}
+421			move ... {12}
+422			clrtobot ... {15}
+423			refresh ... {37}
+424			show_board ... {406}
+425			getdata ... {28}
+426			setboardfile {}
+427			invalid_bname {/apps/Formosa-1.2.0/src/admin.c 70}
+428			isdir {}
+429			get_board {}
+430			showmsg {}
+431			atoi {}
+432			get_passwd {}
+433			outs ... {16}
+434			igetkey ... {86}
+435			update_passwd {}
+436			log_usies ... {230}
+437		myrename {}
+438		rebuild_brdshm {}
+439		CreateBoardList ... {3}
+440	a_broadcast {/apps/Formosa-1.2.0/src/admin.c 529}
+441		set_message ... {141}
+442		apply_ulist {}
+443		msg ... {125}
+444		getkey ... {87}
+445	a_check {/apps/Formosa-1.2.0/src/ident.c 117}
+446		setuserfile {}
+447		cursor_menu ... {8}
+448	a_conf {/apps/Formosa-1.2.0/src/admin.c 413}
+449		move ... {12}
+450		clrtobot ... {15}
+451		prints ... {94}
+452		getdata ... {28}
+453		atoi {}
+454		vedit {/apps/Formosa-1.2.0/src/edit.c 611}
+455			setuserfile {}
+456			isfile {}
+457			clear ... {11}
+458			outs ... {16}
+459			getkey ... {87}
+460			mycp {}
+461			do_article_sig {/apps/Formosa-1.2.0/src/edit.c 565}
+462				outs ... {16}
+463				getkey ... {87}
+464				sethomefile {}
+465				prints ... {94}
+466				include_sig {}
+467			read_file {/apps/Formosa-1.2.0/src/edit.c 361}
+468				vedit_init {/apps/Formosa-1.2.0/src/edit.c 337}
+469					alloc_line {/apps/Formosa-1.2.0/src/edit.c 98}
+470						indigestion {/apps/Formosa-1.2.0/src/edit.c 32}
+471						abort_bbs {/apps/Formosa-1.2.0/src/formosa.c 23}
+472							user_logout {}
+473							shutdown {}
+474				indigestion ... {470}
+475				abort_bbs ... {471}
+476				insert_char {/apps/Formosa-1.2.0/src/edit.c 264}
+477					indigestion ... {470}
+478					split {/apps/Formosa-1.2.0/src/edit.c 174}
+479						alloc_line ... {469}
+480						append {/apps/Formosa-1.2.0/src/edit.c 129}
+481					join {/apps/Formosa-1.2.0/src/edit.c 210}
+482						killsp {/apps/Formosa-1.2.0/src/edit.c 89}
+483						delete_line {/apps/Formosa-1.2.0/src/edit.c 147}
+484						split ... {478}
+485						indigestion ... {470}
+486						... join ... {481}
+487				split ... {478}
+488			display_buffer {/apps/Formosa-1.2.0/src/edit.c 531}
+489				move ... {12}
+490				clrtoeol ... {19}
+491				prints ... {94}
+492			move ... {12}
+493			show_help_msg {/apps/Formosa-1.2.0/src/edit.c 517}
+494				move ... {12}
+495				clrtoeol ... {19}
+496				standout {}
+497				outs ... {16}
+498				standend {}
+499			backup_file {/apps/Formosa-1.2.0/src/edit.c 410}
+500				indigestion ... {470}
+501				abort_bbs ... {471}
+502			talkreply ... {21}
+503			pressreturn {}
+504			ReplyLastCall ... {123}
+505			insert_char ... {476}
+506			bell {}
+507			back_line {/apps/Formosa-1.2.0/src/edit.c 41}
+508			getlineno {/apps/Formosa-1.2.0/src/edit.c 70}
+509			vedit_help {/apps/Formosa-1.2.0/src/edit.c 553}
+510				more ... {190}
+511			forward_line {/apps/Formosa-1.2.0/src/edit.c 55}
+512			write_file {/apps/Formosa-1.2.0/src/edit.c 456}
+513				getdata ... {28}
+514				vedit_exit {/apps/Formosa-1.2.0/src/edit.c 432}
+515				outs ... {16}
+516				getkey ... {87}
+517				ctime {}
+518				write_article_header {}
+519				setuserfile {}
+520			split ... {478}
+521			killsp ... {482}
+522			delete_line ... {483}
+523			join ... {481}
+524			indigestion ... {470}
+525			abort_bbs ... {471}
+526			delete_char {/apps/Formosa-1.2.0/src/edit.c 318}
+527				indigestion ... {470}
+528			rscroll {}
+529			scroll {}
+530			clrtoeol ... {19}
+531			prints ... {94}
+532			_xstat {}
+533			_fxstat {}
+534			_xmknod {}
+535		log_usies ... {230}
+536		pressreturn {}
+537	a_find {/apps/Formosa-1.2.0/src/ident.c 66}
+538		setuserfile {}
+539		cursor_menu ... {8}
+540	a_info {/apps/Formosa-1.2.0/src/admin.c 11}
+541		move ... {12}
+542		clrtobot ... {15}
+543		getdata ... {28}
+544		set_user_info {/apps/Formosa-1.2.0/src/xyz.c 434}
+545			get_passwd {}
+546			showmsg {}
+547			show_user_info {/apps/Formosa-1.2.0/src/xyz.c 29}
+548				move ... {12}
+549				clrtobot ... {15}
+550				prints ... {94}
+551				outs ... {16}
+552				Ctime {}
+553				setmailfile {}
+554				get_num_records {}
+555				outc {}
+556			outs ... {16}
+557			getdata ... {28}
+558			genpasswd {}
+559			printxy {}
+560			getkey ... {87}
+561			is_emailaddr {}
+562			move ... {12}
+563			atoi {}
+564			clrtobot ... {15}
+565			memcmp {}
+566			update_passwd {}
+567	a_kick {/apps/Formosa-1.2.0/src/admin.c 492}
+568		namecomplete_onlineuser {/apps/Formosa-1.2.0/src/talk.c 195}
+569			ask_online_user {}
+570			move ... {12}
+571			clrtobot ... {15}
+572			outs ... {16}
+573			apply_ulist {}
+574			namecomplete ... {363}
+575			free_wlist {}
+576		prints ... {94}
+577		igetkey ... {86}
+578		showmsg {}
+579		log_usies ... {230}
+580		apply_ulist {}
+581		pressreturn {}
+582	a_mailbm {/apps/Formosa-1.2.0/src/admin.c 549}
+583		move ... {12}
+584		clrtobot ... {15}
+585		do_article_title {/apps/Formosa-1.2.0/src/article.c 904}
+586			printxy {}
+587			igetkey ... {86}
+588			getdata ... {28}
+589		vedit ... {454}
+590		outdoor ... {399}
+591		_xstat {}
+592		_fxstat {}
+593		_xmknod {}
+594	a_newbrd {/apps/Formosa-1.2.0/src/admin.c 244}
+595		memset {}
+596		set_board ... {419}
+597		showmsg {}
+598		new_board {/apps/Formosa-1.2.0/src/admin.c 212}
+599			flock {}
+600		setboardfile {}
+601		settreafile {}
+602		log_usies ... {230}
+603		rebuild_brdshm {}
+604		CreateBoardList ... {3}
+605	author_backward {/apps/Formosa-1.2.0/src/cursor.c 259}
+606		getdata ... {28}
+607		search_article {/apps/Formosa-1.2.0/src/cursor.c 499}
+608			xstrncpy {}
+609			get_num_records {}
+610			strtok {}
+611			add_wlist ... {362}
+612			strstr {}
+613		msg ... {125}
+614		getkey ... {87}
+615	author_forward {/apps/Formosa-1.2.0/src/cursor.c 283}
+616		getdata ... {28}
+617		search_article ... {607}
+618		msg ... {125}
+619		getkey ... {87}
+620	bcmd_enter {/apps/Formosa-1.2.0/src/board.c 408}
+621		SearchBoardList ... {383}
+622		Read ... {336}
+623	bcmd_help {/apps/Formosa-1.2.0/src/board.c 279}
+624		outs ... {16}
+625		pressreturn {}
+626	bcmd_jump {/apps/Formosa-1.2.0/src/board.c 386}
+627		getdata ... {28}
+628		SearchBoardList ... {383}
+629	bcmd_treasure {/apps/Formosa-1.2.0/src/board.c 436}
+630	bcmd_yankin {/apps/Formosa-1.2.0/src/board.c 331}
+631		CreateBoardList ... {3}
+632	bcmd_yankout {/apps/Formosa-1.2.0/src/board.c 346}
+633		CreateBoardList ... {3}
+634	bcmd_zap {/apps/Formosa-1.2.0/src/board.c 361}
+635		ZapRC_ValidBid {}
+636		ZapRC_IsZapped {}
+637		ZapRC_DoUnZap {}
+638		ZapRC_DoZap {}
+639		ZapRC_Update {}
+640	bm_manage_file {/apps/Formosa-1.2.0/src/post.c 119}
+641		clear ... {11}
+642		getdata ... {28}
+643		setboardfile {}
+644		showmsg {}
+645		outs ... {16}
+646		pressreturn {}
+647		display_bmas ... {343}
+648		get_passwd {}
+649		add_bmas {/apps/Formosa-1.2.0/src/post.c 78}
+650			setboardfile {}
+651			seekstr_in_file {}
+652			append_record {}
+653		move ... {12}
+654		delete_bmas {/apps/Formosa-1.2.0/src/post.c 93}
+655			setboardfile {}
+656			file_delete_line {/apps/Formosa-1.2.0/src/talk.c 40}
+657				myrename {}
+658		vedit ... {454}
+659	board_btitle {/apps/Formosa-1.2.0/src/board.c 226}
+660		outs ... {16}
+661	board_entry {/apps/Formosa-1.2.0/src/board.c 164}
+662		prints ... {94}
+663		ZapRC_IsZapped {}
+664	board_findkey {/apps/Formosa-1.2.0/src/board.c 245}
+665		move ... {12}
+666		clrtoeol ... {19}
+667		prints ... {94}
+668	board_get {/apps/Formosa-1.2.0/src/board.c 203}
+669	board_max {/apps/Formosa-1.2.0/src/board.c 235}
+670	board_title {/apps/Formosa-1.2.0/src/board.c 218}
+671		title_func {/apps/Formosa-1.2.0/src/cursor.c 653}
+672			outs ... {16}
+673			prints ... {94}
+674			CheckNewmail {/apps/Formosa-1.2.0/src/mail.c 15}
+675				setmailfile {}
+676			outc {}
+677		outs ... {16}
+678	broadcast {/apps/Formosa-1.2.0/src/admin.c 516}
+679		message_user {}
+680	cand_entry {/apps/Formosa-1.2.0/src/vote.c 303}
+681		prints ... {94}
+682	cand_title {/apps/Formosa-1.2.0/src/vote.c 289}
+683		title_func ... {671}
+684		outs ... {16}
+685	ccmd_add {/apps/Formosa-1.2.0/src/vote.c 364}
+686		get_num_records {}
+687		msg ... {125}
+688		getkey ... {87}
+689		memset {}
+690		getdata ... {28}
+691		append_record {}
+692	ccmd_delete {/apps/Formosa-1.2.0/src/vote.c 412}
+693		msg ... {125}
+694		igetkey ... {86}
+695		delete_record {}
+696	ccmd_edit {/apps/Formosa-1.2.0/src/vote.c 393}
+697		getdata ... {28}
+698		substitute_record {}
+699	ccmd_enter {/apps/Formosa-1.2.0/src/vote.c 325}
+700		msg ... {125}
+701		getkey ... {87}
+702		move ... {12}
+703		clrtobot ... {15}
+704		getdata ... {28}
+705		setdotfile {}
+706		append_record {}
+707	chat_ignore {/apps/Formosa-1.2.0/src/bbschatd.c 867}
+708		Answer {}
+709		get_chatuid {/apps/Formosa-1.2.0/src/bbschatd.c 191}
+710		memset {}
+711	chat_join {/apps/Formosa-1.2.0/src/bbschatd.c 587}
+712		RespondErr {}
+713		get_chid {/apps/Formosa-1.2.0/src/bbschatd.c 209}
+714		create_channel {/apps/Formosa-1.2.0/src/bbschatd.c 230}
+715			xstrncpy {}
+716		Answer {}
+717		leave_channel {/apps/Formosa-1.2.0/src/bbschatd.c 435}
+718			BADID {/apps/Formosa-1.2.0/src/bbschatd.c 251}
+719			send_to_channel {/apps/Formosa-1.2.0/src/bbschatd.c 417}
+720			send_to_user {/apps/Formosa-1.2.0/src/bbschatd.c 325}
+721				... send_to_user ... {720}
+722		BADID ... {718}
+723		send_to_channel ... {719}
+724		send_to_user ... {720}
+725	chat_listchan {/apps/Formosa-1.2.0/src/bbschatd.c 840}
+726		Answer {}
+727		send_to_user ... {720}
+728		EndProt {/apps/Formosa-1.2.0/src/bbschatd.c 428}
+729			send_to_user ... {720}
+730	chat_msg {/apps/Formosa-1.2.0/src/bbschatd.c 642}
+731		Answer {}
+732		BADID ... {718}
+733		RespondErr {}
+734		get_chatuid ... {709}
+735		send_to_user ... {720}
+736	chat_nickname {/apps/Formosa-1.2.0/src/bbschatd.c 798}
+737		RespondErr {}
+738		xstrncpy {}
+739		Answer {}
+740		BADID ... {718}
+741		send_to_channel ... {719}
+742		send_to_user ... {720}
+743	chat_passwd {/apps/Formosa-1.2.0/src/bbschatd.c 500}
+744		RespondErr {}
+745		Answer {}
+746		send_to_channel ... {719}
+747		xstrncpy {}
+748		send_to_user ... {720}
+749	chat_topic {/apps/Formosa-1.2.0/src/bbschatd.c 535}
+750		RespondErr {}
+751		xstrncpy {}
+752		Answer {}
+753		send_to_user ... {720}
+754		send_to_channel ... {719}
+755	chat_who {/apps/Formosa-1.2.0/src/bbschatd.c 677}
+756		Answer {}
+757		send_to_user ... {720}
+758		get_chid ... {713}
+759		RespondErr {}
+760		EndProt ... {728}
+761	chat_whoall {/apps/Formosa-1.2.0/src/bbschatd.c 727}
+762		Answer {}
+763		send_to_user ... {720}
+764		EndProt ... {728}
+765	check_user {/apps/Formosa-1.2.0/src/ident.c 98}
+766		setuserfile {}
+767		more ... {190}
+768		msg ... {125}
+769		getkey ... {87}
+770	class_get {/apps/Formosa-1.2.0/src/board.c 513}
+771	class_max {/apps/Formosa-1.2.0/src/board.c 474}
+772		SearchBoardList ... {383}
+773	cmp_bname {/apps/Formosa-1.2.0/src/board.c 49}
+774	cmp_destid {/apps/Formosa-1.2.0/src/talk.c 410}
+775	count_multi_login {/apps/Formosa-1.2.0/src/formosa.c 513}
+776		outs ... {16}
+777		oflush ... {36}
+778		shutdown {}
+779		prints ... {94}
+780		igetkey ... {86}
+781		purge_ulist {}
+782	coutc {/apps/Formosa-1.2.0/src/screen.c 353}
+783		ochar ... {43}
+784	cross_article {/apps/Formosa-1.2.0/src/article.c 823}
+785		check_mail_num {/apps/Formosa-1.2.0/src/mail.c 188}
+786			get_num_records {}
+787			msg ... {125}
+788			igetkey ... {86}
+789			pack_article {}
+790			getkey ... {87}
+791			clear ... {11}
+792			prints ... {94}
+793			outs ... {16}
+794		move ... {12}
+795		clrtoeol ... {19}
+796		outs ... {16}
+797		namecomplete_board ... {357}
+798		SearchBoardList ... {383}
+799		clear ... {11}
+800		prints ... {94}
+801		has_postperm {/apps/Formosa-1.2.0/src/post.c 241}
+802			seekstr_in_string {}
+803			outs ... {16}
+804			pressreturn {}
+805			prints ... {94}
+806		showmsg {}
+807		setdotfile {}
+808		igetkey ... {86}
+809		PublishPost {}
+810	delthread {/apps/Formosa-1.2.0/src/cursor.c 736}
+811		move ... {12}
+812		clrtobot ... {15}
+813		getdata ... {28}
+814		outs ... {16}
+815		igetkey ... {86}
+816		log_usies ... {230}
+817		outdoor ... {399}
+818		pressreturn {}
+819	display_bmwel {/apps/Formosa-1.2.0/src/post.c 35}
+820		setboardfile {}
+821		isfile {}
+822		more ... {190}
+823		clear ... {11}
+824		display_bmas ... {343}
+825		pressreturn {}
+826	do_post {/apps/Formosa-1.2.0/src/post.c 529}
+827		setdotfile {}
+828		clear ... {11}
+829		PreparePost {/apps/Formosa-1.2.0/src/post.c 415}
+830			prints ... {94}
+831			has_postperm ... {801}
+832			mail1 {/apps/Formosa-1.2.0/src/post.c 334}
+833				printxy {}
+834				igetkey ... {86}
+835				getdata ... {28}
+836				is_emailaddr {}
+837				outs ... {16}
+838				clrtoeol ... {19}
+839				getkey ... {87}
+840				get_passwd {}
+841			do_article_title ... {585}
+842			outs ... {16}
+843			igetkey ... {86}
+844			include_ori {}
+845			update_umode ... {74}
+846			vedit ... {454}
+847			PublishPost {}
+848			ReadRC_Addlist {}
+849			mail2 {/apps/Formosa-1.2.0/src/post.c 304}
+850				is_emailaddr {}
+851				msg ... {125}
+852				igetkey ... {86}
+853				SendMail {}
+854		showmsg {}
+855	edit_article {/apps/Formosa-1.2.0/src/article.c 114}
+856		check_perm ... {150}
+857		check_mail_num ... {785}
+858		update_umode ... {74}
+859		setdotfile {}
+860		vedit ... {454}
+861		fseek {}
+862		Ctime {}
+863		myrename {}
+864	find_title {/apps/Formosa-1.2.0/src/ident.c 56}
+865		outs ... {16}
+866	find_user {/apps/Formosa-1.2.0/src/ident.c 28}
+867		setuserfile {}
+868		more ... {190}
+869		msg ... {125}
+870		getkey ... {87}
+871	fsendmsg {/apps/Formosa-1.2.0/src/talk.c 1184}
+872		isFriend {}
+873		check_perm ... {150}
+874		message_user {}
+875	idle_timeout {/apps/Formosa-1.2.0/src/io.c 23}
+876		clear ... {11}
+877		show_byebye {/apps/Formosa-1.2.0/src/stuff.c 161}
+878			printxy {}
+879			Ctime {}
+880		refresh ... {37}
+881		abort_bbs ... {471}
+882		update_ulist {}
+883		init_alarm ... {290}
+884	kick_user {/apps/Formosa-1.2.0/src/admin.c 473}
+885		purge_ulist {}
+886	listcuent {/apps/Formosa-1.2.0/src/talk.c 182}
+887		add_wlist ... {362}
+888	lstat {/usr/include/sys/stat.h 473}
+889		_lxstat {}
+890		_fxstat {}
+891		_xmknod {}
+892	m_group {/apps/Formosa-1.2.0/src/mail.c 291}
+893		malloc_array {}
+894		group_modify {/apps/Formosa-1.2.0/src/mail.c 80}
+895			clear ... {11}
+896			msg ... {125}
+897			getkey ... {87}
+898			prints ... {94}
+899			show_array {/apps/Formosa-1.2.0/src/xyz.c 350}
+900				move ... {12}
+901				clrtobot ... {15}
+902				prints ... {94}
+903				pressreturn {}
+904				outs ... {16}
+905			getdata ... {28}
+906			clrtoeol ... {19}
+907			get_passwd {}
+908			cmp_array {}
+909			add_array {}
+910			load_friend {}
+911			cmpd_array {}
+912			clrtobot ... {15}
+913		do_article_title ... {585}
+914		update_umode ... {74}
+915		vedit ... {454}
+916		group_delivery {/apps/Formosa-1.2.0/src/mail.c 246}
+917			check_mail_num ... {785}
+918			CreateMailSocket {}
+919			msg ... {125}
+920			igetkey ... {86}
+921			SendMail {}
+922			CloseMailSocket {}
+923		free_array {}
+924		showmsg {}
+925	m_new {/apps/Formosa-1.2.0/src/mail.c 342}
+926		update_umode ... {74}
+927		clear ... {11}
+928		prints ... {94}
+929		igetkey ... {86}
+930		read_article {/apps/Formosa-1.2.0/src/article.c 390}
+931			setdotfile {}
+932			isfile {}
+933			check_mail_num ... {785}
+934			more ... {190}
+935			readed_article {/apps/Formosa-1.2.0/src/article.c 358}
+936				ReadRC_UnRead {}
+937				ReadRC_Addlist {}
+938			msg ... {125}
+939			move ... {12}
+940			igetkey ... {86}
+941			reply_article {/apps/Formosa-1.2.0/src/article.c 264}
+942				clear ... {11}
+943				outs ... {16}
+944				getkey ... {87}
+945				setdotfile {}
+946				PreparePost ... {829}
+947				PrepareMail {/apps/Formosa-1.2.0/src/post.c 373}
+948					move ... {12}
+949					check_mail_num ... {785}
+950					outs ... {16}
+951					mail1 ... {832}
+952					do_article_title ... {585}
+953					igetkey ... {86}
+954					include_ori {}
+955					update_umode ... {74}
+956					vedit ... {454}
+957					mail2 ... {849}
+958				move ... {12}
+959				clrtobot ... {15}
+960				get_record {}
+961				substitute_record {}
+962				pressreturn {}
+963			mail_article {/apps/Formosa-1.2.0/src/article.c 759}
+964				msg ... {125}
+965				getkey ... {87}
+966				igetkey ... {86}
+967				getdata ... {28}
+968				mail_articles {/apps/Formosa-1.2.0/src/article.c 709}
+969					is_emailaddr {}
+970					check_mail_num ... {785}
+971					setdotfile {}
+972					SendMail {}
+973					CreateMailSocket {}
+974					cmp_wlist {/apps/Formosa-1.2.0/src/stuff.c 428}
+975					CloseMailSocket {}
+976			delete_article {/apps/Formosa-1.2.0/src/article.c 626}
+977				msg ... {125}
+978				igetkey ... {86}
+979				delete_articles {/apps/Formosa-1.2.0/src/article.c 479}
+980					flock {}
+981					cmp_wlist ... {974}
+982					setdotfile {}
+983					SendMail {}
+984					myunlink {}
+985					xstrncpy {}
+986					memset {}
+987					append_news {}
+988					pack_article {}
+989		move ... {12}
+990		clrtobot ... {15}
+991		outs ... {16}
+992		pressreturn {}
+993		check_mail_num ... {785}
+994	m_send {/apps/Formosa-1.2.0/src/mail.c 324}
+995		clear ... {11}
+996		PrepareMail ... {947}
+997		showmsg {}
+998	mail_help {/apps/Formosa-1.2.0/src/mail.c 401}
+999		more ... {190}
+1000	mail_title {/apps/Formosa-1.2.0/src/mail.c 411}
+1001		title_func ... {671}
+1002		outs ... {16}
+1003	main {/apps/Formosa-1.2.0/src/bbschatd.c 941}
+1004		atoi {}
+1005		getdtablesize {}
+1006		setrlimit {}
+1007		report {/apps/Formosa-1.2.0/src/bbschatd.c 164}
+1008			localtime {}
+1009			strftime {}
+1010		htons {}
+1011		socket {}
+1012		setsockopt {}
+1013		bind {}
+1014		getsockname {}
+1015		listen {}
+1016		memset {}
+1017		xstrncpy {}
+1018		select {}
+1019		accept {}
+1020		inet_ntoa {}
+1021		rand {}
+1022		mycrypt {/apps/Formosa-1.2.0/include/chat.h 64}
+1023			atol {}
+1024		atol {}
+1025		chat_logout {/apps/Formosa-1.2.0/src/bbschatd.c 563}
+1026			leave_channel ... {717}
+1027			memset {}
+1028			report ... {1007}
+1029		strtok {}
+1030		GetProtoNo {/apps/Formosa-1.2.0/src/bbschatd.c 922}
+1031		chat_user {/apps/Formosa-1.2.0/src/bbschatd.c 751}
+1032			Answer {}
+1033			atol {}
+1034			memset {}
+1035			send_to_user ... {720}
+1036		send_to_channel ... {719}
+1037		BADID ... {718}
+1038		Answer {}
+1039		_xstat {}
+1040		_fxstat {}
+1041		_xmknod {}
+1042	malloc_board {/apps/Formosa-1.2.0/src/board.c 21}
+1043		can_see_board {}
+1044		ZapRC_IsZapped {}
+1045		UnSeenVote ... {318}
+1046	mcmd_enter {/apps/Formosa-1.2.0/src/menu.c 421}
+1047		update_umode ... {74}
+1048	mcmd_menushow {/apps/Formosa-1.2.0/src/menu.c 405}
+1049		more ... {190}
+1050	menu_btitle {/apps/Formosa-1.2.0/src/menu.c 265}
+1051		pagerstring {}
+1052		prints ... {94}
+1053	menu_entry {/apps/Formosa-1.2.0/src/menu.c 276}
+1054		outc {}
+1055		prints ... {94}
+1056	menu_findkey {/apps/Formosa-1.2.0/src/menu.c 376}
+1057	menu_get {/apps/Formosa-1.2.0/src/menu.c 357}
+1058		CheckNewmail ... {674}
+1059	menu_max {/apps/Formosa-1.2.0/src/menu.c 302}
+1060		update_umode ... {74}
+1061	menu_title {/apps/Formosa-1.2.0/src/menu.c 194}
+1062		title_func ... {671}
+1063		attach_shm {}
+1064		move ... {12}
+1065		prints ... {94}
+1066		outc {}
+1067		outs ... {16}
+1068	mkdir_treasure {/apps/Formosa-1.2.0/src/post.c 720}
+1069		msg ... {125}
+1070		getkey ... {87}
+1071		getdata ... {28}
+1072		igetkey ... {86}
+1073		make_treasure_folder {}
+1074	outcf {/apps/Formosa-1.2.0/src/term.c 140}
+1075	pickup_cmp {/apps/Formosa-1.2.0/src/list.c 56}
+1076	post_title {/apps/Formosa-1.2.0/src/cursor.c 706}
+1077		title_func ... {671}
+1078		outs ... {16}
+1079	range_tag_article {/apps/Formosa-1.2.0/src/article.c 945}
+1080		getdata ... {28}
+1081		atoi {}
+1082		tag_article {/apps/Formosa-1.2.0/src/article.c 928}
+1083			cmp_wlist ... {974}
+1084			add_wlist ... {362}
+1085			cmpd_wlist {/apps/Formosa-1.2.0/src/stuff.c 458}
+1086		_xstat {}
+1087		_fxstat {}
+1088		_xmknod {}
+1089	rcmd_postno {/apps/Formosa-1.2.0/src/cursor.c 217}
+1090		msg ... {125}
+1091		getkey ... {87}
+1092	rcmd_query {/apps/Formosa-1.2.0/src/cursor.c 235}
+1093		QueryUser ... {72}
+1094		msg ... {125}
+1095		getkey ... {87}
+1096	read_btitle {/apps/Formosa-1.2.0/src/cursor.c 715}
+1097		outs ... {16}
+1098	read_conf {/apps/Formosa-1.2.0/src/conf.c 59}
+1099		_xstat {}
+1100		_fxstat {}
+1101		_xmknod {}
+1102	read_entry {/apps/Formosa-1.2.0/src/cursor.c 86}
+1103		chk_str {/apps/Formosa-1.2.0/src/cursor.c 55}
+1104		atol {}
+1105		localtime {}
+1106		ReadRC_UnRead {}
+1107		outs ... {16}
+1108		cmp_wlist ... {974}
+1109		prints ... {94}
+1110		outc {}
+1111	read_get {/apps/Formosa-1.2.0/src/cursor.c 47}
+1112		get_records ... {128}
+1113	read_help {/apps/Formosa-1.2.0/src/post.c 216}
+1114		more ... {190}
+1115	read_max {/apps/Formosa-1.2.0/src/cursor.c 206}
+1116		get_num_records {}
+1117	reaper {/apps/Formosa-1.2.0/src/main.c 66}
+1118		wait3 {}
+1119	reserve_article {/apps/Formosa-1.2.0/src/article.c 232}
+1120		reserve_one_article {}
+1121	resv_backward {/apps/Formosa-1.2.0/src/cursor.c 432}
+1122		search_article ... {607}
+1123		msg ... {125}
+1124		getkey ... {87}
+1125	resv_forward {/apps/Formosa-1.2.0/src/cursor.c 413}
+1126		search_article ... {607}
+1127		msg ... {125}
+1128		getkey ... {87}
+1129	saybyebye {/apps/Formosa-1.2.0/src/main.c 78}
+1130		getdtablesize {}
+1131		shutdown {}
+1132	switch_boardtrea {/apps/Formosa-1.2.0/src/cursor.c 725}
+1133	t_chat {/apps/Formosa-1.2.0/src/chat.c 62}
+1134		getdata ... {28}
+1135		xstrncpy {}
+1136		ConnectServer {}
+1137		move ... {12}
+1138		outs ... {16}
+1139		refresh ... {37}
+1140		outdoor ... {399}
+1141		pressreturn {}
+1142		malloc_array {}
+1143		net_gets {}
+1144		mycrypt ... {1022}
+1145		atol {}
+1146		net_printf {}
+1147		free_array {}
+1148		update_ulist {}
+1149		clear ... {11}
+1150		prints ... {94}
+1151		printchatline ... {112}
+1152		clrtoeol ... {19}
+1153		add_io ... {106}
+1154		getkey ... {87}
+1155		servicepage ... {108}
+1156		save_screen {}
+1157		ReplyLastCall ... {123}
+1158		restore_screen {}
+1159		cmp_array {}
+1160		bell {}
+1161		dochatcommand {/apps/Formosa-1.2.0/src/chat.c 545}
+1162			strtok {}
+1163			printchatline ... {112}
+1164			dowho {/apps/Formosa-1.2.0/src/chat.c 378}
+1165				net_printf {}
+1166				net_gets {}
+1167				printchatline ... {112}
+1168				memset {}
+1169			dowhoall {/apps/Formosa-1.2.0/src/chat.c 431}
+1170				printchatline ... {112}
+1171				net_printf {}
+1172				net_gets {}
+1173				strtok {}
+1174			dolist {/apps/Formosa-1.2.0/src/chat.c 509}
+1175				printchatline ... {112}
+1176				net_printf {}
+1177				net_gets {}
+1178			net_printf {}
+1179			net_gets {}
+1180			xstrncpy {}
+1181			update_ulist {}
+1182			add_io ... {106}
+1183			toggle_pager {/apps/Formosa-1.2.0/src/talk.c 88}
+1184				getdata ... {28}
+1185				update_ulist {}
+1186			pagerstring {}
+1187			clear ... {11}
+1188			move ... {12}
+1189			outs ... {16}
+1190			cmp_array {}
+1191			add_array {}
+1192			cmpd_array {}
+1193		t_query ... {175}
+1194	t_friends {/apps/Formosa-1.2.0/src/list.c 597}
+1195		pickup_user {/apps/Formosa-1.2.0/src/list.c 579}
+1196			cursor_menu ... {8}
+1197		_xstat {}
+1198		_fxstat {}
+1199		_xmknod {}
+1200	t_irc {/apps/Formosa-1.2.0/src/talk.c 874}
+1201		msg ... {125}
+1202		getkey ... {87}
+1203		outdoor ... {399}
+1204	t_list {/apps/Formosa-1.2.0/src/list.c 588}
+1205		pickup_user ... {1195}
+1206	t_message {/apps/Formosa-1.2.0/src/talk.c 1165}
+1207		msg ... {125}
+1208		getkey ... {87}
+1209		namecomplete_onlineuser ... {568}
+1210		SendMesgToSomeone ... {140}
+1211	t_pager {/apps/Formosa-1.2.0/src/talk.c 104}
+1212		toggle_pager ... {1183}
+1213	t_review {/apps/Formosa-1.2.0/src/talk.c 1157}
+1214		ReplyLastCall ... {123}
+1215	t_talk {/apps/Formosa-1.2.0/src/talk.c 381}
+1216		msg ... {125}
+1217		getkey ... {87}
+1218		namecomplete_onlineuser ... {568}
+1219		search_ulist {}
+1220		talk_user {/apps/Formosa-1.2.0/src/talk.c 270}
+1221			check_perm ... {150}
+1222			socket {}
+1223			bind {}
+1224			getsockname {}
+1225			xstrncpy {}
+1226			update_ulist {}
+1227			clear ... {11}
+1228			prints ... {94}
+1229			listen {}
+1230			add_io ... {106}
+1231			getkey ... {87}
+1232			move ... {12}
+1233			outs ... {16}
+1234			bell {}
+1235			pressreturn {}
+1236			accept {}
+1237			do_talk ... {100}
+1238	tag_thread {/apps/Formosa-1.2.0/src/cursor.c 451}
+1239		free_wlist {}
+1240		getdata ... {28}
+1241		search_article ... {607}
+1242		msg ... {125}
+1243		getkey ... {87}
+1244	talk_request {/apps/Formosa-1.2.0/src/formosa.c 43}
+1245		warn_bell {/apps/Formosa-1.2.0/src/formosa.c 34}
+1246			bell {}
+1247	telnet {/apps/Formosa-1.2.0/src/main.c 310}
+1248		setsockopt {}
+1249		igetch ... {33}
+1250		_xstat {}
+1251		_fxstat {}
+1252		_xmknod {}
+1253	thread_backward {/apps/Formosa-1.2.0/src/cursor.c 355}
+1254		search_article ... {607}
+1255		msg ... {125}
+1256		getkey ... {87}
+1257	thread_forward {/apps/Formosa-1.2.0/src/cursor.c 374}
+1258		search_article ... {607}
+1259		msg ... {125}
+1260		getkey ... {87}
+1261	thread_original {/apps/Formosa-1.2.0/src/cursor.c 394}
+1262		search_article ... {607}
+1263		msg ... {125}
+1264		getkey ... {87}
+1265	title_article {/apps/Formosa-1.2.0/src/article.c 45}
+1266		check_perm ... {150}
+1267		getdata ... {28}
+1268		get_record {}
+1269		substitute_record {}
+1270		setdotfile {}
+1271		myrename {}
+1272	title_backward {/apps/Formosa-1.2.0/src/cursor.c 307}
+1273		getdata ... {28}
+1274		search_article ... {607}
+1275		msg ... {125}
+1276		getkey ... {87}
+1277	title_forward {/apps/Formosa-1.2.0/src/cursor.c 331}
+1278		getdata ... {28}
+1279		search_article ... {607}
+1280		msg ... {125}
+1281		getkey ... {87}
+1282	treasure_article {/apps/Formosa-1.2.0/src/post.c 566}
+1283		settreafile {}
+1284		msg ... {125}
+1285		setdotfile {}
+1286		igetkey ... {86}
+1287		append_article {}
+1288		getkey ... {87}
+1289		flock {}
+1290		cmp_wlist ... {974}
+1291		append_file {}
+1292		append_record {}
+1293		xstrncpy {}
+1294		pack_article {}
+1295	ucmd_addfriend {/apps/Formosa-1.2.0/src/list.c 355}
+1296		add_friend {/apps/Formosa-1.2.0/src/talk.c 21}
+1297			load_friend {}
+1298			cmp_array {}
+1299			append_record {}
+1300			free_array {}
+1301		free_array {}
+1302		load_friend {}
+1303	ucmd_delfriend {/apps/Formosa-1.2.0/src/list.c 378}
+1304		delete_friend {/apps/Formosa-1.2.0/src/talk.c 80}
+1305			file_delete_line ... {656}
+1306			free_array {}
+1307		free_array {}
+1308		load_friend {}
+1309	ucmd_edituser {/apps/Formosa-1.2.0/src/list.c 512}
+1310		set_user_info ... {544}
+1311	ucmd_find {/apps/Formosa-1.2.0/src/list.c 525}
+1312		getdata ... {28}
+1313		strstr {}
+1314		msg ... {125}
+1315	ucmd_fsendmsg {/apps/Formosa-1.2.0/src/list.c 496}
+1316		check_perm ... {150}
+1317		t_fsendmsg {/apps/Formosa-1.2.0/src/talk.c 1197}
+1318			msg ... {125}
+1319			getkey ... {87}
+1320			set_message ... {141}
+1321			apply_ulist {}
+1322			_xstat {}
+1323			_fxstat {}
+1324			_xmknod {}
+1325	ucmd_help {/apps/Formosa-1.2.0/src/list.c 241}
+1326		clear ... {11}
+1327		outs ... {16}
+1328		pressreturn {}
+1329	ucmd_kick {/apps/Formosa-1.2.0/src/list.c 274}
+1330		log_usies ... {230}
+1331		purge_ulist {}
+1332	ucmd_mail {/apps/Formosa-1.2.0/src/list.c 303}
+1333		clear ... {11}
+1334		PrepareMail ... {947}
+1335		showmsg {}
+1336	ucmd_mbox {/apps/Formosa-1.2.0/src/list.c 417}
+1337		m_read {/apps/Formosa-1.2.0/src/mail.c 450}
+1338			free_wlist {}
+1339			cursor_menu ... {8}
+1340			check_mail_num ... {785}
+1341			_xstat {}
+1342			_fxstat {}
+1343			_xmknod {}
+1344	ucmd_pager {/apps/Formosa-1.2.0/src/list.c 229}
+1345		toggle_pager ... {1183}
+1346	ucmd_query {/apps/Formosa-1.2.0/src/list.c 258}
+1347		QueryUser ... {72}
+1348	ucmd_refresh {/apps/Formosa-1.2.0/src/list.c 342}
+1349	ucmd_replycall {/apps/Formosa-1.2.0/src/list.c 331}
+1350		ReplyLastCall ... {123}
+1351	ucmd_sort {/apps/Formosa-1.2.0/src/list.c 204}
+1352		move ... {12}
+1353		clrtoeol ... {19}
+1354		outs ... {16}
+1355		prints ... {94}
+1356		refresh ... {37}
+1357		getdata ... {28}
+1358		atoi {}
+1359	ucmd_switch {/apps/Formosa-1.2.0/src/list.c 401}
+1360	ucmd_talk {/apps/Formosa-1.2.0/src/list.c 445}
+1361		check_perm ... {150}
+1362		talk_user ... {1220}
+1363	ucmd_write {/apps/Formosa-1.2.0/src/list.c 469}
+1364		check_perm ... {150}
+1365		xstrncpy {}
+1366		update_umode ... {74}
+1367		SendMesgToSomeone ... {140}
+1368	ulist_btitle {/apps/Formosa-1.2.0/src/list.c 127}
+1369		pagerstring {}
+1370		prints ... {94}
+1371	ulist_entry {/apps/Formosa-1.2.0/src/list.c 152}
+1372		isFriend {}
+1373		modestring {}
+1374		prints ... {94}
+1375		outs ... {16}
+1376	ulist_get {/apps/Formosa-1.2.0/src/list.c 138}
+1377	ulist_max {/apps/Formosa-1.2.0/src/list.c 74}
+1378		isFriend {}
+1379		qsort {}
+1380	ulist_title {/apps/Formosa-1.2.0/src/list.c 112}
+1381		title_func ... {671}
+1382		prints ... {94}
+1383	usage {/apps/Formosa-1.2.0/src/genlogin.c 13}
+1384		_xstat {}
+1385		_fxstat {}
+1386		_xmknod {}
+1387	v_board {/apps/Formosa-1.2.0/src/vote.c 822}
+1388		IsMultiLogin {/apps/Formosa-1.2.0/src/vote.c 808}
+1389			clear ... {11}
+1390			outs ... {16}
+1391			pressreturn {}
+1392		setboardfile {}
+1393		cursor_menu ... {8}
+1394		_xstat {}
+1395		_fxstat {}
+1396		_xmknod {}
+1397	vcmd_add {/apps/Formosa-1.2.0/src/vote.c 665}
+1398		getdata ... {28}
+1399		memset {}
+1400		set_vote {/apps/Formosa-1.2.0/src/vote.c 564}
+1401			move ... {12}
+1402			clrtobot ... {15}
+1403			outs ... {16}
+1404			getdata ... {28}
+1405			localtime {}
+1406			get_time {/apps/Formosa-1.2.0/src/vote.c 548}
+1407				memset {}
+1408				mktime {}
+1409			atoi {}
+1410			setvotefile {/apps/Formosa-1.2.0/src/vote.c 52}
+1411				setdotfile {}
+1412			vedit ... {454}
+1413		append_record {}
+1414		vcmd_enter {/apps/Formosa-1.2.0/src/vote.c 454}
+1415			memset {}
+1416			setvotefile ... {1410}
+1417			showmsg {}
+1418			vcmd_desc {/apps/Formosa-1.2.0/src/vote.c 441}
+1419				setvotefile ... {1410}
+1420				more ... {190}
+1421			cursor_menu ... {8}
+1422			setdotfile {}
+1423			append_record {}
+1424			setboardfile {}
+1425	vcmd_delete {/apps/Formosa-1.2.0/src/vote.c 710}
+1426		msg ... {125}
+1427		igetkey ... {86}
+1428		delete_record {}
+1429		setdotfile {}
+1430		myunlink {}
+1431	vcmd_edit {/apps/Formosa-1.2.0/src/vote.c 647}
+1432		set_vote ... {1400}
+1433		substitute_record {}
+1434	vcmd_help {/apps/Formosa-1.2.0/src/vote.c 785}
+1435		more ... {190}
+1436	vcmd_info {/apps/Formosa-1.2.0/src/vote.c 774}
+1437	vcmd_result {/apps/Formosa-1.2.0/src/vote.c 734}
+1438		showmsg {}
+1439		setdotfile {}
+1440		count_box {/apps/Formosa-1.2.0/src/vote.c 62}
+1441			memset {}
+1442			localtime {}
+1443		setvotefile ... {1410}
+1444		more ... {190}
+1445	visit_article {/apps/Formosa-1.2.0/src/post.c 15}
+1446		getdata ... {28}
+1447		ReadRC_Visit {}
+1448	vote_btitle {/apps/Formosa-1.2.0/src/vote.c 226}
+1449	vote_entry {/apps/Formosa-1.2.0/src/vote.c 236}
+1450		localtime {}
+1451		prints ... {94}
+1452	vote_title {/apps/Formosa-1.2.0/src/vote.c 210}
+1453		title_func ... {671}
+1454		outs ... {16}
+1455		prints ... {94}
+1456	write_request {/apps/Formosa-1.2.0/src/formosa.c 61}
+1457		warn_bell ... {1245}
+1458	x_date {/apps/Formosa-1.2.0/src/xyz.c 167}
+1459		Ctime {}
+1460		msg ... {125}
+1461		getkey ... {87}
+1462	x_info {/apps/Formosa-1.2.0/src/xyz.c 131}
+1463		move ... {12}
+1464		clrtobot ... {15}
+1465		getdata ... {28}
+1466		checkpasswd {}
+1467		outs ... {16}
+1468		abort_bbs ... {471}
+1469		showmsg {}
+1470		set_user_info ... {544}
+1471		get_passwd {}
+1472		xstrncpy {}
+1473		update_ulist {}
+1474	x_ircrc {/apps/Formosa-1.2.0/src/xyz.c 332}
+1475		set_ufile {/apps/Formosa-1.2.0/src/xyz.c 307}
+1476			move ... {12}
+1477			clrtobot ... {15}
+1478			sethomefile {}
+1479			getdata ... {28}
+1480			outs ... {16}
+1481			vedit ... {454}
+1482			pressreturn {}
+1483	x_lang {/apps/Formosa-1.2.0/src/xyz.c 710}
+1484		move ... {12}
+1485		clrtobot ... {15}
+1486		outs ... {16}
+1487		prints ... {94}
+1488		getdata ... {28}
+1489		lang_init ... {247}
+1490	x_override {/apps/Formosa-1.2.0/src/xyz.c 390}
+1491		move ... {12}
+1492		clrtobot ... {15}
+1493		outs ... {16}
+1494		load_friend {}
+1495		show_array ... {899}
+1496		getdata ... {28}
+1497		get_passwd {}
+1498		add_friend ... {1296}
+1499		delete_friend ... {1304}
+1500	x_plan {/apps/Formosa-1.2.0/src/xyz.c 340}
+1501		set_ufile ... {1475}
+1502	x_signature {/apps/Formosa-1.2.0/src/xyz.c 275}
+1503		move ... {12}
+1504		clrtobot ... {15}
+1505		sethomefile {}
+1506		getdata ... {28}
+1507		set_signature {/apps/Formosa-1.2.0/src/xyz.c 182}
+1508			move ... {12}
+1509			prints ... {94}
+1510			outs ... {16}
+1511			getdata ... {28}
+1512			fseek {}
+1513			vedit ... {454}
+1514			myrename {}
+1515		outs ... {16}
+1516		pressreturn {}
+1517	x_uflag {/apps/Formosa-1.2.0/src/xyz.c 597}
+1518		move ... {12}
+1519		clrtobot ... {15}
+1520		prints ... {94}
+1521		getdata ... {28}
+1522		update_ulist {}
+1523	xchg_treasure {/apps/Formosa-1.2.0/src/post.c 760}
+1524		getdata ... {28}
+1525		atoi {}
+1526		get_record {}
+1527		substitute_record {}
+1528		msg ... {125}
+1529		getkey ... {87}
+1530		_xstat {}
+1531		_fxstat {}
+1532		_xmknod {}

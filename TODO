@@ -1,0 +1,133 @@
+board
+-----
+看板列表顯示有新佈告的看板
+
+read
+-----
+Thread Read
+Jump to first unread post
+boardrc: visit 某板全部文章
+
+article
+--------
+Thread Mark, 搜尋文章結果mark'g'
+Delete/Mail/Reserve tagged articles
+Copy/Paste/Cut articles/folder in 精華區
+清除tag
+放入暫存檔
+讓使用者選擇取消 origin line 的 From
+
+post
+-----
+anonymous post on board --> 不打算支援
+限制User在某板post, 或暫時取消張貼權
+delpost, then decrease the postnum of author
+
+mail
+-----
+bquota - 清使用者信箱 (因有保留文章功能)
+寄信給多人, 多板, 多 e-mail
+bbsmail 解 MIME
+bbsmail 處理沒有 To: Apparently-To: Received: for <> 的 header
+bbsmail - e-mail post 轉信與否由 user 決定 - tag
+收信壞名單
+SendMail 支援 mail exchange (DNS MX)
+
+talk
+-----
+move write/ --> home/
+關閉/開啟好友名單
+自動在TALK完後系統出現是否要存成信件?
+smile
+暫停User的 Talk/chat/message 權.
+壞友名單
+好友說明
+好友上站通知
+unlimit length online message, 過長的message, right-scroll ?
+讓使用者選擇 message 
+   - 是否顯示 nickname
+   - 回顧訊息是否顯示自己送出的訊息
+
+ident
+------
+一個 e-mail address 只接受一次認證
+認證: input 中文姓名
+PGP realuser
+通過認證後, 寄信到原 e-mail address 通知
+
+edit
+-------
+vedit (undo, mark)
+
+auto-forward
+-------------
+把e-mail改成bbs@bbs.nsysu.edu.tw, 要使用自動轉寄，
+  不要填中山的信箱,又沒有用到自動轉寄，為何麼它不讓我改呢？
+auto-foward: docuemnts, and more stickly check e-mail addr field, avoiding 
+             looping back to myself
+Auto-foward support 未認證使用者 and e-mail post
+若自站外寄信給站內使用者, 且站內使用者開啟 auto-forward, 
+              若 auto-forward 失敗, 會造成退信給 MAILER-DAEMON
+
+
+chat
+------
+chat: /msg  /invite /date /act /bye /query /sendmsg /kick /log (記錄)
+chat同一id進去第二個時，第二個會沒有發言權, or down ?
+聊天室中 query user 不秀 plan file
+op: welcome message
+auto-reply message
+
+
+news
+-----
+support <<cancel by xxx>>
+支援 bbsinnd 站與站互轉信
+
+
+遠程目標
+---------
+support SNP
+寄站外信改為 mqueue
+zmodem
+
+other
+------
+/tmp 如何清除 ... 不能 reboot 一次清
+改用 permission (加上列出有某種 perm 的所有人: 外部程式)
+IO_TIMEOUT
+增加 badlogins.log 顯示給 User 看
+boardrc expire
+不分大小寫check重覆註冊id
+/* -ToDo- */ /* lasehu: */ /* unused */ #NSYSUBBS
+display who set me friend: optmization
+support getdata, CTRL+U, CTRL+A, CTRL+E, cursor-left, cursor-right, doskey
+deluser -u <userid>
+namecomplete: everywhere, add friend, add grouply mail sending
+write all user passwds into .PASSWDS
+新使用者不能寄信/群組寄信
+手動認證使用與設定安裝說明
+chat.c: add limit to non-local user
+idcheck.c: reserve log, add one-time limit
+talk.c: if username including ansi-code, fill the needed space to string
+bbschatd: support non-poll
+在某分類或全部看板中列出含有某人文章的看板列表, 並自動將 ccur 指到到該篇
+class: admin, edit, board class type, new board, bbsweb
+board name aliase: 
+irc:
+.PASSWDS, .USERIDX: fix, sync
+十大熱門話題: 每日/每週/每月/每年
+各看板新增佈告排行
+各使用者張貼佈告排行
+生日列表
+看板分類/新增看板
+getdata: CTRL-A, CTRL-E, CTRL-U, CTRL-K 
+vote: item exchange
+三信: deluser
+phbbs: bbsd, bbs-news denied by nsysu-news
+more.c: search text
+BOARDS -> apply_brdshm(): packbbs.c, expire.c, delthread.c, admin.c
+
+adminCancelUser
+kickUser
+ident !=7 cannot mail/mail group

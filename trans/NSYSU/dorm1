@@ -1,0 +1,23 @@
+#!/bin/sh
+
+awk 'BEGIN{LEVEL1=0,MATCH=0,ST=1,WT=0}{
+
+  if ($1=="#ifdef" || $1=="#if" || $1=="#ifndef") {
+     if ($2==ABC) {
+       LEVEL1=1;
+       if ($1=="#ifdef") ST=0;
+       else ST=1;
+     else {
+       if (LEVEL1>0) LEVEL1++;
+     }
+  }
+  if (LEVEL1==0 || WT==1) print;
+  if ($1=="#endif" && LEVEL1>0) {
+     LEVEL1--;
+     WT=0;
+  }
+  if (LEVEL==1 && $1=="#else" && ST==1) {
+     WT=1;
+  }
+
+}' ABC=$2 $1 > $1.out

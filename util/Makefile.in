@@ -1,0 +1,97 @@
+################################################
+# Makefile for Formosa BBS utilities           #
+################################################
+#
+# This Makefile for "@systype@"
+HOMEBBS    = @HOMEBBS@
+
+DEFINES    = @OS_DEF@ $(SITE_DEF) -DHAVE_CONFIG_H
+CC         = @CC@
+CFLAGS	   = @CFLAGS@ -I../include -I../lib
+LDLIBS     = @LIBS@
+
+
+ifneq (,$(filter -DNSYSUBBS% -DANIMEBBS -DULTRABBS,$(SITE_DEF)))
+  CFLAGS   = -O2 -mcpu=athlon -march=athlon -Wunused -I../include -I../lib
+  HOMEBBS  = /apps/bbs
+  LDLIBS   += -lgnumalloc
+endif
+ifeq (-DNSYSUBBS1,$(SITE_DEF))
+  LDLIBS   := $(filter-out -lmmalloc,$(LDLIBS))
+  DEFINES  = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF) -DHAVE_CONFIG_H
+endif
+ifeq (-DANIMEBBS,$(SITE_DEF))
+  LDLIBS   := $(filter-out -lmmalloc,$(LDLIBS))
+  DEFINES  = -DLINUX -DTERMIOS $(SITE_DEF) -DHAVE_CONFIG_H
+endif
+
+PROG = bbsfingerd bbs2g4 bbspop3d onlinesrv idcheck bbsmail
+PROG2 = bbs-news deluser menushow userstat packbbs expire mailbm delthread fromstat
+PROGS = $(PROG) $(PROG2)
+
+LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
+           ../lib/mod_article.c ../lib/mod_board.c ../lib/mod_mail.c \
+           ../lib/mod_net.c ../lib/mod_pass.c ../lib/mod_post.c \
+           ../lib/mod_readrc.c ../lib/mod_record.c ../lib/mod_sem.c \
+           ../lib/mod_shm.c ../lib/mod_user.c ../lib/mod_zap.c \
+           ../lib/modetype.c
+LIBFILE  = ../lib/libbbs.a
+
+
+.SUFFIXES: .c
+
+
+all: $(PROGS)
+	
+
+$(LIBFILE): $(LIBSRCS)
+	cd ../lib; make
+
+idcheck bbsmail bbs-news: str_codec.o
+idcheck bbsmail bbs-news: LIBFILE+= str_codec.o
+%:  %.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $* $*.c $(LDLIBS) $(LIBFILE)
+
+install installbin: all
+	for i in $(PROG); do \
+		@INSTALL@ -g bbs -m 0551 $$i $(HOMEBBS)/bin; \
+		chown root $(HOMEBBS)/bin/$$i; \
+	done
+	for i in $(PROG2); do \
+		@INSTALL@ -g bbs -m 0551 $$i $(HOMEBBS)/bin; \
+		chown bbs $(HOMEBBS)/bin/$$i; \
+	done
+
+IOSRCS = ../src/io.c ../src/term.c ../src/screen.c
+
+syscheck: syscheck.c $(LIBFILE) $(IOSRCS)
+	$(CC) $(CFLAGS) $(DEFINES) -D_BBS_UTIL_ -o $@ $@.c $(IOSRCS) $(LDLIBS) \
+		$(LIBFILE)
+
+help:
+	@echo ""
+	@echo "Usage: make target"
+	@echo ""
+	@echo "where target is one of the following:                    "
+	@echo "========================================================="
+	@echo "   all           build all package                       "
+	@echo "   clean         clean all package                       "
+	@echo "   bbsmail       convert internet mail to BBS mail format"
+	@echo "   bbs-news      BBS to News gateway program             "
+	@echo "   packbbs       pack all deleted article on board       "
+	@echo "   expire        check the limit of post on each board   "
+	@echo "   deluser       delete the user should be expired       "
+	@echo "   idcheck       verify the ident reply mail from user   "
+	@echo "   menushow      active menu show                        "
+	@echo "   bbs2g4        bbs to gopher gateway                   "
+	@echo "   bbspop3d      bbs pop3 server	                        "
+	@echo "   bbsfingerd    bbs fingerd daemon                      "    
+	@echo "   userstat      bbs statistics program                  " 
+	@echo "   syscheck      identification utility                  "
+	@echo "   onlinesrv     online user fix server                  "
+	@echo "   mailbm        mail to all bm                          "
+	@echo "   delthread     delete articles of specified thread     "
+	@echo "========================================================="
+
+clean:
+	rm -f core $(PROGS)

@@ -1,0 +1,78 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 張貼佈告</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=big5">
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="POST" METHOD="POST" ACTION="PostSend">
+<TABLE border="0">
+<TR>
+	<TD BGCOLOR="#12AFFF">
+	<B><FONT SIZE="+2" COLOR="#FFFFFF">張貼佈告</FONT></B>
+	&nbsp;&nbsp;<FONT SIZE=3 COLOR="#FFFFFF">(所有欄位都要填寫)</FONT>
+	</TD>
+</TR>
+
+<script language="JavaScript">
+if("<!BBS_User_ID!>" == "")
+{
+	document.writeln("<TR><TD><FONT SIZE=\"3\">如果您在本站沒有帳號, 請<a href=\"<!BBS_SubDir!>users/UserNew.html\">註冊一個新帳號</a></FONT></TD></TR>");
+	document.writeln("<TR><TD><FONT SIZE=\"4\">帳號：<INPUT TYPE=\"TEXT\" NAME=\"Name\">密碼：<INPUT TYPE=\"password\" NAME=\"Password\"></FONT></TD></TR>");
+}
+</script>
+
+<TR>
+	<TD>
+	<FONT SIZE=4>
+	板名：<!BBS_Board_Name!>&nbsp;&nbsp;(<!BBS_Board_Title!>)
+	&nbsp;&nbsp;&nbsp;&nbsp;張貼等級限制：<!BBS_Board_Level!>
+	</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD>
+	<FONT SIZE=4>標題：</FONT>
+	<INPUT TYPE="TEXT" NAME="SUBJECT" SIZE="45" MAXLENGTH="70">
+	簽名檔：
+	<SELECT NAME="SIGN">
+	<OPTION VALUE="1" SELECTED>1</OPTION>
+	<OPTION VALUE="2">2</OPTION>
+	<OPTION VALUE="3">3</OPTION>
+	<OPTION VALUE="0">不採用</OPTION>
+	</SELECT>
+	</TD>
+</TR>
+<script language="JavaScript">
+if("<!BBS_Board_News!>" == "YES")
+{
+	document.writeln("<TR><TD><FONT SIZE=\"4\">是否將文章送至 NEWS 轉信：是<INPUT TYPE=\"RADIO\" NAME=\"NEWS\" VALUE=\"YES\" Checked>否<INPUT TYPE=\"RADIO\" NAME=\"NEWS\" VALUE=\"NO\"></FONT></TD></TR>");
+}
+</script>
+<TR>
+	<TD><FONT SIZE=4>內容</FONT><FONT SIZE="-1">（WEB-BBS目前貼佈告不支援ANSI色彩功能）</FONT></TD>
+</TR>
+<TR>
+	<TD><TEXTAREA COLS="76" ROWS="10" NAME="CONTENT" WRAP="OFF"></TEXTAREA></TD>
+</TR>
+<TR>
+	<TD><HR></TD>
+</TR>
+
+<script language="JavaScript">
+if(!(parseInt(<!BBS_User_Level!>) < <!BBS_Board_Level!>))
+	document.write("<TR><TD><INPUT TYPE=\"SUBMIT\" VALUE=\"張貼佈告\">&nbsp;&nbsp;<INPUT TYPE=\"BUTTON\" VALUE=\"放棄\" onClick=\"history.back()\"></TD></TR>");
+else
+	document.write("<TR><TD>很抱歉！您的等級不能張貼佈告<INPUT TYPE=\"BUTTON\" VALUE=\"回看板\" onClick=\"history.back()\"></TD></TR>");
+</script>
+</TABLE>
+</FORM>
+
+</CENTER>
+
+</BODY>
+</HTML>

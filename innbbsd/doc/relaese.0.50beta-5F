@@ -1,0 +1,101 @@
+From news.csie.nctu.edu.tw!skhuang Sun Sep 17 19:42:07 1995
+Path: news.csie.nctu.edu.tw!skhuang
+From: skhuang.bbs@csie.nctu.edu.tw (Shih-Kun Huang)
+Newsgroups: tw.bbs.admin.installbbs
+Subject: [innbbsd patch] 0.50beta-5F: 中文轉碼 gateway
+Date: 17 Sep 1995 11:41:32 GMT
+Organization: 交大資工天龍新聞社(by nbbstin)
+Lines: 87
+Message-ID: <43h1hc$p2a@news.csie.nctu.edu.tw>
+Reply-To: skhuang@csie.nctu.edu.tw
+NNTP-Posting-Host: gopher.csie.nctu.edu.tw
+X-Newsreader: TIN [version 1.2 PL2]
+
+請取:
+ftp://ftp.csie.nctu.edu.tw/pub/bbs/misc/innbbsd/innbbsd-0.50beta-5F.tar.gz
+
+新增功能: builtin filters for GB/BIG5/HZ conversion
+          external filters for BIG5/JIS conversion  
+
+BUGs:1. 在 Palmbbs 經 bbslink 處理後無法被 cancel.
+     2. PalmBBS email post 無法轉出
+     3. 在 FreeBSD innbbsd 不穩
+TODO:1. 支援 Feeling BBS (感謝 kftseng 支援, 測試中)  
+     2. addgroup utility for passive gateway
+
+轉碼 gateway 用途:
+1. 轉 alt.chinese.text (HZ <-> Big5) 
+2. 轉 fj.* (jis <--> BIG5)
+3. 大陸 GB 環境 的 BBS 可轉 tw.bbs.*,alt.chinese.text.big5 (BIG5 <--> GB)
+4. 以後台灣 BBS 可轉大陸 GB 討論區. (GB <--> BIG5)
+
+filter.doc
+----------------------------------------------------------------------------
+   Cool features of innbbsd: adding filters
+
+1. Install
+  a. cd convert/hztty; make; make sys-type
+  b. modify Makeifle, 
+     choose one of the LAN options:
+#LANG=BIG5
+#LANG=GB
+#LANG=ENGLISH
+
+     uncomment out
+#FILTER=
+#FILTEROBJ= ,,,,
+#           ....
+
+  c. modify innd/filter.conf
+     to clarify as examples:
+tw.bbs.*,alt.chinese.text.big5:big2gb:gb2big
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^^^ ^^^^^^
+newsgroups in wildcard pattern  ^       ^
+and separated with ",".         |       |
+			      receive  send
+                              filter   filter
+
+Three types of filters:
+1. builtin
+2. pipe stream of builtin filter
+3. external commands
+
+Available builtin filters
+gb2big, big52gb, hz2gb, hz2big 
+
+Useful external command filters
+j2b (jis2big), b2j(big2jis) 
+
+Successful testing:
+builtin: 
+  receive: big2gb, hz2gb, hz2big
+  send:    gb2big, /usr/local/bin/b2g|/usr/local/bin/gb2hz
+external:
+  receive: /usr/local/bin/j2b
+  send:    /usr/local/bin/b2j
+
+------------------
+附錄
+innbbsd 簡介
+* 支援 client/server news gateway.  
+* 可同時接收多個 news server (多個 link) 餵送, 或主動從多個 news server  
+  收取相同或不同討論區.
+* 可同時 feed 多個 server (BBS or News). 不靠 news server 也能使 BBS
+  server 互轉.  
+* 支援跨站刪信 (client/server gateway).  
+* 支援 mailing list 收發. 
+* 支援 moderated newsgroup 
+* 支援 tin, elm pipe 及 tag pipe.
+* crosspost 或一對多轉入時採用 hard link, 節省 disk space.
+* 選擇性收送信件:
+  1. 轉入轉出 
+  2. 轉入不轉出
+  3. 轉出不轉入
+  4. 一對多轉出, 多對一轉入
+  5. 多對一轉出, 一對多轉入
+* 可用 inetd 啟動或跑成 standalone server. 兩種方式不管多少 connections
+  都只用一個 process 處理, 不會有 fork process 的負擔.  
+* 利用 "ctlinnbbsd" 命令控制 server, 可隨時檢查 server 狀態.  
+* 不同中文碼轉碼 gateway
+--------------------------------------------
+

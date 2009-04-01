@@ -1,0 +1,43 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 編輯好友名單</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if("<!BBS_User_ID!>" == "")
+	{
+		alert("警告：尚未登入系統");
+	}
+    else
+        document.UserFriend.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size="5" color="orange"><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<TABLE BORDER="0" CELLSPACING="4" CELLPADDING="0" width="80%">
+<TR><TD BGCOLOR="Orange" colspan="2"><FONT color="blue">個人設定 / 編輯好友名單</FONT></TD></TR>
+
+<TR>
+<FORM NAME="UserFriend" METHOD="POST" ACTION="UserFriend">
+<TD colspan=2>
+好友名單：
+<TEXTAREA COLS="60" ROWS="8" MAXLENGTH="70" NAME="CONTENT"><!BBS_User_Friend!></TEXTAREA>
+</TD>
+<TR>
+<td colspan=2>
+<input type="button" value="修改" onClick="check()">&nbsp;&nbsp;
+<input type="button" value="放棄" onclick='location.href="<!BBS_SubDir!>UserMenu.html"'>&nbsp;&nbsp;
+</td>
+</FORM>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+</HTML>

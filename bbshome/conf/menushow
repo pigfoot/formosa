@@ -1,0 +1,8 @@
+# Usage: boards/boardname : mark or all : hours
+#        版或精華區/版名 : 保留或全部 : 時數
+# mark 是說只有 'G' 保留的才做，all 則表示全做
+# hours 是說幾小時以內的布告才做，0 表示無限制
+#
+boards/main-menu:mark:720
+treasure/main-menu:all:0
+

@@ -1,0 +1,578 @@
++--------------------------------------------------+
+| 中山 Formosa BBS Server 系統安裝手冊  for v1.3.1 |
++--------------------------------------------------+
+
+	一、程式發展歷史
+	二、程式所在
+	三、安裝 BBS 的基本需求
+	四、設定 BBS 相關的帳號
+	五、設定原始程式, 編譯與安裝
+	六、測試上線
+	七、MAN PAGES
+	八、BBS 身份認證系統
+	九、開機自動執行檔
+	十、設定 crontab
+	十一、定期清理
+	十二、BBS 目錄結構
+	十三、一些讓 BBS 無法正常執行的可能原因
+	十四、 inetd 與正常的 login
+	十五、問題諮詢
+
+
+一、程式發展歷史：
+
+    本 BBS 所用的程式是根據 Eagles BBS 1.0 版改寫而來. 歷經數次改版, 中文
+    化, 一直到 NSYSUBBS 3.0.0 (支援 Linux), 都還是使用 TTY-Based 系統. 配
+    合 Client/Server 的發展, 將原本的 TTY-Based 改為 NOTTY-BBS Server. 即
+    FormosaBBS v1.0.0, 目前已發展至 FormosaBBS v1.1.1 (支援 FreeBSD).
+
+    註：自 FormosaBBS 1.0.0 版之後, 不再使需要 tty 來執行 BBS.
+        故若要提高上線人數, 不需要 patch kernel.
+
+
+二、程式所在：
+
+    本 BBS 程式目前仍持續不斷更新中，請不定期到下列 Anonymous FTP Site 取
+    得最新版本的程式, 或修正檔案.
+
+    <URL:ftp.nsysu.edu.tw/NSYSU/BBS/lastest/>
+
+
+三、安裝 BBS 的基本需求：
+
+    RECOMMENED
+
+       GNU make version 3.77
+
+    OPERATING SYSTEMS
+
+       SunOS 4.1.x
+       Solaris 2.4 or above (recommended)
+       IBM AIX 4.x
+       RedHat Linux (6.0 recommened), Slackware Linux 3.x
+       FreeBSD 3.3-RELEASE
+
+    FEEDBACK:
+
+       如果您使用較不常見的系統，可能要自行對原始程式碼做些修改。若您自行修
+       改以支援不同的作業系統, 歡迎將原始程式碼寄回給我們.
+       <email:bbsmaster@cc.nsysu.edu.tw>
+
+    DEMOE SITES 
+
+       (1) 中山福爾摩莎 (~1999/06/16)
+        作業系統：Solaris 2.7
+        主機：PentiumII 450 x2
+        RAM：768MB
+        SWAP：1544MB
+        硬碟：10GB
+        最大上線人數: 2449
+
+       (2) 高雄女中
+        作業系統: IBM AIX 4.1
+        主機: PowerPC
+        RAM: 64MB
+        SWAP: 96MB
+        最大上線人數: 120 (未達極限)
+          
+       (3) 澎湖資教網路
+        作業系統: SunOS 4.1.3_U1
+        主機: Sun SuperSparc
+        RAM: 128MB
+        SWAP: 128MB
+        最大上線人數: 70 (未達極限)
+
+       硬碟：視站的規模大小而定。
+
+
+四、設定 BBS 相關的帳號： 
+
+    請在 /etc/passwd 內設定一新使用者, 如下所示
+
+      bbs:*:9999:999:BBS:/home/bbs:/bin/false
+
+    請在 /etc/group 內設定 bbs 的 group, 如下所示
+
+      bbs:*:999:bbs
+
+    建立 ~bbs/ 目錄
+
+      bbs% mkdir ~bbs
+      bbs% chown bbs ~bbs
+      bbs% chgrp bbs ~bbs
+
+
+五、BUILD PROGRAMS
+
+    (1a) 設定原始程式, 編譯與安裝：
+
+      bbs% cd ~bbs/
+      bbs% gzip -dc FormosaBBS-1.1.1.tar.gz | tar xf -
+
+    成功以後, 會建出一個目錄 FormosaBBS-1.1.1 內有 BBS 的原始程式碼.
+
+      bbs% cd FormosaBBS-1.1.1
+      bbs% ./configure            # 依照各系統環境產生 Makefile, config.h
+                                  # 及 Install.sh ... 等檔案
+
+    接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數.
+
+      bbs% make                   # 編譯原始程式, 如有問題，進行除錯
+      bbs% make install HOMEBBS=/home/bbs           # 安裝編譯完成的程式
+
+    (1b)
+
+         bbs% rpm -ivh FormosaBBS-1.3.0-1.i386.rpm
+    
+    (2)
+
+        設定 /etc/hosts
+        將您的主機 IP Address, domain 填入
+
+    	[註]: telnet-based bbs 的所有訊息皆存放於 src/lang.h 中, 可自行
+          修改, 並重新編譯 bbsd, 然後將 bbsd 拷貝至 ~bbs/bin, 將
+          src/lang.h 拷貝至 ~bbs/conf/clang.h 與 ~bbs/conf/elang.h
+
+    (3) 設定 bbs.conf
+
+        修改 BBSNAME, BBSTITLE, ... 等資料.
+
+    (4) 修改
+
+        主選單 -> (a)dmin 管理者辦公室 -> (e)dit config 編輯設定檔案
+    
+        1) 進站公告
+        8) 新使用者須知
+        9) 認證說明信函
+       10) 通過認證通知
+       16) 進站畫面 1
+       17) 進站畫面 2
+
+
+六、測試 telnet-based bbs 上線：
+
+    若您只是單純架設 Web-BBS, 可直接跳過此步驟。
+
+    好了，現在您終於可以啟動 bbs 站了, 若您要啟動 bbs 站於一般 telnet 使用
+    情形下, 必須為主機管理者, 所以請以 root 身份執行下列指令:
+
+      bbs% /home/bbs/bin/bbsd <port>
+ 
+    執行完之後, bbs 站就可以算啟動了.
+
+    好！現在大致完成了，您可以連接您的主機來試一下了。
+
+      bbs% telnet localhost <port>
+
+    最重要的是, 您必須先以 'SYSOP' 上站成為第一位 sysop，以後別的 sysop 就
+    由你來提昇等級。'SYSOP' 的上站密碼為 'SYSOP'. 並請一定記得, 上站後立刻
+    修改 SYSOP 的密碼. 以防止他人盜用 SYSOP 帳號.
+
+七、MAN PAGES
+
+      ##############################################################
+      #### 請注意相關設定檔案 ~bbs/conf/* 屬性應該為 bbs 可寫入 ####
+      ##############################################################
+
+      --------------------------------------------------------------
+      NAME
+          bbsmail - Internet E-mail 收信程式
+ 
+      SYNOPSIS
+          bbsmail [-v]
+
+      DESCRIPTION
+
+          -v verbose mode
+
+          'bbsmail' 程式有下列功能：
+
+          - 接收寄給 userid.bbs@<host> 的 E-mail 並轉入 BBS Users 的個人信箱.
+          - 接收寄給 bbs@<host> 的 E-mail 並張貼至看板一般區或精華區.
+            (唯有該看板板主才由於精華區張貼的權限)
+
+          'bbsmail' 的特殊張貼格式, 請參考 util/README.bbsmail 說明.
+
+      CONFIGURATION FILE
+         /etc/sendmail.cf
+
+         修改 /etc/sendmail.cf 讓系統接受 userid.bbs@bbs... 型態
+         的 E-mail, 並自動轉給 bbsmail 這個帳號.
+
+         - 以 SunOS 4.1.3 的 /etc/sendmail.cf 為例:
+
+             修改下行 : (在 S0 Rule Block 中)
+# everything else is a local name
+R$+                     $#local $:$1                    local names
+
+             複製一行, 改成為:
+# everything else is a local name
+R$*.bbs                 $#local $:bbs               local names
+R$+                     $#local $:$1                local names
+
+         - 以 BSD sendmail 8.x.x 的 /etc/sendmail.cf 為例:
+
+             修改下列兩處 : (在 S0 Rule Block 中)
+# handle local hacks
+R$*.bbs                 $: $>98 bbs      <--- 加入這一行
+R$*                     $: $>98 $1
+
+# short circuit local delivery so forwarded email works
+R$=L < @ $=w . >        $#local $: @ $1     special local names
+R$*.bbs < @ $=w . >     $#local $: bbs      regular local name <--- 加此行
+R$+ < @ $=w . >         $#local $: $1       regular local name
+
+         重新執行 sendmail daemon,
+         系統就可以接受 userid.bbs@bbs.... 型態的 E-mail.
+         郵件將統一收到使用者 bbs 的 system mail box
+
+      STARTUP
+         crontab
+
+      --------------------------------------------------------------
+      NAME
+          bbsnews - 轉信程式
+ 
+      SYNOPSIS
+          bbsnews
+
+      DESCRIPTION
+
+      CONFIGURATION FILE
+          ~bbs/news/bbs-news.conf (從系統以 bbs 身份直接編修)
+          主選單 -> (a)dmin 管理者辦公室 -> 轉信設定
+       
+          設定 news server ip, port, 本站名稱與組織代號
+
+          1. 第一次啟動時, 請先設一兩個 BNLink line 先測試看看.
+          2. 如果不想拿舊的 News article, GET 欄請寫 no
+          3. 請選定一個 News Server, 選定後就別再改變, 否則轉信將會不正常,
+             所以請謹慎選擇.
+          4. 你必須在選定的 News Server 有 post article 的權限, 才能 output 
+             bbs posts.
+
+          設定檔更改之後, 必須重新啟動 bbs-news 或等到 bbs-news 處理下次再
+          啟動轉信程序才會生效. 
+          (bbs-news process 每處理完一輪迴 B-N-Link 之後, 會重讀一次
+           bbs-news.conf 內容.)
+       
+      STARTUP
+          開機自動執行檔
+
+      --------------------------------------------------------------
+      NAME
+          deluser - 帳號刪除程式
+ 
+      SYNOPSIS
+          deluser day3 day49 day50 day100
+
+      DESCRIPTION
+          day3:   不到三級的使用者未上站天數，超過時間則刪除帳號   (預設: 10)
+          day49:  不到五十級的使用者未上站天數，超過時間則刪除帳號 (預設: 30)
+          day50:  滿五十級的使用者未上站天數，超過時間則刪除帳號   (預設: 90)
+          day100: 版主等級的使用者未上站天數，超過時間則刪除帳     (預設: 365)
+
+      --------------------------------------------------------------
+      NAME
+          expire - 過期/標記刪除佈告清除程式
+ 
+      SYNOPSIS
+          expire [UpperBound] [Range]
+
+      DESCRIPTION
+          UpperBound: 各板佈告上限, 超過此上限系統將自動清除
+	      Range:      保留緩衝彈性範圍
+
+      Examples:
+          expire 3000 500
+          ==> 若板面佈告超過 3000 篇, 系統自動刪除到剩 
+              2500 (= 3000 - 500) 篇.
+
+      CONFIGURATION FILE
+          ~bbs/conf/expire.cf
+          主選單 -> (a)dmin 管理者辦公室 -> 4) 佈告刪除設定
+
+          (用途: 個別設定各看板佈告上限:)
+
+      --------------------------------------------------------------
+      NAME
+          packbbs - 標記刪除佈告清除程式
+ 
+      SYNOPSIS
+          packbbs [-a] [-b boardname] [-m userid]
+
+      DESCRIPTION
+          -a            清除所有看板上的標記刪除佈告
+          -b boardname  清除特定看板上的標記刪除佈告
+          -m userid     清除特定使用者信箱內的標記刪除信件
+
+      --------------------------------------------------------------
+      NAME
+          bbsweb - BBS Web Server
+ 
+      SYNOPSIS
+          bbsweb [-p port] [-b ip] [-d] [-c]
+
+      DESCRIPTION
+          -b ip   指定 server ip
+          -p port 指定 server port (預設: 80)
+          -d      啟動 debug 模式 (預設: 不啟動)
+          -c      指動 allow/deny 模式 (預設: 不啟動)
+
+          自 FormosaBBS v1.0.0 版起, 提供 Web 介面的 BBS 站系統, 與 HTTP 1.0
+          相容, 您可很簡單地自行規畫 Web BBS 站的外觀, 只要修改 HTML 檔案, 
+          即可立即變換出不同的風貌. 相關檔案皆擺在於 'HTML/' 及 'HTML/image/'
+          目錄中.
+
+      STARTUP
+          開機執行          
+
+      --------------------------------------------------------------
+      NAME
+          bbs2g4 - bbs2g4 (BBS To Gopher Gateway)
+ 
+      SYNOPSIS
+          bbs2g4 [-p port] [-t timeout_second]
+
+          port: 預設值 70
+          timeout_second: 預設值 60
+
+      --------------------------------------------------------------
+      NAME
+          bbspop3d - bbs pop3 daemon 提供 BBS 離線取信服務
+
+      SYNOPSIS
+          bbspop3d 
+
+      --------------------------------------------------------------      
+      NAME
+          bbsfingerd - bbs finger daemon
+
+      SYNOPSIS
+          bbsfingerd
+      
+      --------------------------------------------------------------            
+      NAME
+          menushow - 秀圖模式程式
+
+      SYNOPSIS
+          mehushow RefreshSeconds
+
+      例如: 
+          RefreshSeconds 設為 600 表示每 600 秒自動更新，Run as Daemon
+          RefreshSeconds 設為 0 表示更新一次後結束，Call by Crontab
+
+      CONFIGURATION FILE
+          ~bbs/conf/menushow 
+
+          設定檔範例:
+           #秀圖模式設定檔
+           # Usage: boards/boardname : mark or all : hours
+           #        版或精華區/版名 : 保留或全部 : 時數
+           # mark 是說只有 'G' 保留的才做，all 則表示全做
+           # hours 是說幾小時以內的布告才做，0 表示無限制
+           #
+           boards/main-menu:mark:720
+           treasure/main-menu:all:0
+
+      STARTUP
+          crontab, 開機執行
+
+      --------------------------------------------------------------            
+      NAME
+          userstat - 每日線上使用者統計
+
+      SYNOPSIS
+          userstat -k -p <張貼看板名稱>
+
+      STARTUP
+          crontab
+
+      --------------------------------------------------------------            
+
+八、BBS 身份認證系統：
+
+      於 /etc/passwd 加入 (建立一帳號 syscheck)
+	
+      syscheck:##syscheck:9999:999:syscheck:/home/bbs:/home/bbs/bin/syscheck
+
+      然後確認執行
+
+      bbs% cd ~bbs; ln -s ../ID .
+
+      --------------------------------------------------------------            
+      NAME
+          idcheck - 身分認證查核
+
+      DESCRIPTIOTN
+          認證系統運作程序:
+
+          1. User 於站上填寫個人認證申請資料後, 系統將會以 'syscheck' 名義
+             寄信至 user 的 e-mail address. 
+          2. User 收到信後, 必須將原信回覆給 'syscheck' 以確認此 
+             e-mail address 確實為該 user所有. 
+          3. 認證查核系統(idcheck程式)收到來自 User 的回覆信, 將查核與當初
+             的認證申請資料是否一致, 若一切正確無誤, 則自動將 User 個人資料
+             更新為 '已通過認證'.
+
+      CONFIGURATION FILE
+          ~bbs/doc/ID_Check_Doc 系統寄發認證確認信給 User e-mail address 時
+                                的郵件內容
+          ~bbs/doc/ident        User 填寫個人認證申請資料前, 系統提示認證說明
+                                注意事項的內容
+          ~bbs/doc/idented      User 通過認證後, 系統自動寄發通知函的郵件內容
+
+          請自行編修以上各檔, 加入必要之說明.
+
+      STARTUP
+          crontab
+
+      -------------------------------------------------------------- 
+      NAME
+          syscheck - 手動審核認證申請
+      
+      DESCRIPTION
+
+      STARTUP
+          進入系統主機, 以 syscheck 身分登錄 (非bbs user), 依照 
+          /etc/passwd 的設定, 呼叫 login shell - syscheck
+
+      --------------------------------------------------------------       
+
+
+九、開機自動執行檔
+    
+      (1) 將各程式加入開機自動執行檔：
+
+          ＃＃ Linux
+          /etc/rc.d/rc.local 加入下列數行：
+          ＃＃ Solaris 2.x
+          /etc/rc2.d/S72inetsvc 加入下列數行：
+          ＃＃ SunOS 4.1.x
+          /etc/rc 加入下列數行：
+          ＃＃ AIX 4.x
+          /etc/rc.tcpip 加入下列數行：
+
+          /home/bbs/bin/bbsd 23                     # telnet-based bbs daemon
+          /home/bbs/bin/bbs2g4                      # bbs to gopher gateway
+          /home/bbs/bin/bbspop3d                    # bbs pop3 gateway
+          /home/bbs/bin/bbsfingerd                  # bbs finger daemon
+          /home/bbs/bin/bbsweb                      # bbs web server
+          /home/bbs/bin/csbbsd                      # client-server-based bbs
+          /home/bbs/bin/bbs-news                    # bbs news process
+          /home/bbs/bin/menushow 0                  # 啟動秀圖模式程式
+          /home/bbs/bin/onlinesrv
+
+
+十、設定 crontab
+
+            bbs% crontab -e bbs
+#
+# uptime 在 user login 時將可以看到系統負載.
+# userstat 平均線上人數/狀態分佈統計取樣
+# bbsmail 自動處理寄自站外 E-mail
+#
+00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail;
+   /home/bbs/bin/userstat -c;
+   /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
+#
+# 請於負荷低時執行 (如清晨). 執行後並未真正刪除帳號，只是把過期帳號資料移到
+#        /home/bbs/home/.del     
+#        /home/bbs/mail/.del
+# 為了讓站長有拯救帳號的機會
+#
+10 5 * * * /home/bbs/bin/deluser 10 30 90 365
+# 所以若要真正刪除空間，請記得定時砍掉這兩個目錄
+0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
+#
+#
+30 8 * * * (/home/bbs/bin/expire 3500 500; 
+   /home/bbs/bin/packbbs -b ID > /dev/null; 
+   /home/bbs/bin/userstat -k -p sysop )
+#
+# 將 'syscheck' 的信箱內所有由使用者回覆的認證函處理完畢.
+#
+0,10,20,30,40,50 * * * * /home/bbs/bin/idcheck
+#
+# 啟動秀圖模式程式
+#
+00,20,40 * * * * /home/bbs/bin/menushow 0
+#
+# 定期清理暫存檔/文書編輯備份檔
+#
+10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1 
+	-exec /bin/rm -f {}; > /dev/null 2>&1)
+
+
+十一、定期清理
+
+      請定期清除使用者上線紀錄檔:
+
+        ~bbs/home/[0,a-z]/records (users login 的記錄)
+
+
+十二、~bbs 目錄結構
+
+      HTML/          BBS首頁目錄
+      bin/           可執行檔
+      boards/        看板
+      conf/          設定檔
+          welcome    login 前的歡迎畫面。
+      doc/           顯示畫面檔
+          Welcome0   login 後的歡迎畫面。
+          Welcome    站長公告畫面。
+      edit/          個人線上編輯檔案備份
+      home/          個人目錄
+      log/           記錄檔目錄
+      mail/          個人信箱
+      news/          轉信工作目錄
+      realuser/      已認證使用者資料
+      tmp/           暫存目錄
+      treasure/      看板精華區
+      boards/vote/   看板投票箱
+      write/         線上訊息暫存目錄
+
+
+十三、一些讓 BBS 無法正常執行的可能原因：
+
+      (1)   permission 的問題，請檢查 ~bbs/bin/{bbs} 是否可以讓
+            root 與 bbs 執行，以及 bbs 能否讀寫 bbs 的相關設定檔。
+
+      (2)   shared memory 的問題，如果您誤用 bbs 以外的 UID 執行 bbs
+            程式，可能會發生 login  bbs 後無法執行 bbs 程式的現象。請使用
+            ipcs, ipcrm 等指令解決。
+
+
+十四、inetd 與正常的 login：
+
+      從前 TTY-Based 的ＢＢＳ時代， port 23 可以由 bbs and normal user
+      共同使用，然而現今 NoTTY-Based ＢＢＳ因為 Telnetd Portocol 的初始
+      過程與ＢＢＳ結合所以在某些系統無法與正常 login 共用 port 2（如 Linux）
+      為了解決這個問題，最簡單的做法是改 /etc/inetd.conf 新增 port 24 為
+      normal login port, 做法如下：
+
+      (1) /etc/inetd.conf 修改如下： (加入 ntelnet)
+ftp     stream  tcp     nowait  root    /usr/sbin/in.ftpd       in.ftpd
+#telnet  stream  tcp     nowait  root    /usr/sbin/in.telnetd    in.telnetd
+ntelnet  stream  tcp     nowait  root    /usr/sbin/in.telnetd    in.telnetd
+
+      (2) /etc/services 修改如下：
+ftp             21/tcp
+telnet          23/tcp
+ntelnet         24/tcp          normal login port
+
+      改好以上兩個檔案，reboot 後即可生效，以後正常 login 請 telnet 24
+      例如 telnet bbs 24   或是  
+           telnet bbs#24   (此種寫法適用在 NCSA Telnet）
+
+
+十五、問題諮詢：
+
+      最好是到中山 BBS (bbs.nsysu.edu.tw) 的 FormosaBBS 板詢問，
+      其次是 E-mail 下列給下列之人：
+
+      bbsmaster@cc.nsysu.edu.tw
+      wind.bbs@bbs.nsysu.edu.tw
+      lasehu.bbs@bbs.nsysu.edu.tw
+
+      最後，祝您建站順利。

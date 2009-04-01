@@ -1,0 +1,8 @@
+# 'expire' configuration file
+#
+# [boardname] [LIMIT POST] [RANGE]
+# ex:
+# security 4000 1000
+# heart 4500 500
+# supermarket 3500 500
+# baseball 3000 500

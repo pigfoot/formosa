@@ -1,0 +1,155 @@
+################################################
+# Makefile for Formosa BBS                     #
+################################################
+#
+# This Makefile for "@systype@"
+#
+# The home directory for the user 'bbs'
+HOMEBBS   = @HOMEBBS@
+
+DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
+CC        = @CC@
+CFLAGS	  = @CFLAGS@ -I../include -I../lib
+LDLIBS	  = @LIBS@ -lncurses
+
+STRIP     = @STRIP@
+PERL      = @PERL@
+CPROTO    = @CPROTO@
+INSTALL   = @INSTALL@
+ECHO_N    = @ac_n@
+
+ifeq (-DKGHSBBS,$(SITE_DEF))
+  HOMEBBS := /apps/bbs
+endif
+ifneq (,$(filter -DNSYSUBBS% -DANIMEBBS,$(SITE_DEF)))
+  CFLAGS  := -g -O2 -mcpu=athlon -march=athlon -Wall -I../include -I../lib
+  HOMEBBS := /apps/bbs
+  #LDLIBS  += -lgnumalloc
+endif
+ifeq (-DNSYSUBBS1,$(SITE_DEF))
+  LDLIBS  := $(filter-out -lmmalloc,$(LDLIBS))
+  DEFINES = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF)
+  PERL    = /usr/bin/perl
+  CPROTO  = cproto
+endif
+ifeq (-DANIMEBBS,$(SITE_DEF))
+  LDLIBS  := $(filter-out -lmmalloc,$(LDLIBS))
+  DEFINES = -DLINUX -DTERMIOS $(SITE_DEF)
+  PERL    = /usr/bin/perl
+  CPROTO  = /usr/bin/cproto
+endif
+
+
+LIBFILE   = ../lib/libbbs.a
+LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
+           ../lib/mod_article.c ../lib/mod_board.c ../lib/mod_mail.c \
+           ../lib/mod_net.c ../lib/mod_pass.c ../lib/mod_post.c \
+           ../lib/mod_readrc.c ../lib/mod_record.c ../lib/mod_sem.c \
+           ../lib/mod_shm.c ../lib/mod_talk.c ../lib/mod_user.c \
+           ../lib/mod_zap.c ../lib/modetype.c
+
+SRCS      = admin.c article.c board.c chat.c chat2.c cursor.c edit.c formosa.c \
+            globals.c ident.c io.c lang.c list.c mail.c main.c menu.c \
+            more.c post.c screen.c stuff.c talk.c term.c vote.c xyz.c
+OBJS      = $(SRCS:.c=.o)
+
+.SUFFIXES: .o .c
+
+.c.o:  ;   $(CC) $(CFLAGS) $(DEFINES) -c $*.c
+
+all: bbsd bbschatd
+	
+
+bbsd: tsbbsproto.h $(LIBFILE) $(OBJS) 
+	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
+	$(STRIP) bbsd
+
+tsbbsproto.h: $(SRCS)
+	if [ "@systype@" != "LINUX" ]; then \
+	echo '#include "struct.h"' > tsbbsproto.h; \
+	echo '#include "linklist.h"' >> tsbbsproto.h; \
+	if [ -n "$(CPROTO)" ]; then \
+		echo '#define _BBS_PROTO_H_' >> tsbbsproto.h; \
+		$(CPROTO) -O /dev/null -m -E"$(CC) -pipe -E" -I../include $(DEFINES) \
+			$(SRCS) >> tsbbsproto.h; \
+	fi \
+	fi
+
+bbschatd: bbschatd.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LDLIBS)
+	$(STRIP) $@
+
+genlogin: genlogin.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LDLIBS) $(LIBFILE)
+
+$(LIBFILE): $(LIBSRCS)
+	cd ../lib; make 
+
+installbin: installbbsd installbbschatd
+	
+
+install%: %
+	echo $(HOMEBBS);exit;
+	(cd $(HOMEBBS); [ ! -f ./bin/$? ] || mv -f ./bin/$? ./bin/$?.old)
+	-cp -p $? $(HOMEBBS)/bin
+
+install: all genlogin
+	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \
+		../Install.sh)
+	$(MAKE) installbin
+	@(./genlogin -c Sysop -p SYSOP -l 255 -i 7 SYSOP)
+	@(./genlogin -c Guest -p guest -l 0   -i 0 guest)
+
+clean:
+	-rm -f a.out core *.o bbsd bbschatd genlogin
+	$(MAKE) -C util clean
+
+#ctags: /tmp
+#	ctags $(SRCS)
+
+globals.c: globals.h mk-globals-c.pl
+	$(PERL) ./mk-globals-c.pl < globals.h > $@
+
+# DO NOT REMOVE
+#genlogin.o: genlogin.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h
+
+#globals.o: globals.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h
+
+#io.o: io.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h tsbbs.h globals.h ../include/io.h lang.h
+
+#main.o: main.c ../include/config.h ../include/struct.h globals.h \
+#	../include/bbs.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h
+
+#more.o: more.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h tsbbs.h globals.h ../include/io.h  \
+#	lang.h screen.h
+
+#screen.o: screen.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h tsbbs.h globals.h ../include/io.h  \
+#	lang.h screen.h
+
+#xyz.o: xyz.c ../include/bbs.h ../include/config.h \
+#	../include/struct.h ../include/perm.h \
+#	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+#	../include/conf.h tsbbs.h globals.h ../include/io.h  lang.h
+
+%.o: %.c ../include/bbs.h ../include/config.h \
+	../include/struct.h ../include/perm.h \
+	../include/modes.h ../lib/libproto.h ../include/linklist.h \
+	../include/conf.h tsbbs.h globals.h ../include/io.h  \
+	lang.h

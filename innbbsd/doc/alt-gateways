@@ -1,0 +1,69 @@
+
+請仔細閱讀 innd/README. 此文件後半部有介紹許多不同的轉信
+選擇, 包括單向轉信 (BBS-> News, News-> BBS), 和多對一轉信,
+這些說明是針對 bbsinnd 的使用者, innbbsd 也適用, 不過有以下
+幾個不同處 (其中一點 innd/README 未提到):
+
+N: newsgroup
+B: board
+S: server
+
+請設定 newsfeeds.bbs 為
+(其中 null 就是 "null" 四個字或任何不在 nodelist.bbs 的 keyword,
+ bbsroute 是 nodelist.bbs 中的 server node):
+A) 只轉入不轉出 
+   N    B    null 
+
+   Example: tw.bbs.campus -> campus board
+   tw.bbs.campus      campus       null
+
+B) 轉出不轉入 (注意 N 旁邊加上 ','):
+   N,   B    S
+
+   Example: newboards -> tw.bbs.newgroups
+   tw.bbs.newgroups,  newboards    bbsroute
+                  ^^^^
+                  請注意此 "," 必須加上
+C) 多(newsgroups)對一(board)轉入, 一(board)對多(newsgroups)轉出: 
+   N1,N2 B S
+   N1 B, null
+   N2 B, null
+
+   Example: tw.bbs.campus.nctu + nctu.talk -> nctu board
+                                nctu board -> tw.bbs.campus.nctu,nctu.talk
+   tw.bbs.campus.nctu,nctu.talk  nctu    bbsroute
+   tw.bbs.campus.nctu            nctu,    null
+   nctu.talk                     nctu,    null
+
+C1)多(newsgroups)對一(board)轉入, 一(board)對一(newsgroups)轉出: 
+   N2 B  bbsroute
+   N1 B, null
+
+   Example: tw.bbs.test + csie.test -> test board
+                               test -> csie.test
+   csie.test              test    bbsroute
+   tw.bbs.test            test,    null
+
+D)多(boards)對一(newsgroup)轉出, 一(newsgroups)轉入多(board):
+   N, B1 S
+   N, B2 S
+   N  B1,B2 S
+
+   Example:  math1, math2 board ->  tw.bbs.sci.math
+                tw.bbs.sci.math ->  math1,math2
+           
+   tw.bbs.sci.math, math1       bbsroute
+   tw.bbs.sci.math, math2       bbsroute
+   tw.bbs.sci.math  math1,math2 bbsroute
+   
+D1) 一(newsgroups)對多(board)轉出, 只轉入一(board):
+   N, B1 S
+   N  B2 S
+
+   Example: math1, math2 board     ->    tw.bbs.sci.math
+                  tw.bbs.sci.math  ->    math2
+
+   tw.bbs.sci.math,  math1   bbsroute
+   tw.bbs.sci.math   math2   bbsroute
+
+還有那些花樣, 其它轉信程式可以做到但 newsfeeds.bbs 變不出來的? 歡迎建議.

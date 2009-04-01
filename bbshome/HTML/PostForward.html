@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 轉寄佈告</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if(document.POST.ADDRESS.value.indexOf("@",0) > 0 && "<!BBS_User_Ident!>" == "未完成身份認證")
+	{
+		alert("警告：未通過身份認證者無法轉寄信件至站外");
+	}
+	else if(document.POST.ADDRESS.value == "")
+	{
+		alert("請填上轉寄e-mail位址");
+	}
+	else
+		document.POST.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="POST" METHOD="POST" ACTION="PostForward">
+<TABLE width=80%>
+<TR>
+<TD BGCOLOR="#12AFFF">
+<B><FONT SIZE="+2" COLOR="#FFFFFF">轉寄佈告</FONT></B>
+&nbsp;&nbsp;<FONT SIZE=3 COLOR="#FFFFFF">請確實填好收信人位址 (注意大小寫)</FONT>
+</TD>
+
+<TR>
+<TD BGCOLOR="Orange">
+<FONT SIZE="4" COLOR="#FFFFFF">文章標題</FONT>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<FONT SIZE="4">
+&nbsp;&nbsp;<!BBS_Post_Subject!><br><br>
+</FONT>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="Orange">
+<FONT SIZE="4" COLOR="#FFFFFF">轉寄至</FONT>
+</TD>
+</TR>
+<TR>
+<TD>
+&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="ADDRESS" SIZE="50">
+</TD>
+</TR>
+
+<TR>
+<TD COLSPAN=3>
+<INPUT TYPE="HIDDEN" NAME="BOARD" VALUE="<!BBS_Board_Name!>" >
+<INPUT TYPE="HIDDEN" NAME="POSTNUM" VALUE="<!BBS_Post_Num!>" >
+<INPUT TYPE="BUTTON" VALUE="轉寄" onClick="check()">
+<INPUT TYPE="RESET" VALUE="放棄" onClick="history.back()">
+</TD>
+</TABLE>
+</FORM>
+
+</CENTER>
+
+</BODY>
+</HTML>

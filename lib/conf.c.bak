@@ -1,0 +1,110 @@
+/*
+#include "bbs.h"
+*/
+#include <stdio.h>
+#include <string.h>
+
+#define BBS_CONF	"conf/bbs.conf"
+
+#define BOOL short
+
+struct conf {
+	char BBSNAME[40];
+	char BBSTITLE[60];
+	BOOL BBSLOG_IDLE_OUT;
+	BOOL BBSLOG_MAIL;;
+	char MAILSERVER[40];
+	BOOL USE_IRC;
+	BOOL USE_LOCALIRC;
+	char ACTFILE[80];
+	int BBS_UID;
+	int BBS_GID;
+	char HOMEBBS[40];
+	char SPOOL_MAIL[80];
+	int UTMPSEM_KEY;
+	int MULTILOGINS;
+	int MAXACTIVE;
+	int MAXBOARD;
+	int MAX_SIG_LINES;
+	int MAX_SIG_NUM;
+	int IDLE_TIME_OUT;
+	int MAX_MAILGROUPS;
+	int MAX_KEEP_MAIL;
+	int SEPC_MAX_KEEP_MAIL;
+	int MAX_GUEST_LOGINS;
+	int MAX_MAIL_SIZE;
+	char MENU_TITLE_COLOR[40];
+	char MENU_TITLE_COLOR1[40];
+	char _STR_BOARD_GUEST[80];
+	BOOL CHROOT_BBS;
+	BOOL SYSOP_BIN;
+	BOOL NSYSUBBS;
+	BOOL LOGINASNEW;
+	BOOL HAVE_IDENT;
+	BOOL EMAIL_LIMIT;
+};	
+
+#if 0
+int
+main()
+{
+	read_conf();
+}
+#endif
+
+struct conf conf;
+	
+int
+read_conf()
+{
+	FILE *fp;
+	char buf[4096], *p;
+	char *kname, *kval;
+	int len;
+
+	
+	if ((fp = fopen("/apps/bbs/" BBS_CONF, "r")) == NULL)
+	{
+		fprintf(stderr, "cannot open %s\r\n", BBS_CONF);
+		exit(1);
+	}
+
+	while (fgets(buf, sizeof(buf), fp))
+	{
+		if ((p = strchr(buf, '#')) != NULL)
+			*p = '\0';
+		if ((p = strchr(buf, '\n')) != NULL)
+			*p = '\0';
+		if (buf[0] == '\0')
+			continue;
+		
+		if ((p = strchr(buf, '=')) == NULL)
+			continue;
+			
+		len = strlen(buf);
+		*p = '\0';
+		
+		kname = p;
+		while ((kname - 1) > buf && *(kname-1) == ' ')
+			kname--;
+		*kname = '\0';
+		kname = buf;
+		while (*kname == ' ')
+			kname++;	
+		
+		kval = buf + len;
+		while ((kval - 1) > p && (*(kval-1) == ' ' || *(kval-1) == '"'))
+			kval--;
+		*kval = '\0';
+		kval = p;
+		while ((kval + 1) < buf + len && (*(kval+1) == ' ' || *(kval+1) == '"'))
+			kval++;
+		
+		strcpy(conf.BBSNAME, "ด๚ธี");
+		
+		printf("%s, %s\n", kname, kval);			
+	}
+	fclose(fp);
+	
+	printf("sizeof(conf) is %d\n", sizeof(struct conf));
+}

@@ -1,0 +1,33 @@
+
+ Notes
+ ===== 
+
+ The program in this 'util/' directory can be seprated into 
+ two part.
+
+ One are Daemons:
+
+    bbs-news
+    bbspop3d
+    bbs2g4
+    menushow
+
+ The others are event program, usually be put in 'crontab',
+ for daily or hourly executed.
+ 
+    deluser
+    checkbrd
+    packbbs
+
+ You can edit 'crontab' by the command 'crontab -e' to edit
+ the 'crontab'.
+
+ Please see the file 'INSTALL' in the parent directory for 
+ detail configuration for running your bbs well.
+
+
+ --Any suggestions or bug report, please mail to
+   bbsmaster@cc.nsysu.edu.tw
+   03/20/98
+
+ 

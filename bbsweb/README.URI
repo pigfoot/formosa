@@ -1,0 +1,7 @@
+
+BoardAccess.cgi?boardname=xxxx&action=show/update
+UserData.cgi?action=show/update
+UserSign.cgi?action=show/update
+UserPlan.cgi?action=show/update
+
+/users/		->	/users/UserQuery.html

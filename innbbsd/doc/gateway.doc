@@ -1,0 +1,63 @@
+[預告] BBS<->News client/server gatewaay
+
+相對於 mfchen 的 bbsinnd (in perl) server gateway,
+和中山 BBS 的 news-bbs client gateway, 我用 C 將此
+二者整合, 在 Sun-OS 和 Linux 測試中. 
+
+希望沒有人正在做相同的事. 特性如下:
+1. 以 C implement.
+2. 至少支援 Sun-OS 和 Linux.
+3. server gateway 和 client gateway 並存. 
+   可接受多個 news server feed 和 多個 client gateway
+   process 同時運作. 
+   client gateway process 可在其它非 BBS server 機器執行.
+   相同討論區可同時由多個 news server 餵送, 或從不同
+   news server 拿取. 
+4. 對 host load 影響正在測試評估中.
+5. server gateway 和 client gateway 都處理跨站砍信.
+6. 不會收到重複的文章.
+7. server gateway 可不經 news server 使二 BBS 站互轉信件.
+8. standalone single process concurrent server(優點 ?.)
+9  server gateway 和 bbsinnd 相容.
+
+    
+缺點:
+1. 必須 maintain 一個 1MB 左右的 dbz 資料檔.
+2. client gateway 要配合 server gateway 使用. 即使不
+   接受 news server feed, 也要跑 server gateway.
+   目前 client gateway process 就是當作一個
+   user 主控的 feed 來源. 此 client gateway process 可在 
+   BBS server 經 unix-domain socket feed 給 server gateway
+   或在不同 host 經 inet/tcp 餵給 BBS server.
+   
+   可用 mfchen 的 bbsinnd 配合此 client gateway. 
+3. standalone process (缺點 ?.)
+4. BBS -> News 仍用 mfchen 的 bntplink. 但改為支援
+   client gateway.
+5. 文件不足.   
+   
+徵求測試站. 請用 E-mail 和我連絡. 穩定後公開.   
+
+gateway 名稱:
+server gateway: innbbsd (Internet Net News to BBS daemon)
+client gateway: bbsnnrp (BBS to Net News Reading Protocol/Process/Program) 
+
+執行 
+innbbsd [portno]
+bbsnnrp [options] nntpserver activefile
+  -h|? (help) 
+  -c (reset active files only; don't receive articles)
+  -r remotehost(send articles to remotehost, default=local)
+  -p port|(send articles to remotehost at port, default=7777)
+     path(send articles to local at path, default=~bbs/innd/.innbbsd)
+  -w seconds ( > 1 wait for seconds and run infinitely, default=once)
+  -n (don't ask innbbsd server for stating articles)
+  
+[sample activefile]
+tw.bbs.test 0000000000 0000000001 y
+nctu.test   0000000000 0000000001 y
+  
+--
+Shih-Kun Huang
+EC638, CSIE, NCTU, Taiwan, R.O.C. Phone: 886-35-712121 (x54709)
+

@@ -1,0 +1,830 @@
+======================================================================
+BBS <==> News 轉信程式 innbbsd 介紹
+======================================================================
+<1>. 功能簡介
+<2>. 收信 Server Gateway (innbbsd) 安裝和使用
+   a. 設定 bbsname.bbs
+   b. 設定 nodelist.bbs
+   c. 設定 newsfeeds.bbs
+   d. 設定 innbbs.conf
+   e. 執行 innbbsd (options 介紹)
+<3>. 收信 Client Gateway (bbsnnrp) 安裝和使用
+   a. 設定 activefile
+   b. 定時跑 bbsnnrp
+<4>. 送信程式 bntplink 安裝設定   
+   a. bbaname.bbs 與 bntplink
+   b. nodelist.bbs  與 bntplink
+   c. newsfeeds.bbs 與 bntplink
+   d. 執行 bntplink
+<5>. Server gateway innbbsd 控制程式 (ctlinnbbsd) 介紹
+<6>. activefile and history database
+<7>. BBS implementation dependent part: receive_article.c
+<8>. 轉信架構
+<9>. 錯誤診斷 and FAQ
+======================================================================
+<1>. 功能簡介
+----------------------------------------------------------------------
+A). 主動式 (client gateway) 和被動式 (server gateway) 轉信的比較
+----------------------------------------------------------------------
+目前與 tw.bbs 轉信的 BBS 站所用之程式依照傳信的方式
+可區分為兩類:
+1. 主動取信的, 或稱為 client gateway.
+   一般經由 modem 電話撥接的 BBS站多用此方式主動以
+   news client 的身份向 news server 定時讀取.
+   NSYSU Formosa BBS 所用之轉信程式是一種 client gateway.
+2. 被動等信的, 或稱為 server gateway.
+   BBS 站跑一個 server, 只能被動地等待上游站餵送,
+   是一般 news server 用來傳送 news article 的方法.
+   Phoenix BBS 所附之 in.bntpd 就是一種 server gateway.
+
+  這兩種 gateway 各有優缺點. 分析如下:
+1. client gateway 必須 maintain 讀取的記錄, 與一般
+   news reader 的 newsrc 類似.  client 自主性高, 可以
+   主動決定何時去取信, 要那些討論區.
+2. server gateway 無須 maintain 讀取記錄, 只要被動地等待上游站
+   把新信送過來. server gateway 比較難自主, 送信時機和餵送之討論區.
+   由上游站設定.
+
+BBS 站必須衡量需求和維護之困難度, 以決定採用那一種 gateway.
+1. 收取之討論區多寡.
+   若不多, client gateway 比較合適. 如果很多, 應考慮採用 server gateway.
+   讀取記錄不好維護, 尤其是 news server 定期會有 renumber active 的
+   動作, client 可能誤判.
+2. 是否想連線同步轉信, 某站一有新信送出, 其他站馬上可看到.
+   這個只能由 server gateway 達成.
+3. 是否要跨站砍信. 若由 client gateway 來做比較難.
+   如果要做到能接受別站送來的砍信訊息,
+   a. 還要收取一個 稱為 "control" 或 "control.cancel" 的 news 討論區.
+      通常這個區的量相當大, 可能遠大於 BBS 站想轉的正常區.
+   b. 記錄 artno 與 BBS article path 的對應關係, 再 stat news server.
+   c. extract header (xhdr Control)
+   server gateway 不用再收額外的討論區即可跨站砍信.
+4. 個人使用或使用者不多的 BBS 站建議採用 client gateway.
+   用戶多的, 轉信不正常影響比較大,
+   建議採用 server gateway.
+5. 想要自主性高的用 client gateway.
+   想要有緊密相連, 有整體連成一線感覺者用 server gateway.
+
+----------------------------------------------------------------------
+B). innbbsd 介紹
+----------------------------------------------------------------------
+相對於 mfchen 的 bbsinnd (用 perl) server gateway,
+和中山 BBS 的 news-bbs client gateway, 我用 C 將此
+二者整合, 支援 Sun-OS 4.x, Sun Solaris, HP-UX, IRIX, 
+AIX 和 Linux. 
+
+innbbsd 整合 server gateway 和 client gateway. 
+希望沒有人正在做相同的事. 特性如下:
+  1. 以 C implement.
+  2. 支援多種 OS.
+  3. server gateway 和 client gateway 並存.
+     可接受多個 news server feed 和 多個 client gateway
+     process 同時運作.
+     client gateway process 可在其它非 BBS server 機器執行.
+     相同討論區可同時由多個 news server 餵送, 或從不同
+     news server 拿取.
+  4. 對 host load 影響正在測試評估中.
+  5. server gateway 和 client gateway 都處理跨站砍信.
+  6. 不會收到重複的文章.
+  7. server gateway 可不經 news server 使二 BBS 站互轉信件.
+  8. standalone single process concurrent server(優點 ?.)
+  9  server gateway 和 bbsinnd 相容.
+                             
+ 缺點:
+  1. 必須 maintain 一個 1MB 左右的 dbz 資料檔.
+  2. client gateway 要配合 server gateway 使用. 即使不
+     接受 news server feed, 也要跑 server gateway.
+     目前 client gateway process 就是當作一個
+     user 主控的 feed 來源. 此 client gateway process 可在
+     BBS server 經 unix-domain socket feed 給 server gateway
+     或在不同 host 經 inet/tcp 餵給 BBS server.
+     可用 mfchen 的 bbsinnd 配合此 client gateway.
+  3. standalone process (缺點 ?.)
+  4. BBS -> News 仍用 mfchen 的 bntplink. 但改為支援
+     client gateway.
+ ----------------------------------------------------------------------
+======================================================================
+<2>. 收信 Server Gateway (innbbsd) 安裝和使用
+   a. 設定 bbsname.bbs
+
+b. 設定 nodelist.bbs
+   innbbsd 由 nodelist.bbs 控制連線機器.
+   如
+#sitename hostname                 PROT(port) comments
+bbsroute  bbsroute.xxx.nctu.edu.tw POST(119) xxxx news server
+
+   則 bbssroute.xxx.nctu.edu.tw 才能 connect.
+   
+c. 設定 newsfeeds.bbs
+d. 設定 innbbs.conf
+e. 執行 innbbsd (options 介紹)
+ ----------------------------------------------------------------------
+!!! 警告 !!!
+測試前請備份貴 BBS 站資料.
+!!!!!!!!!!!!
+
+You can get from 
+
+ftp://ftp.csie.nctu.edu.tw/pub/bbs/misc/innbbsd/innbbsd-??.tar.gz
+
+patch from the previous version, use
+patch -p1 < innbbsd-patch.xx-xx
+
+A. FEATURES:
+   1. support Sun-OS, Solaris, Linux, AIX, IRIX, HP-UX 
+   2. carry(receive) news from mulitple servers
+      by mulitple client gateways or server gateways.
+   3. feed multiple servers (BBS or News) by post or ihave protocol to
+      different port number (nntp ,7777, ....)
+
+B. Test and Install
+
+   1. Please read innd/README and 
+      change your newsfeeds.bbs, nodelist.bbs, and bbsname.bbs
+   2. read innd/src/modify.doc
+
+   3. edit Makefile and change these two lines:
+   BBSHOME=/u/staff/bbsroot/csie_util/bntpd/home
+   BBS_SRC=/u/staff/bbsroot/bbs_src
+     
+      into
+
+   BBSHOME=/tmp/bbs
+   BBS_SRC=/your/bbs-src-directory
+
+   4. make
+   5. mkdir /tmp/bbs/boards /tmp/bbs/boards/test /tmp/bbs/innd
+      copy your newsfeeds.bbs, nodelist.bbs and bbsname.bbs to /tmp/bbs/innd
+   6. add to newsfeeds.bbs
+      tw.bbs.test test test-news
+   7. add to nodelist.bbs
+      test-news news-server-your-want-to-post POST(119) 
+      your-site-name your-host-domainname     IHAVE(7777)
+   8. add a line to innd/test-news.active
+      tw.bbs.test 0000000000 0000000001 y
+   9. run 
+      innbbsd
+      bbsnnrp news-server-your-can-read innd/test-news.active
+  10. examine if /tmp/bbs/boards/test has some files and make sure if
+      OK.  
+
+C. Install and Run your Server Gateway
+   以上測試若還滿意. 請改 Makefile 
+   BBSHOME=\"/tmp/bbs\"
+   BBS_SRC = /your/bbs-src-directory
+   設定正確之 BBSHOME. 
+   make clean
+   make
+   kill `cat /usr/tmp/innbbsd-7777.pid`
+   
+   su 成 bbsuser (和 bbs 同 uid)
+   1. 假使跑過 mfchen 的 in.bntpd, 轉換 history 如下:
+      hisconvert ~bbs/usr/tmp/history ~bbs/usr/tmp/history.z > ~bbs/innd/history 
+      mkhistory ~bbs/innd/history
+   2. innbbsd port-no (default=7777) 
+    
+D. 跑 client (bbsnnrp) gateway
+   1. 每個 bbsnnrp process 必須用不同的 active file. 當此 active file
+      被 bbsnnrp process 使用時, 請勿修改. 修改前先停(殺)掉 bbsnnrp process.  
+   2. active file format 如下:
+      newsgroup-name high-number low-number y
+      ....... 
+      
+      例如:
+      tw.bbs.test 0000000000 0000000001 y
+      tw.test 0000000000 0000000001 y
+      
+   3. 假設 news server 是 news.csie.nctu.edu.tw, 
+      active file 在 ~bbs/innd/news.csie.nctu.edu.tw.active
+      
+      bbsnnrp news.csie.nctu.edu.tw ~bbs/innd/news.csie.nctu.edu.tw.active
+      
+   4. 若要跨站砍信, news server 有 control.cancel 則加入  
+      control.cancel 0000000000 000000001 y
+      若無 control.cancel 則用 
+      control 0000000000 000000001 y
+      
+      先跑一次 
+        bbsnnrp -c server control-active-file
+      
+      bbsnnrp 對 control 或 control.cancel 會特別處理, 只取必要的 header.
+      
+   5. 若第一次跑 bbsnnrp, 建議不要取舊文章, 只 reset active file, 用
+      bbsnnrp -c server-to-receive active-file   
+      
+   6. 可將以上動作加到 crontab 定時抓,  或用   
+      bbsnnrp -w wait-time ......... &
+      則 bbsnnrp 每 wait-time 抓一次.
+      
+   7. bbsnnrp 可在其它機器跑, 例如 
+      BBS host: bbs.dorm10.nctu.edu.tw
+      bbsnnrp host: ccsun1.cc.nctu.edu.tw
+     
+      在 bbs.dorm10.nctu.edu.tw 跑 innbbsd 7777 並將 
+      ccsun1.cc.nctu.edu.tw 加入 nodelist.bbs, 如
+      bbsnnrp-ccsun1 ccsun1.cc.nctu.edu.tw
+      
+      跑
+      bbsnnrp -r bbs.dorm10.nctu.edu.tw -p 7777 server active-file
+            
+E. Feed 給多個 news servers 或 BBS server
+   修改 nodelist.bbs, newsfeeds.bbs ,
+   例如 nodelist.bbs
+   news-server1 news-server1-full-domain IHAVE(119) comment .. server gateway
+   news-server2 news-server2-full-domain POST(119)  comment .. client gateway
+   bbs-server1  bbs-server1-full-domain  IHAVE(7777) comment .. server gateway
+   bbs-server2  bbs-server2-full-domain  IHAVE(7777) comment .. server gateway
+   
+   newsfeeds.bbs
+   tw.bbs.test test news-server1 news-server2 bbs-server1 bbs-server2
+   tw.test     twtest news-server2 bbs-server1
+   ........
+   
+                          
+F. Related commands
+   innbbsd [portno]
+   bbsnnrp [options]
+   mkhistory history-file
+   makedbz history-size
+
+G. 其它說明
+   innbbsd 只能跑一隻, 但能收多個 news server 和 bbs server feed.
+   bbsnnrp 能跑多隻, 甚至在其它幾器都可以.
+   
+   innbbsd 和 bbsnnrp 收的 newsgroups 可重複.
+   
+H. BBS 站不透過 News server 互轉   
+   nodelist.bbs 加入
+   bbs-server1 bbs-server1-host-name IHAVE(7777)
+   bbs-server2 bbs-server2-host-name IHAVE(7777)
+   
+   newsfeeds.bbs
+   newsgroups  board-name name1 name2 ...
+   tw.bbs.test test       bbs-server1 bbs-server2
+ ------------------------------------------
+ innbbsd options:
+ Usage: ./innbbsd [options] [port [path]]
+        -v (verbose log)
+        -h|? (help)
+        -n   (not to use in core dbz)
+	-i   (start from inetd with wait option)
+        -c connection  (maximum number of connections accepted)
+======================================================================
+<3>. 收信 Client Gateway (bbsnnrp) 安裝和使用
+   a. 設定 activefile
+   b. 定時跑 bbsnnrp
+這個 client gateway 讓你 "亂拿 news".
+同時可
+1. 到 A server 取 a group, 到 B server 取 b group.
+   a 和 b 可以相同或不同.
+   例如, 到 netnews.ntu.edu.tw 取 ntu.dep.csie,ntu.dep.ee,tw.bbs.*
+         到 aidebbs.edu.tw 取 csie.bbs.aidesysop,tw.bbs.*
+         到 news.mgt.ncu.edu.tw 取 ncu.mgt.*
+   設好不同的 active file, 如 act1, act2, act3
+   跑
+   bbsnnrp netnews.ntu.edu.tw act1
+   bbsnnrp aidebbs.edu.tw act2
+   bbsnnrp news.mgt.ncu.edu.tw act3
+                                       
+2. 分散 load, 及網路結構因素, 找一台 bbsnnrp 專屬 host, 只用來跑 bbsnnrp,
+   再餵給其它 BBS servers 或 news servsers.
+   (用來 "偷" news)
+   bbsnnrp -r bbs1.domain1 -p 7777 newsa.domainb bbs1.newsa.active
+   bbsnnrp -r bbs2.domain2 -p 7777 newsb.domainb bbs2.newsb.active
+      bbsnnrp -r newsc.domainc -p 119 newsx.domainx newsc.newsx.active
+   (從 newsx 取 news 再餵給 newsc, a gateway ? )
+   ............................
+         
+當然大量讀取時必須禮貌地徵求 server 同意.
+---------------------
+bbsnnrp options:
+Usage: ./bbsnnrp [options] nntpserver activefile
+       -h|? (help) 
+       -v (verbose protocol transactions)
+       -c (reset active files only; don't receive articles)
+       -r remotehost(send articles to remotehost, default=local)
+       -p port|(send articles to remotehost at port, default=7777)
+          path(send articles to local at path, default=~bbs/innd/.innbbsd)
+       -w seconds ( > 1 wait for seconds and run infinitely, default=once)
+       -n (don't ask innbbsd server and stat articles)
+       -a max_art(maximum number of articles received for a group each time)
+          default=100
+       -s max_stat(maximum number of articles stated for a group each time)
+          default=1000
+       -t stdin|nntp (default=nntp)
+       -g newsgroups
+
+Please E-mail bug to skhuang@csie.nctu.edu.tw or
+post to tw.bbs.admin.installbbs
+======================================================================
+<4>. 送信程式 bntplink 安裝設定   
+   a. bbaname.bbs 與 bntplink
+   b. nodelist.bbs  與 bntplink
+   c. newsfeeds.bbs 與 bntplink
+   d. 執行 bntplink
+bbsnnrp 只用來取 news, 轉 news 出去還要另外跑 "bntplink".
+很抱歉沒有解釋清楚. 關於 bntplink 用法請參考 bbsnnrp-??/innd/README
+(此 README 是 Phoenix BBS innd 的, 其中 nodelist.bbs 和 newsfeeds.bbs
+ 的寫法不同, 請改用 innbbsd 的. in.bntpd 也不用架, 改用 innbbsd)
+ 
+第一次跑 bntplink 前先執行 (假設 BBS home 在 /home/bbs/)
+cmd> bbspost visit /home/bbs       # 第一次執行會非常久
+     New article listed:
+     test    M.770323413.A   SYSOP   測試文章 ...
+     ....                                    # 列出所有未送信文章
+     接下來到 test board post 一篇測試文章, 然後執行下列命令
+cmd> bntplink /home/bbs
+bntplink 要用 bbsnnrp-??/innd/bntplink 而非 Phoenix BBS 內附的.
+另 newsfeeds.bbs 和 nodelist.bbs 的寫法也和 Phoenix BBS 的 innd 不同.
+                                                             
+======================================================================
+<5>. Server gateway innbbsd 控制程式 (ctlinnbbsd) 介紹
+  ctlinnbbsd reload   : reload datafiles for innbbsd
+  ctlinnbbsd shutdown : shutdown innbbsd gracefully
+  ctlinnbbsd mode     : examine mode of innbbsd
+  ctlinnbbsd addhist <mid> path: add history
+  ctlinnbbsd grephist <mid>: query history
+  ctlinnbbsd hismaint : maintain history
+  ctlinnbbsd getrusage: get resource usage (-DGETRUSAGE)
+  ctlinnbbsd mallocmap: get malloc map     (only Sun-OS supported)
+======================================================================
+<6>. activefile and history database
+a. 如果要把 bbsnnrp 加到 crontab 中該怎麼設啊
+和在 command line 一樣.
+for example, 每十分鐘取一次:
+10,20,30,40,50 * * * * /home/bbs/innd/bbsnnrp news-server \
+  /home/bbs/innd/active-file > /dev/null 2>&1
+  
+ bbsnnrp 的另一個好處是可依興趣和討論區特性 (和不同 server), 分不同 active-file
+  再以不同頻率去取: 例如
+  1. active1: tw.bbs.rec.rail 等(例如 鐵路站)
+  2. active2: tw.bbs.comp.* 等
+  3. active3: tw.bbs.rec.* 等
+  3. active4: control 或 control.cancel
+  
+ 可設每分鐘抓 active1, 每五分鐘抓 active2,
+ 每十分抓 active3, 每天抓 active3 一次:
+* * * * * bbsnnrp news-server active1 > /dev/null 2>&1
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * bbsnnrp news-server active2 > /dev/null 2>&1
+2,12,22,32,42,52 * * * * bbsnnrp news-server active3 > /dev/null 2>&1
+14 3 * * * bbsnnrp news-server active4 > /dev/null 2>&1
+
+:   還有 就是我抓回來的文章怎麼都是一兩個月以前的呢 !!如果只抓最新的..且都不要
+:    重複又該打什麼指令呢......
+  
+Default 每次最多一個 group 只抓 1 百封, 避免造成 news server 負荷過重,
+建議如下:
+1. 倘若不要舊信, 試跑一次
+   bbsnnrp -c news-server active-file
+   這樣將只 reset active-file 而不取 news. 以後再跑不用 -c, 取最新的.
+2. 若要舊信, 斟酌 server load, 分多次取信, 用 -a 指定最多取信量:
+   如每次最多取 500 封,
+   bbsnnrp -a 500 news-server active-file
+                
+   正常狀況即使向多個 server 抓相同 group 也不會重複.
+======================================================================
+<7>. BBS implementation dependent part: receive_article.c
+Rabit 希望 innbbsd 能支援 Palm BBS, Samson 也希望我寫一個
+dbz server 支援 Power BBS, 順便 Secret BBS, Pivot BBS
+看能否一併解決, 關於 Samson dbz server 的要求, 我是希望
+PBBS 考慮使用 innbbsd. 因為 innbbsd 所耗用的資源主要就是
+在處理 dbz. 只要 PBBS (Palm, Secret, 或 Pivot) 提供
+receive_article() 和 cancel_article_front(mid) 兩個 routine.
+用以下方式處理:
+
+   innbbsd 收到 article 後將文章 header 存到 extern char *HEADER[]
+                                 body        extern char *BODY;
+   (Subject 存到 HEADER[SUBJECT_H], From 存到 HEADER[FROM_H], 其它類推)
+   再 call receive_article() 或 cancel_article_front(mid)
+   PBBS, Palm, Pivot 或 Secret BBS 只要改寫:
+    1. receive_article: 將 char *HEADER 和 char *BODY 依其文章儲存方式寫入.
+       再 call storeDB() 將 article path 存到 dbz.
+    2. cancel_article_front(mid): 先 call fetchDB(mid) 獲得 article filename
+       (to be cancelled), 再依各 BBS 的 cancel 方式處理.
+就能達到以下功能:
+1. 接受 multiple feeds (duplicated feed is OK)
+2. only single process (won't fork)
+3. 接受 bbsnnrp feed   (bbsnnrp 和 BBS 無關, 也可以 feed News server)
+
+ innbbsd 尚不穩定, 效率和系統 load 影響尚在評估中, 以後須要修改的地方不少,
+ 我不太希望同時 maintain dbzserver 和 innbbsd 的 source.
+ (因為 innbbsd 主要就是一個 dbzserver)
+ 
+ 大家若能接受, 我再將 innbbsd 整理好, 分出 BBS implementation
+ dependend 和 independent 部份, 供 PBBS, Palm, Pivot, 和 Secret BBS 使用.
+   
+======================================================================
+<8>. 轉信架構
+[Q.1]: 自由飛翔的雲雀 (skylark@Venus.Dorm9.nctu.edu.tw) 提到:
+   小弟最近因為架了一個站(使用 Phoenix 4.0)，而且已經轉信成功
+   (使用內附的 innd 程式)。如今想要換用 innbbsd , bbsnnrp
+   等的程式來達到轉信的目的，在不破壞之前的轉信設定下要如何設定：
+ヾ 已經有一個 news server 餵信給我我不想要破壞我和它之間的轉信
+   服務。在這種情況下我要如何設定？
+
+[A.1]:
+若已穩定, 我建議不要換成 innbbsd. 等到熟悉 Phoenix innd 的運作, 
+innbbsd 也夠穩了再換. 
+
+innbbsd 基本上盡量做到和 Phoenix bbsinnd 相容, 但改成支援 client gateway,
+若先前已跑 bbsinnd, 必須做以下轉換:
+1. 轉換 history
+   請先 disable 在 inetd.conf 的 in.bntpd, kill -1 pid-of-inetd
+   cd ~bbs/usr/tmp
+   hisconvert history history.z > ~bbs/innd/history 
+   (hisconvert 附在 innbbsd, ~bbs/usr/tmp 可能沒有 history.z)
+   cd ~bbs/innd
+   mkhistory history 
+   (innbbsd make 之後會產生一個 mkhistory 執行檔)
+   mv history history.o
+   mv history.n history
+   mv history.n.dir history.dir
+   mv history.n.pag history.pag
+2. newsfeeds.bbs, nodename.bbs 不必改變.
+3. nodelist.bbs 原先為
+name          hostname & domainname                    full name
+  改為
+name          hostname & domainname   protocol(port)   full name
+
+例如
+ccnews        ccnews.nctu.edu.tw      IHAVE(119)       News server in CC
+
+4. bntplink 換成 innbbsd/innd 內的 bntplink
+5. 執行 innbbsd [port-no]
+只要 port-no 和先前 in.bntpd 跑的 port 一樣, news server 不用做任何更動.
+
+[Q.2]:
+ゝ 我想和其它的 bbs 站之間互轉信(不透過 news server )，我知道
+   innbbsd 可以達成這項要求，但是要如何設定才不會破壞之前的轉信
+   設定？
+[A.2]   
+假設 bbs-1.domain1 bbs-2.domain2 bbs-3.domain3 想不經 news server 互相轉信,
+1. 三站都跑 innbbsd 的 innbbsd 和 bntplink  
+2. 三站都將對方加入各自的 nodelist.bbs, 如
+#[nodelist.bbs]
+bbs-1 bbs-1.domain1 IHAVE(7777) bbs-1 server
+bbs-2 bbs-2.domain2 IHAVE(7777) bbs-2 server
+bbs-3 bbs-3.domain3 IHAVE(7777) bbs-3 server
+news-1 news-1.domain4 IHAVE(119) news-1 server
+3. newsfeeds.bbs 設定, bbs-1.domain1 的 newsfeeds.bbs
+   (假設 bbs-1 也接 news-1)
+# newsgroup    board      server1 server2 ....
+localbbs.group board-name bbs-2 bbs-3
+tw.bbs.test    test       news-1 bbs-2 bbs-3 
+
+bbs-2.domain2 的 newsfeeds.bbs
+# newsgroup    board      server1 server2 ....
+localbbs.group board-name bbs-1 bbs-3
+
+bbs-3.domain3 的 newsfeeds.bbs
+# newsgroup    board      server1 server2 ....
+localbbs.group board-name bbs-1 bbs-2
+
+再定時跑 bntplink. 其中的 localbbs.group 可自行取名, 只要三站協調
+好都接受即可. 
+
+innbbsd 的好處是, bbs-1, bbs-2, bbs-3 還可再自行接任意數量的 news server
+feed, 或跑多個 bbsnnrp 取 news.
+
+======================================================================
+<9>. 錯誤診斷 and FAQ
+--------------------
+a) BBS 和 News Server 在同一台機器上, 安裝時, 是否要特別留意什麼的 ??
+只要 innbbsd 不跑在 port 119 (nntp) 應該沒有問題.
+
+還有請注意 active file high, low number 一定要保留
+10 (> 10) 個 digit. 例如:
+tw.bbs.test 0000000000 0000000001 y
+
+這是因為 bbsnnrp 利用 mmap 將 active file 直接 map 到
+memory. 若 digit 位數不夠會被 truncated.
+若有管理 news server 經驗, 應該就知道為何 active file
+中的 high, low 也要留十個 digits 了.
+
+又因為是 mmap, 若在 bbsnnrp 執行期間改 active file 就會
+有慘劇發生. 這和 INN news server 改 active 的道理相同.
+請先停掉相關的 bbsnnrp process.
+
+為預防 active 毀損, 每次 update active 都會產生兩個 backup active
+activefile.BAK 和 activefile.BAK.OLD.
+因為 innbbsd 有存 history, 即使 active 毀損, 將 active reset 再重拿
+也無妨.
+
+跑 server gateway 者, 可用 bbsnnrp 來拿 "舊 article".
+建議 bbsnnrp 用 cron 來啟動. 不要用 -w. 可將 newsgroups 區分成
+幾個部份, 如 tw.bbs.hot.active, tw.bbs.2ndhot.active,....
+[tw.bbs.hot.active]
+tw.bbs.talk.love 0000000000 0000000001 y
+tw.bbs.comp.unix 0000000000 0000000001 y
+
+[tw.bbs.2ndhot.active]
+tw.bbs.admin.installbbs 0000000000 0000000001 y
+tw.bbs.talk.lady 0000000000 0000000001 y
+
+[crontab]
+10,20,30,40,50 * * * * /home/bbs/innd/bbsnnrp your-news-server \
+/home/bbs/innd/tw.bbs.hot.active
+35 * * * * /home/bbs/innd/bbsnnrp your-news-server /home/bbs/innd/tw.bbs.hot.active
+
+比較重要或有興趣的 group 取的頻率高一點, 文章少的就低一點. 並依系統 load
+情況調整. 每次每個 group 最多取 100 篇 article.
+(改 innbbsconf.h: # define MAX_ARTS 100)
+--------------------
+b. 如果沒有參與轉信可不可以用 innbbsd.....
+--------------------
+innbbsd 是用來接收 Internet Net News 的.
+如果你接了 tw.bbs.* 討論區, 就是加入俗稱的 TW.BBS 連線網.
+如果再跑 bntplink, 就是雙向轉信.
+歡迎拿 innbbsd 做任何事, 不過必須警告各位的是, innbbsd 仍在
+測試階段. 使用 bbsnnrp 時也最好先禮貌性地知會 news server 管理者.
+--------------------
+[c]. 用innbbsd要不要修改 inetd.conf 和services!!
+innbbsd 是 standalone server, 所以不用改 inetd.conf 和 services.
+只要指定 port number 或不指定用 default=7777.
+例如:
+1. 跑在 port 5555
+
+ innbbsd 5555
+ 
+  用 telnet localhost 5555 測試.
+  
+2. 用 default 7777
+  
+   innbbsd
+   
+   其它用法:
+   
+3. 指定 unix domain socket path
+innbbsd 5555 /home/bbs/innd/.innbbsd.5555
+
+此時 local bbsnnrp 用
+   
+bbsnnrp -p /home/bbs/innd/.innbbsd.5555 server-host active-file
+      
+remote bbsnnrp 用
+bbsnnrp -r bbs-server-hostname -p 5555 news-server-hostname active-file
+         
+            
+innbbsd 的連線限制
+1. local socket
+   若 socket file 在 /home/bbs/innd,  把 mode 改為 700.
+2. remote access
+   把 hostname 加到 nodelist.bbs
+   
+另外若要用 inetd 啟動, 請在 inetd.conf 加入:
+innbbsd stream  tcp wait  bbs  /home/bbs/innbbsd innbbsd -i
+                    ^^^^^
+並在 service 定義 innbbsd. 請特別注意, 是 "wait" 而非 "nowait".
+
+standalone 或 inetd.conf 只能選一種. 加在 inetd.conf 的方法目前
+尚不穩定, 不鼓勵使用. 穩定後會推薦使用.
+--------------------
+[d]. bbsnnrp 對方bbs-server hostname test-news.active
+     結果出現以下訊息:
+     NNRP server not ok
+   
+bbsnnrp 是一個 client gateway, 使用時一定要指定一個 "news server"
+(抓 news 的 server). 所以你必須找一個 news server, 假設是
+ccnews.nctu.edu.tw (確定你能連上), 再執行:
+
+       bbsnnrp ccnews.nctu.edu.tw test-news.active
+       
+以上是 bbsnnrp 在 bbs server 上執行時的用法. 若 bbsnnrp 在其它 host
+執行, 例如 ccsun1.cc.nctu.edu.tw, bbs server 是 bbs.dorm10.nctu.edu.tw,
+則將 ccsun1.cc.nctu.edu.tw 加到 nodelist.bbs, 重跑 innbbsd,
+在 ccsun1.cc.nctu.edu.tw 跑
+    bbsnnrp -r bbs.dorm10.nctu.edu.tw -p 7777 ccnews.nctu.edu.tw test-news.active   
+--------------------
+[e]. 如果跑 bbsnnrp 時, 網路有問題或 BBS shutdown 時, 這個 active file 
+     會不會改變?
+     
+bbsnnrp 啟動時會先嘗試連上兩個 server
+1. news server   (default to port nntp)
+2. innbbs server (default to unix domain socket ~bbs/innd/.innbbsd or
+                  -r host -p port)
+必須二者都連線成功 bbsnnrp 才會動作. 如有疑問, 試試連到其它非 BBS server
+(沒跑 innbbsd) 或 News server, 例如
+bbsnnrp -r ftp.edu.tw -p 7777 ccnews.edu.tw bbs1.newsa.active
+看 active file 會不會改變.
+--------------------
+[f]. 還有就是跑 innbbsd 的系統如果想要 shutdown, 該注意些什麼事?
+     如果是不小心當掉的話, 對 innbbsd 是否有影響?
+     
+如果剛好正在寫入 history 或文章時當掉可能有些影響. 若因當機使
+~bbs/innd/history  與 history.pag, history.dir 不一致, 請用
+mkhistory ~bbs/innd/history 重做 history (必須停掉 innbbsd).
+萬一 history 毀了, 用 history.o (救回幾天前的). 目前 innbbsd
+有對 shutdown 特別處理, 請養成習慣用
+  ctlinnbbsd shutdown
+     或
+  kill `cat /usr/tmp/innbbsd-xxxx.pid`
+不要用 kill -9 ......
+這樣 innbbsd 尚能做一些善後.
+  
+history, history.dir 和 history.pag 三個檔互相關連, 請勿直接用
+editor 修改. 對 history 做任何事前請先停掉 innbbsd.
+--------------------
+[g]. 目前對 dbz maintain 的方式為何?
+
+在 innbbsconf.h 定義有
+EXPIREDAYS, HIS_MAINT_HOUR 和 HIS_MAINT_MIN.
+
+每 EXPIREDAYS x 2 天, 在 HIS_MAINT_HOUR 時, HIS_MAINT_MIN 分,
+innbbsd 會將 > EXPIREDAYS x 1.5 天的 entries 拿掉.
+        
+dbz 並無覆蓋或 remove 舊 entries 的功能, 只能從 source (history)
+找出須保留之 entries 再 rebuild dbz. 大概會造成一兩分鐘的 peak load.
+已將 EXPIREDAYS, HIS_MAINT_xx 放到 innbbs.conf. 
+----------------------------
+[h]. 如何在 Palm BBS 使用 innbbsd
+我剛剛把 PalmBBS 的 innd-palm.tgz 看過與 Phoenix BBS 的 bbsinnd 對照一番,
+發現在 post 和 cancel 上並無不同. 目前使用 PalmBBS 者不妨開一個板測看看.
+要改的地方如下:
+1. innbbsd-0.xx/innd/bbspost.c 換成 PalmBBS innd-palm.tgz 內之 bbspost.c
+2. innbbsd-0.xx/innd/bntplink 之 sub save_article 改為
+########
+sub save_article
+{
+    local       ($target) = @_;
+    $now = time;
+        
+    open( FN, $target );
+    print FN "發信人: $poster, 信區: $board\n";
+    print FN "標  題: $subject\n";
+    print FN "發信站: $mysite ($date)\n";
+    print FN "轉信站: $path\n";
+    print FN "\n";
+    print FN @BODY;
+    close( FN );
+    utime $mtime, $mtime, $target;
+    utime $now, $now, "$bbshome/.bcache/$board"
+}
+###################
+            
+可能是 PalmBBS 也能讀取 M.xxxx.A 之類的檔名. 當然 BBS_SRC 要設對, bbs.h
+和 record.c 都要用 PalmBBS 的. 我沒測過. 有興趣者測後把結果告訴我, 看還
+有甚麼要配合修改的.
+----------------------------
+[i]. bbsnnrp 收不到信
+
+1. 確定 BBS board 已開啟.
+2. newsfeeds.bbs, bbsname.bbs 和 nodelist.bbs 更改後, innbbsd 必須重跑.
+3. innbbsd 執行者 uid 和 bbs user 相同.
+4. 若第一次啟動, 出現以下 message, 且收不到文章,
+GROUP groupname
+211 1453 11644 13105 groupname
+    ^^^^ ^^^^^ ^^^^^
+    total low  high
+        
+試加上 -s 參數:   bbsnnrp -s total news-server active-file
+        
+若還收不到, 試用 bbsnnrp -s very-large-number news-server active-file
+5. 檢查 active-file format 是否正確
+groupname high-no low-no y
+6. compile 時 BBSHOME 是否正確.
+-----------------------------
+[j]. bntplink 送不出去 
+
+none (kuq.bbs@csie.nctu.edu.tw) 提到:
+:  請問要從BBS 轉信出去的bntplink 該注意什麼嗎!1我試過一次....不過只看到
+:   try to send article  可是我去 轉信站的版看好像沒有轉過去耶....這是什
+:   麼問題啊!!
+
+1. 確認所用的 bntplink 是 innbbsd 所附.
+2. 確定 nodelist.bbs 內的 news server 和 protocol 設定正確, 
+   (protocol: POST(119) for client gateway)
+   newsfeeds.bbs server 的欄位和 nodelist.bbs 定的相符.
+   確定你的 host 有 post 到你設定 news server 的權限.
+3. 檢查 ~bbs/out.going 
+4. 轉信 BBS 站不一定馬上收到, 可能是你送往的 news server 因網路或
+   其它因素暫時無法轉到.
+-----------------------------
+[k]. 增加一個討論區加入轉信的步驟中,
+     如果不想要舊信的話, 可以用 bbsnnrp -c
+     可是這樣不是就會把原有的轉信區文章 lost (部份)掉了嗎?
+
+A1: 
+先將此討論區單獨放在一個 activefile, 例如
+[act1]
+tw.bbs.test 0000000000 0000000001 y
+
+bbsnnrp -c news-server act1
+
+再 append act1 到平常用的 activefile.
+例如 cat act1 >> activefile
+(確認無使用 activefile 的 bbsnnrp process)
+
+另一種方法如下:
+telnet news-server 119
+group tw.bbs.test
+
+211 27 7162 7594 tw.bbs.test
+       ^^^^ ^^^^
+       low  high
+              
+將 low, high 放到 activefile
+tw.bbs.test 0000007594 0000007162
+            ^^^^^^^^^^ ^^^^^^^^^
+            high        low
+            留十個 digit
+                                                  
+A2:
+另一個快速 reset active 方法如下:
+% telnet news-server 119 > tmp-active
+list
+quit
+% grep ^tw.bbs tmp-active
+或用 editor 只抓有興趣之 newsgroups.
+
+-----------------------------
+[l] 如果想要換 news server 該怎麼作 ?
+建議如下:
+1. 將 news.active reset 成 0000000000 0000000001
+   換成新 server, 先跑 bbsnnrp -c new-server news.active
+2. 用 tin 連到新換的 server, 比較你所收的文章和新 server 之間的差異,
+   在缺的文章前加 tag (t), 再 pipe 給 bbsnnrp -t stdin
+   通常 article 有時間順序, 所缺的文章是連續的.
+   如果新換的 server 文章較少, 步驟 2 可省略.
+3. 以後跑 bbsnnrp 的方式不變, 改 server 即可.
+
+  如果嫌第 2 步麻煩, 估計討論區的文章量, 若 news.active 討論區一天
+  有 10 封信, 將 bbsnnrp -c 跑過之 news.active 對應的 high-no 減去
+  50 再跑正常的 bbsnnrp 即可.
+  (或用 tin 計算缺少的文章數, 再改 news.active 對 high-no 減去相當
+   的數目)
+  例如 bbsnnrp -c 之後的 news.active
+tw.bbs.xxx 3246 1234
+
+用 tin 與 BBS board 比較, 若缺 30 封, 則將 news.active 改為
+tw.bbs.xxx 3200 1234
+	   ^^^^^
+           與 3246 相差一個與 30 差不多但略大的數字.
+
+-----------------------------
+[m] [如何收舊信] bbsnnrp 也能用在 in.bntpd
+
+很久以前提過如何做 batch file 來重送信件. 步驟繁複不易.
+現在推薦使用 innbbsd 的 bbsnnrp. 特別是為 in.bntpd 使用者.
+(Phoenix BBS mfchen's bbsinnd)
+innbbsd 使用者當然也適用.
+
+0. 不管你是用甚麼 BBS, in.bntpd 如何更改. 
+   bbsnnrp 是 BBS implementation independent.
+   (只要收信者懂 NNTP, CNEWS nntpd, INN1.4 innd, pbbsnnrpd,... 應該都可以)
+1. 取 ftp.csie.nctu.edu.tw:/pub/bbs/misc/innbbsd/innbbsd-0.43.tar.gz
+2. 只要造出 bbsnnrp 即可. 其它都可丟棄.
+   改 Makefile 中 BBS_SRC 和 BBSHOME
+   (改這個沒多大意義, 只是騙騙 bbsnnrp 和 make, 一定要正確, 但不會用到)
+   make depend   (ignore any error)
+   make sys-type (選擇你的 sys-type, 打 make 即列出所有 sys-type) 
+   中間過程有任何錯誤都不用管, 最重要的是造出 "bbsnnrp".
+3. 決定將重送的 newsgroups, 例如 tw.bbs.comp.mac,.... 
+造 activefile, 例如,
+tw.bbs.comp.mac 0000000000 0000000001 y
+.....
+
+4. 在 news server (或任何 in.bntpd 能接受 feed 的 host) 執行
+bbsnnrp -r your-bbs-host -p bbsinnd-port news-server activefile
+
+For example, news.cis.nctu.edu.tw 想重送 tw.bbs.talk.feeling,
+tw.bbs.talk.ladytalk 給 bbs.cis.nctu.edu.tw (in.bntpd in port 7777),
+
+#edit news-cis-active
+tw.bbs.talk.ladytalk 0000000000 0000000001 y
+tw.bbs.talk.feeling  0000000000 0000000001 y
+
+到 news.cis.nctu.edu.tw 執行
+bbsnnrp -r bbs.cis.nctu.edu.tw -p 7777 news.cis.nctu.edu.tw news-cis-active
+
+必須注意的是 bbsnnrp 每次最多只送 100 封, 用 "-a max-art" 可 override 此
+default, 或多跑幾次即可. 打 bbsnnrp -h 可看所有參數. 
+在正常情況下用 -r  -p 就夠了.
+
+bbsnnrp 會去找一些 ~bbs/innd 下的 config 檔. 請造一些假的以騙過 bbsnnrp.
+
+現在另一個問題來了, 我不想全轉, 只想轉部份文章. bbsnnrp 可以嗎 ?
+把 "tin" 找來, 進入想轉的討論區, 在所有感興趣的文章前加 tag (按 t),
+鍵入 "|", "T", "bbsnnrp -t stdin -r bbs.cis.nctu.edu.tw -p 7777"
+(這時後就不用指定 news server 和 activefile)
+
+(最好先把 mfchen post 的 避免 bbsinnd 重覆收信的修改 patch 加上,
+ 不加也可以. 加了就可防止因為玩 bbsnnrp 玩過火了導致重複的文章收太多) 
+------------------- from mfchen@csie.nctu.edu.tw  --------------------------
+為了效率 bbsinnd 收信時並沒有檢查該信件是否重覆, 在網路不穩的情況下,
+可能產生重覆收信的問題, 解決方法如下:
+
+修改 inntobbs (line 73), 每封文章收到時檢查該文章是否已經存在:
+
+sub receive_article
+{
+    if( &find_history( $msgid ) ) {
+	&bbslog( ":Err: duplicate article $msgid\n" );
+        return;
+    }
+	 ...
+ }
+ -----------------------------------------------------------------------------
+ ---
+======================================================================
+[n]. bbsnnrp 或 bntplink feed 時產生 broken pipe 或無法 feed
+檢查 boards permission mode 及 bbslog . 可能 innbbsd 無法 write.

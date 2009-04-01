@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 刪除信件</TITLE>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<TABLE width="80%">
+<TR>
+<TD BGCOLOR="#12AFFF" COLSPAN=3>
+<B><FONT SIZE="+2" COLOR="#FFFFFF">刪除信件</FONT></B>
+&nbsp;&nbsp;<FONT SIZE="3" COLOR="#FFFFFF">(請注意！信件刪除後無法救回)</FONT>
+</TD>
+
+<TR>
+<TD BGCOLOR="Orange" width=20%>
+<FONT SIZE="4" COLOR="#FFFFFF">寄信人</FONT>
+</TD>
+<TD BGCOLOR="Orange" width=30%>
+<FONT SIZE="4" COLOR="#FFFFFF">日期</FONT>
+</TD>
+<TD BGCOLOR="Orange" width=50%>
+<FONT SIZE="4" COLOR="#FFFFFF">標題</FONT>
+</TD>
+</TR>
+<TR>
+<TD width="20%">
+<FONT SIZE=4><!BBS_Post_Sender!></FONT>
+</TD>
+<TD width="30%">
+<FONT SIZE=4><!BBS_Post_Date!></FONT>
+</TD>
+<TD width="50%">
+<FONT SIZE="4"><!BBS_Post_Subject!></FONT>
+</TD>
+
+</TR>
+
+<TR>
+<TD COLSPAN="3">
+<FORM NAME="DELETE_MAIL" METHOD="POST" ACTION="MailDelete">
+<INPUT TYPE="HIDDEN" NAME="NUM" VALUE="<!BBS_Post_Num!>">
+<INPUT TYPE="SUBMIT" VALUE="立刻刪除">
+<INPUT TYPE="RESET" VALUE="放棄" onClick="history.back()">
+</TD>
+</TABLE>
+</FORM>
+
+</CENTER>
+
+</BODY>
+</HTML>

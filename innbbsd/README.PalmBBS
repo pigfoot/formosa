@@ -1,0 +1,53 @@
+關於 innbbsd 在 PalmBBS 中的設定
+(Edited from skhuang's README.PalmBBS by jjshen@cc.ntu.edu.tw)
+
+1. 更改 Makefile 中的
+BBS_SRC = /your/bbs/src        #此處設定你 bbs 程式碼的完整 path
+BBSHOME = /your/bbs/home       #此處設定你 bbs 的 home directory
+BBS_DEP = PalmBBS
+BBS_REC = r_port.o $(BBS_SRC)/libbbs.a
+BBS_POST=
+
+2. make depend                 #此步驟若有任何錯誤訊息可予忽略
+   make                        #會顯示出目前設定，有需要可更改 Makefile
+   make sys-type               #ex. make linux
+
+   compile 完畢會造出幾支所需程式
+
+3. mkdir ~bbs/innd
+   cp innbbsd bbsnnrp ~bbs/innd
+   cp ./innd/innbbs.conf ~bbs/innd
+
+4. cp ./innd/bntplink.palmbbs ~bbs/innd/bntplink  
+   cp ./innd/tcp.pl ~bbs/innd
+   cp ./innd/innbbslib.pl ~bbs/innd
+
+   使用 bntplink (perl version) 送信需以上 3 個檔案
+   若使用 bbslink (c version) 送信則只需 cp bbslink ~bbs/innd
+   建議使用 bbslink 送信，其與 bntplink 完全相容且功能較強
+
+5. 進入 /your/bbs/src/
+   make bbspost                #可做出 bbspost 此支程式
+   cp bbspost ~bbs/innd
+
+6. 根據需要修改 ~bbs/innd/innbbs.conf
+
+7. 建立並編輯自己 bbs 的 ~bbs/innd/bbsname.bbs ~bbs/innd/nodelist.bbs
+   ~bbs/innd/newsfeeds.bbs
+   此 3 個檔案可參考 README 中的說明建立。
+
+之後根據 README 中的測試安裝步驟去做即可。
+
+-------------------------------------------------------------------------------
+[bug fix] 
+在 bbslink.c 前面加上
+#if defined(PalmBBS)
+#include <utime.h>
+#endif
+
+另外
+       times.acttime = sover->mtime; times.modtime = sover->mtime;
+             ^^^^^^^
+要改為
+       times.actime = times.modtime = sover->mtime;
+             ^^^^^^ 

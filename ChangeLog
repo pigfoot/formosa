@@ -1,0 +1,425 @@
+26 March 2009, version 1.4.1
+-------------------------------
+ * 一些程式修正，可以在gcc 4.3.1 Gentoo Linux上編譯.
+ * 加大 include/config.h 中 NSYSUBBS3 的使用者及看板上限
+ * 修改Makefile configure
+ 	* 增加 make config_bbs3 可以直接產生西灣專用Makefile
+	* 修改configure, 接收--prefix當作HOMEBBS
+	* 修改依些 Makefile.in 讓 make install[bin] 路徑正接收HOMEBBS
+
+11 November 1999, version 1.4.0
+-------------------------------
+
+ * 改寫線上送訊息的功能, 採用在記憶體中處理訊息的方式,
+   捨棄原有以檔案來存在訊息的方式, 大幅改善 disk i/o 的負荷
+ * 強制限制使用者個人信箱的數量上限 (conf/bbs.conf)
+ * 修正 bbsmail 未檢查使用者等級與看板張貼等級的問題
+ * bbspop3d 支援 multi-ip binding (virtual hosting)
+ * 增加線上使用者列表, 對方設我為好友的顯示標記, 並將此類對象再排序列表時為
+   優先考慮
+ * 修正 csbbsd - vsprintf 的 bug (由於 vsprintf 的傳回值型態在各 Unix
+   Platform 不相同)
+ * 閱讀文章信件時, 仍可接受傳訊/回訊息
+ * 看板列中顯示各板文章數量 (按 'C' 切換顯示)
+ * 使用者在線上, 仍可處理認證信函, 可不必離線回覆認證信.
+ * bbs2g4 支援 board shm 與 sorted board list by boardname
+ * select board - in-case sensitive
+ * 增加 doc/NewGuide - 新使用者須知
+ * 分類看板排序 - by name or not 
+ * 使用者閒置過久, 強迫離線後, 自動將線上訊息備份
+ * 修正空精華區無法建立目錄的問題
+ * 修正 asuka 改錯 bbs-news code (當張貼文章至 news server失敗時處理不當)
+   而造成 file not closed 的 bug
+
+
+16 October 1999, version 1.3.1
+------------------------------
+
+
+6 Jun 1999, version 1.3.0
+-------------------------
+
+ * 讀取新信時，可退出
+   "寄信人 : %s\n標題 : %s\n(y)讀取此封 (n)下一封 (q)離開 ? [y] : "
+ * 修正 - admin.c -> show_board() 畫面顯示處理的問題
+ * admin.c - set_board() 設定板主若無此 user 則顯示帳號不存在
+ * -/+ 往前/後搜尋標記保留文章
+   更新 doc/READ_HELP
+ * 若信箱已滿，則暫時關閉寄信/回信，修改/轉寄/轉貼/閱讀信件功能。
+ * 等級未滿 20，不准使用群組寄信功能
+ * util/sortbrd.c 不再使用
+ * util/checkbrd.c 改名為 util/expire.c
+ * 修正 io.c - getdata() backsapace 之後若按 cltr-l 會又重秀出已刪除字元
+ * 修改回訊息的顯示方式，不覆蓋收到的訊息
+ * 增加管理者選單 - admin.c - a_conf() 編輯設定檔
+ * 修改 src/genlogin.c 支援身份認證設定
+ * article.c -> strip travling empty lines following signatures
+ ! 好友名單中好友個數上限 - MAX_FRIENDS (include/config.h)
+ * 聊天室增加 CTRL-Q 查詢使用者功能
+ * 修正在 Redhat 5.x 時 compile 的錯誤 (crypt undefined)
+ * IRC 已完全移除
+ * 回線上訊息可按上下鍵翻閱選擇
+ * 修正 csbbs - 未檢查 guest 權限 - EditPost() EditPostTitle() KillPost()
+   UnKillPost()
+ * 修正對好友廣播 - 未檢查 pager 與權限設定的 bug
+ * 修正空簽名檔無法編輯的 bug
+ * 使用 gethostname, gethostbyname 來抓取本機 ip 與 hostname
+   (需配合 /etc/hosts, 請參考 'INSTALL')
+ * 修改 genlogin.c: 使用 lib, 不使用 -u uid
+ * 修改 screen.c edit.c 以配合 ANSI code 在 terminal 上顯示的問題
+ * bbs editor 編輯 ANSI code 改以預覽模式
+ * 改良 bbs editor 支援左右捲頁, 可編輯文字超過畫面寬度 (246個字元)
+ * bbsd 可配合 inetd 使用 (bbsd -i)
+ * BBS 動態設定檔 (conf/bbs.conf) - 05/26/99
+ * binary RPM package for RedHat/Linux release - 06/16/99
+ * 移除 config.h 裡的 #define SPOOL_MAIL, 改由 util/bbsmail.c
+      依序尋找 /var/spool/mail 與 /var/mail
+ * 更新 FAQ
+ * 加入手動身份認證至 Admin 選單 (util/syscheck.c)
+ * 加入寄信給全站板主至 Admin 選單 (util/mailbm.c)
+ * 加入 util/delthread.c 
+ * 加入 util/fixdir.c
+ * 編名片檔, 進板畫面可引入暫存檔
+ * 限制帳號合法字串: '-' 字元只能再帳號中出現一次, 且不能在最頭尾的位置
+ * 修改線上訊息的資料結構, 以防止送錯對象
+ * 增加看板密碼的設計, 並可由 Admin 選單來設定密碼
+   (csbbs目前是denied的,因為需要更改client軟體設計)
+
+
+13 November 1998, version 1.2.0
+------------------------------
+
+ * util/syscheck.c - 手動身份認證 (如: 身份證影本認證處理)
+ * util/onlinesrv.c - 定期修正線上人數不正確的問題
+ * 'K' visit_article
+ * 加入使用者閒置時間, 預設閒置 15 分鐘後強制離線
+   (ref: include/config.h - IDLE_TIMEOUT)
+ * fix 'conf/menushow' parsing bug
+ * fix class menu fatal error when using shared memory
+ * reconstruct language configuration file format
+   'conf/clang.cf' and 'conf/elang.cf'
+ * add a submenu in XyzMenu for 'User Option' setting
+ * 修正 menushow 讀取設定檔的 bug, 加強 menushow 處理的能力!
+ * 改寫 vote 功能. 看板投票資料自 vote/* 搬到 boards/vote/*
+   板主助手, 板主, 站長皆可管理投票(新增/刪除/修改)!
+ * 新功能 - 使用者可自行清除線上訊息
+ * 英文板名 - 17 個字元
+   中文板名 - 36 個字元
+   使用者id - 12 個字元
+   使用者暱稱 - 21 個字元
+   上站來源 - 16 個字元
+ * bbsmail (e-mail to bbs user) 支援使用者 auto-forward 設定
+   並記錄更多的 log 在 log/bbsmail.log
+
+
+28 September 1998, version 1.1.2
+--------------------------------
+
+ * Unleased version
+ * 取消 uuencode/uudeocde 的功能
+ * four mode pager switch
+   Quiet/Free/Friend/Friend or Identified user
+
+
+22 May 1998, version 1.1.1
+--------------------------
+
+ * [bbsmail] now can automatically provide 'antispam' function
+ * 加入 FormosaBBS 首頁 (http://cc.nsysu.edu.tw/~lasehu/formosabbs.html)
+      安裝手冊INSTALL, 
+      安裝FAQ, 
+      身份認證FAQ, 
+      簡易安裝QuickStart
+ * INSTALL 安裝手冊 - 新增 userstat 線上使用者統計
+
+ * [language] Support multi-language version, 'conf/clang.cf' for chinese 
+   language, 'conf/elang.cf' for english language. User can online change 
+   his usual language.
+
+ * 新板主上任, 自動提升等級為 100
+ * 寄信給好友/或寄信名單
+ * 編輯簽名檔時, 可直接選擇編修/刪除第幾號簽名檔
+ * 板主助手人數上限 : 2 人
+ * 新增個人信箱信件已回覆標示 'r'
+ * 進板畫面若在 user 上次上線後有更動過, 才會顯示, 按 'b' 顯示進板畫面
+   且檔名由 .bm'sname ==> .bm_welcome
+            .bm_assistant
+ * 板主無法修改板上信件標題, user 無法修改精華區信件標題
+ * 3 分鐘內重覆 login 不算上站次數, 不加等級
+ * 寫信時可接受 talk 呼叫, talk 完可自動回復成先前的編輯內容
+ * 將精華區資料結構改為與一般區、信箱相同, 節省大量硬碟空間
+ * 新增 /conf/CONFIG_FILE: BBS系統相關設定檔
+   MAXACTIVE: 上線人數
+   /conf/baduserid: bad userid list
+   /conf/expire.cf: 各板的佈告上限 (若未在此設定檔內之板面, 依系統設定)
+ * bbsmail: e-mail post 支援轉信(已認證可轉信), 簽名檔上傳支援多簽名檔
+ * mail 目錄: 以 userid 第一個字元作分類, 成為兩層階層目錄
+ * 離線時自動清除使用者暫存用途檔 tempfile
+ * 板名不分大小寫
+ * 保留板面或信箱精華文章
+ * 板面張貼認證限制
+ * 修改文章, 加上修改人及日期, 防止User修改文章Header
+ * 回文章時去除Header, 加上原發信人
+ * 跳到主題閱讀的第一篇
+ * 改文章標題時, 同時修改內文標題欄.
+ * Post On 精華區, 不轉信!
+ * 板主不能救回不是自己刪除的佈告
+ * 精華區佈告不可以目錄交換
+ * 如果板主去職, 板主助手一同去職.
+ * 修改文章內容, 或回信時, 不給user自行改header
+ * board.filename  - 板名長度 (BNAME_LEN)
+   board.attrib	- ....., 有 IDENT_ATTRIB 屬性之板面, 不接受未認證使用者張貼
+   including bbsmail (e-mail post), cross-post
+ * source/util/TRAN-dotboards.c   
+   for Formosa v0.9.0 to Formosa v1.0.0
+
+
+Formosa BBS 1.1.0
+------------------
+
+ * 改良管理者的設定介面. (讓管理者設定看板及使用者資料更方便)
+ * 改進看板佈告閱讀記錄方式. (大幅節省硬碟空間)
+ * 轉信程式改進 (增加效率, 減輕系統負荷)
+ * 新增留言板功能.
+ * 在看板回佈告可同時回信到原作者信箱.
+ * 精華區整批標記.
+ * Web-BBS
+ * 支援 FreeBSD 3.0, Solaris x86
+   (testing on FreeBSD 3.0-980507-SNAP, thanks for
+    hwhsaio@cc.nsysu.edu.tw, wing@cc.nsysu.edu.tw)
+
+
+Formosa BBS 1.0.0
+------------------
+
+ * 大幅改版, 更名為 Formosa BBS Server (NO-TTY BBS Daemon)
+	  取代 telnetd, login, bbsrf, 成為單一 BBS Daemon
+ * 資料結構大幅變動, 採用 Shared Memory 以加快資料處理,
+          減少記憶體使用總量
+          (原本每位使用者都各保有一份相同的記憶體存放資料)
+          .UTMP      (struct user_info)
+          MENU_SHOW  (motion picture in menu)
+ * 其它新增功能: 多板主, 線上送訊息, 個人信件代轉, 參觀用帳號
+ * 本版無法自舊版 NSYSU BBS 升級, 請重新安裝 Formosa BBS Server
+
+  [home]
+  + Add the two-level hierarchical 'home' directory.
+    Like this:
+               home/u/userid
+    or         
+               home/l/lthuang
+    
+    Some OS does not accomodate too many sub-directory in the
+    same directory, and for system performance, opening, searching,
+    so we use this hierarchical architecture.
+
+  [auto-forward]
+  + Support unix-like .forward
+	the system will forward the mail to the e-mail address which you
+	set in the e-mail field of your personal data.
+
+  [mail]
+  + Add the function that mail to all friend, or many people
+
+  [message]
+  + Add the online message functions
+
+	CTRL-R	reply the online message
+	t_review(): 	review the online message in the past
+	t_fsendmsg():	send message to all of my friends online
+	a_broadcast():	broadcast to all the online users
+
+    Users can received online message from others everywhere, however,
+    they are in talk or chatroom, but not irc.
+
+  [guest]
+  + Add the guest account, the permission for the guest account:
+	no vote, no readrc
+
+  [csbbs]
+  + Support Client-Server-Based BBS, and
+	combine some part of source code of Terminal-Based and CS-Based BBS.
+	Integrate some modules to library.
+
+  [readrc]
+  + New readrc function added,
+	by the readrc, it can reduce the storage space spent to about
+	one of fourth.
+
+  [talk]
+  + New talk-menu function,
+	users can use cursor to choose the all the option they like.
+
+  [admin]
+  + Powerful admin menu to modify the configuration of board
+	menu style to set flag and attribution of board
+
+  [chatroom]
+  + Client-Server based chatroom
+	bbschatd: chat server
+	refer to chat.h for bbs chat protocol
+
+  [bbsmail]
+  + Add log to bbslog
+    for verify spam attack and daily log
+
+  [admin]
+  + Menu-style function provided for config user data in admin
+    and xyz --> info
+
+  [bbs-news]
+  + Support NNTP 'XOVER' command for better performance 
+    when ask news server for new articles, command 'STAT' not used
+    any more.
+
+  [bbspop3]
+  + Support 'POP3' for bbs
+ 
+  [bbs2g4]
+  + BBS to Gopher gateway, gopher client can connect to our bbs 
+    station to get post or treasure.
+
+  [msginfo]
+  + Fetch all message text from source code, for implement multi-language
+    version. Maybe this will work in next release version. Hope so :)
+
+  [note]
+  + Also can call note as notepad. Like bulletin, you can
+    leave any message on the note, and other ones will see the 
+    messages.
+
+  [semaphore]
+  + Add semaphore mechanism to ensure in the same time, only one user
+    in critial section, finding the free solt for new login.
+
+  [brdshm]
+  + Apply the '.BOARDS' to shared memory, the memory space is just for
+    reading.
+
+  [class]
+  + Add 'CLASS' menu, according to configuration file 'class.cf' to 
+    dynamically produce the menu structure, the menu can be multi-level
+    tree, each board can appear in difference level in the tree.
+
+  [finger]
+  + Provide finger service, we implement a part of finger protocol for
+    finding the specified user or all users online.
+
+ Other change
+ ============
+
+  [bmas]
+  + bmas (Assistant of Board Manager) option provided.
+	All of the function about bmas (Assistant of Board Manager),
+	refer to add_bmas(), display_bmas(), delete_bmas() for detail, 
+	if you are interested what the function do.
+
+  [post]
+  + PreaparePost(), when reply the post, both replying the post on board
+	and to the original author.
+
+  [bname]
+  + invalid_bname()
+	In boardname, only decimal-digit or alphabetic or '-'
+	character is valid.
+
+  [userec]
+  + Add firstlogin to struct userec 
+	refer to struct.h
+
+  [xyz]
+  + Set the limit of size of personal file, includeing signature, plan,
+	and ircrc. If the size of file is equal to 0, the system will delete
+	the file automatically.
+
+  [delpost]
+  - User cannot undelete the post by himselft
+
+  [mail]
+  - DirectSMTP() check the response from the mail server step by step 
+	to verify sending mail is finished correctly.
+
+  [origin]
+  + Add origin line to the bottom line of the post
+
+  [news]
+  - Sending outgoing post onto news server, default is 'yes'
+
+  [board]
+  - When do users can see or post on the specified board ?
+	we have the rule:
+
+	If the board have the brdtype 'BRDTYPE_PRIVATE', only the users
+	whose userlevel are greater than the level of the board can see it.
+	If the board have the brdtype 'BRDTYPE_UNZAP', no one can zap it.
+	Otherwise, the userlevel of the users are greater than the level of 
+	the board can post on it.   
+
+  [boardheader]
+  - Remove the big array and add new attribution and flags 
+	into 'sturct boardheader'
+	bid:
+	brdtype:
+	refer to struct.h
+
+  [crosspost]
+  - When crosspost, not sending the post onto news server
+
+  [overrides]
+  + Add the option switch for overrides file
+	user can decide to whether tag the option switch on or off
+	If the option is off, user don't have any friend.
+
+  [signatures]
+  + Add the option switch for signature file
+	user can decide to whether tag the option switch on or off
+	If the option is off, user don't use signature.
+    
+  [signatures]
+  + Several signatures can be choose when you need it. Now,
+    when you want edit them, we can let you choose which one you
+    want to edit directly.
+
+  [editor]
+  - Enhance editor key: CTRL('Y') immediately delete one line
+
+  [viewer] 
+  - When reading article, user can go back to read the previous pages.
+
+  [kick]
+  - Kick out specified user online
+
+  [mail]
+  - The limit of mail in mbox of 'bm' is double than normal user.
+
+  [read]
+  + Add the key function '=', you can skip to the original articles
+    of the threads.
+
+  [treasure]
+  + The articles has same subject will be treated as threads,
+    we provid thread option for treasure collection.
+
+    1. mark the thread
+    2. move the thread into one article and copy/move to treausre.
+    
+
+Other Feature in older version
+------------------------------
+
+ * Linux 1.2.x support
+ * Solaris 2.4 support
+ * Vote feature
+ * Hierarchical treausre board
+ * 'bbs-news' - bbs to news gateway
+ * 'deluser' - utility to expire obsolete user account
+ * 'myunlink()' can removing a directory.
+ * 'myrename()' can rename cross file-system.
+ * 'bbsnet.sh' has been removed from package.
+ * HP_UX and DEC Ultrix Un*x system may not be supported till now
+
+
+--
+Li-te Huang
+<lthuang@cc.nsysu.edu.tw>
+Natl. Sun Yat-sen Univ.

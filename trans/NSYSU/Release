@@ -1,0 +1,19 @@
+remove 
+  ==> /* lasehu ? */ 
+  ==> PUBLIC_KEY
+#ifdef
+ NSYSUBBS
+    NSYSUBBS?
+ HAVE_BUG
+ DEBUG
+ SYSOP_BIN   
+ ACTFILE
+ HAVE_TELECOMM
+ SHOW_UPTIME
+#if defined
+ SYSOP_BIN
+ NSYSUBBS
+ NSYSUBBS?
+ ANIMEBBS
+#ifndef
+ CSBBS

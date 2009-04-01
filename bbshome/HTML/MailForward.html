@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<TITLE><!BBS_Server_BBSTITLE!> / 轉寄信件</TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+function check()
+{
+	if("<!BBS_User_Ident!>" == "未完成身份認證")
+	{
+		alert("警告：未通過身份認證者無法轉寄信件");
+	}
+	else if(document.MAIL.ADDRESS.value == "")
+	{
+		alert("請填上轉寄e-mail位址");
+	}
+	else
+        document.MAIL.submit();
+}
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#000000" TEXT="DFDFDF" LINK="12AFFF" VLINK="129F9F">
+
+<CENTER>
+<FONT size=5 color=orange><!BBS_Server_BBSTITLE!></FONT><br><br>
+
+<FORM NAME="MAIL" METHOD="POST" ACTION="MailForward">
+<TABLE width="80%">
+<TR>
+<TD BGCOLOR="#12AFFF">
+<B><FONT SIZE="+2" COLOR="#FFFFFF">轉寄信件</FONT></B>
+&nbsp;&nbsp;<FONT SIZE=3 COLOR=ORANGE></FONT>
+</TD>
+
+<TR>
+<TD BGCOLOR="Orange">
+<FONT SIZE=4>信件標題</FONT>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<FONT SIZE="4">
+&nbsp;&nbsp;<!BBS_Post_Subject!><br><br>
+</FONT>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="Orange">
+<FONT SIZE=4>轉寄至</FONT>
+</TD>
+</TR>
+<TR>
+<TD>
+&nbsp;&nbsp;<INPUT TYPE="TEXT" NAME="ADDRESS" SIZE="50">
+</TD>
+</TR>
+
+<TR>
+<TD COLSPAN=3>
+<INPUT TYPE="HIDDEN" NAME="MAILNUM" VALUE="<!BBS_Post_Num!>" >
+<INPUT TYPE="BUTTON" VALUE="轉寄" onClick="check()">
+<INPUT TYPE="RESET" VALUE="放棄" onClick="history.back()">
+</TD>
+</TABLE>
+</FORM>
+
+</CENTER>
+
+</BODY>
+</HTML>

@@ -1,0 +1,30 @@
+#!/sbin/sh
+
+homebbs=${HOMEBBS}
+        
+case "$1" in
+'start')
+    if [ -f $homebbs/bin/bbsd ]; then    
+    $homebbs/bin/bbsd 23 check               # telnet-based bbs daemon
+	$homebbs/bin/bbs2g4 70 60                # bbs to gopher gateway
+	$homebbs/bin/bbspop3d                    # bbs pop3 gateway
+	$homebbs/bin/bbsfingerd                  # bbs finger daemon
+	$homebbs/bin/bbsweb                      # bbs web server
+	$homebbs/bbs/bin/onlinesrv
+	/sbin/su bbs -c $homebbs/bin/csbbsd          # client-server-based bbs
+	/sbin/su bbs -c $homebbs/bin/bbs-news        # bbs news process
+	/sbin/su bbs -c "$homebbs/bin/menushow 0"
+    fi
+	;;
+'stop')
+	/usr/bin/pkill -x -u 0 '(bbsd|bbs2g4|bbspop3d|bbsfingerd|bbsweb|onlinesrv)'
+	/usr/bin/pkill -x csbbsd
+	/usr/bin/pkill -x bbs-news
+	/usr/bin/pkill -x menushow
+	;;
+*)
+	echo "Usage: $0 { start | stop }"
+	exit 1
+	;;
+esac
+exit 0

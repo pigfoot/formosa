@@ -1,0 +1,177 @@
+# Makefile for Formosa BBS v1.0.0
+#
+CC = gcc
+CFLAGS = -O2 -mtune=i686 -march=i686 -g -Wunused \
+	 -I../../include -I.. $(SITE_DEF) -I../../lib
+
+################################################
+# SunOS 4.1.x
+#
+#DEFINES  = -DSUNOS
+#LIBS     = -ltermcap -L../../lib -lbbs
+
+################################################
+# Linux 1.2.x
+#
+##CFLAGS	= -O6 -s -pipe -fomit-frame-pointer -fstrength-reduce -I.. -I../../include
+DEFINES  = -DSYSV -DLINUX -DTERMIOS -I../../include
+LIBS     = -L../../lib -lbbs
+
+################################################
+# Solaris 2.4
+#
+#CFLAGS = -O -g -Wunused -I/usr/ucbinclude -traditional -I..
+#DEFINES  = -DSOLARIS -DSYSV -DTERMIOS #-DSYSV4 -DSUNOS5
+#LIBS     = -ltermcap -lsocket -lnsl -L../../lib -lbbs #-lucb -L/usr/ucblib #-lelf
+
+#################################################
+# AIX 3.x
+#
+#DEFINES  = -DSYSV -DAIX -I../../include
+#LIBS     = -ltermcap -lbsd
+
+GARBAGE  = a.out core 
+STRIP    = strip
+
+PROGS  = countlogins active fixdir fixiddir syscheck readidx \
+         readpass showshm active.khbbs countuser coreinfo \
+         fixuseridx bbsnewsd showboard fixbid bquota todayfrom \
+         countflag junk killbbs modbrd listuid listuidx conflict_uid rebuild_uid \
+	 chpass
+
+LIBFILE = ../../lib/libbbs.a
+
+LIBSRCS  = ../../lib/bbslib.c ../../lib/conf.c ../../lib/misc.c \
+           ../../lib/mod_article.c ../../lib/mod_board.c \
+           ../../lib/mod_talk.c ../../lib/mod_mail.c ../../lib/mod_net.c \
+           ../../lib/mod_pass.c ../../lib/mod_post.c ../../lib/mod_readrc.c \
+           ../../lib/mod_record.c ../../lib/mod_sem.c ../../lib/mod_shm.c \
+           ../../lib/mod_user.c ../../lib/mod_zap.c ../../lib/modetype.c
+
+$(LIBFILE): $(LIBSRCS)
+	cd ../../lib; make libbbs.a
+
+
+all: $(PROGS)
+
+bquota: bquota.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+showshm: showshm.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+fixuseridx: fixuseridx.c procdir.o
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE) procdir.o
+
+readpass: readpass.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+readidx: readidx.c
+	$(CC) $(CFLAGS) $(DEFINES) -o readidx $@.c $(LIBS) $(LIBFILE)
+
+fixdir: fixdir.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o fixdir $@.c $(LIBS) $(LIBFILE)
+
+fixiddir: fixiddir.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o fixiddir $@.c $(LIBS) $(LIBFILE)
+
+listuid: listuid.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o listuid $@.c $(LIBS) $(LIBFILE)
+
+listuidx: listuidx.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o listuidx $@.c $(LIBS) $(LIBFILE)
+
+conflict_uid: conflict_uid.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o conflict_uid $@.c $(LIBS) $(LIBFILE)
+
+rebuild_uid: rebuild_uid.c $(INCLUDES) $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o rebuild_uid $@.c $(LIBS) $(LIBFILE)
+
+#
+# bbsnewsd (bbs to news) server
+#       
+bbsnewsd: bbsnewsd.c $(INCLUDES)
+	$(CC) $(CFLAGS) $(DEFINES) -o bbsnewsd bbsnewsd.c $(LIBS)
+
+active:	active.c
+	$(CC) $(CFLAGS) $(DEFINES) -o active active.c $(LIBS)
+
+active.khbbs: active.khbbs.c ../net.c
+	$(CC) $(CFLAGS) $(DEFINES) -o active.khbbs active.khbbs.c ../net.o $(LIBS)
+
+countlogins: countlogins.c $(INCLUDES)
+	$(CC) $(CFLAGS) $(DEFINES) -o countlogins countlogins.c $(LIBS)
+	
+
+#../../lib/bbslib.o: ../../lib/bbslib.c
+#	$(CC) $(CFLAGS) $(DEFINES) -c $*.c 
+
+syscheck: syscheck.c $(INCLUDES) 
+	$(CC) $(CFLAGS) $(DEFINES) -o syscheck syscheck.c -lcurses $(LIBS)
+
+# Display Board List
+showboard: showboard.c $(INCLUDES)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
+
+fixbid: fixbid.c 
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) ../bbslib.o
+
+countuser: countuser.c $(INCLUDES)
+	$(CC) $(CFLAGS) $(DEFINES) -o countuser countuser.c $(LIBS)
+
+coreinfo: coreinfo.c
+	$(CC) $(CFLAGS) $(DEFINES) -o coreinfo coreinfo.c $(LIBS)
+
+delthread: delthread.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o delthread delthread.c $(LIBS) $(LIBFILE)
+
+mailbm: mailbm.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+modbrd: modbrd.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LIBS) $(LIBFILE) 
+
+uplang: uplang.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LIBS) $(LIBFILE) 
+
+upbrd: upbrd.c $(LIBFILE)
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LIBS) $(LIBFILE) 
+
+mod_uinfo: mod_uinfo.c
+	$(CC) $(CFLAGS) $(DEFINES) -o mod_uinfo mod_uinfo.c  $(LIBS) $(LIBFILE) 
+
+check: check.c
+	$(CC) $(CFLAGS) $(DEFINES) -o check check.c $(LIBS) $(LIBFILE)
+
+#wnlee: wnlee.c
+#	$(CC) $(CFLAGS) $(DEFINES) -o wnlee wnlee.c $(LIBS) $(LIBFILE)
+
+wnlee: wnlee.c
+	$(CC) $(CFLAGS) -o wnlee wnlee.c $(LIBS) $(LIBFILE)
+
+newuser: newuser.c
+	$(CC) $(CFLAGS) $(DEFINES) -o newuser newuser.c $(LIBS) $(LIBFILE)
+
+bident: bident.c procdir.o
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE) procdir.o
+
+junk: junk.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+
+#
+# only for Solaris (procfs)
+#
+killbbs: killbbs.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c
+
+upclass: upclass.c $(LIBFILE)
+	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+moduser: moduser.c $(LIBFILE)
+	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) $(LIBFILE)
+
+clean: /tmp
+	rm -fr $(GARBAGE) $(NOW_PROGS) $(PROGS) *.o newuser upclass upbrd uplang\
+           bident delthread mailbm
+
