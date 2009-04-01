@@ -49,6 +49,8 @@ void include_ori P_((char *rfile, char *wfile));
 int reserve_one_article P_((int ent, char *direct));
 void write_article_header P_((FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin));
 int delete_one_article P_((int ent, FILEHEADER *finfo, char *direct, char *delby, int option));
+char get_pushcnt P_((int ent, char *direct, int fd));
+int push_one_article P_((int ent, char *direct, int fd, char score));
 /* mod_board.c */
 int can_see_board P_((BOARDHEADER *bhr, unsigned int userlevel));
 int check_board_acl P_((char *boardname, char *userid));

@@ -1,8 +1,18 @@
 # Makefile for Formosa BBS v1.0.0
 #
-CC = gcc
-CFLAGS = -O2 -mtune=i686 -march=i686 -g -Wunused \
-	 -I../../include -I.. $(SITE_DEF) -I../../lib
+
+HOMEBBS   = @HOMEBBS@
+
+DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
+CC        = @CC@
+CFLAGS	  = @CFLAGS@ $(DEFINES) -I../../include -I.. -I../../lib
+LDLIBS	  = @LIBS@
+
+STRIP     = @STRIP@
+PERL      = @PERL@
+CPROTO    = @CPROTO@
+INSTALL   = @INSTALL@
+ECHO_N    = @ac_n@
 
 ################################################
 # SunOS 4.1.x
@@ -15,7 +25,7 @@ CFLAGS = -O2 -mtune=i686 -march=i686 -g -Wunused \
 #
 ##CFLAGS	= -O6 -s -pipe -fomit-frame-pointer -fstrength-reduce -I.. -I../../include
 DEFINES  = -DSYSV -DLINUX -DTERMIOS -I../../include
-LIBS     = -L../../lib -lbbs
+LIBS     = -L../../lib -lbbs $(LDLIBS)
 
 ################################################
 # Solaris 2.4
@@ -31,13 +41,8 @@ LIBS     = -L../../lib -lbbs
 #LIBS     = -ltermcap -lbsd
 
 GARBAGE  = a.out core 
-STRIP    = strip
 
-PROGS  = countlogins active fixdir fixiddir syscheck readidx \
-         readpass showshm active.khbbs countuser coreinfo \
-         fixuseridx bbsnewsd showboard fixbid bquota todayfrom \
-         countflag junk killbbs modbrd listuid listuidx conflict_uid rebuild_uid \
-	 chpass
+PROGS  = moduser list_postno
 
 LIBFILE = ../../lib/libbbs.a
 
@@ -48,11 +53,12 @@ LIBSRCS  = ../../lib/bbslib.c ../../lib/conf.c ../../lib/misc.c \
            ../../lib/mod_record.c ../../lib/mod_sem.c ../../lib/mod_shm.c \
            ../../lib/mod_user.c ../../lib/mod_zap.c ../../lib/modetype.c
 
+all: $(PROGS)
+
+$(PROGS): $(LIBFILE)
+
 $(LIBFILE): $(LIBSRCS)
 	cd ../../lib; make libbbs.a
-
-
-all: $(PROGS)
 
 bquota: bquota.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
@@ -168,7 +174,8 @@ killbbs: killbbs.c
 upclass: upclass.c $(LIBFILE)
 	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) $(LIBFILE)
 
-moduser: moduser.c $(LIBFILE)
+moduser: LIBS+= -lcrypt
+moduser: $(LIBFILE)
 	$(CC) $(CFLAGS) -o $@ $@.c $(LIBS) $(LIBFILE)
 
 clean: /tmp

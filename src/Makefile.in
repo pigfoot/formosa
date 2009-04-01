@@ -58,11 +58,17 @@ OBJS      = $(SRCS:.c=.o)
 .c.o:  ;   $(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
 all: bbsd bbschatd
-	
+
+update: installbin
+	kill `cat /tmp/formosa.23`
+	$(HOMEBBS)/bin/bbsd 23
+
+debug: CFLAGS+= -g
+debug: all
 
 bbsd: tsbbsproto.h $(LIBFILE) $(OBJS) 
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
-	$(STRIP) bbsd
+	#$(STRIP) bbsd
 
 tsbbsproto.h: $(SRCS)
 	if [ "@systype@" != "LINUX" ]; then \
@@ -77,7 +83,7 @@ tsbbsproto.h: $(SRCS)
 
 bbschatd: bbschatd.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LDLIBS)
-	$(STRIP) $@
+	#$(STRIP) $@
 
 genlogin: genlogin.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LDLIBS) $(LIBFILE)

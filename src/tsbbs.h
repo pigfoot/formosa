@@ -92,7 +92,7 @@ extern int t_lines, t_columns;  /* Screen size, hieght, width */
 extern int do_post(), read_help(), bm_manage_file(), select_board(),
        display_bmwel(), read_article(), edit_article(),
        title_article(), cross_article(), mail_article(), delete_article(),
-       reserve_article(), tag_article(), range_tag_article(), 
+       reserve_article(), tag_article(), range_tag_article(), push_article(),
        treasure_article(), visit_article(), rcmd_query(), author_backward(), 
        author_forward(), title_backward(), title_forward(), thread_backward(), 
        thread_forward(), thread_original(), resv_backward(), resv_forward();

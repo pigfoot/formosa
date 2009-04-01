@@ -8,7 +8,7 @@
 #define IDLEN		13	/* Length of userids */
 #define UNAMELEN	21	/* Length of username */
 #define HOSTLEN		16	/* Length of from host */
-
+#define PUSHLEN		62	/* Length of push post */
 
 struct useridx {	/* Structure used in .USERIDX */
 	char userid[IDLEN+1];
@@ -155,6 +155,14 @@ typedef struct user_info {
 #define POST_OUT    0x80	/* post to news */
 #endif
 
+/*
+ * SCORE_* for FILEHEADER.pushcnt
+ */
+#define SCORE_NONE	0x00
+#define SCORE_ZERO	0x10
+#define SCORE_MAX	0x1F
+#define SCORE_MIN	0x01
+
 struct fileheader {
 	char filename[STRLEN-8-12-4-4];
 	int thrheadpos;			/* syhu: pos of thread head in .THREADHEAD */
@@ -162,7 +170,8 @@ struct fileheader {
 	char date[12];			/* yy/mm/dd */
 	int  postno;			/* unique no. of post */
 	char ident;				/* ident of owner */
-	char unused_str1[3];
+	char pushcnt;
+	char unused_str1[2];
 	char owner[STRLEN];
 	char title[STRLEN-IDLEN];
 	char delby[IDLEN];
@@ -239,14 +248,14 @@ struct boardheader {
 	unsigned char brdtype;    /* ¬ÝªOÄÝ©ÊºX¼Ð */
 	char owner[5*IDLEN+15];   /* TODO: max 5 bmas, each length is IDLEN */
 	char title[CBNAMELEN+4];  /* description of board */
-	char unused2[STRLEN-CBNAMELEN-4] ; 
+	int last_postno;
+	char unused2[STRLEN-CBNAMELEN-8] ; 
 	unsigned int level;	
 };
 
 typedef struct boardheader BOARDHEADER;
 
 #define BH_SIZE	(sizeof(struct boardheader))
-
 
 struct board_t {
 	BOARDHEADER bhr;
@@ -282,8 +291,8 @@ typedef struct classheader {
  */
 struct readrc {	
 	unsigned int  bid;
-    unsigned char rlist[BRC_MAXNUM]; 
-    time_t	mtime;
+	unsigned char rlist[BRC_MAXNUM]; 
+	time_t	mtime;
 	time_t  unused;
 };	/* size: 512 bytes */
 
@@ -292,11 +301,11 @@ struct readrc {
  * record of user which ever visit our site 
  */
 struct visitor {
-    char userid[IDLEN];
-    char ctype; 
+	char userid[IDLEN];
+	char ctype; 
 	char logout;       
-    time_t when;
-    char from[HOSTLEN];
+	time_t when;
+	char from[HOSTLEN];
 };
 
 
@@ -355,21 +364,21 @@ enum ULOGIN {
 /* 
  * keyword of personal files 
  */
-#define UFNAME_IRCRC	    "ircrc"
+#define UFNAME_IRCRC		"ircrc"
 #define UFNAME_OVERRIDES	"overrides"
 #define UFNAME_ALOHA		"aloha"
 #define UFNAME_BLACKLIST	"blacklist"
-#define UFNAME_PASSWDS      "passwds"
-#define UFNAME_PLANS        "plans"
-#define UFNAME_READRC       "readrc"
-#define UFNAME_RECORDS      "records"
+#define UFNAME_PASSWDS		"passwds"
+#define UFNAME_PLANS		"plans"
+#define UFNAME_READRC		"readrc"
+#define UFNAME_RECORDS		"records"
 #define UFNAME_SIGNATURES	"signatures"
-#define UFNAME_ZAPRC        "zaprc"
-#define UFNAME_IDENT        "ident"
+#define UFNAME_ZAPRC		"zaprc"
+#define UFNAME_IDENT		"ident"
 
-#define UFNAME_EDIT         "edit"
-#define UFNAME_MAIL         "mail"
-#define UFNAME_WRITE        "msq"
+#define UFNAME_EDIT		"edit"
+#define UFNAME_MAIL		"mail"
+#define UFNAME_WRITE		"msq"
 
 
 /* 

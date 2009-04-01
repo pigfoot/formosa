@@ -562,7 +562,7 @@ char *bname;
 		fputs("\n", fpw);
 	}
 
-	setuserfile(genbuf, curuser.userid, UFNAME_EDIT);
+	sethomefile(genbuf, curuser.userid, UFNAME_EDIT);
 	if ((fpr = fopen(genbuf, "r")) != NULL)
 	{
 		while (fgets(genbuf, sizeof(genbuf), fpr))
@@ -715,7 +715,7 @@ char *bname;
 	char bakfile[PATHLEN];
 
 
-	setuserfile(bakfile, curuser.userid, UFNAME_EDIT);
+	sethomefile(bakfile, curuser.userid, UFNAME_EDIT);
 	
 	if ((saveheader || uinfo.mode == EDITPLAN || uinfo.mode == EDITBMWEL) 
 	    && isfile(bakfile)	/* lthuang */

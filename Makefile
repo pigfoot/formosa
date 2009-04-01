@@ -3,7 +3,9 @@
 ################################################
 
 SUBDIRS = lib src csbbs util bbsweb
+CLEANDIRS = $(SUBDIRS) bbsweb/util src/util
 VERSION = 1.4.0
+HOMEBBS = /apps/bbs
 
 all:
 	@for i in $(SUBDIRS); do \
@@ -12,6 +14,18 @@ all:
 		${MAKE} all; \
 		cd ..; \
 	done
+
+debug:
+	@for i in $(SUBDIRS); do \
+		echo  "Building $$i ..."; \
+		cd $$i; \
+		${MAKE} debug; \
+		cd ..; \
+	done
+
+update: installbin
+	kill `cat /tmp/formosa.23`
+	$(HOMEBBS)/bin/bbsd 23
 
 config:
 	./configure
@@ -24,23 +38,23 @@ install: all
 		echo  "Installing $$i ..."; \
 		cd $$i; \
 		${MAKE} install; \
-		cd ..; \
+		cd -; \
 	done
 
 clean:
-	@for i in $(SUBDIRS); do \
+	@for i in $(CLEANDIRS); do \
 		cd $$i; \
 		if [ -f Makefile ]; then \
 			echo  "Cleaning $$i ..."; \
 			${MAKE} clean; \
 		fi; \
-		cd ..; \
+		cd -; \
 	done
 
 distclean: clean
-	@for i in $(SUBDIRS); do \
+	@for i in $(CLEANDIRS); do \
 		echo  "Dist Cleaning $$i ...";\
-		(cd $$i; rm -f *~ DEADJOE core a.out Makefile proto.h) \
+		(cd $$i; rm -f *~ DEADJOE core a.out Makefile proto.h;) \
 	done
 #	@(cd innbbsd; ${MAKE} clean; cd innd; ${MAKE} clean)
 #	@rm -f bbshome/HTML/*.html

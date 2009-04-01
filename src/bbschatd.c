@@ -223,7 +223,7 @@ char *s;
 	if (!disable)
 	{
 		sprintf(buf, "log/trace.chatd");
-		if ((fd = open(buf, O_APPEND | O_CREAT | O_WRONLY, 0644)) < 0)
+		if ((fd = open(buf, O_WRONLY | O_APPEND | O_CREAT, 0644)) < 0)
 		{
 			disable = 1;
 			return;
@@ -232,6 +232,7 @@ char *s;
 		strftime(timestr, sizeof(timestr), "%m/%d/%Y %T", localtime(&now));
 		sprintf(buf, "%s Room %d: %s\n", timestr,
 			(cuser) ? cuser->chid : -1, s);
+		lseek(fd, 0, SEEK_END);
 		write(fd, buf, strlen(buf));
 		close(fd);
 	}

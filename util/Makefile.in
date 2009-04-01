@@ -26,7 +26,7 @@ ifeq (-DANIMEBBS,$(SITE_DEF))
 endif
 
 PROG = bbsfingerd bbs2g4 bbspop3d onlinesrv idcheck bbsmail
-PROG2 = bbs-news deluser menushow userstat packbbs expire mailbm delthread fromstat
+PROG2 = bbs-news deluser menushow userstat packbbs expire mailbm delthread
 PROGS = $(PROG) $(PROG2)
 
 LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
@@ -42,7 +42,9 @@ LIBFILE  = ../lib/libbbs.a
 
 
 all: $(PROGS)
-	
+
+debug: CFLAGS+= -g
+debug: all
 
 $(LIBFILE): $(LIBSRCS)
 	cd ../lib; make

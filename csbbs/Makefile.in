@@ -54,6 +54,9 @@ OBJS     = $(SRCS:.c=.o)
 
 all: $(PROGNAME)
 
+debug: CFLAGS+= -g
+debug: all
+
 $(PROGNAME): csbbsproto.h $(OBJS) $(LIBFILE)
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
 	$(STRIP) $@

@@ -513,6 +513,8 @@ char *direct;
 	case 'd':
 		delete_article(ent, finfo, direct);
 		return updown;
+	case '%':
+		return push_article(ent, finfo, direct);
 	case 'q':
 	case KEY_LEFT:
 	default:
@@ -1043,6 +1045,133 @@ char *direct;
 	return C_FULL;
 }
 
+static int
+pushCheckPerm(finfo)
+FILEHEADER *finfo;
+{
+	if (finfo->accessed & FILE_DELE)
+		return 0;
+#ifdef GUEST
+	if (!strcmp(curuser.userid, GUEST))
+		return 0;
+#endif
+	if (in_mail)
+		return 0;
+
+	return 1;
+}
+
+#define ASCII_RED	"\033[1;31m"
+#define ASCII_GREEN	"\033[1;32m"
+#define ASCII_CLEAN	"\033[m"
+/*
+ * 推文
+ */
+int
+push_article(ent, finfo, direct)
+int ent;
+FILEHEADER *finfo;
+char *direct;
+{
+	int fd, ch, rt, first = 0;
+	static char *yes = "推", *no = "呸";
+	char cyes[3], cno[3], *ptr = NULL;
+	char msgbuf[64], pushline[PUSHLEN], fn_art[PATHLEN], writebuf[STRLEN << 1], c;
+	time_t date;
+	struct tm *tm;
+	struct stat st;
+
+	if (!pushCheckPerm(finfo))
+		return C_NONE;
+
+	msg("\033[1m<<文章評分>>\033[m [y]推文 [n]呸文 [g]自訂推 [b]自訂呸 [q]放棄：");
+	ch = igetkey();
+	switch (ch) {
+	case 'y':
+		ptr = yes;
+		break;
+	case 'n':
+		ptr = no;
+		break;
+	case 'g':
+		ptr = cyes;
+		break;
+	case 'b':
+		ptr = cno;
+		break;
+	default:
+		ptr = NULL;
+	}
+	if (!ptr)
+		return C_FULL;
+
+	if (ptr == cyes || ptr == cno) {
+		if (!getdata(b_line, 0, "\033[1;36m自訂：\033[m", ptr, 3, XECHO, NULL)) {
+			if (ptr == cyes)
+				ptr = yes;
+			else
+				ptr = no;
+		}
+	}
+	sprintf(msgbuf, "\033[36m%s\033[m %s%s" ASCII_CLEAN "：",
+		curuser.userid,
+		(ptr == yes || ptr == cyes) ? ASCII_RED : ASCII_GREEN,
+		ptr);
+	if (!getdata(b_line, 0, msgbuf, pushline,
+	             PUSHLEN - strlen(curuser.userid) + 1, XECHO, NULL))
+		return C_FULL;
+
+	if ((fd = open(direct, O_RDWR)) < 0)
+		return C_FULL;
+	flock(fd, LOCK_EX);
+
+	rt = get_pushcnt(ent, direct, fd);
+	if (rt != -1)
+		finfo->pushcnt = rt;
+
+	if (finfo->pushcnt == SCORE_NONE) {
+		finfo->pushcnt = SCORE_ZERO;
+		first = 1;
+	}
+	if ((ptr == yes || ptr == cyes) && finfo->pushcnt < SCORE_MAX)
+		++(finfo->pushcnt);
+	else if ((ptr == no || ptr == cno) && finfo->pushcnt > SCORE_MIN)
+		--(finfo->pushcnt);
+
+	rt = push_one_article(ent, direct, fd, finfo->pushcnt);
+	flock(fd, LOCK_UN);
+	close(fd);
+
+	date = time(NULL);
+	tm = localtime(&date);
+	if (rt == 0) {
+		setdotfile(fn_art, direct, finfo->filename);
+		if ((fd = open(fn_art, O_RDWR | O_APPEND, 0600)) < 0)
+			return C_FULL;
+		flock(fd, LOCK_EX);
+
+		ptr = writebuf;
+
+		fstat(fd, &st);
+		lseek(fd, -1, SEEK_END);
+		read(fd, &c, 1);
+		if (c != '\n')
+			*ptr++ = '\n';
+		if (first) {
+			sprintf(ptr, "--\n");
+			ptr += 3;
+		}
+		sprintf(ptr, "%s%-*s %02d/%02d %02d:%02d\n",
+			msgbuf, PUSHLEN - strlen(curuser.userid), pushline,
+			tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min);
+		write(fd, writebuf, strlen(writebuf));
+
+		flock(fd, LOCK_UN);
+		close(fd);
+	}
+
+	return C_FULL;
+}
 
 /* 
  * get a title from user-input

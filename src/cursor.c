@@ -133,7 +133,9 @@ int top, last, rows;
 			type = ' ';
 		}
 
+		/* 顯示指標區域 */
 		outs("   ");
+
 		if (cmp_wlist(artwtop, fhr->filename, strcmp))
 			prints("%4d*%c", num, type);
 		else
@@ -152,7 +154,18 @@ int top, last, rows;
 		else
 			outs("   ");
 #else
-		outs(" ");
+		if (fhr->pushcnt != SCORE_NONE) {
+			if (fhr->pushcnt > SCORE_ZERO)
+				prints("\033[1;31m%01.1X\033[m",
+					fhr->pushcnt - SCORE_ZERO);
+			else if (fhr->pushcnt < SCORE_ZERO)
+				prints("\033[32m%01.1X\033[m",
+					SCORE_ZERO - fhr->pushcnt);
+			else
+				prints("\033[1;33m0\033[m");
+		} else {
+			outs(" ");
+		}
 #endif		
 
 		/* if treausure sub-folder */
@@ -1206,6 +1219,7 @@ struct one_key post_comms[] =
 	{'E', edit_article},	
 	{'i', title_article},	
 	{'x', cross_article},	
+	{'%', push_article},	
 	{'m', mail_article},
 	{'d', delete_article},
 	{'g', reserve_article},	/* in_mail || in_board */

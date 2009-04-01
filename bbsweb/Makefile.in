@@ -51,9 +51,10 @@ PROG       = bbsweb
 
 .c.o:  ; $(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
-
 all: $(PROG)
-	
+
+debug: CFLAGS+= -g
+debug: all
 
 $(PROG): $(OBJS) $(LIBFILE) bbsweb.h log.h
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)

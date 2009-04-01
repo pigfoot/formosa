@@ -56,7 +56,7 @@ int s;
 static void
 warn_bell()
 {
-	unsigned char bell[4] = {7,7,7,0};
+	char bell[4] = {7,7,7,0};
 	fputs(bell, stderr);
 }
 
@@ -109,9 +109,11 @@ int s;
 		
 		if ((fd = open(ufile_write, O_WRONLY | O_CREAT | O_APPEND, 0600)) > 0)
 		{
+			lseek(fd, 0, SEEK_END);
 			write(fd, bigbuf, len);
 			close(fd);
 		}
+
 /*
 for speed-up, not use lock-file append
 		append_record(ufile_write, bigbuf, len);
@@ -135,7 +137,7 @@ user_init()
 	setmailfile(ufile_mail, curuser.userid, DIR_REC);
 	sethomefile(ufile_overrides, curuser.userid, UFNAME_OVERRIDES);
 	sethomefile(ufile_blacklist, curuser.userid, UFNAME_BLACKLIST);
-	setuserfile(ufile_write, curuser.userid, UFNAME_WRITE);
+	sethomefile(ufile_write, curuser.userid, UFNAME_WRITE);
 
 #ifdef GUEST
 	if (!strcmp(curuser.userid, GUEST))
@@ -662,7 +664,7 @@ char *host, *term, **argv;
 	if (strcmp(curuser.userid, GUEST))
 #endif
 	{
-		setuserfile(genbuf, curuser.userid, UFNAME_EDIT);
+		sethomefile(genbuf, curuser.userid, UFNAME_EDIT);
 		if (isfile(genbuf))
 		{
 			clear();

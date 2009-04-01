@@ -107,7 +107,7 @@ int s;
 	{
 		int fd;
 		
-		if ((fd = open(ufile_write, O_WRONLY | O_CREAT | O_APPEND, 0600)) > 0)
+		if ((fd = open(ufile_write, O_WRONLY, O_CREAT | O_APPEND)) > 0)
 		{
 			write(fd, bigbuf, len);
 			close(fd);

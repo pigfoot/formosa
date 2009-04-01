@@ -11,6 +11,7 @@
 #define ANTISPAM
 
 #include "bbs.h"
+#include "str_codec.h"
 #include <stdarg.h>
 #include <sys/stat.h>
 
@@ -577,7 +578,7 @@ char    r_file[];
 	if (minfo.subject[0] != '\0')
 	{
 		subject = minfo.subject;
-#if 1		
+#if 1
 		strcpy(genbuf, subject);
 		decode_line(subject, genbuf);	/* check subject length, and how ? */
 #endif
@@ -697,12 +698,10 @@ char    r_file[];
 }
 
 
-int
-readin_mail(filename)
-char   *filename;
+int readin_mail(const char *const filename)
 {
 	int     i, ok_num, rec_len, save_rec_len, invalid;
-	char    rbuf[1024], w_file[PATHLEN], *s, outside[512];
+	char    rbuf[8192], w_file[PATHLEN], *s, outside[4096];
 	FILE   *fp, *fp_sys;
 	
 

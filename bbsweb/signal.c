@@ -27,7 +27,7 @@ static void
 reaper(int sig)
 {
 	pid_t cpid;
-#if	defined(SOLARIS) || defined(AIX) || defined(LINUX)
+#if	defined(SOLARIS) || defined(AIX) || defined(LINUX) || defined(__FreeBSD__)
 	int status;
 #else
 	union wait status;

@@ -506,7 +506,7 @@ setskinfile(char *fname, char *boardname, char *skin)
 }
 
 
-#if !defined(HAVE_STRERROR)
+#if !defined(HAVE_STRERROR) && !defined(__FreeBSD__)
 char *
 strerror(errnum)
 int errnum;

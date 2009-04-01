@@ -714,7 +714,7 @@ case ${target} in
     *-linux*)       
 	systype=LINUX
 	OS_DEF="-DSYSV -DLINUX -DTERMIOS"
-	CFLAGS="${CFLAGS} -O2 -mtune=i686 -march=i686 -fomit-frame-pointer"
+	CFLAGS="${CFLAGS} -O2 -mtune=i686 -march=i686 -fomit-frame-pointer -Wall"
 	LIBS=""
 	;;
 
@@ -2857,7 +2857,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile
+trap 'rm -fr `echo "bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile src/util/Makefile
           util/Makefile bbsweb/util/Makefile config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -2962,7 +2962,7 @@ EOF
 cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile
-          util/Makefile bbsweb/util/Makefile"}
+          src/util/Makefile util/Makefile bbsweb/util/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

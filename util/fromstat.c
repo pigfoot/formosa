@@ -201,10 +201,12 @@ char *argv[];
 			continue;
 		countuser (visuser.from);
 		logins++;
+#if 0
 #ifdef NSYSUBBS3
-		if (!strcmp(visuer.from, "140.117.", 8))
+		if (!strncmp(visuer.from, "140.117.", 8))
 			bbs3++;
-#endif						
+#endif
+#endif
 	}
 	close (fd);
 

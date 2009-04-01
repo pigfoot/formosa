@@ -634,6 +634,49 @@ char *direct;
 	return -1;
 }
 
+/*
+   讀取推文分數
+*/   
+char
+get_pushcnt(ent, direct, fd)
+int ent;
+char *direct;
+int fd;
+{
+	FILEHEADER *fhr = &genfhbuf;
+
+	/* file opened/locked by src/article.c:push_article() */
+	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
+	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
+	{
+		return fhr->pushcnt;
+	}
+	return -1;
+}
+
+/*
+   存入推文分數
+*/   
+int
+push_one_article(ent, direct, fd, score)
+int ent;
+char *direct;
+int fd;
+char score;
+{
+	FILEHEADER *fhr = &genfhbuf;
+
+	/* file opened/locked by src/article.c:push_article() */
+	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
+	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
+	{
+		fhr->pushcnt = score;
+		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) != -1
+		    && write(fd, fhr, FH_SIZE) == FH_SIZE)
+			return 0;
+	}
+	return -1;
+}
 
 void
 write_article_header(fpw, userid, username, bname, timestr, title, origin)

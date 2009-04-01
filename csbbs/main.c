@@ -31,7 +31,7 @@ extern int errno;
 static void
 reaper()
 {
-#if	defined(SOLARIS) || defined(AIX)
+#if	defined(SOLARIS) || defined(AIX) || defined(__FreeBSD__)
 	int status;
 #else
 	union wait status;

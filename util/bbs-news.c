@@ -91,6 +91,7 @@ char debug[4096];
 #endif
 
 #include "bbs.h"
+#include "str_codec.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <netdb.h>

@@ -27,6 +27,7 @@ int delete_articles P_((int ent, FILEHEADER *finfo, char *direct, struct word *w
 int delete_article P_((int ent, FILEHEADER *finfo, char *direct));
 int mail_article P_((int ent, FILEHEADER *finfo, char *direct));
 int cross_article P_((int ent, FILEHEADER *finfo, char *direct));
+int push_article P_((int ent, FILEHEADER *finfo, char *direct));
 int set_article_title P_((char title[]));
 int tag_article P_((int ent, FILEHEADER *finfo, char *direct));
 int range_tag_article P_((int ent, FILEHEADER *finfo, char *direct));

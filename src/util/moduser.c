@@ -13,7 +13,6 @@ mod_uinfo.c             change the bbs-user data and show user info
 
 #include "bbs.h"
 
-
 void
 usage(void)
 {
@@ -217,21 +216,21 @@ main(int argc, char *argv[])
 	if (iflg == 1 && nflg == 0 && pflg == 0 && mflg == 0 && hflg == 0 && lflg == 0 && aflg == 0 && bflg == 0 && cflg == 0 && sflg == 0 && fflg == 0 && oflg == 0 && uflg == 0)
 	{
 		printf("----------------------------------\n");
-		printf("●ID [%s]\n", udata.userid);
-		printf("●暱稱 [%s]\n", udata.username);
-		printf("●密碼 [%s]\n", udata.passwd);
-		printf("●電子信箱 [%s]\n", udata.email);
-		printf("●使用等級 [%d]\n", udata.userlevel);
-		printf("●上站次數 [%d]\n", udata.numlogins);
-		printf("●張貼次數 [%d]\n", udata.numposts);
-		printf("●上次上站地點 [%s]\n", udata.lasthost);
-		printf("●認證等級 [%d]\n", udata.ident);
-		printf("●自動轉寄 : %s\n", (udata.flags[0] & FORWARD_FLAG) ? "啟動" : "關閉");
-		printf("●隱身模式 : %s\n", (udata.flags[0] & CLOAK_FLAG) ? "啟動" : "關閉");
-		printf("●屬性旗標 : %X\n", udata.flags[0]);
-		printf("●上次使用 : %s\n", (udata.lastctype == CTYPE_CSBBS) ? "Client" : "Telnet");
-		printf("●註冊編號 : %d\n", udata.uid);
-		printf("●註冊時間 : [%x] %s\n", udata.firstlogin, ctime(&udata.firstlogin));
+		printf("ID [%s]\n", udata.userid);
+		printf("暱稱 [%s]\n", udata.username);
+		printf("密碼 [%s]\n", udata.passwd);
+		printf("電子信箱 [%s]\n", udata.email);
+		printf("使用等級 [%d]\n", udata.userlevel);
+		printf("上站次數 [%d]\n", udata.numlogins);
+		printf("張貼次數 [%d]\n", udata.numposts);
+		printf("上次上站地點 [%s]\n", udata.lasthost);
+		printf("認證等級 [%d]\n", udata.ident);
+		printf("自動轉寄 : %s\n", (udata.flags[0] & FORWARD_FLAG) ? "啟動" : "關閉");
+		printf("隱身模式 : %s\n", (udata.flags[0] & CLOAK_FLAG) ? "啟動" : "關閉");
+		printf("屬性旗標 : %X\n", udata.flags[0]);
+		printf("上次使用 : %s\n", (udata.lastctype == CTYPE_CSBBS) ? "Client" : "Telnet");
+		printf("註冊編號 : %d\n", udata.uid);
+		printf("註冊時間 : [%lx] %s\n", udata.firstlogin, ctime(&udata.firstlogin));
 
 		exit(0);
 	}
@@ -304,4 +303,6 @@ main(int argc, char *argv[])
 		printf("err to write back passwds\n");	
 		return -1;
 	}
+
+	return 0;
 }

@@ -85,13 +85,13 @@ struct _mime_type
 	char *type;
 } mime_type[] = 
 {
-	{"html", "text/html"},
-	{"htm", "text/html"},
+	{"html", "text/html; charset=big5"},
+	{"htm", "text/html; charset=big5"},
 	{"gif", "image/gif"},
 	{"png", "image/png"},
 	{"jpg", "image/jpeg"},
 	{"jar", "text/plain"},
-	{"txt", "text/plain"},
+	{"txt", "text/plain; charset=big5"},
 	{"js", "application/x-javascript"},
 	{"cdf", "application/x-netcdf"},
 	{"class", "application/octet-stream"},

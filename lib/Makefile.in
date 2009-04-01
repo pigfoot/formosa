@@ -42,6 +42,9 @@ LIBBBS    = libbbs.a
 
 all: $(LIBBBS)
 
+debug: CFLAGS+= -g
+debug: all
+
 $(LIBBBS): libproto.h $(LIBSRCS:.c=.o)
 	$(AR) ru $(LIBBBS) $(LIBSRCS:.c=.o)
 	@RANLIB@ $(LIBBBS)

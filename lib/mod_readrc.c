@@ -84,6 +84,11 @@ ReadRC_Update()
 	}
 	close(fdw);
 
+	/*
+	 * Marks unchanged before fail checking.
+	 * Doing this will cause update lose if fail.
+	 * But prevents continues update if it'll never succeed.
+	 */
 	rrc_changed = FALSE;
 
 	if (!fail)
@@ -215,7 +220,6 @@ int artno;
 		prints("\nfail!!");
 #endif
 }
-
 
 int
 ReadRC_UnRead(artno)

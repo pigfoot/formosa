@@ -34,7 +34,7 @@
 #endif
 #endif
 
-#if defined(SOLARIS)
+#if defined(SOLARIS) || defined(__FreeBSD__)
 #define USE_POLL
 #include <poll.h>
 #endif

@@ -5,8 +5,8 @@
 /*******************************************************************
  *    闽俱╰参﹚竡
  *******************************************************************/
-#define BBS_UID             2323        /* BBS user Run Time ╰参 uid */
-#define BBS_GID             2323        /* BBS user Run Time ╰参 gid */
+#define BBS_UID             9999        /* BBS user Run Time ╰参 uid */
+#define BBS_GID             999         /* BBS user Run Time ╰参 gid */
 #define MAXACTIVE           64         /* 絬甧砛计 */
 #define MAXBOARD            256
 #define HOMEBBS             "/home/bbs"
@@ -146,7 +146,7 @@
 # undef MAXACTIVE
 # define MAXACTIVE (2048)
 # undef MAXBOARD
-# define MAXBOARD 1024
+# define MAXBOARD 4096
 /*
 #elif defined(NSYSUBBS2)  
 # define BBSNAME     "southbbs"
