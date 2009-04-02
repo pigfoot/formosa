@@ -183,7 +183,7 @@ AC_FUNC_STRFTIME
 #AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 AC_FUNC_WAIT3
-AC_CHECK_FUNCS(snprintf strsignal strerror)
+AC_CHECK_FUNCS(snprintf strsignal strerror vsnprintf)
 ##AC_CHECK_FUNCS(vfork flock getcwd gethostname mkdir mktime rmdir select \
 ##               socket strstr strtol poll crypt)
 #AC_CHECK_FUNCS(gettimeofday getwd putenv strdup strspn)

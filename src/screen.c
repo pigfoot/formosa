@@ -554,7 +554,7 @@ prints(char *fmt, ...)
 	char buff[512];
 
 	va_start(args, fmt);
-#if !VSNPRINTF
+#if !HAVE_VSNPRINTF
 	vsprintf(buff, fmt, args);
 #else	
 	vsnprintf(buff, sizeof(buff), fmt, args);
