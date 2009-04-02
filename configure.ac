@@ -8,14 +8,14 @@ AC_CANONICAL_SYSTEM
 LDFLAGS="-g"
 
 case ${target} in
-    *sun-sunos*)   
+    *sun-sunos*)
 	systype=SunOS
 	OS_DEF="-DSUNOS"
 #	CC="cc"
 	LIBS="-ltermcap"
-	;;      
+	;;
 
-    *solaris*) 
+    *solaris*)
 	systype=Solaris
 	OS_DEF="-DSOLARIS -DSYSV"
 ##	OS_DEF="-DSOLARIS -DSYSV -DTERMIOS"
@@ -25,47 +25,47 @@ case ${target} in
 	CFLAGS="-O2 -Wunused"
 	LIBS="-ltermcap -lsocket -lnsl"
 ##	LIBS="-ltermcap -lsocket -lnsl -lucb -L/usr/ucblib"
-	;;      
+	;;
 
-    *-freebsd*|*-netbsd*|*-bsdi*)    
+    *-freebsd*|*-netbsd*|*-bsdi*)
 	systype=NetBSD_OR_FreeBSD
 	OS_DEF="-DBSD44"
 #	OS_DEF="-DBSD44 -DTERMIOS"
 #	CC="cc"
 #	CFLAGS=""
 	LIBS="-ltermcap"
-	;;     
+	;;
 
-    *hp-hpux*)     
+    *hp-hpux*)
 	systype=HP_UX
 	OS_DEF="-DHP_UX -DSYSV -DTERMIOS"
 #	CC="gcc"
 #	CFLAGS="-traditional -O2"
 	LIBS="-ltermcap"
-	;;     
+	;;
 
-    *ibm-aix*)     
+    *ibm-aix*)
 	systype=IBM_AIX
 	OS_DEF="-DAIX -DSYSV"
 #	CC="cc"
 	LIBS="-ltermcap -lbsd"
-	;;     
+	;;
 
-    *sgi-irix*)    
+    *sgi-irix*)
 	systype=SGI_IRIX
 	OS_DEF="-DIRIX -DSYSV -DTERMIOS"
 #	CC="cc"
 	LIBS="-ltermcap"
-	;;     
+	;;
 
-    *dec-osf*)     
+    *dec-osf*)
 	systype=DEC_OSF
 	OS_DEF=""
 #	CC="gcc"
 	LIBS="-ltermcap"
-	;;      
+	;;
 
-    *-linux*)       
+    *-linux*)
 	systype=LINUX
 	OS_DEF="-DSYSV -DLINUX -DTERMIOS"
 #	CC="cc"
@@ -76,17 +76,17 @@ case ${target} in
 	LIBS=""
 	;;
 
-    *unixware*)       
+    *unixware*)
 	systype=UNIXWARE
 	OS_DEF="-DUNIXWARE"
 #	CC="cc"
 	LIBS="-ltermcap -lsocket"
 	;;
 
-    *)     	   
+    *)
 	systype=UNKNOWN
 	LIBS="-ltermcap"
-	;;     
+	;;
 esac
 
 dnl Checks for programs.
@@ -184,15 +184,37 @@ AC_CHECK_FUNCS(snprintf strsignal strerror vsnprintf)
 ##               socket strstr strtol poll crypt)
 #AC_CHECK_FUNCS(gettimeofday getwd putenv strdup strspn)
 
+#
+# Checking poll()
+#
+AC_CHECK_HEADERS(poll.h sys/poll.h)
+AC_MSG_CHECKING([for poll()])
+AC_TRY_COMPILE([
+		#if defined(HAVE_POLL_H)
+		#include <poll.h>
+		#elif defined(HAVE_SYS_POLL_H)
+		#include <sys/poll.h>
+		#endif
+	],[
+		struct pollfd fds[1];
+		fds[0].fd = 0;
+		fds[0].events = POLLIN | POLLOUT | POLLERR | POLLHUP | POLLNVAL;
+
+		poll(fds, 1, 1000);
+	], enableval=yes, enableval=no)
+AC_MSG_RESULT($enableval)
+if test "${enableval}" = "yes"; then
+	AC_DEFINE(HAVE_POLL, 1, [Define if poll is available in <poll.h> or <sys/poll.h>.])
+fi
+
 AC_CACHE_CHECK(if sys_siglist is already defined, ac_cv_needs_sys_siglist,
   AC_TRY_COMPILE([#include <stdio.h>],[char *s = sys_siglist[0];],
     ac_cv_needs_sys_siglist="no",
     ac_cv_needs_sys_siglist="yes")
 )
 if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
-  AC_DEFINE(NEED_SYS_SIGLIST)
+  AC_DEFINE(NEED_SYS_SIGLIST, 1, [Description])
 fi
- 
 
 ECHO_N=${ac_n}
 ECHO_C=${ac_c}
