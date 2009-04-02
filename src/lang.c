@@ -17,10 +17,7 @@ struct LANG *elangshm = NULL;	/* pointer to english msg shared memory */
 struct LANG *clangshm = NULL;	/* pointer to chinese msg shared memory */
 
 
-static void
-parse_lang_cf(file, shm)
-char *file;
-struct LANG *shm;
+static void parse_lang_cf(char *file, struct LANG *shm)
 {
 	FILE *fp;
 	char buf[4096], *s, *str, *pool, *base;
@@ -94,8 +91,7 @@ re_read:
 }
 
 
-static void
-resolve_elangshm()
+static void resolve_elangshm()
 {
 	if (!elangshm)
 		elangshm = attach_shm(ELANGSHM_KEY, sizeof(struct LANG));
@@ -108,8 +104,7 @@ resolve_elangshm()
 }
 
 
-static void
-resolve_clangshm()
+static void resolve_clangshm()
 {
 	if (!clangshm)
 		clangshm = attach_shm(CLANGSHM_KEY, sizeof(struct LANG));
@@ -122,9 +117,7 @@ resolve_clangshm()
 }
 
 
-void
-lang_init(lang)
-char lang;
+void lang_init(char lang)
 {
 	extern struct LANG *elangshm, *clangshm;
 /* 

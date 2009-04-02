@@ -14,10 +14,7 @@
 /* TODO: friend struct, including type(good/bad) */
 /* kmwang:20000609:BadGuyList */
 /* 新增 arg: type, 以辨別好友(F)或是壞友(B) */ 
-void
-friendAdd(ident, type)
-char *ident;
-char type;
+void friendAdd(char *ident, char type)
 {
 /* kmwang:20000802:將 if 拿掉, 避免有人一進站就編輯好友或著是壞人名單, 造成交集 */
 //	if ( type == 'F' )
@@ -60,10 +57,7 @@ char type;
 
 /* kmwang:20000609:BadGuyList */
 /* 新增 arg: type, 以辨別好友(F)或是壞友(B) */
-void
-friendDelete(ident, type)
-char *ident;
-char type;
+void friendDelete(char *ident, char type)
 {
 #if 1
 	if (ident == NULL || ident[0] == '\0')
@@ -87,8 +81,7 @@ char type;
 }
 
 
-void
-toggle_pager()
+void toggle_pager()
 {
 	register int i;
 
@@ -115,15 +108,13 @@ toggle_pager()
 }
 
 
-int
-t_pager()
+int t_pager()
 {
 	toggle_pager();
 	return C_FOOT;
 }
 
-void
-toggle_bpager()
+void toggle_bpager()
 {
 	register int i;
 
@@ -153,8 +144,7 @@ toggle_bpager()
 }
 
 
-int
-t_bpager()
+int t_bpager()
 {
 	toggle_bpager();
 	return C_FOOT;
@@ -162,10 +152,7 @@ t_bpager()
 
 
 
-int
-QueryUser(userid, upent)
-char *userid;
-USER_INFO *upent;
+int QueryUser(char *userid, USER_INFO *upent)
 {
 	int save_umode, retval;
 #if 0
@@ -233,8 +220,7 @@ USER_INFO *upent;
 
 BOOL redraw_after_query = FALSE;
 
-int
-t_query()
+int t_query()
 {
 	char userid[IDLEN];
 
@@ -250,10 +236,7 @@ t_query()
 }
 
 
-static int
-cmp_destid(ident, up)
-char *ident;
-register USER_INFO *up;
+static int cmp_destid(char *ident, register USER_INFO *up)
 {
 	return !strcmp(ident, up->destid);
 }
@@ -262,9 +245,7 @@ register USER_INFO *up;
 USER_INFO ui;			/* partner's online info */
 char page_requestor[STRLEN];	/* partner's personal description */
 
-static int
-searchuserlist(ident)
-char *ident;
+static int searchuserlist(char *ident)
 {
 	register USER_INFO *up;
 
@@ -277,8 +258,7 @@ char *ident;
 }
 
 
-static int
-setpagerequest()
+static int setpagerequest()
 {
 	if (searchuserlist(curuser.userid) == 0 || !ui.sockactive)
 		return 1;
@@ -288,9 +268,7 @@ setpagerequest()
 }
 
 
-BOOL
-servicepage(arg)
-int arg;
+BOOL servicepage(int arg)
 {
 	static time_t last_check;
 	
@@ -344,13 +322,7 @@ int arg;
 }
 
 
-static void
-do_talk_char(sline, eline, curln, curcol, wordbuf, wordbuflen, ch)
-int sline, eline;
-int *curln, *curcol;
-char *wordbuf;
-int *wordbuflen;
-int ch;
+static void do_talk_char(int sline, int eline, int *curln, int *curcol, char *wordbuf, int *wordbuflen, int ch)
 {
 	if (isprint2(ch))
 	{
@@ -449,8 +421,7 @@ unsigned char talkobuf[80];
 unsigned int talkobuflen;
 int talkflushfd;
 
-static int 
-talkflush()
+static int talkflush()
 {
 	if (talkobuflen)
 		write(talkflushfd, talkobuf, talkobuflen);
@@ -459,10 +430,7 @@ talkflush()
 }
 
 
-static void
-do_talk(fd, tinf)
-int fd;
-USER_INFO *tinf;
+static void do_talk(int fd, USER_INFO *tinf)
 {
 /*
 	USEREC user;
@@ -584,9 +552,7 @@ USER_INFO *tinf;
 
 static struct word *talkwtop = NULL;
 
-static int
-listcuent(upent)		/* for list all online userid */
-USER_INFO *upent;
+static int listcuent(USER_INFO *upent)		/* for list all online userid */
 {
 	if (!strcmp(upent->userid, curuser.userid))
 		return -1;
@@ -597,9 +563,7 @@ USER_INFO *upent;
 }
 
 
-int
-namecomplete_onlineuser(data)
-char *data;
+int namecomplete_onlineuser(char *data)
 {
 	move(1, 0);
 	clrtobot();
@@ -616,10 +580,7 @@ char *data;
 }
 
 
-static int
-talkCheckPerm(tkuinf, opt)
-USER_INFO *tkuinf;
-BOOL opt;	/* show error response or not */
+static int talkCheckPerm(USER_INFO *tkuinf, BOOL opt)
 {
 	if (tkuinf->userid[0] == '\0')
 		return -1;
@@ -678,8 +639,7 @@ BOOL opt;	/* show error response or not */
 }
 
 
-int
-check_page_perm()
+int check_page_perm()
 {
 	if (!curuser.userlevel)	/* guest 不能 talk/write/broadcast */
 		return -1;
@@ -702,9 +662,7 @@ check_page_perm()
 }
 
 
-int
-talk_user(tkuinf)
-USER_INFO *tkuinf;
+int talk_user(USER_INFO *tkuinf)
 {
 	int sock, msgsock, length;
 	struct sockaddr_in server;
@@ -820,8 +778,7 @@ USER_INFO *tkuinf;
 }
 
 
-int
-t_talk()
+int t_talk()
 {
 	char userid[IDLEN];
 	USER_INFO *talk_uinfo;
@@ -841,8 +798,7 @@ t_talk()
 }
 
 
-int
-talkreply()
+int talkreply()
 {
 	int a, ch;
 	char save_destid[IDLEN];	/* lthuang */
@@ -951,10 +907,7 @@ t_ircl()
 
 
 /* TODO */
-int
-get_message_file(fname, title)
-char *fname;
-char *title;
+int get_message_file(char *fname, char *title)
 {
 	FILE *fpw;
 
@@ -985,10 +938,7 @@ char *title;
 
 MSQ mymsq;
 
-int
-prepare_message(who, is_broadcast)
-char *who;
-BOOL is_broadcast;
+int prepare_message(char *who, BOOL is_broadcast)
 {
 	char my_mtext[MTEXTLEN];
 	
@@ -1033,9 +983,7 @@ bug fixed		*/
 }
 
 
-int
-SendMesgToSomeone(ident)
-char *ident;
+int SendMesgToSomeone(char *ident)
 {
 	USER_INFO *quinf;
 	int save_umode = uinfo.mode;
@@ -1092,9 +1040,7 @@ int msq_first = 0;
 int msq_last = -1;
 int save_msq_first = -1;
 
-static int
-msq_lessthan(a, b)
-int a, b;
+static int msq_lessthan(int a, int b)
 {
 	if (a == -1)
 		return 1;
@@ -1107,8 +1053,7 @@ int a, b;
 
 
 /* TODO */
-int
-msq_reply()		/* lthuang */
+int msq_reply()		/* lthuang */
 {
 	int my_newfd;		/* lthuang */
 	extern int i_newfd;
@@ -1276,8 +1221,7 @@ msq_reply_ret:
 }
 
 
-int
-t_review()
+int t_review()
 {
 	more(ufile_write, TRUE);
 
@@ -1285,8 +1229,7 @@ t_review()
 }
 
 
-int
-t_msq()
+int t_msq()
 {
 	char userid[IDLEN];
 
@@ -1296,9 +1239,7 @@ t_msq()
 }
 
 
-static int
-fmsq(upent)
-USER_INFO *upent;
+static int fmsq(USER_INFO *upent)
 {
 	int retval;
 #if 0
@@ -1358,8 +1299,7 @@ USER_INFO *upent;
 }
 
 
-int
-t_fmsq()
+int t_fmsq()
 {
 #ifdef NSYSUBBS1
         if (curuser.userlevel<10)       /* sarek:04/09/2001:lv小於10者不得廣播 */

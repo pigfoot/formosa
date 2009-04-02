@@ -188,9 +188,7 @@ size_t n;
 int cur_sock;
 int cur_seat;	/* this should be seat ? */
 
-void
-time_out(s)
-int s;
+void time_out(int s)
 {
 	shutdown(cur_sock, 2);
 	close(cur_sock);
@@ -211,9 +209,7 @@ int s;
 #endif
 
 
-void
-report(s)
-char *s;
+void report(char *s)
 {
 	static int disable = 0;
 	int fd;
@@ -239,9 +235,7 @@ char *s;
 }
 
 
-int
-get_chatuid(userid)
-char *userid;
+int get_chatuid(char *userid)
 {
 	register int i;
 
@@ -257,9 +251,7 @@ char *userid;
 }
 
 
-int
-get_chid(chname)
-char *chname;
+int get_chid(char *chname)
 {
 	register int i;
 
@@ -278,9 +270,7 @@ char *chname;
 }
 
 
-int
-create_channel(chname)		/* 建立新的頻道 */
-char *chname;
+int create_channel(char *chname)		/* 建立新的頻道 */
 {
 	register int i;
 
@@ -298,10 +288,7 @@ char *chname;
 }
 
 
-int
-BADID(badnums, chid)
-int badnums[];
-int chid;
+int BADID(int badnums[], int chid)
 {
 	register int i;
 
@@ -350,8 +337,7 @@ unsigned char *s;
 #endif
 
 
-void
-send_to_user(int chatuid, char *fmt, ...)
+void send_to_user(int chatuid, char *fmt, ...)
 {
 	va_list args;
 	char msg[254];
@@ -380,9 +366,7 @@ send_to_user(int chatuid, char *fmt, ...)
 }
 
 
-void
-Answer(respno)
-int respno;
+void Answer(int respno)
 {
 	register int i;
 
@@ -400,8 +384,7 @@ int respno;
 }
 
 
-int
-send_to_channel(int chid, char *fmt, ...)
+int send_to_channel(int chid, char *fmt, ...)
 {
 	va_list args;
 	char chbuf[254];
@@ -491,9 +474,7 @@ send_to_channel(int chid, char *fmt, ...)
 }
 
 
-void
-RespondErr(msg)
-char *msg;
+void RespondErr(char *msg)
 {
 	if (*(cuser->userid) != '\0' && cuser->sock > 0)
 	{
@@ -503,15 +484,13 @@ char *msg;
 }
 
 
-void
-EndProt()
+void EndProt()
 {
 	send_to_user(seat, ".\r\n");
 }
 
 
-void
-leave_channel()			/* ? */
+void leave_channel()			/* ? */
 {
 	int oldchid = cuser->chid;
 
@@ -574,9 +553,7 @@ leave_channel()			/* ? */
 }
 
 
-int
-chat_passwd(password)
-char *password;
+int chat_passwd(char *password)
 {
 	int mychid = cuser->chid;
 
@@ -609,9 +586,7 @@ char *password;
 }
 
 
-int
-chat_topic(topic)
-char *topic;
+int chat_topic(char *topic)
 {
 	int mychid = cuser->chid;
 
@@ -638,8 +613,7 @@ char *topic;
 }
 
 
-int
-chat_logout()
+int chat_logout()
 {
 	leave_channel();
 
@@ -661,9 +635,7 @@ chat_logout()
 }
 
 
-int
-chat_join(chname, passwd)
-char *chname, *passwd;
+int chat_join(char *chname, char *passwd)
 {
 	int newchid;
 
@@ -716,9 +688,7 @@ char *chname, *passwd;
 }
 
 
-int
-chat_msg(user, msg)		/* -ToDo- allow to use the nickname or userid as target */
-char *user, *msg;
+int chat_msg(char *user, char *msg)		/* -ToDo- allow to use the nickname or userid as target */
 {
 	int chatuid;
 
@@ -751,9 +721,7 @@ char *user, *msg;
 }
 
 
-int
-chat_who(chname)
-const char *chname;
+int chat_who(const char *chname)
 {
 	register int i;
 	int mychid;
@@ -802,8 +770,7 @@ const char *chname;
 }
 
 
-int
-chat_whoall()
+int chat_whoall()
 {
 	register int i;
 	int chid;
@@ -825,9 +792,7 @@ chat_whoall()
 }
 
 
-int
-chat_user(user, seed)
-char *user, *seed;
+int chat_user(char *user, char *seed)
 {
 	int i;
 	long password;
@@ -872,9 +837,7 @@ char *user, *seed;
 }
 
 
-int
-chat_nickname(nick)
-char *nick;
+int chat_nickname(char *nick)
 {
 	int i;
 
@@ -915,8 +878,7 @@ char *nick;
 }
 
 
-int
-chat_listchan()
+int chat_listchan()
 {
 	register int i;
 
@@ -941,9 +903,7 @@ chat_listchan()
 }
 
 
-int
-chat_ignore(bad)		/* -ToDo- allow to use the nickname or userid as target */
-char *bad;
+int chat_ignore(char *bad)		/* -ToDo- allow to use the nickname or userid as target */
 {
 	register int i;
 	int chatuid, mychid;
@@ -996,9 +956,7 @@ char *bad;
 }
 
 
-int
-GetProtoNo(keyword)
-char *keyword;
+int GetProtoNo(char *keyword)
 {
 	register int i;
 
@@ -1015,15 +973,13 @@ char *keyword;
 
 /* asuka */
 int RUNNING = 777;
+
 void shutdown_server(int sig)
 {
 	RUNNING = 0;
 }
 
-int
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
 	int sock, length, flen, i;
 	struct sockaddr_in server, client;

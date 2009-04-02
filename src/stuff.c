@@ -8,8 +8,7 @@
 #include <stdarg.h>
 
 
-void
-pressreturn()
+void pressreturn()
 {
 	move(b_line, 0);
 	clrtoeol();
@@ -18,9 +17,7 @@ pressreturn()
 }
 
 
-void
-showmsg(text)
-char *text;
+void showmsg(char *text)
 {
 	move(b_line - 1, 0);
 	clrtoeol();
@@ -73,9 +70,7 @@ char *env, *val;
 
 pid_t child_pid;
 
-static int
-do_exec(com)
-char *com;
+static int do_exec(char *com)
 {
 	char path[PATHLEN];
 	char pcom[MAXCOMSZ];
@@ -168,9 +163,7 @@ char *com;
 /* 
  * execute oudoor program 
  */
-int
-outdoor(cmd)
-char *cmd;
+int outdoor(char *cmd)
 {
 	int save_pager = uinfo.pager;
 
@@ -183,9 +176,7 @@ char *cmd;
 }
 
 
-void
-show_byebye(idle)
-BOOL idle;
+void show_byebye(BOOL idle)
 {
 	time_t now = time(0);
 
@@ -237,15 +228,13 @@ BOOL idle;
 FILE *bbsd_log_fp = NULL;
 
 
-void
-bbsd_log_open()
+void bbsd_log_open()
 {
 	bbsd_log_fp = fopen(PATH_BBSLOG, "a");
 }
 
 
-void
-bbsd_log_write(char *mode, char *fmt, ...)
+void bbsd_log_write(char *mode, char *fmt, ...)
 {
 	va_list args;
 	time_t now;
@@ -269,15 +258,13 @@ bbsd_log_write(char *mode, char *fmt, ...)
 }
 
 
-void
-bbsd_log_close()
+void bbsd_log_close()
 {
 	fclose(bbsd_log_fp);
 }
 
 
-static void
-left_note()			/* Seraph */
+static void left_note()			/* Seraph */
 {
 	char ftmp[] = "log/note.tmp";
 	char fdat[] = "log/note.dat";
@@ -345,8 +332,7 @@ left_note()			/* Seraph */
 }
 
 
-int
-Goodbye()			/* quit bbs */
+int Goodbye()			/* quit bbs */
 {
 	move(b_line, 0);
 	clrtoeol();
@@ -419,10 +405,7 @@ Goodbye()			/* quit bbs */
  * 假如 link data 是純指標, 則 freefunc 必須傳 NULL 進來
  * 傳回 NULL pointer
  *******************************************************************/
-void
-free_wlist(wtop, freefunc)
-struct word **wtop;
-void (*freefunc) (void *);
+void free_wlist(struct word **wtop, void (*freefunc) (void *))
 {
 	struct word *wcur;
 
@@ -441,11 +424,7 @@ void (*freefunc) (void *);
  * 假如 link data 是純指標, 則 addfunc 必須傳 NULL 進來
  * 傳回新 link list 的 pointer (前端)
  *******************************************************************/
-void
-add_wlist(wtop, str, addfunc)
-struct word **wtop;
-char *str;
-void *(*addfunc) (char *);
+void add_wlist(struct word **wtop, char *str, void *(*addfunc) (char *))
 {
 	struct word *new, *tmp;
 
@@ -479,11 +458,7 @@ void *(*addfunc) (char *);
  * 傳回找到的 --del by lasehu或目前所在的 link pointer--
  * 找不到則傳回 NULL
  *******************************************************************/
-int
-cmp_wlist(wtop, str, cmpfunc)
-struct word *wtop;
-char *str;
-int (*cmpfunc) (const char *, const char *);
+int cmp_wlist(struct word *wtop, char *str, int (*cmpfunc) (const char *, const char *))
 {
 /* lasehu
  * int    len = strlen(str);
@@ -508,12 +483,9 @@ int (*cmpfunc) (const char *, const char *);
  * 傳回找到的或目前所在的 link pointer
  * 找不到則傳回 NULL
  *******************************************************************/
-struct word *
-cmpd_wlist(pwtop, str, cmpfunc, freefunc)
-struct word **pwtop;
-char *str;
-int (*cmpfunc) (const char *, const char *);	/* 函式指標 */
-void (*freefunc) (void *);
+struct word *cmpd_wlist(struct word **pwtop, char *str, 
+						int (*cmpfunc) (const char *, const char *), 
+						void (*freefunc) (void *))
 {
 /* lasehu
  * int    len = strlen(str);
@@ -569,12 +541,12 @@ void (*freefunc) (void *);
  * 若 wcur 為 NULL, 則從頭算起, 否則從 wcur 開始算.
  * 傳回筆數
  *******************************************************************/
-static int
-num_wlist(wtop /* , wcur */ )
-struct word *wtop;
-
-/* struct word *wcur; */
+static int num_wlist(struct word *wtop /* , struct word *wcur */ )
 {
+	/* by Keeper:
+	 * the "struct word *wcur" are commented before,
+	 * I preserve it. */
+
 	int i = 0;
 	struct word *wcur;
 
@@ -594,10 +566,7 @@ struct word *wtop;
 /*******************************************************************
  * 產生 link list 子集合
  *******************************************************************/
-static struct word *
-get_subwlist(tag, list)
-register char tag[];
-register struct word *list;
+static struct word *get_subwlist(register char tag[], register struct word *list)
 {
 	struct word *wtop = NULL;
 	int len = (tag) ? strlen(tag) : 0;
@@ -617,10 +586,7 @@ register struct word *list;
 /*******************************************************************
  * 查出最大字串
  *******************************************************************/
-static int
-maxlen_wlist(list, count)
-struct word *list;
-int count;
+static int maxlen_wlist(struct word *list, int count)
 {
 	int len = 0, t;
 
@@ -641,11 +607,7 @@ int count;
 /*******************************************************************
  * 接受輸入, 與指定的 link list 比對
  *******************************************************************/
-int
-namecomplete(toplev, data, simple)
-struct word *toplev;
-char data[];
-BOOL simple;
+int namecomplete(struct word *toplev, char data[], BOOL simple)
 {
 	char *temp;
 	int ch;
@@ -845,9 +807,7 @@ char *inbuf;
 /*
  * update the mode of online user_info 
  */
-void
-update_umode(mode)
-int mode;
+void update_umode(int mode)
 {
 	uinfo.mode = mode;
 	update_ulist(cutmp, &uinfo);
@@ -1070,9 +1030,7 @@ int (*cmpfunc) (const char *, const char *);
  * 傳入 string, malloc 一塊 memory 存下字串
  * 傳回 該 MEMORY Pointer
  *******************************************************************/
-void *
-malloc_str(str)
-char *str;
+void *malloc_str(char *str)
 {
 	char *new;
 

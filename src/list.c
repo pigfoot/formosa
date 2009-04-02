@@ -52,9 +52,7 @@ char *msg_pickup_way[PICKUP_WAYS] =	/* lang.h */
 };
 
 
-static int
-pickup_cmp(i, j)
-struct pickup *i, *j;
+static int pickup_cmp(struct pickup *i, struct pickup *j)
 {
 	switch (pickup_way)
 	{
@@ -82,9 +80,7 @@ struct pickup *i, *j;
 }
 
 
-static int
-malloc_ulist(uentp)
-USER_INFO *uentp;
+static int malloc_ulist(USER_INFO *uentp)
 {	
 	int tmp;
 
@@ -121,8 +117,7 @@ USER_INFO *uentp;
 
 time_t pk_mtime;
 
-static int
-ulist_max()
+static int ulist_max()
 {
 	if (!pklist)		/* lthuang */
 		pklist = (struct pickup *) malloc(sizeof(struct pickup) * MAXACTIVE);
@@ -137,10 +132,7 @@ ulist_max()
 
 
 #ifdef USE_OVERRIDE_IN_LIST
-static char
-pagerchar(pkent, ident)
-struct pickup *pkent;
-char ident;
+static char pagerchar(struct pickup *pkent, char ident)
 {
 	USER_INFO *uentp = pkent->ui;
 
@@ -176,12 +168,7 @@ char ident;
 }
 #endif
 
-static void
-ulist_entry(x, ent, idx, top, last, rows)
-int x;
-struct pickup ent[];
-int idx;
-int top, last, rows;
+static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, int rows)
 {
 	register struct pickup *pkp;
 	register int num;
@@ -249,8 +236,7 @@ int top, last, rows;
 }
 
 
-static void
-ulist_title()
+static void ulist_title()
 {
 	title_func((list_friend ? _msg_list_12 : _msg_list_13), BBSTITLE);
 	prints(_msg_list_5, _msg_list_4, msg_pickup_way[pickup_way], 
@@ -266,19 +252,13 @@ ulist_title()
 }
 
 
-static void
-ulist_btitle()
+static void ulist_btitle()
 {
 	prints(_msg_list_20, pagerstring(&uinfo));
 }
 
 
-static int
-ulist_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+static int ulist_get(char *direct, void *s, int size, int top)
 {
 	int n = (num_users > ROWSIZE) ? ROWSIZE : num_users - top + 1;
 
@@ -287,8 +267,7 @@ int top;
 }
 
 
-static int
-ucmd_sort()
+static int ucmd_sort()
 {
 	int i;
 #if 0
@@ -331,33 +310,21 @@ ucmd_sort()
 }
 
 
-static int
-ucmd_pager(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_pager(int ent, struct pickup *pkent, char *direct)
 {
 	toggle_pager();
 	return C_FOOT;
 }
 
 /* sarek:03/20/2001:for preventing broadcast */
-static int
-ucmd_bpager(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_bpager(int ent, struct pickup *pkent, char *direct)
 {
 	toggle_bpager();
 	return C_FOOT;
 }
 
 
-static int
-ucmd_help(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_help(int ent, struct pickup *pkent, char *direct)
 {
 	clear();
 	outs(_msg_list_6);
@@ -377,11 +344,7 @@ char *direct;
 }
 
 
-static int
-ucmd_query(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_query(int ent, struct pickup *pkent, char *direct)
 {
 	uentp = pkent->ui;
 	if (uentp->userid[0])
@@ -393,11 +356,7 @@ char *direct;
 }
 
 
-static int
-ucmd_mail(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_mail(int ent, struct pickup *pkent, char *direct)
 {
 	if (curuser.userlevel)	/* guest 不能 mail */
 	{
@@ -420,22 +379,14 @@ char *direct;
 }
 
 
-static int
-ucmd_review(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_review(int ent, struct pickup *pkent, char *direct)
 {
 	t_review();	/* lthuang */
 	return C_FULL;
 }
 
 
-static int
-ucmd_refresh(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_refresh(int ent, struct pickup *pkent, char *direct)
 {
 #if 0
 	static time_t last_utime = 0, now;
@@ -459,11 +410,7 @@ char *direct;
 }
 
 
-static int
-ucmd_addfriend(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_addfriend(int ent, struct pickup* pkent, char *direct)
 {
 	if (curuser.userlevel)	/* guest 不能 add friend */
 	{
@@ -489,11 +436,7 @@ char *direct;
 }
 
 
-static int
-ucmd_delfriend(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_delfriend(int ent, struct pickup *pkent, char *direct)
 {
 	if (curuser.userlevel)	/* guest 不能 del friend */
 	{
@@ -519,11 +462,7 @@ char *direct;
 }
 
 
-static int
-ucmd_switch(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_switch(int ent, struct pickup *pkent, char *direct)
 {
 	if (!curuser.userlevel)	/* guest 不能 show friend */
 		return C_NONE;
@@ -534,11 +473,7 @@ char *direct;
 }
 
 
-static int
-ucmd_mbox(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_mbox(int ent, struct pickup *pkent, char *direct)
 {
 	if (!curuser.userlevel)	/* guest 不能 read mail */
 		return C_NONE;
@@ -548,11 +483,7 @@ char *direct;
 }
 
 
-static int
-ucmd_talk(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_talk(int ent, struct pickup *pkent, char *direct)
 {
 	uentp = pkent->ui;
 	if (uentp->userid[0])
@@ -567,11 +498,7 @@ char *direct;
 }
 
 
-static int
-ucmd_msq(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_msq(int ent, struct pickup *pkent, char *direct)
 {
 	uentp = pkent->ui;
 	if (uentp->userid[0])
@@ -586,11 +513,7 @@ char *direct;
 }
 
 
-static int
-ucmd_fmsq(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_fmsq(int ent, struct pickup *pkent, char *direct)
 {
 	t_fmsq();
 	return C_FOOT;
@@ -598,11 +521,7 @@ char *direct;
 
 
 #ifndef NSYSUBBS
-static int
-ucmd_edituser(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_edituser(int ent, struct pickup *pkent, char *direct)
 {
 	if (!HAS_PERM(PERM_SYSOP))
 		return C_NONE;
@@ -611,11 +530,7 @@ char *direct;
 }
 
 
-static int
-ucmd_kick(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_kick(int ent, struct pickup *pkent, char *direct)
 {
 	if (HAS_PERM(PERM_SYSOP))
 	{
@@ -641,11 +556,7 @@ char *direct;
 #endif
 
 
-static int
-ucmd_find(ent, pkent, direct)
-int ent;
-struct pickup *pkent;
-char *direct;
+static int ucmd_find(int ent, struct pickup *pkent, char *direct)
 {
 	if (getdata(b_line, 0, "尋找 : ", genbuf, 20, XECHO, NULL))	/* lang.h */
 	{
@@ -696,8 +607,7 @@ struct one_key ulist_comms[] =
 };
 
 
-static void
-pickup_user()
+static void pickup_user()
 {
 	malloc_array(&friend_cache, ufile_overrides);	
 	
@@ -707,8 +617,7 @@ pickup_user()
 }
 
 
-int
-t_list()
+int t_list()
 {
 	list_friend = FALSE;
 	pickup_user();
@@ -716,8 +625,7 @@ t_list()
 }
 
 
-int
-t_friends()
+int t_friends()
 {
 	list_friend = TRUE;
 	pickup_user();

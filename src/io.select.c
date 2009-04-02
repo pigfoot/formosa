@@ -27,8 +27,7 @@ static int ibufsize = 0;
 static int icurrchar = 0;
 
 
-void
-oflush()
+void oflush()
 {
 	if (obufsize)
 		write(1, outbuf, obufsize);
@@ -36,10 +35,7 @@ oflush()
 }
 
 
-void
-output(s, len)
-char *s;
-int len;
+void output(char *s, int len)
 {
 	if (obufsize + len > OBUFSIZE)
 	{			/* doin a oflush */
@@ -51,8 +47,7 @@ int len;
 }
 
 
-int
-ochar(char c)
+int ochar(char c)
 {
 	if (obufsize > OBUFSIZE - 1)
 	{			/* doin a oflush */
@@ -78,10 +73,7 @@ int i_newfd = 0;
 static int (*flushf) () = NULL;
 
 #ifndef _BBS_UTIL_
-void
-add_io(fd, timeout)
-int fd;
-int timeout;
+void add_io(int fd, int timeout)
 {
 	i_newfd = fd;
 	if (timeout)
@@ -96,16 +88,13 @@ int timeout;
 #endif
 
 
-void
-add_flush(flushfunc)
-int (*flushfunc) ();
+void add_flush(int (*flushfunc) ())
 {
 	flushf = flushfunc;
 }
 
 
-int
-num_in_buf()
+int num_in_buf()
 {
 	return icurrchar - ibufsize;
 }
@@ -115,8 +104,7 @@ num_in_buf()
 int i_loop = 0;
 #endif
 
-int
-igetch()
+int igetch()
 {
 #ifdef _BBS_UTIL_
 igetagain:
@@ -310,8 +298,7 @@ igetagain:
 }
 
 
-int
-getkey(void)
+int getkey()
 {
 	int mode;
 	int ch, last;
@@ -354,8 +341,7 @@ getkey(void)
 }
 
 
-int
-igetkey()
+int igetkey()
 {
 	register int ch;
 
@@ -364,19 +350,13 @@ igetkey()
 }
 
 
-void
-bell()
+void bell()
 {
 	fprintf(stderr, "%c", CTRL('G'));
 }
 
 
-int
-getdata(line, col, prompt, buf, len, echo, prefix)
-int line, col;
-char *prompt, *buf;
-int len, echo;
-char *prefix;
+int getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
 {
 	unsigned char ch;
 	int clen = 0;

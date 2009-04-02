@@ -28,9 +28,7 @@ int ECHATWIN, PLINE;
 #endif
 #define BADCIDCHARS " *\";:,./='!"
 
-static void
-fixchatid(chatid)
-unsigned char *chatid;
+static void fixchatid(unsigned char *chatid)
 {
 	char *p;
 
@@ -97,8 +95,7 @@ char *str;
 #endif
 
 
-int
-t_chat2()
+int t_chat2()
 {
 	int currchar;
 	char inbuf[120];
@@ -344,10 +341,7 @@ t_chat2()
 }
 
 
-static int
-dowho(channame, fd)
-char *channame;
-int fd;
+static int dowho(char *channame, int fd)
 {
 	char buf[100];
 	char chatid[80], userid[80], fromip[80];
@@ -398,9 +392,7 @@ int fd;
 }
 
 
-static int
-dowhoall(fd)
-int fd;
+static int dowhoall(int fd)
 {
 	char buf[100];
 	char *chatid, *userid, *channame;
@@ -435,9 +427,7 @@ int fd;
 }
 
 
-static int
-dolist(fd)
-int fd;
+static int dolist(int fd)
 {
 	char buf[80];
 	char channame[80], topic[80], op[80], members[80], secret[80];
@@ -471,9 +461,7 @@ int fd;
 }
 
 
-static void
-dochatcommand(cmd)
-char *cmd;
+static void dochatcommand(char *cmd)
 {
 	char *para;
 

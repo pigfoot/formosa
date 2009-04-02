@@ -105,6 +105,25 @@ extern void printchatline(const char *str);
 extern int cmp_userid();
 extern void *malloc_str(char *str);
 extern void *xstrdup(const char *str);
+
+/*extern int select_board(),
+        read_article(), edit_article(),
+       title_article(), cross_article(), mail_article(), delete_article(),
+       reserve_article(), tag_article(), range_tag_article(), push_article(),
+       treasure_article(), rcmd_query(), author_backward(), 
+       author_forward(), title_backward(), title_forward(), thread_backward(), 
+       thread_forward(), thread_original(), resv_backward(), resv_forward();
+extern int mkdir_treasure(), xchg_treasure();       
+extern void move();
+extern int read_max(), read_get();
+extern void read_entry(), read_btitle();
+extern void init_alarm();
+extern void printchatline(const char *str);
+extern int cmp_userid();
+extern void *malloc_str(char *str);
+extern void *xstrdup(const char *str);*/
+
+
        
 #endif	/* !_BBS_PROTO_H */
 

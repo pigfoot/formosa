@@ -21,12 +21,7 @@ FILEHEADER **all_thrs = NULL, *all_arts = NULL;
  **
  ** Return the number of records
  **/ 
-int
-read_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+int read_get(char *direct, void *s, int size, int top)
 {
 	int n = 0, fd;
 
@@ -46,9 +41,7 @@ int top;
 }
 
 
-void
-chk_str(str)
-char str[];
+void chk_str(char str[])
 {
 	register char *p = str, *q = str;
 
@@ -74,12 +67,7 @@ char memtitle[STRLEN] = STR_REPLY;
 /*
  * ¦C¦Lº Index List Lines
  */
-void
-read_entry(x, ent, idx, top, last, rows)
-int x;
-void *ent;
-int idx;
-int top, last, rows;
+void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 {
 	register int num, len;
 	unsigned char *str;
@@ -229,21 +217,14 @@ int top, last, rows;
 }
 
 
-int
-read_max(direct, size)
-char *direct;
-int size;
+int read_max(char *direct, int size)
 {
 	return get_num_records(direct, size);
 }
 
 
 #ifdef NSYSUBBS
-int
-rcmd_postno(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int rcmd_postno(int ent, FILEHEADER *finfo, char *direct)
 {
 	if (HAS_PERM(PERM_SYSOP))
 	{
@@ -257,11 +238,7 @@ char *direct;
 #endif
 
 
-int
-rcmd_query(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int rcmd_query(int ent, FILEHEADER *finfo, char *direct)
 {
 	if (finfo->owner[0] != '#' && !strchr(finfo->owner, '.') &&
 	    !strchr(finfo->owner, '@'))
@@ -289,11 +266,11 @@ const char srchauthor[] = "aA";
 /*
  * ·j´M¤å³¹
  */
-int
-search_article(direct, ent, string, op, srchwtop)
-register char *direct, *string, op;
-register int ent;
-register struct word **srchwtop;
+int search_article(register char *direct, 
+				   register int ent, 
+				   register char *string, 
+				   register char op, 
+				   register struct word **srchwtop)
 {
 	FILEHEADER *fhr = &fhGol;
 	char author[STRLEN], cmps_str[STRLEN];
@@ -501,11 +478,7 @@ register struct word **srchwtop;
 }
 
 
-int
-author_backward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int author_backward(int ent, FILEHEADER* finfo, char *direct)
 {
 	int i;
 
@@ -549,11 +522,7 @@ char *direct;
 }
 
 
-int
-title_backward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int title_backward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -573,11 +542,7 @@ char *direct;
 }
 
 
-int
-title_forward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int title_forward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -597,11 +562,7 @@ char *direct;
 }
 
 
-int
-thread_backward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int thread_backward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -616,11 +577,7 @@ char *direct;
 }
 
 
-int
-thread_forward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int thread_forward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -636,11 +593,7 @@ char *direct;
 }
 
 
-int
-thread_original(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int thread_original(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -655,11 +608,7 @@ char *direct;
 }
 
 
-int
-resv_forward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int resv_forward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -674,11 +623,7 @@ char *direct;
 }
 
 
-int
-resv_backward(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int resv_backward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
@@ -693,11 +638,7 @@ char *direct;
 }
 
 
-static int
-tag_thread(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+static int tag_thread(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 	char op;
@@ -730,9 +671,7 @@ char *direct;
 }
 
 
-void
-title_func(text1, text2)
-char *text1, *text2;
+void title_func(char *text1, char *text2)
 {
 	int len;
 #if 0
@@ -788,8 +727,7 @@ char *text1, *text2;
 /*
  * show title in board/treasure folder menu
  */
-static void
-post_title()
+static void post_title()
 {
 	sprintf(genbuf, _msg_read_2, CurBList->owner);
 	title_func(genbuf, (in_board ? _msg_board_normal : _msg_board_treasure));
@@ -797,29 +735,20 @@ post_title()
 }
 
 
-void
-read_btitle()
+void read_btitle()
 {
 	outs(_msg_read_14);
 }
 
 
-static int
-switch_boardtrea(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+static int switch_boardtrea(int ent, FILEHEADER *finfo, char *direct)
 {
 	in_board ^= 1;		/* board/treausre tag switch */
 	return C_REDO;
 }
 
 
-static int
-delthread(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+static int delthread(int ent, FILEHEADER *finfo, char *direct)
 {
 	char pattern[STRLEN], ans[2];
 
@@ -877,21 +806,13 @@ int curr_thr_no;
 char title_thr[STRLEN+10];
 
 
-int
-thr_max(direct, size)
-char *direct;
-int size;
+int thr_max(char *direct, int size)
 {
 	return num_thrs;
 }
 
 
-static int
-thr_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+static int thr_get(char *direct, void *s, int size, int top)
 {
 	int n = num_thrs - top + 1;
 
@@ -964,19 +885,13 @@ struct one_key art_comms[] =
 	{0, NULL}
 };
 
-int
-art_max(direct, size)
-char *direct;
-int size;
+int art_max(char *direct, int size)
 {
 	return num_arts;
 }
 
 
-static int 
-art_get(direct, s, size, top) 
-char *direct; void *s; int size;
-int top;
+static int art_get(char *direct, void *s, int size, int top) 
 {
 	int n = num_arts - top + 1;
 
@@ -987,11 +902,7 @@ int top;
 }
 
 
-static int
-art_read(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+static int art_read(int ent, FILEHEADER *finfo, char *direct)
 {
 	char tmpdir[PATHLEN];
 	int post_ccur = 0;
@@ -1074,9 +985,7 @@ struct one_key thr_comms[] =
 };
 
 
-int
-cmp_fhr_title(a, b)
-const void *a, *b;
+int cmp_fhr_title(const void *a, const void *b)
 {
 	char *as = ((FILEHEADER *)a)->title;
 	char *bs = ((FILEHEADER *)b)->title;
@@ -1097,19 +1006,13 @@ const void *a, *b;
 }
 
 
-int
-cmp_fhrp_filename(a, b)
-const void *a, *b;
+int cmp_fhrp_filename(const void *a, const void *b)
 {
 	return strcmp((*((FILEHEADER **)a))->filename, (*((FILEHEADER **)b))->filename);
 }
 
 
-static int
-thr_read(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 {
 	char tmpdir[PATHLEN];
 	int thr_ccur = 0;
@@ -1255,8 +1158,7 @@ struct one_key post_comms[] =
 };
 
 #ifdef WEB_BOARD
-int
-display_acl()
+int display_acl()
 {
         FILE *fp;
         int cnt = 0;
@@ -1281,9 +1183,7 @@ display_acl()
         return cnt;
 }
 
-static void
-add_acl(Uident)
-char *Uident;
+static void add_acl(char *Uident)
 {
         char fname[PATHLEN];
 
@@ -1296,9 +1196,7 @@ char *Uident;
 }
 
 
-static void
-delete_acl(uident)
-char *uident;
+static void delete_acl(char *uident)
 {
         char fn[PATHLEN];
 
@@ -1306,8 +1204,7 @@ char *uident;
         file_delete_line(fn, uident);
 }
 
-int
-acl_edit()
+int acl_edit()
 {
 	int  num_acl;
 	char acl[IDLEN];
@@ -1354,8 +1251,7 @@ acl_edit()
 /*
  * Select in Main Menu 
  */
-int
-Select()
+int Select()
 {
 	if (select_board() == C_REDO)
 	{
@@ -1366,8 +1262,7 @@ Select()
 }
 
 
-int
-MainRead()
+int MainRead()
 {
 	if (!CurBList)
 	{
@@ -1389,8 +1284,7 @@ int *ccur;
 int nowdepth = 1;
 
 
-int
-Read()
+int Read()
 {
 	int ret;
 
@@ -1516,21 +1410,18 @@ char hdrs[ROWSIZE * MAX_HDRSIZE];	/* ROWSIZE * MAX_HDRSIZE */
  *
  * 
  */
-int
-cursor_menu(y, x, direct, comm, hdrsize, ccur, cm_title, cm_btitle, cm_entry,
-	    cm_get, cm_max, cm_findkey, opt, autowarp, rows)
-int y, x;
-char *direct;
-struct one_key *comm;
-int hdrsize;
-int *ccur;
-void (*cm_title) ();
-void (*cm_btitle) ();
-void (*cm_entry) (int, void *, int, int, int, int);
-int (*cm_get) (char *, void *, int, int);
-int (*cm_max) (char *, int);
-int (*cm_findkey) (char *, void *, int, int);
-int opt, autowarp, rows;
+int cursor_menu( int y, int x, 
+				 char *direct, 
+				 struct one_key *comm, 
+				 int hdrsize, 
+				 int *ccur, 
+				 void (*cm_title) (), 
+				 void (*cm_btitle) (), 
+				 void (*cm_entry) (int, void *, int, int, int, int),
+				 int (*cm_get) (char *, void *, int, int),
+				 int (*cm_max) (char *, int), 
+				 int (*cm_findkey) (char *, void *, int, int ),
+				 int opt, int autowarp, int rows)
 {
 	int clast = 0, cmode = C_INIT, i, ch = 0;
 	int ctop = 0, ocur = 0, otop = 0, savemode;

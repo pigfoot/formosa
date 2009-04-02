@@ -13,9 +13,7 @@ extern BOOL show_ansi;
 char *show_id = "";
 int n_field = 0;
 
-int
-show_bm(bhentp)
-BOARDHEADER *bhentp;
+int show_bm(BOARDHEADER *bhentp)
 {
 	if (!strcmp(bhentp->owner, show_id))
 	{
@@ -28,9 +26,7 @@ BOARDHEADER *bhentp;
 }
 
 
-char *
-get_ident(urcIdent)
-USEREC *urcIdent;
+char *get_ident(USEREC *urcIdent)
 {
 	static char iemail[STRLEN];
 	FILE *fp;	
@@ -58,9 +54,7 @@ USEREC *urcIdent;
 #endif
 
 
-static void
-show_user_info(urcPerson)
-USEREC *urcPerson;
+static void show_user_info(USEREC *urcPerson)
 {
 	unsigned int num[] =
 	{
@@ -154,8 +148,7 @@ USEREC *urcPerson;
 }
 
 
-int
-x_info()
+int x_info()
 {
 	int tries = 0;
 	char opass[PASSLEN];
@@ -190,8 +183,7 @@ x_info()
 }
 
 
-int
-x_date()
+int x_date()
 {
 	time_t now;
 
@@ -203,10 +195,7 @@ x_date()
 
 
 /*ARGUSED */
-static int
-set_signature(filename, op)
-char *filename;
-char op;
+static int set_signature(char *filename, char op)
 {
 	char fn_signew[PATHLEN], fn_sigedit[PATHLEN];
 	int num, i;
@@ -306,8 +295,7 @@ char op;
 }
 
 
-int
-x_signature()
+int x_signature()
 {
 	char filename[PATHLEN];
 	int ret = 1;
@@ -336,9 +324,7 @@ x_signature()
 }
 
 
-void
-set_ufile(ufname)
-char *ufname;
+void set_ufile(char *ufname)
 {
 	char filename[PATHLEN];
 	char tempfile[PATHLEN];
@@ -392,8 +378,7 @@ x_ircrc()
 #endif
 
 
-int
-x_plan()
+int x_plan()
 {
 /* kmwang:20000605:KHBBS */
 #ifdef KHBBS
@@ -412,9 +397,7 @@ x_plan()
 
 
 /*ARGUSED */
-static int
-show_array(a)
-struct array *a;
+static int show_array(struct array *a)
 {
 	int x = 0, y = 3, cnt = 0;
 	char *cbegin, *cend;
@@ -454,8 +437,7 @@ struct array *a;
 }
 
 
-int
-x_override()
+int x_override()
 {
 	int friend_num;
 	char friend_id[IDLEN];
@@ -500,8 +482,7 @@ x_override()
 
 
 /* kmwang:20000609:BadGuyList */
-int
-x_blacklist()
+int x_blacklist()
 {
 	int	badguy_num;
 	char	badguy_id[IDLEN];
@@ -545,9 +526,7 @@ x_blacklist()
 }
 
 /*ARGUSED */
-int
-set_user_info(userid)
-char *userid;
+int set_user_info(char *userid)
 {
 	char buf[STRLEN];
 	USEREC urcNew, urcOld;
@@ -758,8 +737,7 @@ XECHO, urcNew.fakeuserid);
 }
 
 
-int
-x_uflag()
+int x_uflag()
 {
 	int i, j;
 	unsigned char *pbits = &(curuser.flags[0]);
@@ -833,8 +811,7 @@ x_uflag()
 }
 
 
-int
-x_bakpro()	/* by kmwang */
+int x_bakpro()	/* by kmwang */
 {
 	char fname[PATHLEN];
 	char ufname[PATHLEN];
@@ -941,8 +918,7 @@ x_bakpro()	/* by kmwang */
 }
 
 /*ARGUSED */
-int
-x_viewnote()			/* by Seraph */
+int x_viewnote()			/* by Seraph */
 {
 	NOTEDATA curnote;
 	int fd, i = 1, ch;
@@ -986,8 +962,7 @@ x_viewnote()			/* by Seraph */
 
 
 #ifdef USE_MULTI_LANGUAGE
-int
-x_lang()
+int x_lang()
 {
 	char *langmsg[] =
 	{_msg_xyz_61, _msg_xyz_62};
@@ -1013,8 +988,7 @@ x_lang()
 
 
 #ifdef STRIP_ANSI_USERNAME
-int
-x_username()
+int x_username()
 {
 	char *s, *t;
 	char *buf = malloc(strlen(curuser.username)+1);

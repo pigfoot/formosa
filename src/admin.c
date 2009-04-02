@@ -54,8 +54,7 @@ const struct conf conf_files[] =
 };
 
 
-int
-adminMaintainUser()
+int adminMaintainUser()
 {
 	char userid[IDLEN];
 
@@ -78,9 +77,7 @@ adminMaintainUser()
 
 char *brdtype[MAX_NR_BRDTYPE];
 
-static void
-show_board(brdhr)
-const BOARDHEADER *brdhr;
+static void show_board(const BOARDHEADER *brdhr)
 {
 	int i, j;
 	const unsigned char *pbits = &(brdhr->brdtype);
@@ -124,9 +121,7 @@ const BOARDHEADER *brdhr;
 }
 
 
-static BOOL
-invalid_bname(bname)
-char *bname;
+static BOOL invalid_bname(char *bname)
 {
 	unsigned char ch;
 	int i;
@@ -149,8 +144,7 @@ char *bname;
  **	set web skin file string
  **	by asuka: 990714 
  **/
-void 
-setskinfile(char *fname, char *boardname, char *skin)
+void setskinfile(char *fname, char *boardname, char *skin)
 {
 	if(skin)
 		sprintf(fname, "boards/%s/skin/%s", boardname, skin);
@@ -160,9 +154,7 @@ setskinfile(char *fname, char *boardname, char *skin)
 #endif
 
 
-static int
-set_board(brdhr)
-BOARDHEADER *brdhr;
+static int set_board(BOARDHEADER *brdhr)
 {
 	char choice[2];
 	char inbuf[STRLEN];
@@ -336,9 +328,7 @@ BOARDHEADER *brdhr;
 /*
   新增看板
 */  
-static int
-new_board(bhp)
-BOARDHEADER *bhp;
+static int new_board(BOARDHEADER *bhp)
 {
 	int fd;
 	BOARDHEADER bhbuf;
@@ -404,8 +394,7 @@ BOARDHEADER *bhp;
 }
 
 
-int
-adminCreateBoard()
+int adminCreateBoard()
 {
 	BOARDHEADER bh_new;
 
@@ -432,8 +421,7 @@ adminCreateBoard()
 }
 
 
-int
-adminMaintainBoard()
+int adminMaintainBoard()
 {
 	int ent;
 	char bname[BNAMELEN], pathname[PATHLEN];
@@ -547,9 +535,7 @@ adminMaintainBoard()
 /* 
  * kmwang:20000604: 詢問 admin 是否把信寄回給 user 的信箱
  */
-int 
-fwUserMail(userid_del)
-char *userid_del;
+int fwUserMail(char *userid_del)
 {
 	int i, k;
         char maildir[PATHLEN];
@@ -593,8 +579,7 @@ del_user.ident);
 /*
  * Delete user
  */
-int
-adminDeleteUser()
+int adminDeleteUser()
 {
 	char userid_del[IDLEN];
 	USEREC del_user;
@@ -623,8 +608,7 @@ adminDeleteUser()
 #endif
 
 
-int
-adminEditConf()
+int adminEditConf()
 {
 	int i, max_conf_files;
 
@@ -705,9 +689,7 @@ adminEditConf()
 
 
 #if defined(NSYSUBBS1) || defined(NSYSUBBS3) /* sarek:03/30/2001 */
-static int
-kickuserFptr(upent)
-USER_INFO *upent;	/* not const for purge_ulist() */
+static int kickuserFptr(USER_INFO *upent)
 {
 #ifdef IGNORE_CASE
         strtolow(kiuserid);
@@ -754,9 +736,7 @@ adminKickUser()
 #endif
 
 
-static int
-broadcastFptr(upent)
-USER_INFO *upent;
+static int broadcastFptr(USER_INFO *upent)
 {
 	extern MSQ mymsq;
 	
@@ -767,8 +747,7 @@ USER_INFO *upent;
 /*
  * Broadcast to all of the users online
  */
-int
-adminBroadcast()
+int adminBroadcast()
 {
 	/* is_broadcast: TRUE */
 	if (prepare_message(_msg_admin_18, TRUE) == 0)
@@ -784,8 +763,7 @@ adminBroadcast()
 /*
  * Mail to all of the board managers
  */
-int
-adminMailBm()
+int adminMailBm()
 {
 	char bm_title[TTLEN];
 	char bm_fname[PATHLEN];
@@ -814,8 +792,7 @@ adminMailBm()
 
 
 #ifndef NSYSUBBS
-int
-adminSyscheck()
+int adminSyscheck()
 {
 	outdoor("syscheck ");
 	return C_FULL;
@@ -826,8 +803,7 @@ adminSyscheck()
 /*
  * list all registered user
  */
-int
-adminListUsers()
+int adminListUsers()
 {
 	int fd, ch, i = 3;
 	int sysop = 0, bm = 0, total = 0, spec = 0;
@@ -911,8 +887,7 @@ adminListUsers()
 
 #define MAX_CANCEL_REASON 4
 
-int
-adminCancelUser()
+int adminCancelUser()
 {
 	USEREC urcCancel;
 	char *iemail;

@@ -32,18 +32,13 @@ BOOL redraw_everything;
 int total_num_of_line = 0;
 
 
-static void
-indigestion(i)
-int i;
+static void indigestion(int i)
 {
 	fprintf(stderr, "SERIOUS INTERNAL INDIGESTION CLASS %d\n", i);
 }
 
 
-static struct textline *
-back_line(pos, num)
-register struct textline *pos;
-register int num;
+static struct textline *back_line(register struct textline *pos, register int num)
 {
 	while (num-- > 0)
 	{
@@ -56,10 +51,7 @@ register int num;
 }
 
 
-static struct textline *
-forward_line(pos, num)
-register struct textline *pos;
-register int num;
+static struct textline *forward_line(register struct textline *pos, register int num)
 {
 	while (num-- > 0)
 	{
@@ -75,8 +67,7 @@ register int num;
 /* 
  * get the number of this line in the current window 
  */
-static int
-getlineno()
+static int getlineno()
 {
 	int cnt = 0;
 	struct textline *p = currline;
@@ -93,9 +84,7 @@ getlineno()
 }
 
 
-static char *
-killsp(s)
-char *s;
+static char *killsp(char *s)
 {
 	while (*s == ' ')
 		s++;
@@ -103,8 +92,7 @@ char *s;
 }
 
 
-static struct textline *
-alloc_line()
+static struct textline *alloc_line()
 {
 	register struct textline *p;
 
@@ -142,9 +130,7 @@ alloc_line()
 /*
  * Appends p after line in list.  keeps up with last line as well.
  */
-static void
-append(p, line)
-register struct textline *p, *line;
+static void append(register struct textline *p, register struct textline *line)
 {
 	p->next = line->next;
 	if (line->next)
@@ -160,9 +146,7 @@ register struct textline *p, *line;
  * delete_line deletes 'line' from the list and maintains the lastline, and
  * firstline pointers.
  */
-static void
-delete_line(line)
-register struct textline *line;
+static void delete_line(register struct textline *line)
 {
 	if (!line->next && !line->prev)
 	{
@@ -186,10 +170,7 @@ register struct textline *line;
 /*
  * split splits 'line' right before the character pos
  */
-static void
-split(line, pos)
-register struct textline *line;
-register int pos;
+static void split(register struct textline *line, register int pos)
 {
 	register struct textline *p;
 
@@ -223,9 +204,7 @@ register int pos;
  *
  * 1) Some of the joined line wrapped
  */
-static int
-join(line)
-register struct textline *line;
+static int join(register struct textline *line)
 {
 	register int ovfl;
 
@@ -277,9 +256,7 @@ register struct textline *line;
 }
 
 
-static void
-insert_char(ch)
-register int ch;
+static void insert_char(register int ch)
 {
 	register int i;
 	register char *s;
@@ -332,8 +309,7 @@ register int ch;
 }
 
 
-static void
-delete_char()
+static void delete_char()
 {
 	register int i;
 
@@ -351,8 +327,7 @@ delete_char()
 }
 
 
-static void
-join_currline()
+static void join_currline()
 {
 	struct textline *p = currline;
 
@@ -369,8 +344,7 @@ join_currline()
 }
 
 
-static void
-delete_currline()
+static void delete_currline()
 {
 	struct textline *p = currline->next;
 
@@ -392,8 +366,7 @@ delete_currline()
 }
 
 
-static void
-vedit_init()
+static void vedit_init()
 {
 	register struct textline *p;
 
@@ -417,9 +390,7 @@ vedit_init()
 /*
  * read text from file into editor buffer
  */
-static void
-read_file(filename)
-char *filename;
+static void read_file(char *filename)
 {
 	register int fd;
 	unsigned char ch;
@@ -466,9 +437,7 @@ char *filename;
 #define BACKUP_EDITING 	-3
 #define FINISH_EDITING  0
 
-static void
-backup_file(bakfile)
-register char *bakfile;
+static void backup_file(register char *bakfile)
 {
 	register FILE *fp;
 	register struct textline *p;
@@ -490,8 +459,7 @@ register char *bakfile;
 }
 
 
-static void
-vedit_exit()
+static void vedit_exit()
 {
 	register struct textline *p, *v;
 
@@ -512,10 +480,7 @@ vedit_exit()
 }
 
 
-static int
-write_file(filename, saveheader, bname)
-char *filename, *saveheader;
-char *bname;
+static int write_file(char *filename, char *saveheader, char *bname)
 {
 	FILE *fpr, *fpw;
 	char abort[2];
@@ -576,8 +541,7 @@ char *bname;
 }
 
 
-static void
-show_help_msg()
+static void show_help_msg()
 {
 	move(b_line, 0);
 	clrtoeol();
@@ -590,9 +554,7 @@ show_help_msg()
 }
 
 
-static void
-vedit_outs(s)
-char *s;
+static void vedit_outs(char *s)
 {
 	int i;
 
@@ -624,8 +586,7 @@ char *s;
 }
 
 
-static void
-display_buffer()
+static void display_buffer()
 {
 	register struct textline *p;
 	register int i;
@@ -649,8 +610,7 @@ display_buffer()
 }
 
 
-static void
-vedit_help()
+static void vedit_help()
 {
 	more(EDIT_HELP, TRUE);
 	redraw_everything = TRUE;
@@ -660,9 +620,7 @@ vedit_help()
 /* 
  * include signature: support multiple signatures 
  */
-static void
-do_article_sig(wfile)
-const char *wfile;
+static void do_article_sig(const char *wfile)
 {
 	int sig_no = 0, avalsig = 0, i;		/* default: don't include signature */
 	FILE *fpr;
@@ -704,10 +662,7 @@ const char *wfile;
 }
 
 
-int
-vedit(filename, saveheader, bname)
-const char *filename, *saveheader;
-char *bname;
+int vedit(const char *filename, const char *saveheader, char *bname)
 {
 	int ch, foo;
 	int lastcharindent = -1;
