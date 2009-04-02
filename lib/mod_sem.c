@@ -22,9 +22,7 @@
 	};
 #endif
 
-int
-sem_init(key)
-key_t key;
+int sem_init(key_t key)
 {
 	int semid;
 	union semun arg =
@@ -60,10 +58,7 @@ void sem_cleanup(int sem_id)
 	semctl(sem_id, 0, IPC_RMID);	
 }
 
-void
-sem_lock(semid, op)
-int semid;
-int op;
+void sem_lock(int semid, int op)
 {
 	struct sembuf sops;
 

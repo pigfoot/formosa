@@ -22,12 +22,8 @@ unsigned char zapped[ZAPRC_MAXSIZE];
 
 time_t zaprc_mtime = 0;
 
-
-void
-mymod(id, maxu, pp, qq)		/* pp: readid, qq: readbit */
-unsigned int id;
-int maxu, *pp;
-unsigned char *qq;
+/* pp: readid, qq: readbit */
+void mymod(unsigned int id, int maxu, int *pp, unsigned char *qq)
 {
 	*pp = (id - 1) % 8;
 	*qq = 0x1;
@@ -36,9 +32,7 @@ unsigned char *qq;
 }
 
 
-int
-ZapRC_Init(filename)
-char *filename;
+int ZapRC_Init(char *filename)
 {
 	int fd;
 	struct stat st;
@@ -60,9 +54,7 @@ char *filename;
 }
 
 
-int
-ZapRC_Update(filename)
-char *filename;
+int ZapRC_Update(char *filename)
 {
 	int fd;
 
@@ -83,10 +75,7 @@ char *filename;
 int zaprc_readid;
 unsigned char zaprc_readbit;
 
-int
-ZapRC_IsZapped(bid, brd_ctime)
-register int bid;
-time_t brd_ctime;
+int ZapRC_IsZapped(register int bid, time_t brd_ctime)
 {
 	if (bid <= 0 || bid > ZAPRC_MAXNUM)
 		return 0;
@@ -97,9 +86,7 @@ time_t brd_ctime;
 }
 
 
-void
-ZapRC_DoZap(bid)
-register unsigned int bid;
+void ZapRC_DoZap(register unsigned int bid)
 {
 	if (bid <= 0 || bid > ZAPRC_MAXNUM)
 		return;
@@ -108,9 +95,7 @@ register unsigned int bid;
 }
 
 
-void
-ZapRC_DoUnZap(bid)
-register unsigned int bid;
+void ZapRC_DoUnZap(register unsigned int bid)
 {
 	if (bid <= 0 || bid > ZAPRC_MAXNUM)
 		return;
@@ -119,9 +104,7 @@ register unsigned int bid;
 }
 
 
-int
-ZapRC_ValidBid(bid)
-register unsigned int bid;
+int ZapRC_ValidBid(register unsigned int bid)
 {
 	if (bid <= 0 || bid > ZAPRC_MAXNUM)
 		return 0;

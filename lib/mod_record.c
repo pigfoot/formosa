@@ -17,10 +17,7 @@ extern int flock(int fd, int operation);
 /**
  ** how many records are there in the file
  **/
-long
-get_num_records(filename, size)
-const char filename[];
-int size;
+long get_num_records(const char filename[], int size)
 {
 	struct stat st;
 
@@ -33,10 +30,7 @@ int size;
 /**
  ** how many records are there in the file
  **/
-long
-get_num_records1(filename, size)
-const char filename[];
-int size;
+long get_num_records1(const char filename[], int size)
 {
 	struct stat st;
 
@@ -48,10 +42,7 @@ int size;
 /**
  ** how many records are there in the file by file descriptor (syhu)
  **/
-long
-get_num_records_byfd(fd, size) 					/* syhu */
-int fd;
-int size;
+long get_num_records_byfd(int fd, int size) 					/* syhu */
 {
     struct stat st;
 
@@ -64,11 +55,7 @@ int size;
 /**
  ** append a record to file
  **/
-int 
-append_record(filename, record, size)
-const char filename[];
-void *record;
-size_t size;
+int  append_record(const char filename[], void *record, size_t size)
 {
 	int fd;
 
@@ -91,12 +78,7 @@ size_t size;
 /**
  ** get the nTH record from the file
  **/
-int  
-get_record(filename, rptr, size, id)
-char *filename;
-void *rptr;
-size_t size;
-unsigned int id;
+int   get_record(char *filename, void *rptr, size_t size, unsigned int id)
 {
 	int fd;
 
@@ -120,11 +102,7 @@ unsigned int id;
  ** delete the nTH record in file
  **/
 /*ARGUSED*/ 
-int
-delete_record(filename, size, id)
-char *filename;
-size_t size;
-unsigned int id;
+int delete_record(char *filename, size_t size, unsigned int id)
 {
 	int fdr, fdw, fd;
 	unsigned int count;
@@ -195,12 +173,7 @@ unsigned int id;
 /**
  ** substitute the nTH record in file
  **/ 
-int 
-substitute_record(filename, rptr, size, id)
-char *filename;
-void *rptr;
-size_t size;
-unsigned int id;
+int substitute_record(char *filename, void *rptr, size_t size, unsigned int id)
 {
 	int fd;
 

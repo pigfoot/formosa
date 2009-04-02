@@ -5,10 +5,7 @@
 /*
   使用者是否可看見某板存在
 */
-int 
-can_see_board(bhr, userlevel)
-BOARDHEADER *bhr;
-unsigned int userlevel;
+int can_see_board(BOARDHEADER *bhr, unsigned int userlevel)
 {
 	return !((bhr->brdtype & BRD_PRIVATE) && userlevel < bhr->level);
 /* 
@@ -33,8 +30,7 @@ obsolete
  *  by asuka
  *		
  ************************************************************/
-int 
-check_board_acl(char *boardname, char *userid)
+int check_board_acl(char *boardname, char *userid)
 {
 	FILE *fp;
 	char access_file[PATHLEN], buffer[STRLEN];

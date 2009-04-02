@@ -30,9 +30,7 @@ char *bbsconf_buf;
 int bbsconf_key, bbsconf_len;
 
 
-void *
-bbsconf_addstr (str)
-     char *str;
+void *bbsconf_addstr (char *str)
 {
 	char *buf;
 
@@ -47,9 +45,7 @@ bbsconf_addstr (str)
 }
 
 
-char *
-bbsconf_str (key)
-     char *key;
+char *bbsconf_str (char *key)
 {
 	int n;
 
@@ -59,9 +55,7 @@ bbsconf_str (key)
 	return NULL;
 }
 
-int
-bbsconf_eval (key)
-     char *key;
+int bbsconf_eval (char *key)
 {
 	int n;
 
@@ -78,10 +72,7 @@ bbsconf_eval (key)
 	return (strtol (key, NULL, 0));
 }
 
-void
-bbsconf_addkey (key, str, val)
-     char *key, *str;
-     int val;
+void bbsconf_addkey (char *key, char *str, int val)
 {
 	if (bbsconf_key < SC_KEYSIZE)
 	{
@@ -101,9 +92,7 @@ bbsconf_addkey (key, str, val)
 }
 
 
-void
-parse_bbsconf (fname)
-     char *fname;
+void parse_bbsconf (char *fname)
 {
 	FILE *fp;
 	char buf[256], tmp[256], *ptr;
@@ -169,13 +158,10 @@ struct bbsheader
 {
 	char *buf;
 	int key, len;
-}
-shead;
+}shead;
 
 
-void
-build_bbsconf (configfile, imgfile)
-     char *configfile, *imgfile;
+void build_bbsconf (char *configfile, char *imgfile)
 {
 	struct sdefine *old_bbsvar;
 	char *old_buf;
@@ -217,9 +203,7 @@ build_bbsconf (configfile, imgfile)
 }
 
 
-void
-load_bbsconf_image (imgfile)
-     char *imgfile;
+void load_bbsconf_image (char *imgfile)
 {
 	struct stat st;
 	char *ptr;
@@ -262,8 +246,7 @@ load_bbsconf_image (imgfile)
 }
 
 
-void
-load_bbsconf ()
+void load_bbsconf ()
 {
 	char path[255], fname[255];
 	struct stat st;

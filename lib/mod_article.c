@@ -9,9 +9,7 @@ static FILEHEADER genfhbuf;
 /* 
  * immediately remove article which were mark deleted 
  */
-int
-pack_article(direct)	
-char *direct;
+int pack_article(char *direct)
 {
 	int fdr, fdw;
 	FILEHEADER fhTmp, *fhr = &fhTmp;
@@ -73,9 +71,7 @@ char *direct;
  * 	 dir - directory where the file-to-be is located, unmodified 
  *   fname - pre-allocated space for returning the filename 
  */
-static void
-get_only_name(dir, fname)
-char *dir, *fname;
+static void get_only_name(char *dir, char *fname)
 {
 	char *t, *s, tmpbuf[PATHLEN];
 	int fd;
@@ -106,9 +102,7 @@ char *dir, *fname;
  * postno is for readrc mechanism 
  * it reads from .DIR file the latest post 'postno' & returns next valid no.  
  */
-static int 
-get_only_postno(dotdir)
-char *dotdir;
+static int get_only_postno(char *dotdir)
 {
 	int fd;
 	int number = 1;
@@ -142,12 +136,7 @@ char *dotdir;
  *											thread head in .THREADPOST 
  */
 #ifdef	USE_THREADING	/* syhu */
-int
-update_threadinfo( fhdr, path, thrheadpos, thrpostidx )		/* syhu */ 
-FILEHEADER *fhdr;
-char *path;
-int thrheadpos;
-int thrpostidx;
+int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrpostidx )		/* syhu */ 
 {
 
 	THRHEADHEADER thrhead;
@@ -328,26 +317,15 @@ end:
  * return postno 
  */
 #ifdef	USE_THREADING	/* syhu */		
-int
-append_article(fname, path, author, title, ident, stamp, artmode, flag, fromhost, thrheadpos, thrpostidx)	/* syhu */	
-char *fname, *path, *author, *title;
-char *stamp;
-char ident;
-BOOL artmode;
-unsigned char flag;
-char *fromhost;
-int thrheadpos;				/* position of thread head in .THREADHEAD */ 
-int thrpostidx;				/* index of previous post in .THREADPOST */	
+int append_article(char *fname, char *path, char *author, char *title,
+					char ident, char *stamp, BOOL artmode, unsigned char flag,
+					char *fromhost, int thrheadpos, int thrpostidx)	 /*syhu*/
+//thrheadpos;				/* position of thread head in .THREADHEAD */ 
+//thrpostidx;				/* index of previous post in .THREADPOST */	
 
 #else
-int
-append_article(fname, path, author, title, ident, stamp, artmode, flag, fromhost)   /* ? */
-char *fname, *path, *author, *title;
-char *stamp;
-char ident;
-BOOL artmode;
-unsigned char flag;
-char *fromhost;
+int append_article(char *fname, char *path, char *author, char *title,
+				char ident, char *stamp, int artmode, int flag, char *fromhost)
 #endif
 {
 	char dotdir[PATHLEN], fn_stamp[PATHLEN];
@@ -423,9 +401,7 @@ char *fromhost;
 /*
    ¤Þ¤J­ì¤å 
 */
-void
-include_ori(rfile, wfile)
-char *rfile, *wfile;
+void include_ori(char *rfile, char *wfile)
 {
 	FILE *fpr, *fpw;
 	char *author = NULL, *name = NULL;
@@ -545,15 +521,11 @@ char *rfile, *wfile;
  *		wfile	ÀÉ®×¦Wº
  *		num		Ã±¦WÀÉ½s¸¹
  *******************************************************************/
-int
-include_sig(name, wfile, num)
 #ifndef IGNORE_CASE
-const char *name, *wfile;
+int include_sig(const char *name, const char *wfile, int num)
 #else
-char *name;
-const char *wfile;
+int include_sig(char *name, const char *wfile, int num)
 #endif
-int num;
 {
 	FILE *fpr, *fpw;
 	char rfile[PATHLEN];
@@ -605,10 +577,7 @@ int num;
 /*
    ¼Ð¥Ü«O¯d¤å³¹
 */   
-int
-reserve_one_article(ent, direct)
-int ent;
-char *direct;
+int reserve_one_article(int ent, char *direct)
 {
 	int fd;
 	FILEHEADER *fhr = &genfhbuf;
@@ -637,11 +606,7 @@ char *direct;
 /*
    Åª¨ú±À¤å¤À¼Æ
 */   
-char
-get_pushcnt(ent, direct, fd)
-int ent;
-char *direct;
-int fd;
+char get_pushcnt(int ent, char *direct, int fd)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
@@ -657,12 +622,7 @@ int fd;
 /*
    ¦s¤J±À¤å¤À¼Æ
 */   
-int
-push_one_article(ent, direct, fd, score)
-int ent;
-char *direct;
-int fd;
-char score;
+int push_one_article(int ent, char *direct, int fd, char score)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
@@ -678,11 +638,9 @@ char score;
 	return -1;
 }
 
-void
-write_article_header(fpw, userid, username, bname, timestr, title, origin)
-FILE *fpw;
-const char *userid, *username, *bname, *timestr;
-const char *title, *origin;
+void write_article_header(FILE *fpw, const char *userid, const char *username,
+							const char *bname, const char *timestr,
+							const char *title, const char *origin)
 {
         /* sarek:02/08/2001 username Âo°£ANSI±±¨î½X */
         fprintf(fpw, "µo«H¤H: %s (%s)", userid, esc_filter(username));
@@ -706,13 +664,8 @@ const char *title, *origin;
 /*
    ¼Ð°O§R°£³æ½g¤å³¹
 */
-int
-delete_one_article(ent, finfo, direct, delby, option)
-int ent;
-FILEHEADER *finfo;
-char *direct;
-char *delby;
-char option;
+//int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, char *option)
+int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, int option)
 {
 	int fd;
 	FILEHEADER *fhr = &genfhbuf;
@@ -772,10 +725,7 @@ char option;
  * return: 0 - success, 
  *		  -1 - fail
  */ 
-int
-sync_threadfiles( fhr, direct )
-FILEHEADER *fhr;
-char *direct;
+int sync_threadfiles(FILEHEADER *fhr, char *direct)
 {
  	FILEHEADER filehdr;
 	THRHEADHEADER thrhead, *p_thrhead=(THRHEADHEADER *)&filehdr;

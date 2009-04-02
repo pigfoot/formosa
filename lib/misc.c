@@ -23,9 +23,7 @@
 /*
  * apply or remove an advisory lock on an open file
  */
-int
-flock(fd, op)
-int fd, op;
+int flock(int fd, int op)
 {
 	switch (op)
 	{
@@ -43,9 +41,7 @@ int fd, op;
 /*
  * copy file, first remove the dest file
  */ 
-int
-mycp(from, to)
-const char *from, *to;
+int mycp(const char *from, const char *to)
 {
 	char cpbuf[8192];	/* copy buffer: 8192 optimize for 4096bytes/block */
 	int fdr, fdw, cc;
@@ -77,9 +73,7 @@ const char *from, *to;
  * unlink(), remove file or directory, 
  * but if directory, sub-dir will also be removed
  */ 
-int 
-myunlink(name)
-char name[];
+int myunlink(char name[])
 {
 	struct stat st;
 
@@ -124,9 +118,7 @@ char name[];
 /*
  * rename() but support cross different file system
  */
-int 
-myrename(from, to)
-const char *from, *to;
+int myrename(const char *from, const char *to)
 {
 	if (rename(from, to) == -1)	/* ¦pªG rename() ¥¢±Ñ */
 	{
@@ -139,9 +131,7 @@ const char *from, *to;
 }
 
 
-int
-isfile(fname)
-const char *fname;
+int isfile(const char *fname)
 {
 	struct stat st;
 
@@ -150,9 +140,7 @@ const char *fname;
 }
 
 
-int
-isdir(fname)
-char *fname;
+int isdir(char *fname)
 {
 	struct stat st;
 
@@ -160,9 +148,7 @@ char *fname;
 }
 
 
-int
-seekstr_in_file(filename, seekstr)
-char filename[], seekstr[];
+int seekstr_in_file(char filename[], char seekstr[])
 {
 	FILE *fp;
 	char buf[255], *ptr;
@@ -193,11 +179,7 @@ char filename[], seekstr[];
    xstrncpy() - similar to strncpy(3) but terminates string
    always with '\0' if n != 0, and doesn't do padding
 */
-char *
-xstrncpy(dst, src, n)
-register char *dst;
-const char *src;
-size_t n;
+char *xstrncpy(register char *dst, const char *src, size_t n)
 {
     if (n == 0)
 		return dst;
@@ -217,10 +199,7 @@ size_t n;
     ps: not similar to strncat()
 */
          
-char *xstrcat(dst, src, maxlen)
-register char *dst;
-const char *src;
-size_t maxlen;
+char *xstrcat(register char *dst, const char *src, size_t maxlen)
 {
 	char *p = dst;
 	int n = maxlen - strlen(dst);
@@ -239,9 +218,7 @@ size_t maxlen;
 }                                             
 
 
-static void
-strlwr(q)
-char *q;
+static void strlwr(char *q)
 {
 	char *s = q;
     
@@ -253,9 +230,7 @@ char *q;
 }
 
 
-char *
-xgrep(pattern, filename)
-char *pattern, *filename;
+char * xgrep(char *pattern, char *filename)
 {
 	FILE *fp;
 	static char buf[128];
@@ -290,9 +265,7 @@ char *pattern, *filename;
 }
 
 
-int
-append_file(afile, rfile)
-char *afile, *rfile;
+int append_file(char *afile, char *rfile)
 {
 	int cc;
 	char buf[8192];
@@ -321,9 +294,7 @@ char *afile, *rfile;
 }
 
 
-char *
-Ctime(clock)
-register time_t *clock;
+char *Ctime(register time_t *clock)
 {
 	static char tibuf[24];
 
@@ -373,10 +344,7 @@ register time_t *clock;
 	swaptype = (((char *)a - (char *)0) % sizeof(long) || \
 	es % sizeof(long)) ? 2 : (es == sizeof(long)? 0 : 1);
 
-static inline void
-swapfunc(a, b, n, swaptype)
-char *a, *b;
-int n, swaptype;
+static inline void swapfunc(char *a, char *b, int n, int swaptype)
 {
 	if (swaptype <= 1)
 		swapcode(long, a, b, n)
@@ -397,10 +365,8 @@ int n, swaptype;
 #define vecswap(a, b, n) 	if ((n) > 0) swapfunc(a, b, n, swaptype)
 
 
-static inline char *
-med3(a, b, c, cmp)
-char *a, *b, *c;
-int (*cmp) (); // cmp_t *cmp; ?
+static inline char *med3(char *a, char *b, char *c, int (*cmp) ())
+//int (*cmp) (); // cmp_t *cmp; ?
 {
 	return cmp(a, b) < 0 ?
 	       (cmp(b, c) < 0 ? b : (cmp(a, c) < 0 ? c : a))
@@ -408,11 +374,7 @@ int (*cmp) (); // cmp_t *cmp; ?
 }
 
 
-void
-xsort(a, n, es, cmp)
-void *a;
-size_t n, es;
-int (*cmp) (); //cmp_t *cmp; ?
+void xsort(void *a, size_t n, size_t es, int (*cmp) ())
 {
 	char *pa, *pb, *pc, *pd, *pl, *pm, *pn;
 	int d, r, swaptype, swap_cnt;
@@ -512,16 +474,13 @@ loop:
 
 #define	MMM	(0x40000)
 
-static int
-int_cmp(a, b)
-  int *a;
-  int *b;
+static int int_cmp(int *a, int *b)
 {
   return *a - *b;
 }
 
 
-main()
+int main()
 {
   int *x, *y, *z, n;
 
@@ -540,5 +499,6 @@ main()
   } while (++x < z);
 
   xsort(y, MMM, sizeof(int), int_cmp);
+  return 0;
 }
 #endif

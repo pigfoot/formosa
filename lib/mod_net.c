@@ -32,10 +32,8 @@
  * 建立 socket connect 到 host 的 port
  * example: SocketID = ConnectServer("140.117.11.2", CHATPORT)
  */
-int
-ConnectServer(host, port)
-char *host;			/* 注意這個參數跟舊函式不同 */
-int port;
+int ConnectServer(char *host, int port)
+//host;			/* 注意這個參數跟舊函式不同 */
 {
 	struct sockaddr_in sin;
 	int s;
@@ -80,8 +78,7 @@ int port;
  * send out messages with the customed format
  * 跟 printf 用法相同, 只是 output 為 socket
  ***************************************************************/
-int
-net_printf(int sd, char *fmt, ...)
+int net_printf(int sd, char *fmt, ...)
 {
 	va_list args;
 	char str[NET_OUTBUF_SIZE];
@@ -107,11 +104,7 @@ net_printf(int sd, char *fmt, ...)
  * 參數 newline : 1 --> 把新行字元留在字串裡.
  *                0 --> 去掉新行字元.
  *****************************************************************/
-char *
-net_gets(sd, buf, buf_size)
-int sd;
-char buf[];
-int buf_size;
+char *net_gets(int sd, char buf[], int buf_size)
 {
 	struct timeval wait;
 	static fd_set ibits;

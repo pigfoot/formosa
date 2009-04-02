@@ -86,9 +86,8 @@
 #include "conf.h"
 #include "libproto.h"
 
-extern int CheckNewmail();
-int cmp_userid(char *userid, USER_INFO *upent);
 #ifndef _BBS_LIB_PROTO_H_
+int cmp_userid(char *userid, USER_INFO *upent);
 void *malloc_str(char *str);
 int malloc_array(struct array *a, char *filename);
 int cmp_userid(char *userid, USER_INFO *upent);

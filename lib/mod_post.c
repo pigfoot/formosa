@@ -7,9 +7,7 @@
  * update the rewind_time for some board, 
  * user should update their readrc according this rewind_time
  */
-static int
-rewind_board(bname)
-char *bname;
+static int rewind_board(char *bname)
 {
 	int fd;
 	BOARDHEADER sbh;
@@ -44,10 +42,8 @@ char *bname;
 /**
  ** send article or cancel message to usenet
  **/
-int
-append_news(bname, fname, userid, username, title, opt)
-char *bname, *fname, opt;
-char *userid, *username, *title;
+int append_news(char *bname, char *fname,
+			char *userid, char *username, char *title, char opt)
 {
 	FILE *fp;
 	char nbuf[PATHLEN];
@@ -98,22 +94,19 @@ char *userid, *username, *title;
  * mask		張貼佈告時順便設定 flag		add by asuka
  */
 #ifdef USE_THREADING	/* syhu */
-int
-PublishPost(fname, userid, username, bname, title, ident, fromhost, tonews, postpath, flag, thrheadpos, thrpostidx)
-char *fname, *userid, *username, *bname, *title, *fromhost, *postpath;
-char ident;
-short tonews;
-unsigned char flag;
-int thrheadpos; 							/* position in .THREADHEAD file */
-int thrpostidx;								/* index in .THREADPOST file */	
+int PublishPost(char *fname, char *userid, char *username,
+			char *bname, char *title, char ident, char *fromhost,
+			short tonews, char *postpath, unsigned char flag,
+			int thrheadpos, int thrpostidx)
+/*
+ * int thrheadpos; 							 position in .THREADHEAD file 
+ * int thrpostidx;								index in .THREADPOST file 
+ * */	
 
 #else
-int
-PublishPost(fname, userid, username, bname, title, ident, fromhost, tonews, postpath, flag)
-char *fname, *userid, *username, *bname, *title, *fromhost, *postpath;
-char ident;
-short tonews;
-unsigned char flag;
+int PublishPost(char *fname, char *userid, char *username,
+			char *bname, char *title, char ident, char *fromhost,
+			short tonews, char *postpath, unsigned char flag)
 #endif
 {
 	char timestamp[15], tempfile[PATHLEN], pathTmp[PATHLEN];
@@ -169,11 +162,7 @@ unsigned char flag;
 }
 
 
-int
-make_treasure_folder(direct, title, dirname)
-char *direct;
-char *title;
-char *dirname;
+int make_treasure_folder(char *direct, char *title, char *dirname)
 {
 	char path[PATHLEN], new[PATHLEN];
 	char *stamp;

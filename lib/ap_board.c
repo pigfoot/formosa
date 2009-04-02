@@ -4,9 +4,7 @@ static int num_brds = 0;
 static int num_alloc_brds = 0;
 static struct BoardList *all_brds = NULL;	/* pointer of all boards allocated */
 
-static int
-malloc_board(binfr)
-struct board_t *binfr;
+static int malloc_board(struct board_t *binfr)
 {
 	int rank;
 	
@@ -47,8 +45,7 @@ struct board_t *binfr;
 }
 
 
-int
-CreateBoardList()
+int CreateBoardList()
 {
 #ifndef _BBS2G4_C_
 	char fname_zaprc[PATHLEN];
@@ -111,17 +108,13 @@ CreateBoardList()
 }
 
 
-static int
-cmp_bname(a, b)
-struct BoardList *a, *b;
+static int cmp_bname(struct BoardList *a, struct BoardList *b)
 {
 	return strcasecmp(a->bhr->filename, b->bhr->filename);
 }
 
 
-struct BoardList *
-SearchBoardList(bname)
-char bname[];
+struct BoardList *SearchBoardList(char bname[])
 {
 	if (bname[0])
 	{

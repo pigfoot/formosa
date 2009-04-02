@@ -21,10 +21,7 @@
 #include "libproto.h"
 
 
-void
-attach_err(key, name)
-int key;
-char *name;
+void attach_err(int key, char *name)
 {
 	fprintf(stderr, "[%s error] key = %X\n", name, key);
 	fflush(stderr);
@@ -32,10 +29,7 @@ char *name;
 }
 
 
-void *
-attach_shm(shmkey, shmsize)
-key_t shmkey;
-int shmsize;
+void *attach_shm(key_t shmkey, int shmsize)
 {
 	void *shmptr;
 	int shmid;
@@ -76,8 +70,7 @@ static struct UTMPSHM *utmpshm = NULL;	/* pointer to user_info shared memory */
 
 int utmp_semid = 0;
 
-void
-resolve_utmp()
+void resolve_utmp()
 {
 	if (utmpshm == NULL)
 	{
@@ -91,10 +84,8 @@ resolve_utmp()
 }
 
 
-USER_INFO *
-search_ulist(fptr, farg)
-register int (*fptr) (char *, USER_INFO *);
-register char *farg;
+USER_INFO *search_ulist(register int (*fptr) (char *, USER_INFO *), register char *farg)
+//register int (*fptr) (char *, USER_INFO *);
 {
 	register USER_INFO *uentp;
 	register int i;
@@ -116,9 +107,8 @@ register char *farg;
 }
 
 
-int
-apply_ulist(fptr)
-register int (*fptr) (USER_INFO *);
+int apply_ulist(register int (*fptr) (USER_INFO *))
+//register int (*fptr) (USER_INFO *);
 {
 	register USER_INFO *uentp;
 	register int i;
@@ -143,9 +133,7 @@ register int (*fptr) (USER_INFO *);
 }
 
 
-void
-num_ulist(total, csbbs, webbbs)
-int *total, *csbbs, *webbbs;
+void num_ulist(int *total, int *csbbs, int *webbbs)
 {
 	resolve_utmp();
 	if (total)
@@ -157,9 +145,7 @@ int *total, *csbbs, *webbbs;
 }
 
 
-void
-purge_ulist(upent)
-USER_INFO *upent;
+void purge_ulist(USER_INFO *upent)
 {
 	sem_lock(utmp_semid, SEM_ENTR);
 	
@@ -175,17 +161,14 @@ USER_INFO *upent;
 }
 
 
-void
-update_ulist(cutmp, upent)
-USER_INFO *cutmp, *upent;
+void update_ulist(USER_INFO *cutmp, USER_INFO *upent)
 {
 	if (cutmp && upent)
 		memcpy(cutmp, upent, sizeof(USER_INFO));
 }
 
 
-USER_INFO *
-new_utmp()
+USER_INFO *new_utmp()
 {
 	USER_INFO *uentp;
 	register int i;
@@ -211,8 +194,7 @@ new_utmp()
 }
 
 
-void
-sync_ulist()
+void sync_ulist()
 {
     register USER_INFO *uentp;
     register int i;
@@ -255,9 +237,7 @@ struct BRDSHM {
 #define BRDSHM_KEY	0x1329
 static struct BRDSHM *brdshm = NULL;	/* pointer to boardheader shared memory */
 
-static int
-cmp_brdt_bname(a, b)
-const void *a, *b;
+static int cmp_brdt_bname(const void *a, const void *b)
 {
 	return strcasecmp((*((struct board_t **)a))->bhr.filename,
 	                 (*((struct board_t **)b))->bhr.filename);
@@ -266,8 +246,7 @@ const void *a, *b;
 
 BOOL fast_rebuild = FALSE;
 
-int
-resolve_brdshm()
+int resolve_brdshm()
 {
 	int fd;
 	
@@ -326,9 +305,7 @@ resolve_brdshm()
 }
 
 
-int
-get_board_bid(farg)
-register char *farg;
+int get_board_bid(register char *farg)
 {
 	register int i;
 
@@ -345,9 +322,8 @@ register char *farg;
 }
 
 
-void
-apply_brdshm(fptr)
-int (*fptr)(BOARDHEADER *bhr);
+void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
+//int (*fptr)(BOARDHEADER *bhr);
 {
 	register int i;
 
@@ -360,9 +336,8 @@ int (*fptr)(BOARDHEADER *bhr);
 }	
 
 
-void
-apply_brdshm_board_t(fptr)
-int (*fptr)(struct board_t *binfr);
+void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
+//int (*fptr)(struct board_t *binfr);
 {
 	register int i;
 
@@ -375,10 +350,7 @@ int (*fptr)(struct board_t *binfr);
 }	
 
 		
-unsigned int
-get_board(bhead, bname)
-BOARDHEADER *bhead;
-char *bname;
+unsigned int get_board(BOARDHEADER *bhead, char *bname)
 {
 	register int i;
 
@@ -398,10 +370,7 @@ char *bname;
 }
 
 
-BOOL
-is_new_vote(bname, lastlogin)
-const char *bname;
-time_t lastlogin;
+BOOL is_new_vote(const char *bname, time_t lastlogin)
 {
 	register int i;
 
@@ -421,9 +390,7 @@ time_t lastlogin;
 }
 		
 
-void		
-rebuild_brdshm(opt)
-BOOL opt;
+void rebuild_brdshm(BOOL opt)
 {
 	fast_rebuild = opt;
 	resolve_brdshm();
@@ -432,10 +399,7 @@ BOOL opt;
 }
 
 
-void
-set_brdt_numposts(bname, reset)
-char *bname;
-BOOL reset;
+void set_brdt_numposts(char *bname, BOOL reset)
 {
 	register int i;
 	
@@ -462,9 +426,7 @@ BOOL reset;
 }
 
 
-void
-set_brdt_vote_mtime(bname)
-const char *bname;
+void set_brdt_vote_mtime(const char *bname)
 {
 	register int i;
 	
@@ -509,8 +471,7 @@ CLASSHEADER *n1, *n2;
 #endif
 
 
-void
-resolve_classhm()
+void resolve_classhm()
 {
 	if (!classhm)
 		classhm = attach_shm(CLASSHM_KEY, sizeof(struct CLASSHM));
@@ -590,9 +551,7 @@ resolve_classhm()
 }	
 
 
-CLASSHEADER *
-search_class_by_cid(cid)
-unsigned int cid;
+CLASSHEADER *search_class_by_cid(unsigned int cid)
 {
 	if (cid < 1 || cid > classhm->number)
 		return (CLASSHEADER *)NULL;
@@ -601,8 +560,7 @@ unsigned int cid;
 
 
 #if 1
-void		
-rebuild_classhm()
+void rebuild_classhm()
 {
 	resolve_classhm();
 	classhm->mtime = 0;
@@ -611,8 +569,7 @@ rebuild_classhm()
 #endif
 
 #if 1
-void
-dump_classhm()
+void dump_classhm()
 {
 	int i;
 	

@@ -23,8 +23,7 @@
 
 
 #if 1
-void
-bbslog(const char *mode, const char *fmt, ...)
+void bbslog(const char *mode, const char *fmt, ...)
 {
 	va_list args;
 	time_t now;
@@ -51,14 +50,10 @@ bbslog(const char *mode, const char *fmt, ...)
 }
 #endif
 
-void
-sethomefile(buf, userid, filename)
-register char *buf;
 #ifndef IGNORE_CASE                     // clean warnings
-const char *userid, *filename;
+void sethomefile(register char *buf, const char *userid, const char *filename)
 #else
-char *userid;
-const char *filename;
+void sethomefile(register char *buf, char *userid, const char *filename)
 #endif
 {
 	register unsigned char c = *userid;
@@ -78,14 +73,10 @@ const char *filename;
 }
 
 
-void
-setuserfile(buf, userid, filename)
-register char *buf;
 #ifndef IGNORE_CASE
-const char *userid, *filename;
+void setuserfile(register char *buf, const char *userid, const char *filename)
 #else
-char *userid;
-const char *filename;
+void setuserfile(register char *buf, char *userid, const char *filename)
 #endif
 {
 #ifdef IGNORE_CASE
@@ -95,10 +86,7 @@ const char *filename;
 }
 
 
-void
-setboardfile(buf, bname, filename)
-register char *buf;
-const char *bname, *filename;
+void setboardfile(register char *buf, const char *bname, const char *filename)
 {
 	if (filename)
 		sprintf(buf, "%s/%s/%s", BBSPATH_BOARDS, bname, filename);
@@ -107,10 +95,7 @@ const char *bname, *filename;
 }
 
 
-void
-setvotefile(buf, bname, filename)
-register char *buf;
-const char *bname, *filename;
+void setvotefile(register char *buf, const char *bname, const char *filename)
 {
 	if (filename)
 		sprintf(buf, "%s/%s/vote/%s", BBSPATH_BOARDS, bname, filename);
@@ -119,10 +104,7 @@ const char *bname, *filename;
 }
 
 
-void
-settreafile(buf, bname, filename)
-register char *buf;
-const char *bname, *filename;
+void settreafile(register char *buf, const char *bname, const char *filename)
 {
 	if (filename)
 		sprintf(buf, "%s/%s/%s", BBSPATH_TREASURE, bname, filename);
@@ -131,14 +113,10 @@ const char *bname, *filename;
 }
 
 
-void
-setmailfile(buf, userid, filename)
-char *buf;
 #ifndef IGNORE_CASE
-const char *userid, *filename;
+void setmailfile(char *buf, const char *userid, const char *filename)
 #else
-char *userid;
-const char *filename;
+void setmailfile(char *buf, char *userid, const char *filename)
 #endif
 {
 	register unsigned char c = *userid;
@@ -159,10 +137,7 @@ const char *filename;
 }
 
 
-void
-setdotfile(buf, dotfile, fname)
-register char *buf;
-const char *dotfile, *fname;
+void setdotfile(register char *buf, const char *dotfile, const char *fname)
 {
 	register char *ptr;
 
@@ -183,8 +158,7 @@ const char *dotfile, *fname;
 }
 
 
-void
-init_bbsenv()
+void init_bbsenv()
 {
 /*
 	if (chdir(HOMEBBS) == -1)
@@ -228,9 +202,7 @@ struct HostDeny {
 	short len;
 };
 
-static struct HostDeny *
-host_deny_init(fname)
-char *fname;
+static struct HostDeny *host_deny_init(char *fname)
 {
 	FILE *fp;
 	struct HostDeny *table = (struct HostDeny *) NULL;
@@ -286,9 +258,7 @@ static struct HostDeny *dhost = (struct HostDeny *)NULL;
 static struct HostDeny *ahost = (struct HostDeny *)NULL;
 static struct HostDeny hostnull[1];
 
-int 
-host_deny(host)
-char *host;
+int host_deny(char *host)
 {
 	int deny_login = 0;
 

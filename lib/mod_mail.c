@@ -14,9 +14,7 @@ char myhostip[HOSTLEN] = "127.0.0.1";
 /**
  ** 是否為不合法的 email address
  **/
-int
-InvalidEmailAddr(addr)
-char *addr;
+int InvalidEmailAddr(char *addr)
 {
 	unsigned char ch, lastch = '\0';
 	short mode;
@@ -51,10 +49,9 @@ char *addr;
 /**************************************************************
  * 直接與 SMTP Port 連接
  **************************************************************/
-static int
-DirectSMTPMail(ms, fname, from, to, title, forward)
-int ms;
-const char *fname, *from, *to, *title, *forward;
+static int DirectSMTPMail(int ms, const char *fname,
+						const char *from, const char *to,
+						const char *title, const char *forward)
 {
 	FILE *fp;
 	char gbufTmp[512];
@@ -130,8 +127,7 @@ const char *fname, *from, *to, *title, *forward;
 
 
 /* adapted from apache source... by asuka*/
-char *
-find_fqdn(char *a, struct hostent *p)
+char *find_fqdn(char *a, struct hostent *p)
 {
 	int x;
 
@@ -149,8 +145,7 @@ find_fqdn(char *a, struct hostent *p)
 }
 
 
-int
-get_hostname_hostip()
+int get_hostname_hostip()
 {
 	static int configured = 0;
 
@@ -178,9 +173,7 @@ get_hostname_hostip()
 }
 
 
-BOOL
-is_emailaddr(to)
-char *to;
+BOOL is_emailaddr(char *to)
 {
 	register char *ptr;
 	char *at;
@@ -206,11 +199,9 @@ char *to;
 /**************************************************************
  * 寄信至站外
  **************************************************************/
-static int
-SendMail_Internet(ms, fname, from, to, title, forward)
-int ms;
-char *fname, *from, *to, *title;
-char *forward;
+static int SendMail_Internet(int ms, char *fname,
+							char *from, char *to,
+							char *title, char *forward)
 {
 	int msTmp, result;
 	char fromTmp[STRLEN];
@@ -244,11 +235,7 @@ char *forward;
 }
 
 
-int
-CheckMail(urc, to, strict)
-USEREC *urc;
-char *to;
-BOOL strict;
+int CheckMail(USEREC *urc, char *to, BOOL strict)
 {
 	char dotdir[PATHLEN];
 	int total;
@@ -276,10 +263,8 @@ BOOL strict;
 /**************************************************************
  * 寄信給站上使用者
  **************************************************************/
-static int
-SendMail_Local(fname, from, to, title, ident)
-char *fname, *from, *to, *title;
-char ident;
+static int SendMail_Local(char *fname,char *from, char *to, char *title,
+						char ident)
 {
 	USEREC urcTmp;
 	char pathTmp[PATHLEN];
@@ -344,11 +329,7 @@ char ident;
 }
 
 
-int
-SendMail(ms, fname, from, to, title, ident)
-int ms;
-char *fname, *from, *to, *title;
-char ident;
+int SendMail(int ms, char *fname, char *from, char *to, char *title, char ident)
 {
 	if (is_emailaddr(to))
 		return SendMail_Internet(ms, fname, from, to, title, NULL);
@@ -359,8 +340,7 @@ char ident;
 
 #define SMTPPORT	25
 
-int
-CreateMailSocket()		/* open socket to mail server */
+int CreateMailSocket()		/* open socket to mail server */
 {
 	int ms;
 	char buffer[256];
@@ -401,9 +381,7 @@ CreateMailSocket()		/* open socket to mail server */
 }
 
 
-int
-CloseMailSocket(ms)		/* close socket to mail server */
-int ms;
+int CloseMailSocket(int ms)		/* close socket to mail server */
 {
 	char buffer[STRLEN];
 
@@ -419,14 +397,11 @@ int ms;
 /*
  * check user mail mbox for new mail
  */
-int
-CheckNewmail(name, force_chk)
 #ifndef IGNORE_CASE
-const char *name;
+int CheckNewmail(const char *name, BOOL force_chk)
 #else
-char *name;
+int CheckNewmail(char *name, BOOL force_chk)
 #endif
-BOOL force_chk;
 {
 	static long lasttime = 0;
 	static BOOL ismail = FALSE;

@@ -26,8 +26,7 @@ USEREC *current_user;
 #endif
 
 #ifdef IGNORE_CASE
-void strtolow(lowit)
-char *lowit;
+void strtolow(char *lowit)
 {
         while (*lowit)
         {
@@ -37,9 +36,7 @@ char *lowit;
 }
 #endif
 
-BOOL
-invalid_new_userid(userid)
-char *userid;
+BOOL invalid_new_userid(char *userid)
 {
 	int i, dash = 0;
 /*	
@@ -85,10 +82,7 @@ char *userid;
 /**
  ** get user information from password file
  **/
-unsigned int
-get_passwd(urcp, userid)
-USEREC *urcp;
-char *userid;
+unsigned int get_passwd(USEREC *urcp, char *userid)
 {
 	int fd;
 	char fn_passwd[PATHLEN];
@@ -118,9 +112,7 @@ char *userid;
 /**
  ** update user information to file record
  **/ 
-unsigned int
-update_passwd(urcp)
-USEREC *urcp;
+unsigned int update_passwd(USEREC *urcp)
 {
 	int fd;
 	char fn_passwd[PATHLEN];
@@ -171,9 +163,7 @@ USEREC *urcp;
 /*
  * update user information to a single file (.PASSWDS)
  */ 
-unsigned int
-update_user_passfile(urcp)
-USEREC *urcp;
+unsigned int update_user_passfile(USEREC *urcp)
 {
 	int fd;
 
@@ -234,10 +224,7 @@ char *userid;
  ** New user, finding a available slot in user index file and home dir.
  ** Function return the unique uid of user
  **/
-unsigned int
-new_user(ubuf, force)
-USEREC *ubuf;
-BOOL force;
+unsigned int new_user(USEREC *ubuf, BOOL force)
 {
 	int fd;
 	struct useridx uidx;
@@ -351,12 +338,8 @@ BOOL force;
 }
 
 
-static void
-log_visitor(userid, from, login_time, ctype, logout)
-char *userid, *from;
-time_t login_time;
-char ctype;
-BOOL logout;
+static void log_visitor(char *userid, char *from, time_t login_time,
+					char ctype, BOOL logout)
 {
 	struct visitor v;
 
@@ -369,12 +352,8 @@ BOOL logout;
 }
 
 
-int
-user_login(cutmp, urcp, ctype, userid, passwd, fromhost)
-USER_INFO **cutmp;
-USEREC *urcp;
-char ctype;
-char *userid, *passwd, *fromhost;
+int user_login(USER_INFO **cutmp, USEREC *urcp, char ctype,
+			char *userid, char *passwd, char *fromhost)
 {
 	FILE *fp;
 	USER_INFO *upent;
@@ -518,10 +497,7 @@ pid assinged in new_utmp()
 }
 
 
-int
-cmp_userid(userid, upent)
-char *userid;
-USER_INFO *upent;
+int cmp_userid(char *userid, USER_INFO *upent)
 {
 	if (upent == NULL || upent->userid[0] == '\0')
 		return 0;
@@ -531,10 +507,7 @@ USER_INFO *upent;
 }
 
 
-void
-user_logout(upent, urcp)
-USER_INFO *upent;
-USEREC *urcp;
+void user_logout(USER_INFO *upent, USEREC *urcp)
 {
 	USEREC usrbuf;
 	extern void setuserfile();
@@ -618,9 +591,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 #ifdef USE_ALOHA
 struct array aloha_cache;
 
-int
-mnt_alohalist(upent)
-USER_INFO *upent;
+int mnt_alohalist(USER_INFO *upent)
 {
 	int retval;
 

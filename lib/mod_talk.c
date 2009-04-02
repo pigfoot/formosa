@@ -6,10 +6,7 @@
 #include "bbs.h"
 #include <sys/stat.h>
 
-int
-can_override(userid, whoasks)
-char *userid;
-char *whoasks;
+int can_override(char *userid, char *whoasks)
 {
 	FILE *fp;
 	char buf[PATHLEN];
@@ -44,10 +41,7 @@ char *whoasks;
  * kmwang:20000610:¬d¸ß whoasks ¬O§_¦b userid ªºÃa¤Í¦W³æ¤¤ 
  * in_blacklist( userid, whoasks )
  */ 
-int
-in_blacklist(userid, whoasks)
-char *userid;
-char *whoasks;
+int in_blacklist(char *userid, char *whoasks)
 {
         FILE *fp;
         char buf[PATHLEN];
@@ -77,10 +71,7 @@ char *whoasks;
         return 0;
 }
  
-int
-malloc_array(a, filename)		/* -ToDo- uid compare */
-struct array *a;
-char *filename;
+int malloc_array(struct array *a, char *filename)		/* -ToDo- uid compare */
 {
 	if (!a->size)
 	{
@@ -127,10 +118,7 @@ TODO for binary search
 }
 
 
-int
-cmp_array(a, whoasks)
-struct array *a;
-char *whoasks;
+int cmp_array(struct array *a, char *whoasks)
 {
 	register char *cs, *ct;
 	register char ch;
@@ -153,9 +141,7 @@ char *whoasks;
 }
 
 
-void
-free_array(a)
-struct array *a;
+void free_array(struct array *a)
 {
 	if (a)
 	{
@@ -166,10 +152,8 @@ struct array *a;
 }
 
 
-void
-msq_set(msqp, fromid, fromnick, toid, msg)
-MSQ *msqp;
-const char *fromid, *fromnick, *toid, *msg;
+void msq_set(MSQ *msqp, const char *fromid, const char *fromnick,
+			const char *toid, const char *msg)
 {
 	time_t now;
 	
@@ -184,10 +168,7 @@ const char *fromid, *fromnick, *toid, *msg;
 }
 	
 
-int
-msq_snd(upent, msqp)
-USER_INFO *upent;
-MSQ *msqp;
+int msq_snd(USER_INFO *upent, MSQ *msqp)
 {
 	if (msqp->toid[0] != '\0' && 
 #ifndef IGNORE_CASE
@@ -217,10 +198,7 @@ MSQ *msqp;
 }
 
 
-int
-msq_rcv(upent, msqp)
-USER_INFO *upent;
-MSQ *msqp;
+int msq_rcv(USER_INFO *upent, MSQ *msqp)
 {
 	if (!upent || upent->userid[0] == '\0')	/* debug */
 		return -1;
@@ -238,10 +216,7 @@ MSQ *msqp;
 }
 
 
-void
-msq_tostr(msqp, showed)
-MSQ *msqp;
-char *showed;
+void msq_tostr(MSQ *msqp, char *showed)
 {
 /*
 	sprintf(showed, "[1;37;4%dm%s %s[33m%s(%.20s):[36m %s [m",
@@ -261,10 +236,7 @@ char *showed;
 /**
  ** °O¿ý¦Û¤v°e¥Xªº½u¤W°T®§ 
  **/
-int
-msq_record(msqp, filename, to)
-MSQ *msqp;
-const char *filename, *to;
+int msq_record(MSQ *msqp, const char *filename, const char *to)
 {
 	char buf[256];
 	
@@ -280,9 +252,7 @@ const char *filename, *to;
 }
 
 
-char *
-pagerstring(uentp)
-USER_INFO *uentp;
+char *pagerstring(USER_INFO *uentp)
 {
 	//if (uentp->pager == PAGER_QUIET)
 	if (uentp->pager & PAGER_QUIET) /* sarek:03242001:broadcast pager */
@@ -296,13 +266,9 @@ USER_INFO *uentp;
 }
 
 
-int
-query_user(myulevel, userid, upent, outstr, strip_ansi)
-int myulevel;
-char *userid;
-USER_INFO *upent;
-char *outstr;
-BOOL strip_ansi; /* sarek:02/19/2001:strip ansi colors for nickname */
+int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr,
+			BOOL strip_ansi)
+/*strip_ansi; sarek:02/19/2001:strip ansi colors for nickname */
 {
 	USEREC qurc;
 	USER_INFO *quinf;
@@ -401,9 +367,7 @@ unvisible
 }
 
 
-int
-file_delete_line(fname, str)
-const char *fname, *str;
+int file_delete_line(const char *fname, const char *str)
 {
 	char genbuf[1024];
         char fnnew[PATHLEN], *pt;
@@ -444,9 +408,7 @@ const char *fname, *str;
 
 /* sarek:12/12/2000: ESC filter */
 /* sarek:08/25/2001: modified for all purpose... */
-char *
-esc_filter(buf)
-const char *buf;
+char *esc_filter(const char *buf)
 {
 	char *p;
 	static char temp[STRLEN]={'\0'};
@@ -490,9 +452,7 @@ USEREC *curruser;
 struct array aloha_cache;
 MSQ mymsq;
 
-static int
-aloha_msq(upent)
-USER_INFO *upent;
+static int aloha_msq(USER_INFO *upent)
 {
 	int retval;
        	if ((retval = cmp_array(&aloha_cache, upent->userid)) == -1) 
@@ -537,10 +497,7 @@ USER_INFO *upent;
 }
 
 
-void
-send_aloha(current_user, option)
-USEREC *current_user;
-int option;
+void send_aloha(USEREC *current_user, int option)
 {
 	char ufile_aloha[PATHLEN];
 	char aloha_message[MTEXTLEN];
@@ -573,11 +530,7 @@ int option;
 }
 
 
-void
-aloha_edit(src_id, trg_id, option)
-const char *src_id;
-const char *trg_id;
-int option;
+void aloha_edit(const char *src_id, const char *trg_id, int option)
 {
 	char buf[10];
 	char aloha_list[PATHLEN];

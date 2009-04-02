@@ -16,8 +16,7 @@ char currentuserid[IDLEN] = "\0";
 #define RRC_EXPTIME (14*86400)
 
 
-void
-ReadRC_Update()
+void ReadRC_Update()
 {
 	short found = FALSE;
 	char fn_new[PATHLEN];
@@ -101,8 +100,7 @@ ReadRC_Update()
 }
 
 
-void
-ReadRC_Expire()
+void ReadRC_Expire()
 {
 	time_t now;
 	char fn_new[PATHLEN];
@@ -149,10 +147,7 @@ ReadRC_Expire()
 }
 
 
-void
-ReadRC_Init(bid, userid)
-unsigned int bid;
-char *userid;
+void ReadRC_Init(unsigned int bid, char *userid)
 {
 	int fd;
 
@@ -194,9 +189,7 @@ char *userid;
 unsigned char rrc_readbit;
 int rrc_readid;
 
-void
-ReadRC_Addlist(artno)
-int artno;
+void ReadRC_Addlist(int artno)
 {
 
 #ifdef DEBUG
@@ -221,9 +214,7 @@ int artno;
 #endif
 }
 
-int
-ReadRC_UnRead(artno)
-int artno;
+int ReadRC_UnRead(int artno)
 {
 #ifdef DEBUG
 	if (artno <= 0 || artno > BRC_REALMAXNUM)
@@ -242,12 +233,7 @@ int artno;
 #define DIRECTION_DEC	0
 
 
-static void
-ReadRC_Mod(no, max, rbyte, rbit, direction)
-unsigned int no;
-int max, *rbyte;
-unsigned char *rbit;
-int direction;
+static void ReadRC_Mod(unsigned int no, int max, int *rbyte, unsigned char *rbit, int direction)
 {
 	unsigned char onebit = 0x1;
 	int shift;
@@ -274,9 +260,7 @@ int direction;
 }
 
 
-static void
-ReadRC_Clean(startno, endno)
-int startno, endno;
+static void ReadRC_Clean(int startno, int endno)
 {
 	int size;
 	int startbyte, endbyte;
@@ -316,9 +300,7 @@ int startno, endno;
 }
 
 
-void
-ReadRC_Refresh(boardname)
-char *boardname;
+void ReadRC_Refresh(char *boardname)
 {
 	time_t new_rtime;
 	int lastno, firstno;
@@ -388,11 +370,7 @@ char *boardname;
 }
 
 
-void
-ReadRC_Visit(bid, userid, bitset)
-unsigned int bid;
-char *userid;
-int bitset;
+void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 {
 	ReadRC_Init(bid, userid);
 	if (bitset)

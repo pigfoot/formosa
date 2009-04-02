@@ -6,9 +6,7 @@ static char pwbuf[PASSLEN];
 extern char *crypt();
 
 
-char *
-genpasswd(pw)
-char *pw;
+char *genpasswd(char *pw)
 {
 	char saltc[2];
 	int i, c;
@@ -37,9 +35,7 @@ char *pw;
 }
 
 
-int
-checkpasswd(passwd, test)
-char *passwd, *test;
+int checkpasswd(char *passwd, char *test)
 {
 	char *pw;
 
