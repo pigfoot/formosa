@@ -240,17 +240,17 @@ static int bcmd_jump(int ent, struct BoardList *bent, char *direct)
 		}
 
 		/* lthuang: 99/08/20 若以英文板名尋找失敗, 則以中文板名再尋找 */
-		for (i = board_ccur; ; i++)
+		for (i = board_ccur; ;)
 		{
-			if (i == num_brds)
-				i = 0;
-			if (i == board_ccur - 1)
-				break;
 			if (strstr((all_brds[i].bhr)->title, bname))
 			{
 				board_ccur = i + 1;
 				return C_MOVE;
 			}
+			if (++i == num_brds)
+				i = 0;
+			if (i == board_ccur)
+				break;
 		}
 	}
 	return C_FOOT;
