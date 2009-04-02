@@ -132,7 +132,7 @@ BOOL promptend;
 					msq_reply();
 				else
 #endif
-				if (chkey == ' ' || chkey == KEY_RIGHT)
+				if (chkey == ' ' || chkey == KEY_RIGHT || chkey == KEY_PGDN)
 				{
 					clear();
 					i = 0;
@@ -155,7 +155,7 @@ BOOL promptend;
 					lines--;
 					break;
 				}
-				else if (chkey == 'b')
+				else if (chkey == 'b' || chkey == KEY_PGUP)
 				{
 					if (pageno > 1 && pageno <= MAXPAGE)
 					{
