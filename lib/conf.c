@@ -45,31 +45,27 @@ void *bbsconf_addstr (char *str)
 }
 
 
-char *bbsconf_str (char *key)
+char *bbsconf_str(const char *key, const char *default_value)
 {
 	int n;
 
 	for (n = 0; n < bbsconf_key; n++)
-		if (strcmp (key, bbsvar[n].key) == 0)
+		if (strcmp (key, bbsvar[n].key) == 0 && 
+            bbsvar[n].str && bbsvar[n].str[0])
 			return (bbsvar[n].str);
-	return NULL;
+
+    return (char *)default_value;
 }
 
-int bbsconf_eval (char *key)
+int bbsconf_eval(const char *key, const int default_value)
 {
 	int n;
 
 	for (n = 0; n < bbsconf_key; n++)
 		if (strcmp (key, bbsvar[n].key) == 0)
 			return (bbsvar[n].val);
-	if (*key < '0' || *key > '9')
-	{
-/*	
-		sprintf (genbuf, "bbsconf: unknown key: %s.", key);
-		report (genbuf);
-*/		
-	}
-	return (strtol (key, NULL, 0));
+
+    return default_value;
 }
 
 void bbsconf_addkey (char *key, char *str, int val)
@@ -137,7 +133,7 @@ void parse_bbsconf (char *fname)
 				ptr = strtok (tmp, ", \t");
 				while (ptr != NULL)
 				{
-					val |= bbsconf_eval (ptr);
+					val |= bbsconf_eval (ptr, 0);
 					ptr = strtok (NULL, ", \t");
 				}
 				bbsconf_addkey (key, NULL, val);
@@ -259,54 +255,24 @@ void load_bbsconf ()
 	}
 	load_bbsconf_image(path);
 		
-	BBSNAME = bbsconf_str("BBSNAME");		/* ¯¸¦W (Short) */
-	if (!BBSNAME)
-		BBSNAME = "ForBBS";		/* ¯¸¦W (Short) */
-	BBSTITLE = bbsconf_str("BBSTITLE");		/* ¯¸¦W (Long) */
-	if (!BBSTITLE)
-		BBSTITLE = "FormosaBBS System";		/* ¯¸¦W (Long) */
-	if (!MAILSERVER)
-		MAILSERVER = "127.0.0.1";
-	MULTILOGINS = bbsconf_eval("MULTILOGINS");		/* ³Ì¦h¤¹³\¦P®É´X¦¸­«ÂÐ¤W½u */
-	if (!MULTILOGINS)
-		MULTILOGINS = 1;
-	MAX_SIG_LINES = bbsconf_eval("MAX_SIG_LINES");		/* Ã±¦WÀÉ¦æ¼Æ */
-	if (!MAX_SIG_LINES)
-		MAX_SIG_LINES = 4;
-	MAX_SIG_NUM = bbsconf_eval("MAX_SIG_NUM");	/* Ã±¦WÀÉ­Ó¼Æ */
-	if (!MAX_SIG_NUM)
-		MAX_SIG_NUM = 3;
-	IDLE_TIMEOUT = bbsconf_eval("IDLE_TIMEOUT");		/* ¨Ï¥ÎªÌ¶¢¸m®É¶¡ */
-	if (!IDLE_TIMEOUT)
-		IDLE_TIMEOUT = 40;
-	MAX_MAILGROUPS = bbsconf_eval("MAX_MAILGROUPS");	/* ¸s²Õ±H«H¤H¼Æ */
-	if (!MAX_MAILGROUPS)
-		MAX_MAILGROUPS = 70;
-	MAX_KEEP_MAIL = bbsconf_eval("MAX_KEEP_MAIL");	/* ¤@¯ë¨Ï¥ÎªÌ«H½c«O¯d«H¥ó«Ê¼Æ */
-	if (!MAX_KEEP_MAIL)
-		MAX_KEEP_MAIL = 100;
-	SPEC_MAX_KEEP_MAIL = bbsconf_eval("SPEC_MAX_KEEP_MAIL");	/* ªO¥D«H½c«O¯d«H¥ó«Ê¼Æ */
-	if (!SPEC_MAX_KEEP_MAIL)
-		SPEC_MAX_KEEP_MAIL = 200;
-	MAX_MAIL_SIZE = bbsconf_eval("MAX_MAIL_SIZE");	/* ³æ«Ê«H¥ó³Ì¤j®e¶q */
-	if (!MAX_MAIL_SIZE)
-		MAX_MAIL_SIZE = 32768;
-	MAX_FRIENDS = bbsconf_eval("MAX_FRIENDS");	/* ¨C¤H¦n¤Í­Ó¼Æ¤W­­ */
-	if (!MAX_FRIENDS)
-		MAX_FRIENDS = 1000;
-	MENU_TITLE_COLOR = bbsconf_str("MENU_TITLE_COLOR");
-	if (MENU_TITLE_COLOR[0] == '\0')
-		strcpy(MENU_TITLE_COLOR, "[1;37;44m");
-	MENU_TITLE_COLOR1 = bbsconf_str("MENU_TITLE_COLOR1");
-	if (MENU_TITLE_COLOR1[0] == '\0')
-		strcpy(MENU_TITLE_COLOR1, "[1;36;44m");
-	CHATPORT = bbsconf_eval("CHATPORT");	/* port numbers for the chat rooms */
-	if (!CHATPORT)
-		CHATPORT = 6177;
+	BBSNAME = bbsconf_str("BBSNAME", "ForBBS");		/* ¯¸¦W (Short) */
+	BBSTITLE = bbsconf_str("BBSTITLE", "FormosaBBS System");		/* ¯¸¦W (Long) */
+	MULTILOGINS = bbsconf_eval("MULTILOGINS", 1);		/* ³Ì¦h¤¹³\¦P®É´X¦¸­«ÂÐ¤W½u */
+	MAX_SIG_LINES = bbsconf_eval("MAX_SIG_LINES", 4);		/* Ã±¦WÀÉ¦æ¼Æ */
+	MAX_SIG_NUM = bbsconf_eval("MAX_SIG_NUM", 3);	/* Ã±¦WÀÉ­Ó¼Æ */
+	IDLE_TIMEOUT = bbsconf_eval("IDLE_TIMEOUT", 40);		/* ¨Ï¥ÎªÌ¶¢¸m®É¶¡ */
+	MAX_MAILGROUPS = bbsconf_eval("MAX_MAILGROUPS", 70);	/* ¸s²Õ±H«H¤H¼Æ */
+	MAX_KEEP_MAIL = bbsconf_eval("MAX_KEEP_MAIL", 100);	/* ¤@¯ë¨Ï¥ÎªÌ«H½c«O¯d«H¥ó«Ê¼Æ */
+	SPEC_MAX_KEEP_MAIL = bbsconf_eval("SPEC_MAX_KEEP_MAIL", 200);	/* ªO¥D«H½c«O¯d«H¥ó«Ê¼Æ */
+	MAX_MAIL_SIZE = bbsconf_eval("MAX_MAIL_SIZE", 32768);	/* ³æ«Ê«H¥ó³Ì¤j®e¶q */
+	MAX_FRIENDS = bbsconf_eval("MAX_FRIENDS", 1000);	/* ¨C¤H¦n¤Í­Ó¼Æ¤W­­ */
+	MENU_TITLE_COLOR = bbsconf_str("MENU_TITLE_COLOR", "[1;37;44m");
+	MENU_TITLE_COLOR1 = bbsconf_str("MENU_TITLE_COLOR1", "[1;36;44m");
+	CHATPORT = bbsconf_eval("CHATPORT", 6177);	/* port numbers for the chat rooms */
 
-	MAILSERVER = bbsconf_str("MAILSERVER");	/* SMTP Server */
-	MAX_GUEST_LOGINS = bbsconf_eval("MAX_GUEST_LOGINS");	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */	
-	_STR_BOARD_GUEST = bbsconf_str("_STR_BOARD_GUEST");			
+	MAILSERVER = bbsconf_str("MAILSERVER", "127.0.0.1");	/* SMTP Server */
+	MAX_GUEST_LOGINS = bbsconf_eval("MAX_GUEST_LOGINS", 100);	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */
+	_STR_BOARD_GUEST = bbsconf_str("_STR_BOARD_GUEST", "sysop test");
 
 #ifdef PHBBS
 	MAX_SIG_LINES =6;		/* Ã±¦WÀÉ¦æ¼Æ */
