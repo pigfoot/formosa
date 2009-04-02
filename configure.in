@@ -1,13 +1,9 @@
-madnl Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.
 AC_INIT(include/bbs.h)
 AC_CONFIG_AUX_DIR(cfgaux)
 AC_VALIDATE_CACHED_SYSTEM_TUPLE(rm -f config.cache)
 AC_CANONICAL_SYSTEM
 
-dnl echo " ........................... "
-dnl echo " ... testing system type ... "
-dnl echo " ........................... "
-dnl AC_CANONICAL_SYSTEM
 
 LDFLAGS="-g"
 
