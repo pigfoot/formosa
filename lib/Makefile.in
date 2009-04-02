@@ -50,16 +50,15 @@ $(LIBBBS): libproto.h $(LIBSRCS:.c=.o)
 	@RANLIB@ $(LIBBBS)
 
 libproto.h: $(LIBSRCS)
-	if [ "@systype@" != "LINUX" ]; then \
 	echo '#include "struct.h"' > $@; \
 	echo '#include "linklist.h"' >> $@; \
 	echo '#include <stdio.h>' >> $@; \
 	echo '#include <netdb.h>' >> $@; \
+	echo '#include <unistd.h>' >> $@; \
 	if [ -n "$(CPROTO)" ]; then \
 		echo '#define _BBS_LIB_PROTO_H_' >> $@; \
 		$(CPROTO) -O /dev/null -m -E"$(CC) -pipe -E" -I../include $(KHBBSDEFINES) \
 			$(LIBSRCS) >> $@; \
-	fi \
 	fi
 
 installbin install: 

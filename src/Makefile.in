@@ -71,10 +71,8 @@ bbsd: tsbbsproto.h $(LIBFILE) $(OBJS)
 	#$(STRIP) bbsd
 
 tsbbsproto.h: $(SRCS)
-	if [ "@systype@" != "LINUX" ]; then \
 	echo '#include "struct.h"' > tsbbsproto.h; \
 	echo '#include "linklist.h"' >> tsbbsproto.h; \
-	fi
 	if [ -n "$(CPROTO)" ]; then \
 		echo '#define _BBS_PROTO_H_' >> tsbbsproto.h; \
 		$(CPROTO) -O /dev/null -m -E"$(CC) -pipe -E" -I../include $(DEFINES) \

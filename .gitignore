@@ -1,6 +1,7 @@
 *.[oa]
 *.dSYM
 
+Makefile
 config.cache
 config.status
 config.log
