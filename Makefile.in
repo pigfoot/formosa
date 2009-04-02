@@ -5,7 +5,7 @@
 SUBDIRS = lib src csbbs util bbsweb
 CLEANDIRS = $(SUBDIRS) bbsweb/util src/util
 VERSION = 1.4.0
-HOMEBBS = @prefix@
+HOMEBBS = /home/bbs
 
 .PHONY: $(SUBDIRS) $(CLEANDIRS) $(CLEANDIRS_CLEAN) all debug clean
 
@@ -29,14 +29,14 @@ config_bbs3: distclean
 	./autogen.sh
 	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
 
-install: taget := install
+install: target := install
 install: $(SUBDIRS)
 
-CLEANDIRS_CLEAN = $(addsuffix .clean, $(CLEAN_DIRS))
+CLEANDIRS_CLEAN = $(addsuffix .clean, $(CLEANDIRS))
 $(CLEANDIRS_CLEAN):
-	if [ -f $$i/Makefile ]; then \
-		echo  "Cleaning $$i ..."; \
-		$(MAKE) -C $(basename $@) clean
+	if [ -f $(basename $@)/Makefile ]; then \
+		echo  "Cleaning $(basename $@) ..."; \
+		$(MAKE) -C $(basename $@) clean; \
 	fi;
 
 clean: $(CLEANDIRS_CLEAN)
