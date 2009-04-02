@@ -5,7 +5,7 @@
 SUBDIRS = lib src csbbs util bbsweb
 CLEANDIRS = $(SUBDIRS) bbsweb/util src/util
 VERSION = 1.4.0
-HOMEBBS = /home/bbs
+HOMEBBS = @prefix@
 
 .PHONY: $(SUBDIRS) $(CLEANDIRS) $(CLEANDIRS_CLEAN) all debug clean
 
