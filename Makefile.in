@@ -7,17 +7,15 @@ CLEANDIRS = $(SUBDIRS) bbsweb/util src/util
 VERSION = 1.4.0
 HOMEBBS = @prefix@
 
-all:
-	@for i in $(SUBDIRS); do \
-		echo  "Building $$i ..."; \
-		${MAKE} -C $$i all; \
-	done
+.PHONY: $(SUBDIRS) $(CLEANDIRS) $(CLEANDIRS_CLEAN) all debug clean
 
-debug:
-	@for i in $(SUBDIRS); do \
-		echo  "Building $$i ..."; \
-		${MAKE} -C $$i debug; \
-	done
+all: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@ $(target)
+
+debug: target := debug
+debug: $(SUBDIRS)
 
 update: installbin
 	kill `cat /tmp/formosa.23`
@@ -31,19 +29,17 @@ config_bbs3: distclean
 	./autogen.sh
 	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
 
-install: all
-	@for i in $(SUBDIRS); do \
-		echo  "Installing $$i ..."; \
-		${MAKE} -C $$i install; \
-	done
+install: taget := install
+install: $(SUBDIRS)
 
-clean:
-	@for i in $(CLEANDIRS); do \
-		if [ -f $$i/Makefile ]; then \
-			echo  "Cleaning $$i ..."; \
-			${MAKE} -C $$i clean; \
-		fi; \
-	done
+CLEANDIRS_CLEAN = $(addsuffix .clean, $(CLEAN_DIRS))
+$(CLEANDIRS_CLEAN):
+	if [ -f $$i/Makefile ]; then \
+		echo  "Cleaning $$i ..."; \
+		$(MAKE) -C $(basename $@) clean
+	fi;
+
+clean: $(CLEANDIRS_CLEAN)
 
 distclean: clean
 	@for i in $(CLEANDIRS); do \
@@ -56,11 +52,8 @@ distclean: clean
 	@-rm -f *~
 	@-rm -f configure config.cache config.status config.log
 
-installbin: all
-	@for i in $(SUBDIRS); do \
-		echo  "Install binaries $$i ...";\
-		${MAKE} -C $$i installbin;\
-	done
+installbin: target := installbin
+installbin: $(SUBDIRS)
 
 #distbin:
 #	[ -d bin ] || mkdir bin
