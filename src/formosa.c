@@ -26,9 +26,7 @@ extern char *genpasswd();
 /**
  ** Idle Timeout
  **/
-void
-saybyebye(s)
-int s;
+void saybyebye(int s)
 {
 	int fd = getdtablesize();
 
@@ -40,9 +38,7 @@ int s;
 }
 
 
-void
-abort_bbs(s)
-int s;
+void abort_bbs(int s)
 {
 	if (child_pid > 2)
 		kill(child_pid, SIGKILL);
@@ -53,17 +49,14 @@ int s;
 }
 
 
-static void
-warn_bell()
+static void warn_bell()
 {
 	char bell[4] = {7,7,7,0};
 	fputs(bell, stderr);
 }
 
 
-static void
-talk_request(s)
-int s;
+static void talk_request(int s)
 {
 #if	defined(LINUX) || defined(SOLARIS)
 	/*
@@ -79,9 +72,7 @@ int s;
 }
 
 
-static void
-msq_request(s)
-int s;
+static void msq_request(int s)
 {
 	static char bigbuf[1024];
 	static int len;
@@ -131,8 +122,7 @@ for speed-up, not use lock-file append
 
 BOOL IsRealSysop = FALSE;
 
-static void
-user_init()
+static void user_init()
 {
 	setmailfile(ufile_mail, curuser.userid, DIR_REC);
 	sethomefile(ufile_overrides, curuser.userid, UFNAME_OVERRIDES);
@@ -283,9 +273,7 @@ user_init()
 }
 
 
-static void
-new_register(nu)
-USEREC *nu;
+static void new_register(USEREC *nu)
 {
 	int attempt = 0;
 
@@ -380,8 +368,7 @@ USEREC *nu;
 }
 
 
-static void
-login_query()
+static void login_query()
 {
 	int act, attempt = 0, n;
 	FILE *fp;
@@ -520,8 +507,7 @@ login_query()
 }
 
 
-int
-Announce()
+int Announce()
 {
 	more(WELCOME, TRUE);
 	return C_FULL;
@@ -533,9 +519,7 @@ Announce()
  */
 BOOL bCountGuest = FALSE;
 
-static int
-count_multi_login(upent)
-USER_INFO *upent;
+static int count_multi_login(USER_INFO *upent)
 {
 	static int short i = 0;
 
@@ -584,8 +568,7 @@ USER_INFO *upent;
 }
 
 
-static void
-multi_user_check()
+static void multi_user_check()
 {
 #ifdef GUEST
 	if (!strcmp(curuser.userid, GUEST))
@@ -599,10 +582,7 @@ multi_user_check()
 /*
  * Main function of BBS
  */
-void
-Formosa(host, term, argc, argv)
-int argc;
-char *host, *term, **argv;
+void Formosa(char *host, char *term, int argc, char **argv)
 {
 	signal(SIGHUP, abort_bbs);
 	signal(SIGBUS, abort_bbs);

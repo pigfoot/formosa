@@ -15,11 +15,7 @@ static CLASSHEADER *cur_cs = NULL;
 static BOOL show_numposts = FALSE;
 
 
-int
-namecomplete_board(bhp, data, simple)
-BOARDHEADER *bhp;
-char *data;
-BOOL simple;
+int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple)
 {
 	struct word *bwtop = NULL;
 	int i;	
@@ -52,8 +48,7 @@ BOOL simple;
 }
 
 
-int
-select_board()
+int select_board()
 {
 	char bname[BNAMELEN];
 
@@ -76,12 +71,7 @@ select_board()
 }
 
 
-static void
-board_entry(x, ent, idx, top, last, rows)
-int x;
-struct BoardList ent[];
-int idx;
-int top, last, rows;
+static void board_entry(int x, struct BoardList ent[], int idx, int top, int last, int rows)
 {
 	int num;
 	struct BoardList *be1;
@@ -119,12 +109,7 @@ int top, last, rows;
 }
 
 
-static int
-board_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+static int board_get(char *direct, void *s, int size, int top)
 {
 	int n = num_brds - top + 1;
 
@@ -135,25 +120,20 @@ int top;
 }
 
 
-static void
-board_title()
+static void board_title()
 {
 	title_func(BBSTITLE, (in_board ? _msg_board_normal : _msg_board_treasure));
 	prints(_msg_board_1, (show_numposts) ? "½g¼Æ" : "½s¸¹");
 }
 
 
-static void
-board_btitle()
+static void board_btitle()
 {
 	outs(_msg_board_4);
 }
 
 
-static int
-board_max(direct, size)
-char *direct;
-int size;
+static int board_max(char *direct, int size)
 {
 	if (!num_brds)
 		CreateBoardList();
@@ -161,11 +141,7 @@ int size;
 }
 
 
-static int
-board_findkey(nbuf, ent, start, total)
-char *nbuf;
-struct BoardList ent[];
-int start, total;
+static int board_findkey(char *nbuf, struct BoardList ent[], int start, int total)
 {
 	register int i, len = strlen(nbuf);
 	struct BoardList *s;
@@ -196,22 +172,14 @@ int start, total;
 }
 
 
-static int
-bcmd_help(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_help(int ent, struct BoardList *bent, char *direct)
 {
 	more(BOARD_HELP, TRUE);
 	return C_FULL;
 }
 
 
-static int
-bcmd_yankin(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_yankin(int ent, struct BoardList *bent, char *direct)
 {
 	if (!curuser.userlevel)	/* guest cannot zap board */
 		return C_NONE;
@@ -222,11 +190,7 @@ char *direct;
 }
 
 
-static int
-bcmd_yankout(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_yankout(int ent, struct BoardList *bent, char *direct)
 {
 	if (!curuser.userlevel)	/* guest cannot zap board */
 		return C_NONE;
@@ -237,11 +201,7 @@ char *direct;
 }
 
 
-static int
-bcmd_zap(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_zap(int ent, struct BoardList *bent, char *direct)
 {
 	if (curuser.userlevel)	/* guest cannot zap board */
 	{
@@ -263,11 +223,7 @@ char *direct;
 }
 
 
-static int
-bcmd_jump(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_jump(int ent, struct BoardList *bent, char *direct)
 {
 	struct BoardList *be1;
 	char bname[BNAMELEN];
@@ -301,11 +257,7 @@ char *direct;
 }
 
 
-static int
-bcmd_enter(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_enter(int ent, struct BoardList *bent, char *direct)
 {
 	if (bent->bhr == NULL)
 	{
@@ -334,11 +286,7 @@ char *direct;
 }
 
 
-static int
-bcmd_treasure(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_treasure(int ent, struct BoardList *bent, char *direct)
 {
 	in_board ^= 1;
 	return C_FULL;
@@ -346,11 +294,7 @@ char *direct;
 
 
 #if 1
-static int
-bcmd_show_posts(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_show_posts(int ent, struct BoardList bent, char *direct)
 {
 	show_numposts ^= 1;
 	return C_FULL;
@@ -360,11 +304,7 @@ char *direct;
 
 BOOL sort_class = TRUE;
 
-static int
-bcmd_sort_class(ent, bent, direct)
-int ent;
-struct BoardList *bent;
-char *direct;
+static int bcmd_sort_class(int ent, struct BoardList *bent, char *direct)
 {
 	sort_class ^= 1;
 	return C_INIT;
@@ -388,8 +328,7 @@ static struct one_key board_comms[] =
 };
 
 
-int
-Boards()
+int Boards()
 {
 	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList), 
 			&board_ccur,board_title, board_btitle, board_entry, 
@@ -400,9 +339,7 @@ Boards()
 }
 
 
-static struct BoardList *
-SearchBoardList_by_bid(bid)
-unsigned bid;
+static struct BoardList *SearchBoardList_by_bid(unsigned bid)
 {
 	if (bid >= 1 && bid <= MAXBOARD)
 	{
@@ -418,9 +355,7 @@ unsigned bid;
 }
 
 
-static int
-cmp_class(a, b)
-const void *a, *b;
+static int cmp_class(const void *a, const void *b)
 {
 	struct BoardList *as = (struct BoardList *)a;
 	struct BoardList *bs = (struct BoardList *)b;	
@@ -435,10 +370,7 @@ const void *a, *b;
 }
 
 
-static int
-class_max(direct, size)
-char *direct;
-int size;
+static int class_max(char *direct, int size)
 {
 	CLASSHEADER *csi;
 	struct BoardList *be1;
@@ -474,12 +406,7 @@ int size;
 }
 
 
-static int
-class_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+static int class_get(char *direct, void *s, int size, int top)
 {
 	int n = num_class - top + 1;
 
@@ -490,8 +417,7 @@ int top;
 }
 
 
-int
-Class()
+int Class()
 {
 	resolve_brdshm();
 	resolve_classhm();

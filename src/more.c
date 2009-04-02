@@ -7,11 +7,7 @@
 
 #define MAXPAGE	(64)
 
-static int
-readln(buf, size, fp)
-char *buf;
-int size;
-FILE *fp;
+static int readln(char *buf, int size, FILE *fp)
 {
 	register int ch;
 	register int bytes = 0;	/* # of bytes readed from file */
@@ -37,10 +33,7 @@ FILE *fp;
 }
 
 
-int
-more(filename, promptend)
-char *filename;
-BOOL promptend;
+int more(char *filename, BOOL promptend)
 {
 	FILE *fp;
 	int chkey;

@@ -11,9 +11,7 @@
 /**************************************************************
  * 檢查個人信箱 Mail 數量 
  **************************************************************/
-BOOL
-check_mail_num(opt)
-int opt;
+BOOL check_mail_num(int opt)
 {
 	static int num_mails = -1;
 	int num_delete = 0;
@@ -93,9 +91,7 @@ struct word *mg_wlist = NULL;
 /*
  * grouply deliver mail now, not support 'uuencode' here
  */
-static int
-mail_group(fname, title)
-char *fname, *title;
+static int mail_group(char *fname, char *title)
 {
 	int msNew;
 	struct word *wcur;	
@@ -137,9 +133,7 @@ curuser.userid)? curuser.userid:curuser.fakeuserid, curuser.userid, genbuf,
 
 
 /*ARGUSED*/
-static int
-show_wlist(wtop)
-struct word *wtop;
+static int show_wlist(struct word *wtop)
 {
 	int x = 0, y = 3, cnt = 0;
 	struct word *wcur;
@@ -179,8 +173,7 @@ struct word *wtop;
 /*
  * user can modify his list for grouply mail sending
  */
-static int
-set_group()
+static int set_group()
 {
 	char strName[STRLEN];
 	int num_send = 0;
@@ -284,8 +277,7 @@ set_group()
 /*
  * grouply send mail, in cursor menu 
  */
-int
-m_group()
+int m_group()
 {
 	int result = -1;
 	char strTitle[STRLEN] = "";
@@ -324,11 +316,7 @@ m_group()
 /*
  * 寄信
  */
-int
-m_send(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;			/* unused */
+int m_send(int ent, FILEHEADER *finfo, char *direct)
 {
 	char strTo[STRLEN] = "", strTitle[STRLEN] = "";
 	
@@ -345,8 +333,7 @@ char *direct;			/* unused */
 /*******************************************************************
  * 只讀新的信
  *******************************************************************/
-int
-m_new()
+int m_new()
 {
 	int fd, ent = 0;
 	FILEHEADER fhn;
@@ -410,11 +397,7 @@ m_new()
 /*
  * help for mail menu
  */
-static int
-mail_help(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;			/* unused */
+static int mail_help(int ent, FILEHEADER *finfo, char *direct)
 {
 	more(MAIL_HELP, TRUE);
 	return C_FULL;
@@ -424,8 +407,7 @@ char *direct;			/* unused */
 /*
  * show title in mail folder menu
  */
-static void
-mail_title()
+static void mail_title()
 {
 	title_func(_msg_mail_3, BBSTITLE);
 	outs("\n\
@@ -440,11 +422,7 @@ mail_title()
 
 
 #if defined(NSYSUBBS1) || defined(KHBBS) /* sarek:09/23/2001:高市資教要求 */
-static int
-capture_mail(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;		/* unused */
-char *direct;			/* unused */
+static int capture_mail(int ent, FILEHEADER *finfo, char *direct)
 {
 	char fnori[PATHLEN];
 	
@@ -486,8 +464,7 @@ char *direct;			/* unused */
 /*******************************************************************
  * Read Mail Menu 個人信箱  列表閱讀
  *******************************************************************/
-int
-m_read()
+int m_read()
 {
 	static int mail_ccur = 0;	/* the postion of cursor in mail folder */
 	static struct one_key mail_comms[] =

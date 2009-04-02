@@ -74,8 +74,7 @@ init_tty()
 #endif                
                         	
 
-void
-init_vtty()
+void init_vtty()
 {
 	memset(&tty_state, 0, sizeof(tty_state));
 #if	defined(TERMIOS)
@@ -155,8 +154,7 @@ int automargins;
 char *outp;
 int *outlp;
 
-int
-outcf(char ch)
+int outcf(char ch)
 {
 	if (*outlp < TERMCOMSIZE)
 	{
@@ -167,9 +165,7 @@ outcf(char ch)
 }
 
 
-int
-term_init(term)
-char *term;
+int term_init(char *term)
 {
 	extern char PC, *UP, *BC;
 	extern short ospeed;
@@ -262,10 +258,7 @@ char *term;
 }
 
 
-void
-do_move(destcol, destline, outc)
-int destcol, destline;
-int (*outc) (char);
+void do_move(int destcol, int destline, int (*outc) (char))
 {
 	char *tgoto();
 	

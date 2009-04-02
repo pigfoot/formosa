@@ -6,10 +6,7 @@ struct friends
 	bool type; //short int 2 bytes(?)
 }
 
-int
-malloc_array(a, filename)               /* -ToDo- uid compare */
-struct array *a;
-char *filename;
+int malloc_array(struct array *a, char *filename)               /* -ToDo- uid compare */
 {
 	if (!a->size)
 	{
@@ -56,10 +53,7 @@ char *filename;
 }
 
 
-int
-cmp_array(a, whoasks)
-struct array *a;
-char *whoasks;
+int cmp_array(struct array *a, char *whoasks)
 {
 	register char *cs, *ct;
 	register char ch;
@@ -83,9 +77,7 @@ char *whoasks;
 
 
 
-void
-free_array(a)
-struct array *a;
+void free_array(struct array *a)
 {
 	if (a)
 	{

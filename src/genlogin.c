@@ -8,8 +8,7 @@
 extern char *genpasswd();
 
 
-usage(prog)
-char *prog;
+void usage(char *prog)
 {
 #ifdef USE_IDENT
 	fprintf(stderr, "Usage: %s \
@@ -23,10 +22,7 @@ char *prog;
 }
 
 
-int
-main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
 	USEREC urec;
 	char buf[80], password[PASSLEN];

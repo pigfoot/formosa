@@ -41,24 +41,20 @@ VOTE;
 #endif
 
 
-static void
-setvotefile2(fname, direct, vf, f)
-char *fname, *direct, *vf, *f;
+static void setvotefile2(char *fname, char *direct, char *vf, char *f)
 {
 	setdotfile(fname, direct, vf);
 	strcat(fname, f);
 }
 
 
-void
-DisplayNewVoteMesg()
+void DisplayNewVoteMesg()
 {
 	more("doc/NewVote", TRUE);
 }
 
 
-void
-CheckNewSysVote()
+void CheckNewSysVote()
 {
 	static BOOL sysvoting = FALSE;
 
@@ -72,8 +68,7 @@ CheckNewSysVote()
 }
 
 
-static void
-vote_title()
+static void vote_title()
 {
 	title_func(BBSTITLE, "投票區");
 	outs(_msg_vote_17);
@@ -87,9 +82,7 @@ vote_title()
 }
 
 
-static char *
-Vtime(ti)
-time_t *ti;
+static char *Vtime(time_t *ti)
 {
 	static char timestr[11];
 
@@ -98,12 +91,7 @@ time_t *ti;
 }				
 
 
-static void
-vote_entry(x, ent, idx, top, last, rows)
-const int x;
-VOTE ent[];
-const int idx;
-const int top, last, rows;
+static void vote_entry(const int x, VOTE ent[], const int idx, const int top, const int last, const int rows)
 {
 	int i, num;
 
@@ -136,8 +124,7 @@ const int top, last, rows;
 }
 
 
-static void
-cand_title()
+static void cand_title()
 {
 	title_func("投票區", TheTitle);
 	outs("\n(→)(Enter)選定投票項目 (←)(q)離開\n\
@@ -146,12 +133,7 @@ cand_title()
 }
 
 
-static void
-cand_entry(x, ent, idx, top, last, rows)
-int x;
-CAND ent[];
-int idx;
-int top, last, rows;
+static void cand_entry(int x, CAND ent[], int idx, int top, int last, int rows)
 {
 	int i, num;
 	unsigned long j;
@@ -169,11 +151,7 @@ int top, last, rows;
 }
 
 
-static int
-ccmd_enter(ent, cinfo, direct)
-int ent;
-CAND *cinfo;
-char *direct;
+static int ccmd_enter(int ent, CAND *cinfo, char *direct)
 {
 	/* 你不能再多投了啦 */
 	if (MyTickets >= TheTickets)
@@ -219,11 +197,7 @@ char *direct;
 }
 
 
-static int
-ccmd_add(ent, cinfo, direct)
-int ent;
-CAND *cinfo;
-char *direct;
+static int ccmd_add(int ent, CAND *cinfo, char *direct)
 {
 	CAND ch;
 
@@ -248,11 +222,7 @@ char *direct;
 }
 
 
-static int
-ccmd_edit(ent, cinfo, direct)
-int ent;
-CAND *cinfo;
-char *direct;
+static int ccmd_edit(int ent, CAND *cinfo, char *direct)
 {
 	if (!hasBMPerm)
 		return C_NONE;
@@ -267,11 +237,7 @@ char *direct;
 }
 
 
-static int
-ccmd_delete(ent, cinfo, direct)
-int ent;
-CAND *cinfo;
-char *direct;
+static int ccmd_delete(int ent, CAND *cinfo, char *direct)
 {
 	if (!hasBMPerm)
 		return C_NONE;
@@ -297,11 +263,7 @@ struct one_key cand_comms[] =
 };
 
 
-static int
-vcmd_desc(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_desc(int ent, VOTE *vinfo, char *direct)
 {
 	/* 選舉說明 */
 	setvotefile2(genbuf, direct, vinfo->filename, "/desc");
@@ -311,9 +273,7 @@ char *direct;
 }
 
 
-static time_t
-get_time(str)
-char *str;
+static time_t get_time(char *str)
 {
 	struct tm tm;
 	int year;
@@ -327,10 +287,7 @@ char *str;
 }
 
 
-static int
-set_vote(path, vinfo)
-char *path;
-VOTE *vinfo;
+static int set_vote(char *path, VOTE *vinfo)
 {
 	char filename[PATHLEN];
 
@@ -414,11 +371,7 @@ VOTE *vinfo;
 }
 
 
-static int
-vcmd_edit(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_edit(int ent, VOTE *vinfo, char *direct)
 {
 	if (!hasBMPerm)
 		return C_NONE;
@@ -432,11 +385,7 @@ char *direct;
 }
 
 
-static int
-vcmd_delete(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_delete(int ent, VOTE *vinfo, char *direct)
 {
 	if (!hasBMPerm)
 		return C_NONE;
@@ -459,11 +408,7 @@ char *direct;
 
 
 /*box*/
-static int
-vcmd_enter(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_enter(int ent, VOTE *vinfo, char *direct)
 {
 	char tmpdir[PATHLEN];
 	int ca_ccur = 0, fd;
@@ -556,10 +501,7 @@ char *direct;
 }
 
 
-static int
-count_box(path, vinfo)
-char *path;
-VOTE *vinfo;
+static int count_box(char *path, VOTE *vinfo)
 {
 	FILE *fp;
 	CAND cand;
@@ -632,11 +574,7 @@ VOTE *vinfo;
 }
 
 
-static int
-vcmd_result(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_result(int ent, VOTE *vinfo, char *direct)
 {
 	char fn_result[PATHLEN], fname[PATHLEN];
 	FILE *fpr, *fpw;
@@ -679,11 +617,7 @@ char *direct;
 }
 
 
-static int
-vcmd_add(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_add(int ent, VOTE *vinfo, char *direct)
 {
 	VOTE vh_new;
 	char path[PATHLEN], *p;
@@ -727,22 +661,14 @@ char *direct;
 }
 
 
-static int
-vcmd_info(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_info(int ent, VOTE *vinfo, char *direct)
 {
 	show_info ^= 1;
 	return C_FULL;
 }
 
 
-static int
-vcmd_help(ent, vinfo, direct)
-int ent;
-VOTE *vinfo;
-char *direct;
+static int vcmd_help(int ent, VOTE *vinfo, char *direct)
 {
 	more("doc/VOTE_HELP", TRUE);
 	return C_FULL;
@@ -763,8 +689,7 @@ struct one_key vote_comms[] =
 };
 
 
-int
-v_board()
+int v_board()
 {
 	char tmpdir[PATHLEN];
 	int v_ccur = 0;

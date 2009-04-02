@@ -11,9 +11,7 @@ extern BOOL hasBMPerm;
 extern BOOL isBM;
 
 
-static int
-articleCheckPerm(finfo)
-FILEHEADER *finfo;
+static int articleCheckPerm(FILEHEADER *finfo)
 {
 	if (finfo->accessed & FILE_DELE)
 		return 0;
@@ -49,11 +47,7 @@ disable
 /*
  * 修改文章標題
  */
-int
-title_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int title_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char title[TTLEN];
 	FILEHEADER *fhr = &fhGol;
@@ -120,11 +114,7 @@ char *direct;
 }
 
 
-int
-edit_article(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;
-char *direct;
+int edit_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char fn_ori[PATHLEN], fn_edit[PATHLEN], fn_new[PATHLEN];
 	FILE *fp_ori, *fp_edit, *fp_new;
@@ -242,11 +232,7 @@ char *direct;
 /*
  * 保留文章
  */
-int
-reserve_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int reserve_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	FILEHEADER *fhr = &fhGol;
 	int fd;
@@ -303,11 +289,7 @@ char *direct;
 /*
  * Reply mail, post (two way and both provided for user)
  */
-static int
-reply_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+static int reply_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char fn_src[PATHLEN], title[STRLEN], strTo[STRLEN];
 	int result, option;
@@ -398,11 +380,7 @@ char *direct;
 /*
  * 標示文章已讀
  */
-static void
-readed_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+static void readed_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	if (in_mail)
 	{
@@ -430,11 +408,7 @@ char *direct;
 /* 
  * prompt, when article display done 
  */
-int
-read_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int read_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	static int updown = C_DOWN;
 	static BOOL last_accessed = TRUE;
@@ -534,13 +508,7 @@ char *direct;
  *			'u' for undelete, 
  *			'r' for delete & mail back to author
  */
-int
-delete_articles(ent, finfo, direct, wtop, option)
-int ent;
-FILEHEADER *finfo;
-char *direct;
-struct word *wtop;
-int option;
+int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop, int option)
 {
 	int fd;
 	FILEHEADER *fhr = &fhGol;
@@ -714,10 +682,7 @@ int option;
  * 標記刪除文章
  */
 int
-delete_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+delete_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	int ch;
 	char *prompt;
@@ -798,13 +763,7 @@ char *direct;
 /* 
  * mail article to someone in batch mode 
  */
-static int
-mail_articles(finfo, direct, from, to, ident, wtop)
-FILEHEADER *finfo;
-char *direct;
-char *from, *to;
-char ident;
-struct word *wtop;
+static int mail_articles(FILEHEADER *finfo, char *direct, char *from, char *to, char ident, struct word *wtop)
 {
 	char fname[PATHLEN];
 	int fd, ms;
@@ -885,11 +844,7 @@ struct word *wtop;
 /*
  * 轉寄文章
  */
-int
-mail_article(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;
-char *direct;
+int mail_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	static char DefEmailAddr[STRLEN] = "";
 	int ch;
@@ -943,11 +898,7 @@ char *direct;
 /*
  * 轉貼文章
  */
-int
-cross_article(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;
-char *direct;
+int cross_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char bname[BNAMELEN], fnori[PATHLEN], title[STRLEN];
 	int tonews;
@@ -1045,9 +996,7 @@ char *direct;
 	return C_FULL;
 }
 
-static int
-pushCheckPerm(finfo)
-FILEHEADER *finfo;
+static int pushCheckPerm(FILEHEADER *finfo)
 {
 	if (finfo->accessed & FILE_DELE)
 		return 0;
@@ -1067,11 +1016,7 @@ FILEHEADER *finfo;
 /*
  * 推文
  */
-int
-push_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int push_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	int fd, ch, rt, first = 0;
 	static char *yes = "推", *no = "呸";
@@ -1176,9 +1121,7 @@ char *direct;
 /* 
  * get a title from user-input
  */
-int
-set_article_title(title)
-char title[];
+int set_article_title(char title[])
 {
 	if (title[0])
 	{
@@ -1199,11 +1142,7 @@ char title[];
 /*
  * 標記文章
  */
-int
-tag_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int tag_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	extern void *malloc_str();
 	if (!cmp_wlist(artwtop, finfo->filename, strcmp))
@@ -1217,11 +1156,7 @@ char *direct;
 /*
  * 批次標記文章
  */
-int
-range_tag_article(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;
-char *direct;
+int range_tag_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	int n1, n2;
 	int fd;

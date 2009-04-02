@@ -6,9 +6,7 @@
 
 #ifdef USE_IDENT
 
-static int
-id_num_check(num)		/* 身份證字號檢查 */
-char *num;
+static int id_num_check(char *num)		/* 身份證字號檢查 */
 {
 	char *p, LEAD[] = "ABCDEFGHJKLMNPQRSTUVXYWZIO";
 	int x, i;
@@ -36,8 +34,7 @@ char *num;
 }
 
 
-static void
-sendckm_log(char *fmt, ...)
+static void sendckm_log(char *fmt, ...)
 {
 	va_list args;
 	time_t now;
@@ -57,9 +54,7 @@ sendckm_log(char *fmt, ...)
 }
 
 
-static int
-send_checkmail(email, stamp)
-char email[], stamp[];
+static int send_checkmail(char email[], char stamp[])
 {
 	char *p;	
 	char from[80], title[80];
@@ -84,9 +79,7 @@ char email[], stamp[];
 /*
  * Check Chinese string
  */
-static int
-check_cname(name)
-unsigned char name[];
+static int check_cname(unsigned char name[])
 {
 	int i = strlen(name);
 
@@ -102,8 +95,7 @@ unsigned char name[];
 /*
  * 填寫身份認證申請書
  */
-int
-x_idcheck()
+int x_idcheck()
 {
 	FILE *fpi;
 	char title[STRLEN], *p, buf[STRLEN], stamp[15], email[80];

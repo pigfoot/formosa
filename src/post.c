@@ -11,11 +11,7 @@ extern BOOL hasBMPerm;
 extern BOOL isBM;
 
 
-int
-visit_article(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;			/* unused */
+int visit_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	if (!in_board)	/* ? */
 		return C_NONE;
@@ -31,11 +27,7 @@ char *direct;			/* unused */
 }
 
 
-int
-display_bmwel(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;			/* unused */
+int display_bmwel(int ent, FILEHEADER *finfo, char *direct)
 {
 	setboardfile(genbuf, CurBList->filename, BM_WELCOME);
 	if (isfile(genbuf))
@@ -47,8 +39,7 @@ char *direct;			/* unused */
 }
 
 
-int
-display_bmas()
+int display_bmas()
 {
 	FILE *fp;
 	int cnt = 0;
@@ -76,9 +67,7 @@ display_bmas()
 }
 
 
-static void
-add_bmas(Uident)
-char *Uident;
+static void add_bmas(char *Uident)
 {
 	char fname[PATHLEN];
 
@@ -91,9 +80,7 @@ char *Uident;
 }
 
 
-static void
-delete_bmas(uident)
-char *uident;
+static void delete_bmas(char *uident)
 {
 	char fn[PATHLEN];
 
@@ -118,8 +105,7 @@ char *uident;
  *                       |
  *                       +--- bmas
  */
-int
-bm_manage_file()
+int bm_manage_file()
 {
 	BOOL full_perm = FALSE;
 	char fname[PATHLEN];
@@ -228,8 +214,7 @@ bm_manage_file()
 
 /* Online help of the post menu (normal/treasure)
  */
-int
-read_help()
+int read_help()
 {
 	more(READ_HELP, TRUE);
 	return C_FULL;
@@ -241,9 +226,7 @@ read_help()
    whether s1 is found in s2 
    TODO: csbbs, bbsweb not supported   
 */       
-static int
-seekstr_in_string(s1, s2)
-register char *s1, *s2;
+static int seekstr_in_string(register char *s1, register char *s2)
 {
 	register char *foo, *st;
 	register int len;
@@ -273,9 +256,7 @@ register char *s1, *s2;
  ** Whether one has the post permission or not,
  ** and show the reason on the screen
  **/
-int
-has_postperm(bh1)
-BOARDHEADER *bh1;
+int has_postperm(BOARDHEADER *bh1)
 {
 #ifdef GUEST
 	if (!strcmp(curuser.userid, GUEST))
@@ -348,9 +329,7 @@ BOARDHEADER *bh1;
  * but BRD_NOPOSTNUM excluded
  * 
  */
-static int
-mail2(to, filename, title)
-char *to, *filename, *title;
+static int mail2(char *to, char *filename, char *title)
 {
 	int retval;
 
@@ -380,9 +359,7 @@ curuser.userid)? curuser.userid:curuser.fakeuserid, curuser.userid,
 }
 
 
-static int
-mail1(to)
-char *to;
+static int mail1(char *to)
 {
 	if (to[0])
 	{
@@ -424,9 +401,7 @@ char *to;
 }
 
 
-int
-PrepareMail(fn_src, to, title)
-char *fn_src, *to, *title;
+int PrepareMail(char *fn_src, char *to, char *title)
 {
 	int save_umode = uinfo.mode;
 	char tempfile[PATHLEN];
@@ -475,20 +450,9 @@ char *fn_src, *to, *title;
 }
 
 #ifdef USE_THREADING	/* syhu */
-int
-PreparePost(fn_src, to, title, option, postpath, thrheadpos, thrpostidx)
-char *fn_src, *to, *title;
-int option;
-char *postpath;
-int thrheadpos;
-int thrpostidx;
-
+int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath, int thrheadpos, int thrpostidx)
 #else
-int
-PreparePost(fn_src, to, title, option, postpath)
-char *fn_src, *to, *title;
-int option;
-char *postpath;
+int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath)
 #endif
 {
 	int save_umode = uinfo.mode;
@@ -629,11 +593,7 @@ fo.username,
 /*
  * Do post on board (normal/treasure)
  */
-int
-do_post(ent, finfo, direct)
-int ent;				/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+int do_post(int ent, FILEHEADER *finfo, char *direct)
 {
 	char title[STRLEN] = "";
 	char buf[PATHLEN], *postpath;
@@ -675,11 +635,7 @@ char *direct;
  * . copy/move the treausre between different level of directory
  * 
  */
-int
-treasure_article(ent, finfo, direct)
-int ent;			/* unused */
-FILEHEADER *finfo;
-char *direct;
+int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	int ch, fd;
 	char fname[255], tpath[255];
@@ -853,11 +809,7 @@ char *direct;
 }
 
 
-int
-mkdir_treasure(ent, finfo, direct)	/* make directory in treasure */
-int ent;			/* unused */
-FILEHEADER *finfo;		/* unused */
-char *direct;
+int mkdir_treasure(int ent, FILEHEADER *finfo, char *direct)	/* make directory in treasure */
 {
 	char title[STRLEN];
 	extern int nowdepth;
@@ -896,11 +848,7 @@ char *direct;
 /*
  * 交換精華區文章或目錄
  */
-int
-xchg_treasure(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;		/* unused */
-char *direct;
+int xchg_treasure(int ent, FILEHEADER *finfo, char *direct)
 {
 	int newpos;
 	FILEHEADER *fhr = &fhGol;
@@ -942,20 +890,12 @@ char *direct;
 }
 
 #if 0
-int
-paste_treasure(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;		/* unused */
-char *direct;
+int paste_treasure(int ent, FILEHEADER *finfo, char *direct)
 {
 }
 
 
-int
-copy_treasure(ent, finfo, direct)
-int ent;
-FILEHEADER *finfo;		/* unused */
-char *direct;
+int copy_treasure(int ent, FILEHEADER *finfo, char *direct)
 {
 	if (clip != artwtop)
 		free_wlist(&clip, free);
@@ -969,8 +909,7 @@ char *direct;
 }
 
 
-int
-cut_treasure(ent, finfo, direct)
+int cut_treasure(int ent, FILEHEADER *finfo, char *direct)
 int ent;
 FILEHEADER *finfo;		/* unused */
 char *direct;

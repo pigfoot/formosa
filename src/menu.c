@@ -206,8 +206,7 @@ int pict_no = 0;
 struct MenuShowShm *msshm;
 #endif
 
-static void
-menu_title()
+static void menu_title()
 {
 	title_func(cmenus[n_cmenus - 1].chelp, BBSTITLE);
 
@@ -277,19 +276,13 @@ menu_title()
 }
 
 
-static void
-menu_btitle()
+static void menu_btitle()
 {
 	prints(_msg_menu_2, pagerstring(&uinfo));
 }
 
 
-static void
-menu_entry(x, ent, idx, top, last, rows)
-int x;
-struct commands ent[];
-int idx;
-int top, last, rows;
+static void menu_entry(int x, struct commands ent[], int idx, int top, int last, int rows)
 {
 	int i, num;
 
@@ -311,10 +304,7 @@ int top, last, rows;
 }
 
 
-static int
-menu_max(direct, size)
-char *direct;
-int size;
+static int menu_max(char *direct, int size)
 {
 	int i, j;
 
@@ -366,12 +356,7 @@ int size;
 }
 
 
-static int
-menu_get(direct, s, size, top)
-char *direct;
-void *s;
-int size;
-int top;
+static int menu_get(char *direct, void *s, int size, int top)
 {
 	int n = n_cmenus - top /*+ 1*/;
 	extern int autoch;
@@ -387,11 +372,12 @@ int top;
 }
 
 
-static int
-menu_findkey(nbuf, ent, start, total)
-char *nbuf;
-struct commands ent[];
+static int menu_findkey(char *nbuf, struct commands ent[], register int start, register int total)
 {
+	/* by Keeper:
+	   start and total are not in the list,
+	   so I guess they are register int.
+	   Maybe they are int? */
 	register int i;
 
 	for (i = start; i < total; i++)
@@ -415,11 +401,7 @@ struct commands ent[];
 }
 
 
-static int
-mcmd_menushow(ent, cent, direct)
-int ent;
-struct commands *cent;
-char *direct;
+static int mcmd_menushow(int ent, struct commands *cent, char *direct)
 {
 	if (!(curuser.flags[0] & PICTURE_FLAG))
 	{
@@ -431,11 +413,7 @@ char *direct;
 }
 
 
-static int
-mcmd_enter(ent, cent, direct)
-int ent;
-struct commands *cent;
-char *direct;
+static int mcmd_enter(int ent, struct commands *cent, char *direct)
 {
 	if (cent->comm)
 	{
@@ -457,8 +435,7 @@ struct one_key menu_comms[] =
 };
 
 
-void
-domenu()
+void domenu()
 {
 	int m_ccur[4];
 

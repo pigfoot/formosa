@@ -46,8 +46,7 @@ struct screenline *cur_slp = NULL;
 void clear();
 
 
-void
-initscr()
+void initscr()
 {
 	if (!dumb_term && !big_picture)
 	{
@@ -62,9 +61,7 @@ initscr()
 }
 
 
-static void
-rel_move(was_col, was_ln, new_col, new_ln)
-int was_col, was_ln, new_col, new_ln;
+static void rel_move(int was_col, int was_ln, int new_col, int new_ln)
 {
 	extern char *BC;
 
@@ -101,10 +98,7 @@ int was_col, was_ln, new_col, new_ln;
 }
 
 
-void
-standoutput(buf, ds, de, sso, eso)
-char *buf;
-int ds, de, sso, eso;
+void standoutput(char *buf, int ds, int de, int sso, int eso)
 {
 	int st_start, st_end;
 
@@ -125,8 +119,7 @@ int ds, de, sso, eso;
 }
 
 
-void
-redoscr()
+void redoscr()
 {
 	register int i, j;
 	register struct screenline *bp = big_picture;
@@ -172,8 +165,7 @@ redoscr()
 }
 
 
-void
-refresh()
+void refresh()
 {
 	register int i, j;
 	register struct screenline *bp = big_picture;
@@ -257,8 +249,7 @@ refresh()
 }
 
 
-void
-clear()
+void clear()
 {
 	register int i;
 
@@ -297,8 +288,7 @@ clrtoeol()
 }
 
 
-void
-clrtobot()
+void clrtobot()
 {
 	register int i;
 	struct screenline *slp1;
@@ -322,9 +312,7 @@ clrtobot()
 }
 
 
-void
-move(y, x)
-int y, x;
+void move(int y, int x)
 {
 	if (dumb_term)
 		return;
@@ -361,8 +349,7 @@ int y, x;
 }
 
 
-void
-standout()
+void standout()
 {
 	if (dumb_term || !strtstandoutlen)
 		return;
@@ -376,8 +363,7 @@ standout()
 }
 
 
-void
-standend()
+void standend()
 {
 	if (dumb_term || !strtstandoutlen)
 		return;
@@ -389,9 +375,7 @@ standend()
 }
 
 
-void
-getyx(y, x)
-int *y, *x;
+void getyx(int *y, int *x)
 {
 	*y = cur_ln;
 	*x = cur_col;
@@ -401,9 +385,7 @@ int *y, *x;
 /*
  * Support ANSI control code, output a character onto screen buffer
  */
-int
-outc(c)
-register unsigned char c;
+int outc(register unsigned char c)
 {
 #if 1
 	static unsigned char lastc = '\0';
@@ -538,17 +520,14 @@ register unsigned char c;
 }
 
 
-void
-outs(str)
-register char *str;
+void outs(register char *str)
 {
 	while (*str != '\0')
 		outc(*str++);
 }
 
 
-void
-prints(char *fmt, ...)
+void prints(char *fmt, ...)
 {
 	va_list args;
 	char buff[512];
@@ -564,8 +543,7 @@ prints(char *fmt, ...)
 }
 
 
-void
-msg(char *fmt, ...)			/* by lthuang */
+void msg(char *fmt, ...)			/* by lthuang */
 {
 	va_list args;
 	char buff[256];
@@ -583,8 +561,7 @@ msg(char *fmt, ...)			/* by lthuang */
 }
 
 
-void
-scroll()
+void scroll()
 {
 	if (dumb_term)
 	{
@@ -598,8 +575,7 @@ scroll()
 }
 
 
-void
-rscroll()
+void rscroll()
 {
 	if (dumb_term)
 	{
@@ -614,14 +590,12 @@ rscroll()
 
 
 #if 1
-void
-save_all_screen()
+void save_all_screen()
 {
 }
 
 
-void
-restore_all_screen()
+void restore_all_screen()
 {
 }
 #endif
@@ -630,8 +604,7 @@ restore_all_screen()
 struct screenline save_big_picture[2];
 int save_x, save_y;
 
-void
-save_screen()
+void save_screen()
 {
 	struct screenline *slp1;
 	struct screenline *slp2;
@@ -645,8 +618,7 @@ save_screen()
 }
 
 
-void
-restore_screen()
+void restore_screen()
 {
 	struct screenline *slp1;
 	struct screenline *slp2;

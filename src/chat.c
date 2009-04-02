@@ -17,9 +17,7 @@
  * ¶Ç¤J string, malloc ¤@¶ô memory ¦s¤U¦r¦ê
  * ¶Ç¦^ ¸Ó MEMORY Pointer
  *******************************************************************/
-void *
-xstrdup(str) 
-const char *str;
+void *xstrdup(const char *str) 
 {
     char *new; 
 
@@ -55,9 +53,7 @@ char debug[8192];
 #define BADCIDCHARS " *`\"\\;:|,./=~'!"
 #endif
 
-static void
-fixchatid(chatid)
-unsigned char *chatid;
+static void fixchatid(unsigned char *chatid)
 {
 	char *p;
 
@@ -74,15 +70,13 @@ unsigned char *chatid;
 }
 
 
-int
-chat_write(int fd, void *buf)
+int chat_write(int fd, void *buf)
 {
 	return write(fd, buf, strlen(buf));
 }
 
 
-int
-chat_printf(int sd, char *fmt, ...)
+int chat_printf(int sd, char *fmt, ...)
 {
 	va_list args;
 	char str[1024];
@@ -117,9 +111,7 @@ char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
 #define CHAT_SERVER	"140.117.11.20"
 #endif
 
-void
-printchatline(str)
-const char *str;
+void printchatline(const char *str)
 {
 	int i = 0;
 	int wrap = 0;
@@ -170,8 +162,7 @@ const char *str;
 }
 
 
-int
-mygets(int fd, char *buf, int size)
+int mygets(int fd, char *buf, int size)
 {
 	int i;
 	char *p;
@@ -219,9 +210,7 @@ mygets(int fd, char *buf, int size)
 }
 
 
-static int
-dowhoall(fd)
-int fd;
+static int dowhoall(int fd)
 {
 	char buf[100];
 
@@ -252,9 +241,7 @@ int fd;
 }
 
 
-static void
-dochatcommand(cmd)
-char *cmd;
+static void dochatcommand(char *cmd)
 {
 	char *para;
 
@@ -448,8 +435,7 @@ char *cmd;
 }
 
 
-static void *
-xmemchr(const void *s, int c, size_t n)
+static void *xmemchr(const void *s, int c, size_t n)
 {
 	int *m = (int *)s;
 	int *end = m + n;
@@ -464,8 +450,7 @@ xmemchr(const void *s, int c, size_t n)
 }
 
 
-int
-t_chat()
+int t_chat()
 {
 	int currchar;
 	char inbuf[120];
