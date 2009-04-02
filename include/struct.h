@@ -8,7 +8,7 @@
 #define IDLEN		13	/* Length of userids */
 #define UNAMELEN	21	/* Length of username */
 #define HOSTLEN		16	/* Length of from host */
-#define PUSHLEN		62	/* Length of push post */
+#define PUSHLEN		46	/* Length of push post */
 
 struct useridx {	/* Structure used in .USERIDX */
 	char userid[IDLEN+1];
