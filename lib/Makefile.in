@@ -61,7 +61,7 @@ libproto.h: $(LIBSRCS)
 			$(LIBSRCS) >> $@; \
 	fi
 
-installbin install: 
+install install_once: 
 
 clean:
 	-rm -f $(LIBBBS) *.o

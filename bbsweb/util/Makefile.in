@@ -52,7 +52,7 @@ $(LIBFILE): $(LIBSRCS)
 %:  %.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $* $*.c $(LDLIBS) $(LIBFILE)
 
-install installbin: $(PROG)
+install_once install: $(PROG)
 	-cp -p $(PROG) $(HOMEBBS)/bin
 
 clean:

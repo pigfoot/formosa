@@ -54,7 +54,7 @@ idcheck bbsmail bbs-news: LIBFILE+= str_codec.o
 %:  %.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $* $*.c $(LDLIBS) $(LIBFILE)
 
-install installbin: all
+install_once install: all
 	for i in $(PROG); do \
 		@INSTALL@ -g bbs -m 0551 $$i $(HOMEBBS)/bin; \
 		chown root $(HOMEBBS)/bin/$$i; \

@@ -23,7 +23,7 @@ chroot 安全環境設定
 
         bbs% make clean    
         bbs% make all
-        bbs% make installbin
+        bbs% make install
     
       OK 以後，請先別急著執行 bbs，必須先完成下列步驟
 
