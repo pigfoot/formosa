@@ -70,9 +70,8 @@ csbbsproto.h: $(SRCS)
 	fi \
 	fi 
 
-install installbin installcsbbsd: $(PROGNAME)
+install_once install installcsbbsd: $(PROGNAME)
 	(cd $(HOMEBBS); [ ! -f ./bin/$? ] || mv -f ./bin/$? ./bin/$?.old)
-	-cp -p $? $(HOMEBBS)/bin
 	cp -p $(PROGNAME) $(HOMEBBS)/bin
 
 $(LIBFILE): $(LIBSRCS)
