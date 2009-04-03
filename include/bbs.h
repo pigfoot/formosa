@@ -80,6 +80,9 @@
  *	¶€©wßt¨A¿…
  *******************************************************************/
 #include "config.h"
+
+#include "ansi.h"
+#include "common.h"
 #include "struct.h"
 #include "perm.h"
 #include "modes.h"          /* The list of valid user modes */

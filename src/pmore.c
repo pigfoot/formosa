@@ -179,6 +179,7 @@
 // ---------------------------------------------------------- </LOCALIZATION>
 
 #include "bbs.h"
+#include "tsbbs.h"
 
 // ---------------------------------------------------------------- <PORTING>
 // Generic Porting
@@ -256,6 +257,42 @@
  #define PMORE_COLOR_FOOTER3_TEXT ""
  #define PMORE_COLOR_FOOTER3 COLOR2
 #endif // M3_USE_PMORE
+
+#define FORMOSA_USE_PMORE
+#ifdef FORMOSA_USE_PMORE
+ // input/output API
+ #define vkey getkey
+ #define vmsg showmsg
+        // Formosa getdata() has one more arg thatn Maple/PTT
+ #define getdata6(y,x,msg,buf,size,mode) getdata(y,x,msg,buf,size,mode,"")
+ #define getdata_buf(y,x,msg,buf,size,mode) getdata(y,x,msg,buf,size,GCARRY|mode,"")
+ #define outs(x)                            outs((unsigned char*)(x))
+ // variables
+ #define b_lines    b_line
+// #define t_lines    (b_lines + 1)
+// #define t_columns  (b_cols + 1)
+ // key mapping
+ #define RELATE_PREV '['
+ #define RELATE_NEXT ']'
+ #define READ_NEXT   'j'
+ #define READ_PREV   'k'
+ // environments and features
+ #undef PMORE_USE_INTERNAL_HELP
+ #undef PMORE_USE_SOB_THREAD_NAV
+ #undef PMORE_USE_REPLYKEY_HINTS
+ #undef PMORE_HAVE_SYNCNOW
+ #undef PMORE_HAVE_NUMINBUF
+ #undef PMORE_IGNORE_UNKNOWN_NAVKEYS 
+ #undef PMORE_AUTOEXIT_FIRSTPAGE
+ #define PMORE_AUTONEXT_ON_PAGEFLIP
+ #define PMORE_AUTONEXT_ON_RIGHTKEY
+ #ifndef  SHOW_USER_IN_TEXT
+ # undef  PMORE_EXPAND_ESC_STAR
+ #endif // !SHOW_USER_IN_TEXT
+ // use m3 style separator [none]: comment these if you like Maple2.36/SOB/PTT style
+ #undef MFDISP_SEP_DEFAULT
+ #define MFDISP_SEP_DEFAULT MFDISP_SEP_NONE
+#endif // FORMOSA_USE_PMORE
 // --------------------------------------------------------------- </PORTING>
 
 #include <assert.h>
@@ -2576,12 +2613,22 @@ pmore(const char *fpath, int promptend)
                         sr.search_str = NULL;
                     }
 
+#ifdef FORMOSA_USE_PMORE
+                    getdata6(b_lines - 1, 0, PMORE_MSG_SEARCH_KEYWORD, sbuf,
+                            40, DOECHO);
+#else
                     getdata(b_lines - 1, 0, PMORE_MSG_SEARCH_KEYWORD, sbuf,
                             40, DOECHO);
+#endif
 
                     if (sbuf[0]) {
+#ifdef FORMOSA_USE_PMORE
+                        if (getdata6(b_lines - 1, 0, "區分大小寫(Y/N/Q)? [N] ",
+                                    ans, sizeof(ans), LCECHO) && *ans == 'y')
+#else
                         if (getdata(b_lines - 1, 0, "區分大小寫(Y/N/Q)? [N] ",
                                     ans, sizeof(ans), LCECHO) && *ans == 'y')
+#endif
                             sr.cmpfunc = strncmp;
                         else if (*ans == 'q')
                             sbuf[0] = 0;
@@ -2713,9 +2760,15 @@ pmore(const char *fpath, int promptend)
                         {
                             char ans[4];
                             pmore_clrtoeol(b_lines-1, 0);
+#ifdef FORMOSA_USE_PMORE
+                            getdata6(b_lines - 1, 0, 
+                                    PMORE_MSG_MOVIE_PLAYOLD_AS24L,
+                                    ans, 3, LCECHO);
+#else
                             getdata(b_lines - 1, 0, 
                                     PMORE_MSG_MOVIE_PLAYOLD_AS24L,
                                     ans, 3, LCECHO);
+#endif
                             if(ans[0] == 'n')
                                 mfmovie.compat24 = 0;
                             else

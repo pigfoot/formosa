@@ -8,21 +8,21 @@
 #include <stdarg.h>
 
 
-void pressreturn()
+int pressreturn()
 {
 	move(b_line, 0);
 	clrtoeol();
 	outs(_msg_press_enter);
-	getkey();
+	return getkey();
 }
 
 
-void showmsg(char *text)
+int showmsg(char *text)
 {
 	move(b_line - 1, 0);
 	clrtoeol();
 	outs(text);
-	pressreturn();
+	return pressreturn();
 }
 
 
