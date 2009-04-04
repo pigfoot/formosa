@@ -2808,6 +2808,12 @@ pmore(const char *fpath, int promptend)
     }
 
     mf_detach();
+
+    // Formosa terminal system will output the folllowing ANSI_RESET
+    // from end of Line 24 to Line 25
+#ifdef FORMOSA_USE_PMORE
+    move(b_lines, 0);
+#endif
     outs(ANSI_RESET);
 
     REENTRANT_RESTORE();
