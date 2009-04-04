@@ -63,7 +63,7 @@ $(PROG): $(OBJS) $(LIBFILE) bbsweb.h log.h
 $(LIBFILE): $(LIBSRCS)
 	cd ../lib; make
 
-install installbin: $(PROG)
+install_once install: $(PROG)
 	-cp -p $(PROG) $(HOMEBBS)/bin
 
 clean:

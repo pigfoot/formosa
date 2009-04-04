@@ -59,7 +59,7 @@ OBJS      = $(SRCS:.c=.o)
 
 all: bbsd bbschatd
 
-update: installbin
+update: install
 	kill `cat /tmp/formosa.23`
 	$(HOMEBBS)/bin/bbsd 23
 
@@ -89,20 +89,19 @@ genlogin: genlogin.c $(LIBFILE)
 $(LIBFILE): $(LIBSRCS)
 	cd ../lib; make 
 
-installbin: installbbsd installbbschatd
+install_once: all genlogin
+	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \
+		../Install.sh)
+	$(MAKE) install_once
+	@(./genlogin -c Sysop -p SYSOP -l 255 -i 7 SYSOP)
+	@(./genlogin -c Guest -p guest -l 0   -i 0 guest)
+
+install: installbbsd installbbschatd
 	
 
 install%: %
-	echo $(HOMEBBS);exit;
 	(cd $(HOMEBBS); [ ! -f ./bin/$? ] || mv -f ./bin/$? ./bin/$?.old)
 	-cp -p $? $(HOMEBBS)/bin
-
-install: all genlogin
-	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \
-		../Install.sh)
-	$(MAKE) installbin
-	@(./genlogin -c Sysop -p SYSOP -l 255 -i 7 SYSOP)
-	@(./genlogin -c Guest -p guest -l 0   -i 0 guest)
 
 clean:
 	-rm -f a.out core *.o bbsd bbschatd genlogin
