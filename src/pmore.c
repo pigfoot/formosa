@@ -279,10 +279,11 @@
  // environments and features
  #undef PMORE_USE_INTERNAL_HELP
  #undef PMORE_USE_SOB_THREAD_NAV
+ #define PMORE_USE_FORMOSA_NAV
  #undef PMORE_USE_REPLYKEY_HINTS
  #undef PMORE_HAVE_SYNCNOW
  #undef PMORE_HAVE_NUMINBUF
- #undef PMORE_IGNORE_UNKNOWN_NAVKEYS 
+// #undef PMORE_IGNORE_UNKNOWN_NAVKEYS 
  #undef PMORE_AUTOEXIT_FIRSTPAGE
  #define PMORE_AUTONEXT_ON_PAGEFLIP
  #define PMORE_AUTONEXT_ON_RIGHTKEY
@@ -2463,6 +2464,16 @@ pmore(const char *fpath, int promptend)
                 flExit = 1,     retval = RELATE_FIRST;
                 break;
 #endif // PMORE_USE_SOB_THREAD_NAV
+
+            /* ------- FORMOSA  NAVIGATION EXITING KEYS ------- */
+#ifdef PMORE_USE_FORMOSA_NAV
+            case KEY_LEFT:
+                flExit = 1,     retval = FULLUPDATE;
+                break;
+            case 'q':
+                flExit = 1,     retval = FULLUPDATE;
+                break;
+#endif // PMORE_USE_FORMOSA_NAV
 
             /* ------------------ NAVIGATION KEYS ------------------ */
             /* Simple Navigation */

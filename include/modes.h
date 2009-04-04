@@ -61,4 +61,29 @@ enum modes {
 };
 
 
+/* common return values of article.c and pmore.c */
+enum {
+	DONOTHING,	/* Read menu command return states */
+	FULLUPDATE,	/* Entire screen was destroyed in this oper */
+	PARTUPDATE,	/* Only the top three lines were destroyed */
+	DOQUIT,		/* Exit read menu was executed */
+	NEWDIRECT,	/* Directory has changed, re-read files */
+	READ_NEXT,	/* Direct read next file */
+	READ_PREV,	/* Direct read prev file */
+	DIRCHANGED,	/* Index file was changed */
+	READ_REDRAW,
+	PART_REDRAW,
+	TITLE_REDRAW,
+	READ_SKIP,
+	HEADERS_RELOAD,
+
+	RELATE_FIRST,
+	RELATE_NEXT,
+	RELATE_PREV,
+	NEWPOST_NEXT,
+	NEWPOST_PREV,
+	AUTHOR_NEXT,
+	AUTHOR_PREV
+
+};
 #endif	/*_BBS_MODES_H */
