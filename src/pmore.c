@@ -272,10 +272,7 @@
 // #define t_lines    (b_lines + 1)
 // #define t_columns  (b_cols + 1)
  // key mapping
- #define RELATE_PREV '['
- #define RELATE_NEXT ']'
- #define READ_NEXT   'j'
- #define READ_PREV   'k'
+ //
  // environments and features
  #undef PMORE_USE_INTERNAL_HELP
  #undef PMORE_USE_SOB_THREAD_NAV

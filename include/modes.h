@@ -61,6 +61,17 @@ enum modes {
 };
 
 
+// values returned by pager
+#define RET_DOREPLY	    (999)
+#define RET_DORECOMMEND	    (998)
+#define RET_DOQUERYINFO	    (997)
+#define RET_DOSYSOPEDIT	    (996)
+#define RET_DOCHESSREPLAY   (995)
+#define RET_DOBBSLUA	    (994)
+#define RET_COPY2TMP	    (993)
+#define RET_SELECTBRD	    (992)
+#define RET_DOREPLYALL	    (991)
+
 /* common return values of article.c and pmore.c */
 enum {
 	DONOTHING,	/* Read menu command return states */
