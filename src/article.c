@@ -414,6 +414,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	static BOOL last_accessed = TRUE;
 	char fname[PATHLEN];
 	extern char memtitle[];
+	int pr; /* pager result */
 
     /* if this is an treasure area directory, then go into this dir. */
 	if (!in_board && !in_mail && finfo->accessed & FILE_TREA)
@@ -448,7 +449,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	setdotfile(fname, direct, finfo->filename);
 	if (!isfile(fname))	/* debug */
 		return C_FULL;
-	pmore(fname, TRUE);
+	pr = pmore(fname, TRUE);
 
 	last_accessed = FALSE;
 
@@ -468,6 +469,24 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 		/* memtitle has been initialized as STR_REPLY */	
 		strcpy(memtitle + REPLY_LEN, finfo->title);
 
+	/* User can have this action during reading article */
+	/* Behaves like Maple/PTT */
+	switch (pr)
+	{
+	case RET_DOREPLY:	/* 'r' */
+	case RET_DOREPLYALL:	/* 'y' */
+		return reply_article(ent, finfo, direct);
+	case RET_DORECOMMEND:
+		return push_article(ent, finfo, direct);
+	case READ_NEXT:
+		return (updown = C_DOWN);
+	case READ_PREV:
+		return (updown = C_UP);
+	}
+
+
+	/* This is for _msg_article_5 above, original Formosa behavir */
+	/* Here have 2 additional function: mail_article, delete_article */
 	switch (igetkey())
 	{
 	case KEY_RIGHT:
