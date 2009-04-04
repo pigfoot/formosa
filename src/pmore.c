@@ -293,6 +293,30 @@
  // use m3 style separator [none]: comment these if you like Maple2.36/SOB/PTT style
  #undef MFDISP_SEP_DEFAULT
  #define MFDISP_SEP_DEFAULT MFDISP_SEP_NONE
+
+ // theme: comment these if you like pmore style
+ #undef PMORE_COLOR_FOOTER1
+ #undef PMORE_COLOR_FOOTER1_VIEWALL
+ #undef PMORE_COLOR_FOOTER1_VIEWNONE
+ #undef PMORE_COLOR_FOOTER2
+ #undef PMORE_COLOR_FOOTER3_KEY
+ #undef PMORE_COLOR_FOOTER3_TEXT
+ #undef PMORE_COLOR_FOOTER3
+
+#define PMORE_COLOR_FOOTER1_VIEWALL \
+    ANSI_COLOR(37;45)
+#define PMORE_COLOR_FOOTER1_VIEWNONE \
+    ANSI_COLOR(37;45)
+#define PMORE_COLOR_FOOTER1 \
+    ANSI_COLOR(37;45)
+#define PMORE_COLOR_FOOTER2 \
+    ANSI_COLOR(37;44)
+#define PMORE_COLOR_FOOTER3_KEY \
+    ANSI_COLOR(37;44)
+#define PMORE_COLOR_FOOTER3_TEXT \
+    ANSI_COLOR(37;44)
+#define PMORE_COLOR_FOOTER3 \
+    ANSI_COLOR(37;44)
 #endif // FORMOSA_USE_PMORE
 // --------------------------------------------------------------- </PORTING>
 
