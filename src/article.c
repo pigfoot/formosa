@@ -448,7 +448,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	setdotfile(fname, direct, finfo->filename);
 	if (!isfile(fname))	/* debug */
 		return C_FULL;
-	more(fname, FALSE);
+	pmore(fname, TRUE);
 
 	last_accessed = FALSE;
 
