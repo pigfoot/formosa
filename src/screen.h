@@ -29,5 +29,11 @@ struct screenline {
 #endif    
 } ;
 
+typedef struct {
+    int row, col;
+    int y, x;
+    void *raw_memory;
+} screen_backup_t;
+
 
 #endif	/*_BBS_SCREEN_H_ */
