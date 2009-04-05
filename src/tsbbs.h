@@ -332,5 +332,11 @@ int x_viewnote(void);
 #define isprint2(ch) ((ch == 0x1B) || isprint(ch))
 #endif
 
+#ifndef USE_PFTERM
+# define SOLVE_ANSI_CACHE() {}
+#else  // !USE_PFTERM
+# define SOLVE_ANSI_CACHE() { outs(" \b"); }
+#endif // !USE_PFTERM
+
 
 #endif /* _BBS_TSBBS_H_ */

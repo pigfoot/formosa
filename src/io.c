@@ -355,6 +355,11 @@ void bell()
 	fprintf(stderr, "%c", CTRL('G'));
 }
 
+void
+drop_input(void)
+{
+    icurrchar = ibufsize = 0;
+}
 
 /*
  * Move to next line before getdata

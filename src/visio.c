@@ -1,5 +1,8 @@
 /* $Id: visio.c 4444 2009-03-01 12:49:18Z wens $ */
+#include <assert.h>
 #include "bbs.h"
+#include "tsbbs.h"
+#undef FULL_VISIO
 
 /*
  * visio.c
@@ -817,11 +820,13 @@ InputHistoryDelta(char *s, int sz, int d)
 	    // copy buffer
 	    strlcpy(s, ih.buf[ih.icurr], sz);
 
+#ifdef FULL_VISIO
 	    // DBCS safe
 	    i = strlen(s);
 	    if (DBCS_Status(s, i) == DBCS_TRAILING)
 		s[i-1] = 0;
 	    break;
+#endif
 	}
     }
 }
@@ -904,7 +909,9 @@ vgetstring(char *_buf, int len, int flags, const char *defstr, const VGET_CALLBA
     if (defstr && *defstr)
     {
 	strlcpy(buf, defstr, len);
+#ifdef FULL_VISIO
 	strip_ansi(buf, buf, STRIP_ALL); // safer...
+#endif
 	rt.icurr = rt.iend = strlen(buf);
     }
 
@@ -914,12 +921,14 @@ vgetstring(char *_buf, int len, int flags, const char *defstr, const VGET_CALLBA
 
     getyx(&line, &col);	    // now (line,col) is the beginning of our new fields.
 
+#ifdef FULL_VISIO
     // XXX be compatible with traditional...
     if (line == b_lines - msg_occupied)
 	ismsgline = 1;
 
     if (ismsgline)
 	msg_occupied ++;
+#endif
 
     // main loop
     while (!abort)
@@ -1134,9 +1143,11 @@ vgetstring(char *_buf, int len, int flags, const char *defstr, const VGET_CALLBA
     // copy buffer!
     memcpy(_buf, buf, len);
 
+#ifdef FULL_VISIO
     // XXX update screen display
     if (ismsgline)
 	msg_occupied --;
+#endif
 
     /* because some code then outs so change new line.*/
     move(line+1, 0);
