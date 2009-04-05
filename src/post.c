@@ -16,7 +16,7 @@ int visit_article(int ent, FILEHEADER *finfo, char *direct)
 	if (!in_board)	/* ? */
 		return C_NONE;
 
-	getdata(b_line, 0, _msg_post_9, genbuf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(b_line, 0, _msg_post_9, genbuf, 2, ECHONOSP | XLCASE);
 	if (genbuf[0] == 'y')
 		ReadRC_Visit(CurBList->bid, curuser.userid, 0xFF);
 	else if (genbuf[0] == 'n')
@@ -128,13 +128,13 @@ int bm_manage_file()
 	clear();
 
 	if (full_perm)
-		getdata(1, 0, _msg_bm_manage_cmd_full, genbuf, 2, ECHONOSP | XLCASE, NULL);
+		getdata(1, 0, _msg_bm_manage_cmd_full, genbuf, 2, ECHONOSP | XLCASE);
 	else
-		getdata(1, 0, _msg_bm_manage_cmd_part, genbuf, 2, ECHONOSP | XLCASE, NULL);
+		getdata(1, 0, _msg_bm_manage_cmd_part, genbuf, 2, ECHONOSP | XLCASE);
 
 	if (genbuf[0] == 'd')
 	{
-		getdata(2, 0, _msg_not_sure, genbuf, 2, ECHONOSP | XLCASE, NULL);
+		getdata(2, 0, _msg_not_sure, genbuf, 2, ECHONOSP | XLCASE);
 		if (genbuf[0] == 'y')
 		{
 			setboardfile(fname, CurBList->filename, BM_WELCOME);
@@ -161,14 +161,14 @@ int bm_manage_file()
 
 			num_bmas = display_bmas();
 			if (num_bmas)
-				getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE, NULL);
+				getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE);
 			else
-				getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE, NULL);
+				getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE);
 			if (genbuf[0] == 'a')
 			{
 				if (num_bmas < 3)
 				{
-					if (getdata(2, 0, _msg_ent_userid, bmas, sizeof(bmas), ECHONOSP, NULL))
+					if (getdata(2, 0, _msg_ent_userid, bmas, sizeof(bmas), ECHONOSP))
 					{
 #ifdef IGNORE_CASE
                                                 strtolow(bmas);
@@ -186,7 +186,7 @@ int bm_manage_file()
 			}
 			else if (genbuf[0] == 'd' && num_bmas)
 			{
-                                if (getdata(2, 0, _msg_ent_userid, bmas, sizeof(bmas), ECHONOSP, NULL))
+                                if (getdata(2, 0, _msg_ent_userid, bmas, sizeof(bmas), ECHONOSP))
 
                                 {
 #ifdef IGNORE_CASE
@@ -370,7 +370,7 @@ static int mail1(char *to)
 	}
 	if (to[0] == '\0')
 	{
-		if (!getdata(2, 0, _msg_mail_2, to, STRLEN, ECHONOSP, NULL))
+		if (!getdata(2, 0, _msg_mail_2, to, STRLEN, ECHONOSP))
 			return -1;
 	}
 
@@ -829,7 +829,7 @@ int mkdir_treasure(int ent, FILEHEADER *finfo, char *direct)	/* make directory i
 		getkey();
 		return C_FOOT;
 	}
-	if (!getdata(b_line, 0, _msg_post_6, title, STRLEN, XECHO, NULL))
+	if (!getdata(b_line, 0, _msg_post_6, title, STRLEN, XECHO))
 		return C_FOOT;
 
 	msg(_msg_post_7, title);
@@ -869,7 +869,7 @@ int xchg_treasure(int ent, FILEHEADER *finfo, char *direct)
 	if (!hasBMPerm)
 		return C_NONE;
 
-	if (!getdata(b_line, 0, _msg_article_18, genbuf, 6, ECHONOSP, NULL))
+	if (!getdata(b_line, 0, _msg_article_18, genbuf, 6, ECHONOSP))
 		return C_FOOT;
 
 	newpos = atoi(genbuf);
@@ -904,7 +904,7 @@ int copy_treasure(int ent, FILEHEADER *finfo, char *direct)
 		free_wlist(&clip, free);
 
 	getdata(b_line, "<<拷貝文章>> (t)已標記 (a)本篇 ? [a]: ", genbuf, 2,
-		ECHONOSP | XLCASE, NULL);
+		ECHONOSP | XLCASE);
 	if (genbuf[0] == 't')
 		clip = artwtop;
 	else

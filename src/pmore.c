@@ -263,9 +263,6 @@
  // input/output API
  #define vkey getkey
  #define vmsg showmsg
-        // Formosa getdata() has one more arg thatn Maple/PTT
- #define getdata6(y,x,msg,buf,size,mode) getdata(y,x,msg,buf,size,mode,"")
- #define getdata_buf(y,x,msg,buf,size,mode) getdata(y,x,msg,buf,size,GCARRY|mode,"")
  #define outs(x)                            outs((unsigned char*)(x))
  // variables
  #define b_lines    b_line
@@ -301,7 +298,7 @@
  #undef PMORE_COLOR_FOOTER3
 
 #define PMORE_COLOR_FOOTER1_VIEWALL \
-    ANSI_COLOR(37;45)
+    ANSI_COLOR(1;37;45)
 #define PMORE_COLOR_FOOTER1_VIEWNONE \
     ANSI_COLOR(37;45)
 #define PMORE_COLOR_FOOTER1 \
@@ -2647,22 +2644,12 @@ pmore(const char *fpath, int promptend)
                         sr.search_str = NULL;
                     }
 
-#ifdef FORMOSA_USE_PMORE
-                    getdata6(b_lines - 1, 0, PMORE_MSG_SEARCH_KEYWORD, sbuf,
-                            40, DOECHO);
-#else
                     getdata(b_lines - 1, 0, PMORE_MSG_SEARCH_KEYWORD, sbuf,
                             40, DOECHO);
-#endif
 
                     if (sbuf[0]) {
-#ifdef FORMOSA_USE_PMORE
-                        if (getdata6(b_lines - 1, 0, "區分大小寫(Y/N/Q)? [N] ",
-                                    ans, sizeof(ans), LCECHO) && *ans == 'y')
-#else
                         if (getdata(b_lines - 1, 0, "區分大小寫(Y/N/Q)? [N] ",
                                     ans, sizeof(ans), LCECHO) && *ans == 'y')
-#endif
                             sr.cmpfunc = strncmp;
                         else if (*ans == 'q')
                             sbuf[0] = 0;
@@ -2794,15 +2781,9 @@ pmore(const char *fpath, int promptend)
                         {
                             char ans[4];
                             pmore_clrtoeol(b_lines-1, 0);
-#ifdef FORMOSA_USE_PMORE
-                            getdata6(b_lines - 1, 0, 
-                                    PMORE_MSG_MOVIE_PLAYOLD_AS24L,
-                                    ans, 3, LCECHO);
-#else
                             getdata(b_lines - 1, 0, 
                                     PMORE_MSG_MOVIE_PLAYOLD_AS24L,
                                     ans, 3, LCECHO);
-#endif
                             if(ans[0] == 'n')
                                 mfmovie.compat24 = 0;
                             else

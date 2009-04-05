@@ -469,14 +469,14 @@ int t_chat()
 	chat_line = 0;
 
 #if 1
-	if (getdata(1, 0, "(1) 跨站聊天室 (2) 站內聊天室 : [1] ", genbuf, 2, ECHONOSP, NULL)
+	if (getdata(1, 0, "(1) 跨站聊天室 (2) 站內聊天室 : [1] ", genbuf, 2, ECHONOSP)
 		&& genbuf[0] == '2')
 	{
 		return t_chat2();
 	}
 #endif		
 	
-	if (!getdata(1, 0, "Enter Chat id: ", mychatid, CHATIDLEN, ECHONOSP, NULL))
+	if (!getdata(1, 0, "Enter Chat id: ", mychatid, CHATIDLEN, ECHONOSP))
 		xstrncpy(mychatid, curuser.userid, CHATIDLEN);
 
 	fixchatid(mychatid);

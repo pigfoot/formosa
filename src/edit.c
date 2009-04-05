@@ -486,7 +486,7 @@ static int write_file(char *filename, char *saveheader, char *bname)
 	char abort[2];
 
 	sprintf(genbuf, _msg_edit_5, (saveheader) ? _msg_edit_6 : _msg_edit_7);
-	getdata(0, 0, genbuf, abort, sizeof(abort), ECHONOSP | XLCASE, NULL);
+	getdata(0, 0, genbuf, abort, sizeof(abort), ECHONOSP | XLCASE);
 	if (abort[0] == 'a')
 	{
 		vedit_exit();

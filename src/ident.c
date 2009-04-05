@@ -157,8 +157,7 @@ int x_idcheck()
 		case 1:
 			do
 			{
-				getdata(2, 0, check_item[num], buf, STRLEN - 12, ECHONOSP,
-					NULL);
+				getdata(2, 0, check_item[num], buf, STRLEN - 12, ECHONOSP);
 			}
 			while (check_cname(buf));
 			sprintf(buf + strlen(buf), "  (%s)", curuser.userid);
@@ -169,28 +168,25 @@ int x_idcheck()
 		case 9:
 			do
 			{
-				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, XECHO,
-					NULL);
+				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, XECHO);
 			}
 			while (buf[0] == '\0');
 			break;
 		case 7:
 			do
 			{
-				getdata(2 + num, 0, check_item[num], buf, 9, XECHO,
-					NULL);
+				getdata(2 + num, 0, check_item[num], buf, 9, XECHO);
 			}
 			while (buf[0] == '\0' || buf[2] != '/' || buf[5] != '/'
 				|| (buf[3] != '0' && buf[3] != '1'));
 			break;
 		case 3:
-			getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, ECHONOSP,
-				NULL);
+			getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, ECHONOSP);
 			break;
 		case 5:
 			do
 			{
-				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, ECHONOSP, NULL);
+				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, ECHONOSP);
 				if (buf[0] != '\0' && !id_num_check(buf))
 				{
 					move(3 + num, 0);
@@ -209,8 +205,7 @@ int x_idcheck()
 			{
 				move(2 + num, 0);
 				clrtobot();
-				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12,
-					ECHONOSP, NULL);
+				getdata(2 + num, 0, check_item[num], buf, STRLEN - 12, ECHONOSP);
 
 				p = buf;
 				while (*p)	/* lthuang */

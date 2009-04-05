@@ -169,7 +169,10 @@ int igetch(void);
 int getkey(void);
 int igetkey(void);
 void bell(void);
-int getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
+int getdata(int line, int col, char *prompt, char *buf, int len, int echo);
+int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo);
+int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
+
 /* lang.c */
 void lang_init(char lang);
 /* list.c */

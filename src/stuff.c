@@ -303,10 +303,10 @@ static void left_note()			/* Seraph */
 		outs(_msg_stuff_16);
 		for (i = 0; i < 3; i++)
 		{
-			getdata(4 + i, 0, ": ", mynote.buf[i], 77, XECHO, NULL);
+			getdata(4 + i, 0, ": ", mynote.buf[i], 77, XECHO);
 			strcat(mynote.buf[i], "\n");
 		}
-		getdata(10, 0, _msg_stuff_17, choice, 3, XECHO | XLCASE, NULL);
+		getdata(10, 0, _msg_stuff_17, choice, 3, XECHO | XLCASE);
 		if (choice[0] == 'q' || i == 0)
 			return;
 	}
@@ -441,7 +441,7 @@ void free_wlist(struct word **wtop, void (*freefunc) (void *))
 
 
 /*******************************************************************
- * ¥[¤W¤@µ§¸ê®Æ¨ì«ü©wªº link list ¥½º
+ * ¥[¤W¤@µ§¸ê®Æ¨ì«ü©wªº link list ¥½?
  * °²¦p link data ¬O¯Â«ü¼Ð, «h addfunc ¥²¶·¶Ç NULL ¶i¨Ó
  * ¶Ç¦^·s link list ªº pointer («eºÝ)
  *******************************************************************/
@@ -499,7 +499,7 @@ int cmp_wlist(struct word *wtop, char *str, int (*cmpfunc) (const char *, const 
 /*******************************************************************
  * ¤ñ¹ï link list ¤¤¬O§_¦³»P word ¬Û¦Pªº¸ê®Æ.
  * ­Y wcur ¬° NULL, «h±qÀY§ä°_, §_«h±q wcur ¶}©l§ä.
- * ¦pªG¦³, ¶¶«K§â¸Ó link data §R±
+ * ¦pªG¦³, ¶¶«K§â¸Ó link data §R?
  * °²¦p link data ¬O¯Â«ü¼Ð, «h freefunc ¥²¶·¶Ç NULL ¶i¨Ó
  * ¶Ç¦^§ä¨ìªº©Î¥Ø«e©Ò¦bªº link pointer
  * §ä¤£¨ì«h¶Ç¦^ NULL
