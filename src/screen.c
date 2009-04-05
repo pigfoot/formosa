@@ -520,6 +520,17 @@ int outc(register unsigned char c)
 }
 
 
+void
+outns(const char *str, int n)
+{
+    if (!str)
+        return;
+    while (*str && n-- > 0) {
+        outc(*str++);
+    }
+}
+
+
 void outs(register char *str)
 {
 	while (*str != '\0')

@@ -98,6 +98,9 @@ struct one_key {           /* Used to pass commands to the readmenu */
  * 	other define or macro
  *******************************************************************/
 #define b_line    (t_lines-1)
+/* Maple compatible */
+#define b_lines   b_line
+#define vkey      getkey
 
 #define HAS_PERM(x)	  CHECK_PERM(curuser.userlevel, x) 	/* -ToDo- */
 
