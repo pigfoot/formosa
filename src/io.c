@@ -25,6 +25,8 @@ static int ibufsize = 0;
 static int icurrchar = 0;
 
 
+int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
+
 void oflush()
 {
 	if (obufsize)
@@ -354,7 +356,22 @@ void bell()
 }
 
 
-int getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
+int getdata(int line, int col, char *prompt, char *buf, int len, int echo)
+{
+	return _getdata(line, col, prompt, buf, len, echo, NULL);
+}
+
+int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo)
+{
+	return _getdata(line, col, prompt, buf, len, echo, NULL);
+}
+
+int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
+{
+	return _getdata(line, col, prompt, buf, len, echo, prefix);
+}
+
+int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
 {
 	unsigned char ch;
 	int clen = 0;

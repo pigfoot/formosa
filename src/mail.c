@@ -187,7 +187,7 @@ static int set_group()
 		/* show the list for grouply mail sending */
 		show_wlist(mg_wlist);
 
-		getdata(1, 0, _msg_ask_group_add, genbuf, 2, ECHONOSP | XLCASE, NULL);
+		getdata(1, 0, _msg_ask_group_add, genbuf, 2, ECHONOSP | XLCASE);
 		switch (genbuf[0])
 		{
 		case 'a':
@@ -198,8 +198,7 @@ static int set_group()
 				break;
 			}
 			
-			if (getdata(2, 0, _msg_receiver, strName, sizeof(strName),
-				    ECHONOSP, NULL))
+			if (getdata(2, 0, _msg_receiver, strName, sizeof(strName), ECHONOSP))
 			{
 #ifdef IGNORE_CASE
                                         strtolow(strName);
@@ -252,7 +251,7 @@ static int set_group()
 			}
 			break;
 		case 'd':
-			if (getdata(2, 0, _msg_delete, genbuf, IDLEN, ECHONOSP, NULL))
+			if (getdata(2, 0, _msg_delete, genbuf, IDLEN, ECHONOSP))
 			{
 #ifdef IGNORE_CASE
                                 strtolow(genbuf);

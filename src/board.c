@@ -225,8 +225,7 @@ static int bcmd_jump(int ent, struct BoardList *bent, char *direct)
 	struct BoardList *be1;
 	char bname[BNAMELEN];
 
-	if (getdata(b_line, 0, "請輸入中/英文板名 : ", bname, sizeof(bname), ECHONOSP,
-		    NULL))
+	if (getdata(b_line, 0, "請輸入中/英文板名 : ", bname, sizeof(bname), ECHONOSP))
 	{
 		int i;
 

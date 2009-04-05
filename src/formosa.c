@@ -299,7 +299,7 @@ static void new_register(USEREC *nu)
 			exit(0);	/* abort bbs */
 		}
 
-		getdata(0, 0, _msg_formosa_2, nu->userid, IDLEN, ECHONOSP, NULL);
+		getdata(0, 0, _msg_formosa_2, nu->userid, IDLEN, ECHONOSP);
 #ifdef IGNORE_CASE
                 strcpy(nu->fakeuserid, nu->userid);
                 /* kmwang:20000629:將 nu->userid 全轉為小寫 */
@@ -324,8 +324,7 @@ static void new_register(USEREC *nu)
 	/* enter new user date, password, etc. */
 	while (1)
 	{
-		getdata(0, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), XNOECHO, 
-		        NULL);
+		getdata(0, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), XNOECHO);
 		if (strlen(mypasswd) < 4)
 		{
 			outs(_msg_formosa_7);
@@ -336,7 +335,7 @@ static void new_register(USEREC *nu)
 			outs(_msg_formosa_8);
 			continue;
 		}
-		getdata(0, 0, _msg_formosa_9, genbuf, sizeof(mypasswd), XNOECHO, NULL);
+		getdata(0, 0, _msg_formosa_9, genbuf, sizeof(mypasswd), XNOECHO);
 		if (strcmp(genbuf, mypasswd))
 		{
 			outs(_msg_formosa_10);
@@ -346,9 +345,9 @@ static void new_register(USEREC *nu)
 	}
 
 	getdata(0, 0, _msg_formosa_11, nu->username, sizeof(nu->username),
-		XECHO, NULL);
+		XECHO);
 	getdata(0, 0, _msg_formosa_12, nu->email, sizeof(nu->email),
-		ECHONOSP, NULL);
+		ECHONOSP);
 
 	nu->firstlogin = time(0);	/* lthuang */
 	nu->lastlogin = nu->firstlogin;
@@ -451,7 +450,7 @@ static void login_query()
 #endif /* !LOGINASNEW */
 
 		if (!getdata(0, 0, _msg_formosa_21, myuserid, sizeof(myuserid),
-			     ECHONOSP, NULL))
+			     ECHONOSP))
 		{
 			outs(_msg_err_userid);
 			continue;
@@ -480,13 +479,13 @@ static void login_query()
 		else if (!strcmp(myuserid, GUEST))
 		{
 			getdata(0, 0, _msg_formosa_25, mypasswd, sizeof(mypasswd),
-				XNOECHO, NULL);
+				XNOECHO);
 		}
 #endif
 		else
 		{
 			getdata(0, 0, _msg_formosa_26, mypasswd, sizeof(mypasswd),
-				XNOECHO, NULL);
+				XNOECHO);
 		}
 
 	      login:

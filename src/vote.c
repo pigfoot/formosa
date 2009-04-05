@@ -128,7 +128,7 @@ static void cand_title()
 {
 	title_func("§ë²¼°Ï", TheTitle);
 	outs("\n(¡÷)(Enter)¿ï©w§ë²¼¶µ¥Ø (¡ö)(q)Â÷¶}\n\
-(a)¼W¥[­Ô¿ï¶µ¥Ø¼ (d)§R°£­Ô¿ï¶µ¥Ø (E)­×§ï­Ô¿ï¶µ¥Ø\n\
+(a)¼W¥[­Ô¿ï¶µ¥Ø? (d)§R°£­Ô¿ï¶µ¥Ø (E)­×§ï­Ô¿ï¶µ¥Ø\n\
 [7m  ½s¸¹ °é¿ï ­Ô¿ï¶µ¥Ø                                                          [m");
 }
 
@@ -182,11 +182,11 @@ static int ccmd_enter(int ent, CAND *cinfo, char *direct)
 	move(10, 0);
 	clrtobot();
 	if (getdata(10, 0, "±z¹ï¥»¦¸§ë²¼¦³¨ä¥¦·N¨£¶Ü? [n]: ", genbuf, 2,
-		    ECHONOSP, NULL) && genbuf[0] == 'y')
+		    ECHONOSP) && genbuf[0] == 'y')
 	{
 		char buf[PATHLEN];
 
-		if (getdata(11, 0, "", buf, 60, XECHO, NULL))
+		if (getdata(11, 0, "", buf, 60, XECHO))
 		{
 			sprintf(genbuf, "\n%-12s: %s", curuser.userid, buf);
 			setdotfile(buf, direct, "mess");
@@ -212,8 +212,7 @@ static int ccmd_add(int ent, CAND *cinfo, char *direct)
 	}
 
 	memset(&ch, 0, sizeof(ch));
-	if (getdata(b_line, 0, "­Ô¿ï¶µ¥Ø¦W: ", ch.item, sizeof(ch.item), XECHO,
-		    NULL))
+	if (getdata(b_line, 0, "­Ô¿ï¶µ¥Ø¦W: ", ch.item, sizeof(ch.item), XECHO))
 	{
 		append_record(direct, &ch, sizeof(ch));
 		return C_INIT;
@@ -227,7 +226,7 @@ static int ccmd_edit(int ent, CAND *cinfo, char *direct)
 	if (!hasBMPerm)
 		return C_NONE;
 
-	if (getdata(b_line, 0, "­Ô¿ï¶µ¥Ø¦W: ", cinfo->item, sizeof(cinfo->item),
+	if (getdata_str(b_line, 0, "­Ô¿ï¶µ¥Ø¦W: ", cinfo->item, sizeof(cinfo->item),
 		    XECHO, cinfo->item))
 	{
 		substitute_record(direct, cinfo, sizeof(*cinfo), ent);
@@ -307,43 +306,43 @@ static int set_vote(char *path, VOTE *vinfo)
 
 	outs("[½Ðª`·N] <¤£§@­­¨î«h«ö Enter ²¤¹L>");
 
-	if (!getdata(3, 0, "1) §ë²¼¦WºÙ : ", genbuf, sizeof(vinfo->title), XECHO, vinfo->title))
+	if (!getdata_str(3, 0, "1) §ë²¼¦WºÙ : ", genbuf, sizeof(vinfo->title), XECHO, vinfo->title))
 		return -1;
 	strcpy(vinfo->title, genbuf);
 
 	if (vinfo->start_time == 0)
 		vinfo->start_time = time(0);
 	strcpy(genbuf, Vtime(&(vinfo->start_time)));
-	if (getdata(4, 0, "2) §ë²¼¶}©l(YYYY.mm.dd) : ", genbuf, 11, ECHONOSP, genbuf))
+	if (getdata_str(4, 0, "2) §ë²¼¶}©l(YYYY.mm.dd) : ", genbuf, 11, ECHONOSP, genbuf))
 		vinfo->start_time = get_time(genbuf);
 
 	memset(genbuf, 0, sizeof(genbuf));
 	if (vinfo->end_time == 0)
 		vinfo->end_time = time(0) + 86400;
 	strcpy(genbuf, Vtime(&(vinfo->end_time)));	
-	if (getdata(5, 0, "3) ¹w­p¶}²¼(YYYY.mm.dd) : ", genbuf, 11, ECHONOSP, genbuf))
+	if (getdata_str(5, 0, "3) ¹w­p¶}²¼(YYYY.mm.dd) : ", genbuf, 11, ECHONOSP, genbuf))
 		vinfo->end_time = get_time(genbuf);
 
 	if (vinfo->tickets == 0)
 		vinfo->tickets = 1;
 	sprintf(genbuf, "%d", vinfo->tickets);
-	if (getdata(6, 0, "4) ¨C¤H²¼¼Æ : ", genbuf, 3, ECHONOSP, genbuf))
+	if (getdata_str(6, 0, "4) ¨C¤H²¼¼Æ : ", genbuf, 3, ECHONOSP, genbuf))
 		vinfo->tickets = atoi(genbuf);
 	if (vinfo->tickets <= 0 || vinfo->tickets > sizeof(MyBox.vbits) * 8)
 		return -1;
 
-	if (getdata(7, 0, "5) ¤W¯¸¨Ó·½(¨Ò¦p140.117) : ", genbuf, sizeof(vinfo->allow_ip), ECHONOSP,
+	if (getdata_str(7, 0, "5) ¤W¯¸¨Ó·½(¨Ò¦p140.117) : ", genbuf, sizeof(vinfo->allow_ip), ECHONOSP,
 		    vinfo->allow_ip))
 	{
 		strcpy(vinfo->allow_ip, genbuf);
 	}
 
 	sprintf(genbuf, "%d", vinfo->userlevel);
-	if (getdata(8, 0, "6) ¨Ï¥ÎªÌµ¥¯Å(¨Ò¦p50) : ", genbuf, 4, ECHONOSP, genbuf))
+	if (getdata_str(8, 0, "6) ¨Ï¥ÎªÌµ¥¯Å(¨Ò¦p50) : ", genbuf, 4, ECHONOSP, genbuf))
 		vinfo->userlevel = atoi(genbuf);
 
 	strcpy(genbuf, "n");
-	getdata(9, 0, "7) ¤w¨­¥÷»{ÃÒªÌ¤~¥i§ë(y/n): ", genbuf, 2, ECHONOSP, genbuf);
+	getdata_str(9, 0, "7) ¤w¨­¥÷»{ÃÒªÌ¤~¥i§ë(y/n): ", genbuf, 2, ECHONOSP, genbuf);
 	if (genbuf[0] == 'y')
 		vinfo->ident = 7;
 	else
@@ -353,15 +352,15 @@ static int set_vote(char *path, VOTE *vinfo)
 		strcpy(genbuf, Vtime(&(vinfo->firstlogin)));		
 	else
 		genbuf[0] = '\0';
-	if (getdata(10, 0, "8) µù¥U¤é´Á(YYYY.mm.dd)¡G", genbuf, 11, ECHONOSP, genbuf))
+	if (getdata_str(10, 0, "8) µù¥U¤é´Á(YYYY.mm.dd)¡G", genbuf, 11, ECHONOSP, genbuf))
 		vinfo->firstlogin = get_time(genbuf);
 
 	sprintf(genbuf, "%d", vinfo->numlogins);
-	if (getdata(11, 0, "9) ¤W¯¸¦¸¼Æ : ", genbuf, 7, ECHONOSP, genbuf))
+	if (getdata_str(11, 0, "9) ¤W¯¸¦¸¼Æ : ", genbuf, 7, ECHONOSP, genbuf))
 		vinfo->numlogins = atoi(genbuf);
 
 	sprintf(genbuf, "%d", vinfo->numposts);
-	if (getdata(12, 0, "10) ±i¶K¦¸¼Æ : ", genbuf, 7, ECHONOSP, genbuf))
+	if (getdata_str(12, 0, "10) ±i¶K¦¸¼Æ : ", genbuf, 7, ECHONOSP, genbuf))
 		vinfo->numposts = atoi(genbuf);
 
 	setvotefile2(filename, path, vinfo->filename, "/desc");
@@ -625,8 +624,7 @@ static int vcmd_add(int ent, VOTE *vinfo, char *direct)
 	if (!hasBMPerm)
 		return C_NONE;
 
-	getdata(b_line, 0, "½T©w¶Ü(y/n)? [n]: ", genbuf, 2, ECHONOSP | XLCASE,
-		NULL);
+	getdata(b_line, 0, "½T©w¶Ü(y/n)? [n]: ", genbuf, 2, ECHONOSP | XLCASE);
 	if (genbuf[0] != 'y')
 		return C_FOOT;
 

@@ -167,7 +167,7 @@ int more(char *filename, BOOL promptend)
 
 					nbuf[0] = chkey;
 					nbuf[1] = '\0';
-					if (getdata(b_line, 0, "跳到第幾頁: ", nbuf, 4, ECHONOSP, nbuf))
+					if (getdata_str(b_line, 0, "跳到第幾頁: ", nbuf, 4, ECHONOSP, nbuf))
 					{
 						dojump = TRUE;
 						jumpto = atoi(nbuf);

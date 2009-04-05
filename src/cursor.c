@@ -65,7 +65,7 @@ void chk_str(char str[])
 char memtitle[STRLEN] = STR_REPLY;
 
 /*
- * ¦C¦Lº Index List Lines
+ * ¦C¦L? Index List Lines
  */
 void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 {
@@ -482,7 +482,7 @@ int author_backward(int ent, FILEHEADER* finfo, char *direct)
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«e§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
+	if (!getdata_str(b_line, 0, "[©¹«e§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -506,7 +506,7 @@ char *direct;
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«á§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
+	if (!getdata_str(b_line, 0, "[©¹«á§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -526,7 +526,7 @@ int title_backward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«e§ä¼ÐÃD]: ", sbuf, sizeof(sbuf), XECHO,
+	if (!getdata_str(b_line, 0, "[©¹«e§ä¼ÐÃD]: ", sbuf, sizeof(sbuf), XECHO,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -546,7 +546,7 @@ int title_forward(int ent, FILEHEADER *finfo, char *direct)
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«á§ä¼ÐÃD]: ", sbuf, sizeof(sbuf), XECHO,
+	if (!getdata_str(b_line, 0, "[©¹«á§ä¼ÐÃD]: ", sbuf, sizeof(sbuf), XECHO,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -644,16 +644,16 @@ static int tag_thread(int ent, FILEHEADER *finfo, char *direct)
 	char op;
 
 	free_wlist(&artwtop, free);
-	getdata(b_line, 0, _msg_read_18, genbuf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(b_line, 0, _msg_read_18, genbuf, 2, ECHONOSP | XLCASE);
 	if (genbuf[0] == '2')
 	{
-		getdata(b_line, 0, _msg_read_20, sbuf, sizeof(sbuf), ECHONOSP,
+		getdata_str(b_line, 0, _msg_read_20, sbuf, sizeof(sbuf), ECHONOSP,
 			finfo->owner);
 		op = 'A';
 	}
 	else
 	{
-		getdata(b_line, 0, _msg_title, sbuf, sizeof(sbuf), XECHO,
+		getdata_str(b_line, 0, _msg_title, sbuf, sizeof(sbuf), XECHO,
 			finfo->title);
 		op = '/';
 	}
@@ -763,13 +763,13 @@ static int delthread(int ent, FILEHEADER *finfo, char *direct)
 	move(4, 0);
 	clrtobot();
 
-	getdata(5, 0, "§R°£ 1)¬ÛÃö¼ÐÃD 2)¬Û¦P§@ªÌ ¤å³¹ ? [1]: ", ans, 2,
-		XECHO, NULL);
+	getdata(5, 0, "§R°£ 1)¬ÛÃö¼ÐÃD 2)¬Û¦P§@ªÌ ¤å³¹ ? [1]: ", ans, 2, XECHO);
+
 	if (ans[0] == '2')
-		getdata(6, 0, _msg_read_20, pattern, sizeof(finfo->owner), 
+		getdata_str(6, 0, _msg_read_20, pattern, sizeof(finfo->owner), 
 			XECHO, finfo->owner);
 	else
-		getdata(6, 0, _msg_title, pattern, sizeof(pattern), XECHO,
+		getdata_str(6, 0, _msg_title, pattern, sizeof(pattern), XECHO,
 			finfo->title);
 
 	if (*pattern != '\0')
@@ -1219,12 +1219,12 @@ int acl_edit()
 			num_acl = display_acl();
 			if (num_acl)
 		           	getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE,
-					NULL);
+					);
                         else
-                                getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE, NULL);	
+                                getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE);
                         if (genbuf[0] == 'a')
                         {
-                                if (getdata(2, 0, _msg_ent_userid, acl, sizeof(acl), ECHONOSP,                                                NULL))
+                                if (getdata(2, 0, _msg_ent_userid, acl, sizeof(acl), ECHONOSP))
                                 {
                                 	if (get_passwd(NULL, acl) > 0)
                                         add_acl(acl);
@@ -1232,8 +1232,7 @@ int acl_edit()
 			}
                         else if (genbuf[0] == 'd' && num_acl)
                         {
-                                if (getdata(2, 0, _msg_ent_userid, acl, sizeof(acl), ECHONOSP, 
-				            NULL))
+                                if (getdata(2, 0, _msg_ent_userid, acl, sizeof(acl), ECHONOSP))
                                         delete_acl(acl);
                         }
                         else
@@ -1648,7 +1647,7 @@ int cursor_menu( int y, int x,
 				nbuf[0] = ch;
 				nbuf[1] = '\0';
 
-				getdata(b_line, 0, _msg_read_15, nbuf, 6, ECHONOSP,
+				getdata_str(b_line, 0, _msg_read_15, nbuf, 6, ECHONOSP,
 					nbuf);
 				i = atoi(nbuf);
 				if (i > clast || i < 1)

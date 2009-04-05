@@ -148,7 +148,7 @@ char *argv[];
 
 	refresh();
 
-	while (getdata(3, 7, "¬d¸ß­þ¦ì¨Ï¥ÎªÌªº¸ê®Æ: ", name, 15, ECHONOSP, NULL))
+	while (getdata(3, 7, "¬d¸ß­þ¦ì¨Ï¥ÎªÌªº¸ê®Æ: ", name, 15, ECHONOSP))
 	{
 		if (Get_User(name) == -1)
 		{
@@ -161,13 +161,13 @@ char *argv[];
 			{
 				char num[2];
 				USEREC initial;
-				getdata(7, 3, "ª½±µ³q¹L»{ÃÒ (y/n) ? [n]: ", num, 2, ECHONOSP | LOWCASE, NULL);
+				getdata(7, 3, "ª½±µ³q¹L»{ÃÒ (y/n) ? [n]: ", num, 2, ECHONOSP | LOWCASE);
 				if (num[0] == 'y')
 				{
 					if (get_passwd(&initial, name) <= 0)
 					{
 						move(7, 7);
-						outs("¬dµL¦¹±b¸¹Æ.....   «ö¥ô·NÁäÄ~Äò");
+						outs("¬dµL¦¹±b¸¹?.....   «ö¥ô·NÁäÄ~Äò");
 						getkey();
 						continue;
 					}
@@ -531,7 +531,7 @@ a_chgpgp()
 	if (igetkey() == 'y')
 	{
 		clear();
-		getdata(2, 0, "What is SECURE KEY: ", pass, 59, DOECHO, NULL);
+		getdata(2, 0, "What is SECURE KEY: ", pass, 59, DOECHO);
 		reset_tty();
 		dir = opendir(BBSPATH_REALUSER);
 		while ((tmp = readdir(dir)) != NULL)
@@ -613,7 +613,7 @@ void (*freefunc) (void *);
 
 
 /*******************************************************************
- * ¥[¤W¤@µ§¸ê®Æ¨ì«ü©wªº link list ¥½º
+ * ¥[¤W¤@µ§¸ê®Æ¨ì«ü©wªº link list ¥½?
  * °²¦p link data ¬O¯Â«ü¼Ð, «h addfunc ¥²¶·¶Ç NULL ¶i¨Ó
  * ¶Ç¦^·s link list ªº pointer («eºÝ)
  *******************************************************************/
@@ -673,7 +673,7 @@ int (*cmpfunc) (const char *, const char *);
 /*******************************************************************
  * ¤ñ¹ï link list ¤¤¬O§_¦³»P word ¬Û¦Pªº¸ê®Æ.
  * ­Y wcur ¬° NULL, «h±qÀY§ä°_, §_«h±q wcur ¶}©l§ä.
- * ¦pªG¦³, ¶¶«K§â¸Ó link data §R±
+ * ¦pªG¦³, ¶¶«K§â¸Ó link data §R?
  * °²¦p link data ¬O¯Â«ü¼Ð, «h freefunc ¥²¶·¶Ç NULL ¶i¨Ó
  * ¶Ç¦^§ä¨ìªº©Î¥Ø«e©Ò¦bªº link pointer
  * §ä¤£¨ì«h¶Ç¦^ NULL
@@ -813,7 +813,7 @@ char *direct;
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«e§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
+	if (!getdata_str(b_line, 0, "[©¹«e§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -837,7 +837,7 @@ char *direct;
 {
 	int i;
 
-	if (!getdata(b_line, 0, "[©¹«á§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
+	if (!getdata_str(b_line, 0, "[©¹«á§ä§@ªÌ]: ", sbuf, sizeof(sbuf), ECHONOSP,
 		     sbuf))
 	{
 		return C_FOOT;
@@ -856,7 +856,7 @@ char *direct;
 struct word *artwtop = NULL;
 
 /*
- * ¦C¦Lº Index List Lines
+ * ¦C¦L? Index List Lines
  */
 void
 read_entry(x, ent, idx, top, last, rows)
@@ -1095,7 +1095,7 @@ int *ccur;
 				nbuf[0] = ch;
 				nbuf[1] = '\0';
 
-				getdata(b_line, 0, _msg_read_15, nbuf, 6, ECHONOSP,
+				getdata_str(b_line, 0, _msg_read_15, nbuf, 6, ECHONOSP,
 					nbuf);
 				i = atoi(nbuf);
 				if (i > clast || i < 1)
@@ -1464,9 +1464,9 @@ char *direct;
 	FILEHEADER *fhr = &fhGol;
 	char genbuf[512];
 
-	getdata(b_line, 0, _msg_article_2, genbuf, 6, ECHONOSP, NULL);
+	getdata(b_line, 0, _msg_article_2, genbuf, 6, ECHONOSP);
 	n1 = atoi(genbuf);
-	getdata(b_line, 0, _msg_article_3, genbuf, 6, ECHONOSP, NULL);
+	getdata(b_line, 0, _msg_article_3, genbuf, 6, ECHONOSP);
 	n2 = atoi(genbuf);
 	if (n1 <= 0 || n2 <= 0 || n2 < n1)
 		return C_FOOT;

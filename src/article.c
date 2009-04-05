@@ -55,8 +55,7 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 	if (!articleCheckPerm(finfo))
 		return C_NONE;
 
-	if (!getdata(b_line, 0, _msg_ent_new_title, title, sizeof(title), XECHO,
-		     NULL))
+	if (!getdata(b_line, 0, _msg_ent_new_title, title, sizeof(title), XECHO))
 	{
 		return C_FOOT;
 	}
@@ -898,7 +897,7 @@ int mail_article(int ent, FILEHEADER *finfo, char *direct)
 	if (DefEmailAddr[0] == '\0')
 	{
 		if (!getdata(b_line, 0, _msg_receiver, DefEmailAddr,
-			     sizeof(DefEmailAddr), ECHONOSP, NULL))
+			     sizeof(DefEmailAddr), ECHONOSP))
 		{
 			return C_FOOT;
 		}
@@ -1070,7 +1069,7 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_FULL;
 
 	if (ptr == cyes || ptr == cno) {
-		if (!getdata(b_line, 0, "\033[1;36m¦Û­q¡G\033[m", ptr, 3, XECHO, NULL)) {
+		if (!getdata(b_line, 0, "\033[1;36m¦Û­q¡G\033[m", ptr, 3, XECHO)) {
 			if (ptr == cyes)
 				ptr = yes;
 			else
@@ -1082,7 +1081,7 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 		(ptr == yes || ptr == cyes) ? ASCII_RED : ASCII_GREEN,
 		ptr);
 	if (!getdata(b_line, 0, msgbuf, pushline,
-	             PUSHLEN - strlen(curuser.userid) + 1, XECHO, NULL))
+	             PUSHLEN - strlen(curuser.userid) + 1, XECHO))
 		return C_FULL;
 
 	if ((fd = open(direct, O_RDWR)) < 0)
@@ -1152,7 +1151,7 @@ int set_article_title(char title[])
 	}
 	if (title[0] == '\0')
 	{
-		if (!getdata(3, 0, _msg_title, title, TTLEN, XECHO, NULL))
+		if (!getdata(3, 0, _msg_title, title, TTLEN, XECHO))
 			return -1;
 	}
 	return 0;
@@ -1182,9 +1181,9 @@ int range_tag_article(int ent, FILEHEADER *finfo, char *direct)
 	int fd;
 	FILEHEADER *fhr = &fhGol;
 
-	getdata(b_line, 0, _msg_article_2, genbuf, 6, ECHONOSP, NULL);
+	getdata(b_line, 0, _msg_article_2, genbuf, 6, ECHONOSP);
 	n1 = atoi(genbuf);
-	getdata(b_line, 0, _msg_article_3, genbuf, 6, ECHONOSP, NULL);
+	getdata(b_line, 0, _msg_article_3, genbuf, 6, ECHONOSP);
 	n2 = atoi(genbuf);
 	if (n1 <= 0 || n2 <= 0 || n2 < n1)
 		return C_FOOT;

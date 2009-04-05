@@ -60,8 +60,7 @@ int adminMaintainUser()
 
 	move(2, 0);
 	clrtobot();
-	if (getdata(2, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP,
-		    NULL))
+	if (getdata(2, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP))
 	{
 		set_user_info(userid);
 	}
@@ -173,8 +172,7 @@ static int set_board(BOARDHEADER *brdhr)
 	{
 		show_board(brdhr);
 
-		if (!getdata(b_line, 0, _msg_xyz_36, choice, 2, ECHONOSP | XLCASE,
-			     NULL))
+		if (!getdata(b_line, 0, _msg_xyz_36, choice, 2, ECHONOSP | XLCASE))
 		{
 			break;
 		}
@@ -183,7 +181,7 @@ static int set_board(BOARDHEADER *brdhr)
 		{
 			/* board name */
 		case '1':
-			if (getdata(15, 0, _msg_admin_2, inbuf, BNAMELEN, ECHONOSP,
+			if (getdata_str(15, 0, _msg_admin_2, inbuf, BNAMELEN, ECHONOSP,
 				    brdhr->filename))
 			{
 				if (strcmp(inbuf, old_bname))
@@ -200,19 +198,19 @@ static int set_board(BOARDHEADER *brdhr)
 			}
 			break;
 		case '2':
-			getdata(15, 0, _msg_admin_bdesc, brdhr->title, CBNAMELEN + 1,
+			getdata_str(15, 0, _msg_admin_bdesc, brdhr->title, CBNAMELEN + 1,
 				XECHO, brdhr->title);
 			break;
 		case '3':
-			if (getdata(15, 0, _msg_admin_5, inbuf, 4, ECHONOSP, NULL))
+			if (getdata(15, 0, _msg_admin_5, inbuf, 4, ECHONOSP))
 				brdhr->level = atoi(inbuf);
 			break;
 		case '4':
-			if (getdata(15, 0, _msg_admin_class, inbuf, 2, ECHONOSP, NULL))
+			if (getdata(15, 0, _msg_admin_class, inbuf, 2, ECHONOSP))
 				brdhr->class = inbuf[0];
 			break;
 		case '5':
-			if (getdata(15, 0, _msg_admin_owner, inbuf, IDLEN, ECHONOSP,
+			if (getdata_str(15, 0, _msg_admin_owner, inbuf, IDLEN, ECHONOSP,
 				    brdhr->owner))
 			{
 				if (get_passwd(NULL, inbuf) <= 0)
@@ -428,7 +426,7 @@ int adminMaintainBoard()
 	BOARDHEADER bh_mod;
 	char ans[2];
 
-	getdata(b_line, 0, _msg_admin_1, ans, 2, ECHONOSP | XLCASE, NULL);
+	getdata(b_line, 0, _msg_admin_1, ans, 2, ECHONOSP | XLCASE);
 	if (ans[0] == 'q' || ans[0] == '\0')
 		return C_FULL;
 
@@ -585,7 +583,7 @@ int adminDeleteUser()
 	USEREC del_user;
 
 	if (getdata(2, 0, _msg_ent_userid, userid_del, sizeof(userid_del),
-		    ECHONOSP, NULL))
+		    ECHONOSP))
 	{
 		// user doesn't exist.
         	if (get_passwd(&del_user, userid_del) <= 0) return C_FULL;
@@ -618,7 +616,7 @@ int adminEditConf()
 		prints("%2d) %s\n", i + 1, conf_files[i].desc);
 	max_conf_files = i;
 	
-	if (getdata(b_line, 0, "編輯檔案編號 ? [0]: ", genbuf, 3, XECHO, NULL)
+	if (getdata(b_line, 0, "編輯檔案編號 ? [0]: ", genbuf, 3, XECHO)
 	&& (i = atoi(genbuf)) >= 1 && i <= max_conf_files)
 	{
 		if (!vedit(conf_files[i - 1].fname, NULL, NULL))
@@ -814,7 +812,7 @@ int adminListUsers()
 	int idented = 0;
 #endif
 
-	if (getdata(1, 0, _msg_formosa_28, genbuf, 4, ECHONOSP, NULL))
+	if (getdata(1, 0, _msg_formosa_28, genbuf, 4, ECHONOSP))
 		levelSpec = atoi(genbuf);
 
 	if ((fd = open(PASSFILE, O_RDONLY)) < 0)
@@ -897,8 +895,7 @@ int adminCancelUser()
 	move(2, 0);
 	clrtobot();
 	outs("取消帳號使用權 (請小心使用)");
-	if (!getdata(3, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP, 
-	             NULL))
+	if (!getdata(3, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP))
 	{	             
 		return C_FULL;
 	}
@@ -954,12 +951,12 @@ int adminCancelUser()
 				outs("\n帳號停用原因 :\n");
 				for (j = 0; j < MAX_CANCEL_REASON; j++)
 					prints("(%d) %s\n", j+1, reason[j]);
-				getdata(12, 0, "請選擇 : ", genbuf, 2, ECHONOSP, NULL);
+				getdata(12, 0, "請選擇 : ", genbuf, 2, ECHONOSP);
 				j = genbuf[0] - '0';
 				if (j >= 1 && j < MAX_CANCEL_REASON)
 					strcat(title, reason[j - 1]);
 				else
-					getdata(13, 0, "理由 : ", title+strlen(title), 78, XECHO, NULL);
+					getdata(13, 0, "理由 : ", title+strlen(title), 78, XECHO);
 
 				write_article_header(fpw, curuser.userid, curuser.username, NULL,
 						       NULL, title, NULL);

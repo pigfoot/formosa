@@ -296,7 +296,7 @@ static int ucmd_sort()
 	for (i = 1; i < PICKUP_WAYS; i++)
 		prints(" (%d)%s", i, msg_pickup_way[i]);
 /*	refresh();*/
-	if (getdata(b_line, 58, " ?", genbuf, 2, ECHONOSP, NULL))
+	if (getdata(b_line, 58, " ?", genbuf, 2, ECHONOSP))
 	{
 		i = atoi(genbuf);
 		if (i > 0 && i < PICKUP_WAYS)
@@ -558,7 +558,7 @@ static int ucmd_kick(int ent, struct pickup *pkent, char *direct)
 
 static int ucmd_find(int ent, struct pickup *pkent, char *direct)
 {
-	if (getdata(b_line, 0, "´M§ä : ", genbuf, 20, XECHO, NULL))	/* lang.h */
+	if (getdata(b_line, 0, "´M§ä : ", genbuf, 20, XECHO))	/* lang.h */
 	{
 		int j = ent % num_users;	
 		

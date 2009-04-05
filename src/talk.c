@@ -91,7 +91,7 @@ void toggle_pager()
 		return;
 #endif		
 	
-	getdata(b_line, 0, _msg_talk_2, genbuf, 2, ECHONOSP, NULL);
+	getdata(b_line, 0, _msg_talk_2, genbuf, 2, ECHONOSP);
 	i = genbuf[0] - '0';
 #if 0
 	if (i >= 1 && i <= 3)
@@ -133,7 +133,7 @@ void toggle_bpager()
 	move(b_line-1, 0);
 	clrtoeol();
 	prints("廣播呼喚鈴現在是在 [%s] 的狀態", genbuf);
-	getdata(b_line, 0, "廣播呼喚鈴 : (1)拒絕廣播 (2)接受好友的廣播 (3)所有人, 請選擇: ", genbuf, 2, ECHONOSP, NULL);
+	getdata(b_line, 0, "廣播呼喚鈴 : (1)拒絕廣播 (2)接受好友的廣播 (3)所有人, 請選擇: ", genbuf, 2, ECHONOSP);
 	i = genbuf[0] - '0';
 	if (i >= 1 && i <= 2)
 		uinfo.pager =(uinfo.pager & 0x00FF) + (1 << (i + 7));
@@ -230,7 +230,7 @@ int t_query()
 	outs(_msg_talk_20);
 	move(1, 0);
 	clrtoeol();
-	if (getdata(1, 0, _msg_talk_21, userid, sizeof(userid), ECHONOSP, NULL))
+	if (getdata(1, 0, _msg_talk_21, userid, sizeof(userid), ECHONOSP))
 		QueryUser(userid, NULL);
 	return C_FULL;
 }
@@ -816,7 +816,7 @@ int talkreply()
 
 		clear();
 		sprintf(genbuf, _msg_talk_31, ui.from, page_requestor);
-		if (getdata(0, 0, genbuf, ans, sizeof(ans), XECHO | XLCASE, NULL)
+		if (getdata(0, 0, genbuf, ans, sizeof(ans), XECHO | XLCASE)
 		    && (ans[0] == 'y' || ans[0] == 'n'))
 		{
 			ch = ans[0];
@@ -863,7 +863,7 @@ int talkreply()
 			i = 1;
 		strcpy(buf, talkrefuse[i - 1]);
 		if (i == MAX_REFUSAL)
-			getdata(MAX_REFUSAL + 2, 0, _msg_talk_34, buf, sizeof(buf), XECHO, NULL);
+			getdata(MAX_REFUSAL + 2, 0, _msg_talk_34, buf, sizeof(buf), XECHO);
 		strcat(buf, "\n");
 		write(a, buf, strlen(buf));
 	}
@@ -952,7 +952,7 @@ bug fixed		*/
 	
 	if (getdata(b_line - 1, 0, _msg_talk_37, my_mtext, 
 				(is_broadcast) ? MTEXTLEN - strlen(who) : MTEXTLEN,
-				XECHO, NULL))
+				XECHO))
 	{
 		msg(_msg_talk_38, who);
 		if (igetkey() != 'n')

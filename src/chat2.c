@@ -119,7 +119,7 @@ int t_chat2()
 
 #if 0
 #if	defined(NSYSUBBS1)
-	getdata(1, 0, _msg_chat_1, genbuf, 2, ECHONOSP, NULL);
+	getdata(1, 0, _msg_chat_1, genbuf, 2, ECHONOSP);
 	if (genbuf[0] == '2')
 		chatport = CHATPORT + 1;
 #endif
@@ -130,7 +130,7 @@ int t_chat2()
 	currchar = 0;
 	chat_line = 0;
 
-	if (!getdata(1, 0, "Enter Chat id: ", mychatid, CHATIDLEN, ECHONOSP, NULL))
+	if (!getdata(1, 0, "Enter Chat id: ", mychatid, CHATIDLEN, ECHONOSP))
 		xstrncpy(mychatid, curuser.userid, CHATIDLEN);
 
 	fixchatid(mychatid);

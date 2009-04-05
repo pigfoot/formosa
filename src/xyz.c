@@ -157,7 +157,7 @@ int x_info()
 	{
 		move(2, 0);
 		clrtobot();
-		getdata(2, 0, _msg_xyz_13, opass, sizeof(opass), XNOECHO, NULL);
+		getdata(2, 0, _msg_xyz_13, opass, sizeof(opass), XNOECHO);
 		if (opass[0] && checkpasswd(curuser.passwd, opass))
 			break;
 
@@ -217,7 +217,7 @@ static int set_signature(char *filename, char op)
 			outs(genbuf);
 		}
 
-		getdata(2, 0, _msg_xyz_57, genbuf, 2, ECHONOSP, NULL);
+		getdata(2, 0, _msg_xyz_57, genbuf, 2, ECHONOSP);
 		num = genbuf[0] - '0';
 		if (num < 1 || num > 3)
 		{
@@ -303,7 +303,7 @@ int x_signature()
 	move(1, 0);
 	clrtobot();
 	sethomefile(filename, curuser.userid, UFNAME_SIGNATURES);
-	getdata(1, 0, _msg_xyz_23, genbuf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(1, 0, _msg_xyz_23, genbuf, 2, ECHONOSP | XLCASE);
 
 	ret = set_signature(filename, (genbuf[0] == 'd') ? 'd' : 'e');
 
@@ -333,11 +333,10 @@ void set_ufile(char *ufname)
 	move(2, 0);
 	clrtobot();
 	sethomefile(filename, curuser.userid, ufname);
-	getdata(2, 0, _msg_xyz_23, genbuf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(2, 0, _msg_xyz_23, genbuf, 2, ECHONOSP | XLCASE);
 	if (genbuf[0] == 'd')
 	{
-		getdata(3, 0, "確定嗎(y/n)? [n]: ", genbuf, 2, ECHONOSP | XLCASE,
-				NULL);
+		getdata(3, 0, "確定嗎(y/n)? [n]: ", genbuf, 2, ECHONOSP | XLCASE);
 		if (genbuf[0] != 'y')
 			return;
 
@@ -449,10 +448,9 @@ int x_override()
 	{
 		malloc_array(&friend_cache, ufile_overrides);
 		if ((friend_num = show_array(&friend_cache)) > 0)
-			getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE,
-				NULL);
+			getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE);
 		else
-			getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE, NULL);
+			getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE);
 
 		if (genbuf[0] == 'a')
 			friend_num = 1;
@@ -462,8 +460,7 @@ int x_override()
 		if (friend_num == 0)
 			break;
 
-		if (getdata(2, 0, _msg_ent_userid, friend_id, sizeof(friend_id),
-			    ECHONOSP, NULL))
+		if (getdata(2, 0, _msg_ent_userid, friend_id, sizeof(friend_id), ECHONOSP))
 		{
 #ifdef IGNORE_CASE
                         strtolow(friend_id);
@@ -494,10 +491,9 @@ int x_blacklist()
         {
                 malloc_array(&badguy_cache, ufile_blacklist);
                 if ((badguy_num = show_array(&badguy_cache)) > 0)
-                        getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE,
-                                NULL);
+                        getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE);
                 else
-                        getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE, NULL);
+                        getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE);
 
                 if (genbuf[0] == 'a')
                         badguy_num = 1;
@@ -507,8 +503,7 @@ int x_blacklist()
                 if (badguy_num == 0)
 			break;
 
-                if (getdata(2, 0, _msg_ent_userid, badguy_id, sizeof(badguy_id),
-                            ECHONOSP, NULL))
+                if (getdata(2, 0, _msg_ent_userid, badguy_id, sizeof(badguy_id), ECHONOSP))
                 {
 #ifdef IGNORE_CASE
                         strtolow(badguy_id);
@@ -551,7 +546,7 @@ int set_user_info(char *userid)
 	show_user_info(&urcOld);
 
 	outs(_msg_not_sure_modify);
-	getdata(0, 0, NULL, buf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(0, 0, NULL, buf, 2, ECHONOSP | XLCASE);
 	if (buf[0] != 'y')
 		return 0;
 
@@ -561,7 +556,7 @@ int set_user_info(char *userid)
 	{
 		show_user_info(&urcNew);
 
-		if (!getdata(20, 0, _msg_xyz_36, buf, 2, ECHONOSP, NULL))
+		if (!getdata(20, 0, _msg_xyz_36, buf, 2, ECHONOSP))
 			break;
 
 		switch (buf[0])
@@ -573,7 +568,7 @@ int set_user_info(char *userid)
                 case 'i':
 #ifdef IGNORE_CASE
                         if (urcNew.ident != 7) break;   //未通過認證不得修改大小寫
-                        getdata(21, 0, "更改ID大小寫 : ", nfakeid, sizeof(nfakeid),
+                        getdata_str(21, 0, "更改ID大小寫 : ", nfakeid, sizeof(nfakeid),
 XECHO, urcNew.fakeuserid);
                         if (!strcasecmp(nfakeid, urcNew.userid))
                                 strcpy(urcNew.fakeuserid, nfakeid);
@@ -588,12 +583,11 @@ XECHO, urcNew.fakeuserid);
 #endif
 		case '0':
 			/* set password */
-			if (getdata(y + buf[0], 14, "\0", temp, PASSLEN, XNOECHO, NULL))
+			if (getdata(y + buf[0], 14, "\0", temp, PASSLEN, XNOECHO))
 			{
 				char npass[PASSLEN];
 
-				getdata(y + buf[0], 28, _msg_xyz_38, npass, sizeof(npass),
-					XNOECHO, NULL);
+				getdata(y + buf[0], 28, _msg_xyz_38, npass, sizeof(npass), XNOECHO);
 				if (!strcmp(npass, temp))
 				{
 					strncpy(urcNew.passwd, genpasswd(npass), PASSLEN);
@@ -622,7 +616,7 @@ XECHO, urcNew.fakeuserid);
 #endif			
 #endif
 			/* set username */
-			if (getdata(y + buf[0], 21, "\0", buf, sizeof(urcNew.username),
+			if (getdata_str(y + buf[0], 21, "\0", buf, sizeof(urcNew.username),
 				XECHO, urcNew.username))
 			{
 #ifdef NSYSUBBS
@@ -633,7 +627,7 @@ XECHO, urcNew.fakeuserid);
 			break;
 		case '2':
 			/* set e-mail address */
-			getdata(y + buf[0], 14, "\0", buf, sizeof(urcNew.email),
+			getdata_str(y + buf[0], 14, "\0", buf, sizeof(urcNew.email),
 				ECHONOSP, urcNew.email);
 
 			if (is_emailaddr(buf))
@@ -675,7 +669,7 @@ XECHO, urcNew.fakeuserid);
 				int ulevel;
 				
 				sprintf(temp, "%d", urcNew.userlevel);
-				getdata(y + buf[0], 14, "\0", buf, 4, ECHONOSP, temp);
+				getdata_str(y + buf[0], 14, "\0", buf, 4, ECHONOSP, temp);
 				if ((ulevel = atoi(buf)) != 0)
 				{
 					urcNew.userlevel = ulevel;
@@ -688,7 +682,7 @@ XECHO, urcNew.fakeuserid);
 				/* set numlogins */
 			{
 				sprintf(temp, "%d", urcNew.numlogins);
-				getdata(y + buf[0], 14, "\0", buf, 6, ECHONOSP, temp);
+				getdata_str(y + buf[0], 14, "\0", buf, 6, ECHONOSP, temp);
 				urcNew.numlogins = atoi(buf);
 #ifdef NSYSUBBS
 				bits |= 0x0100;
@@ -698,7 +692,7 @@ XECHO, urcNew.fakeuserid);
 				/* set numposts */
 			{
 				sprintf(temp, "%d", urcNew.numposts);
-				getdata(y + buf[0], 14, "\0", buf, 6, ECHONOSP, temp);
+				getdata_str(y + buf[0], 14, "\0", buf, 6, ECHONOSP, temp);
 				urcNew.numposts = atoi(buf);
 #ifdef NSYSUBBS
 				bits |= 0x1000;
@@ -711,8 +705,7 @@ XECHO, urcNew.fakeuserid);
 	clrtobot();
 	if (memcmp(&urcNew, &urcOld, sizeof(urcNew)))
 	{
-		getdata(b_line - 3, 0, _msg_not_sure_modify, buf, 4, ECHONOSP | XLCASE,
-			NULL);
+		getdata(b_line - 3, 0, _msg_not_sure_modify, buf, 4, ECHONOSP | XLCASE);
 		if (buf[0] == 'y')
 		{
 			if (update_passwd(&urcNew) > 0)
@@ -771,7 +764,7 @@ int x_uflag()
 			       (*pbits & j ? "Yes" : "No "));
 		}
 
-		if (!getdata(b_line, 0, _msg_xyz_36, genbuf, 2, ECHONOSP, NULL))
+		if (!getdata(b_line, 0, _msg_xyz_36, genbuf, 2, ECHONOSP))
 			break;
 
 		i = genbuf[0] - 'a';
@@ -975,7 +968,7 @@ int x_lang()
 	for (i = 0; i < 2; i++)
 		prints("\n%d) %s", i + 1, langmsg[i]);
 
-	getdata(b_line, 0, _msg_xyz_35, genbuf, 2, ECHONOSP | XLCASE, NULL);
+	getdata(b_line, 0, _msg_xyz_35, genbuf, 2, ECHONOSP | XLCASE);
 	i = genbuf[0] - '0' - 1;
 	if (i >= 0 && i <= 1)
 	{
