@@ -4,6 +4,7 @@
 #
 # This Makefile for "@systype@"
 
+OSTYPE    = @systype@
 DEFINES   = @OS_DEF@ $(SITE_DEF)
 CC        = @CC@
 CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
@@ -32,6 +33,11 @@ LIBSRCS   = misc.c conf.c bbslib.c modetype.c \
             mod_article.c mod_board.c mod_mail.c mod_net.c \
             mod_pass.c mod_post.c mod_readrc.c mod_record.c mod_sem.c \
             mod_shm.c mod_talk.c mod_user.c mod_zap.c 
+
+ifeq ($(OSTYPE), LINUX)
+  LIBSRCS += strlcat.c strlcpy.c
+endif
+
 LIBBBS    = libbbs.a
 
 
