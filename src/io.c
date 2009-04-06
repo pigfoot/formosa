@@ -137,7 +137,12 @@ igetagain:
 
 	if (inbuf[icurrchar] == CTRL('L'))
 	{
+#ifdef USE_PFTERM
+		redrawwin();
+		refresh();
+#else
 		redoscr();
+#endif
 		icurrchar++;
 		goto igetagain;
 	}

@@ -2,7 +2,12 @@
 #include <assert.h>
 #include "bbs.h"
 #include "tsbbs.h"
+
+/* Formosa Porting */
 #undef FULL_VISIO
+#ifdef USE_PFTERM
+BOOL show_ansi = TRUE;
+#endif
 
 /*
  * visio.c
@@ -174,7 +179,7 @@ mvprints(int y, int x, const char *fmt, ...)
     vsnprintf(buff, sizeof(buff), fmt, args);
     va_end(args);
 
-    mvouts(x, y, buff);
+    mvouts(y, x, buff);
 }
 
 /**
@@ -188,6 +193,21 @@ mvouts(int y, int x, const char *str)
     SOLVE_ANSI_CACHE();
     outs(str);
 }
+
+// Formosa Compatible
+#ifdef USE_PFTERM
+void msg(char *fmt, ...)
+{
+    va_list args;
+    char buff[VBUFLEN];
+
+    va_start(args, fmt);
+    vsnprintf(buff, sizeof(buff), fmt, args);
+    va_end(args);
+    mvouts(b_line, 0, buff);
+}
+#endif
+
 
 /**
  * vfill(n, flags, s): 印出並填滿 n 個字元的空間

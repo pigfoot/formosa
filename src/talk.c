@@ -533,9 +533,15 @@ static void do_talk(int fd, USER_INFO *tinf)
 		}
 		else if (ch == CTRL('P'))
 		{
+#ifdef USE_PFTERM
+			VREFSCR scr = vscr_save();
+			toggle_pager();
+			vscr_restore(scr);
+#else
 			save_screen();
 			toggle_pager();
 			restore_screen();
+#endif
 		}
 		else if (ch == CTRL('R'))
 			msq_reply();
@@ -1062,7 +1068,9 @@ int msq_reply()		/* lthuang */
 
 	my_newfd = i_newfd;
 	i_newfd = 0;
-#if 1
+#ifdef USE_PFTERM
+	VREFSCR scr = vscr_save();
+#else
 	save_screen();
 #endif
 
@@ -1211,7 +1219,9 @@ int msq_reply()		/* lthuang */
 
 msq_reply_ret:
 	i_newfd = my_newfd;
-#if 1
+#ifdef USE_PFTERM
+	vscr_restore(scr);
+#else
 	restore_screen();
 #endif
 
