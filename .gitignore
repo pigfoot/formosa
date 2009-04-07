@@ -1,5 +1,7 @@
 *.[oa]
 *.dSYM
+cscope.out
+tags
 
 Makefile
 config.cache
