@@ -99,15 +99,6 @@ AC_PROG_RANLIB
 AC_PATH_PROG(TRUE,true)
 AC_PATH_PROG(PERL,perl)
 AC_PATH_PROG(STRIP,strip)
-AC_PATH_PROG(CPROTO,cproto)
-
-if test -z "${CPROTO}"; then
-	echo
-	echo "*******************************"
-	echo "* Must have cproto installed. *"
-	echo "*******************************"
-	exit
-fi
 
 dnl XXX: is this macro depreated?
 dnl AC_PROG_ECHO

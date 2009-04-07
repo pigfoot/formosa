@@ -17,7 +17,6 @@ bbsweb/util/Makefile
 src/Makefile
 src/util/Makefile
 lib/Makefile
-lib/libproto.h
 csbbs/Makefile
 util/Makefile
 
