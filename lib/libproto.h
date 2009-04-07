@@ -147,6 +147,9 @@ unsigned int new_user P_((USEREC *ubuf, BOOL force));
 int user_login P_((USER_INFO **cutmp, USEREC *urcp, char ctype, char *userid, char *passwd, char *fromhost));
 int cmp_userid P_((char *userid, USER_INFO *upent));
 void user_logout P_((USER_INFO *upent, USEREC *urcp));
+#ifdef USE_ALOHA
+int mnt_alohalist(USER_INFO *upent);
+#endif
 /* mod_zap.c */
 void mymod P_((unsigned int id, int maxu, int *pp, unsigned char *qq));
 int ZapRC_Init P_((char *filename));
