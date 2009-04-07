@@ -84,7 +84,6 @@ struct one_key {           /* Used to pass commands to the readmenu */
 
 extern int t_lines, t_columns;  /* Screen size, hieght, width */
 
-#include "tsbbsproto.h"		/* other function prototype */
 #include "lang.h"
 
 #ifndef _BBS_PROTO_H_

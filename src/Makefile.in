@@ -14,7 +14,6 @@ LDLIBS	  = @LIBS@ -lncurses
 
 STRIP     = @STRIP@
 PERL      = @PERL@
-CPROTO    = @CPROTO@
 INSTALL   = @INSTALL@
 ECHO_N    = @ac_n@
 
@@ -30,13 +29,11 @@ ifeq (-DNSYSUBBS1,$(SITE_DEF))
   LDLIBS  := $(filter-out -lmmalloc,$(LDLIBS))
   DEFINES = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF)
   PERL    = /usr/bin/perl
-  CPROTO  = cproto
 endif
 ifeq (-DANIMEBBS,$(SITE_DEF))
   LDLIBS  := $(filter-out -lmmalloc,$(LDLIBS))
   DEFINES = -DLINUX -DTERMIOS $(SITE_DEF)
   PERL    = /usr/bin/perl
-  CPROTO  = /usr/bin/cproto
 endif
 
 
@@ -66,18 +63,9 @@ update: install
 debug: CFLAGS+= -g
 debug: all
 
-bbsd: tsbbsproto.h $(LIBFILE) $(OBJS) 
+bbsd: $(LIBFILE) $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
 	#$(STRIP) bbsd
-
-tsbbsproto.h: $(SRCS)
-	echo '#include "struct.h"' > tsbbsproto.h; \
-	echo '#include "linklist.h"' >> tsbbsproto.h; \
-	if [ -n "$(CPROTO)" ]; then \
-		echo '#define _BBS_PROTO_H_' >> tsbbsproto.h; \
-		$(CPROTO) -O /dev/null -m -E"$(CC) -pipe -E" -I../include $(DEFINES) \
-			$(SRCS) >> tsbbsproto.h; \
-	fi
 
 bbschatd: bbschatd.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LDLIBS)

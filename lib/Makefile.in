@@ -9,8 +9,6 @@ DEFINES   = @OS_DEF@ $(SITE_DEF)
 CC        = @CC@
 CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
 
-CPROTO    = @CPROTO@
-
 ifeq (-DANIMEBBS,$(SITE_DEF))
   LDLIBS  = -ltermcap
   DEFINES = -DSYSV -DLINUX -DTERMIOS $(SITE_DEF)
@@ -51,21 +49,9 @@ all: $(LIBBBS)
 debug: CFLAGS+= -g
 debug: all
 
-$(LIBBBS): libproto.h $(LIBSRCS:.c=.o)
+$(LIBBBS): $(LIBSRCS:.c=.o)
 	$(AR) ru $(LIBBBS) $(LIBSRCS:.c=.o)
 	@RANLIB@ $(LIBBBS)
-
-libproto.h: $(LIBSRCS)
-	echo '#include "struct.h"' > $@; \
-	echo '#include "linklist.h"' >> $@; \
-	echo '#include <stdio.h>' >> $@; \
-	echo '#include <netdb.h>' >> $@; \
-	echo '#include <unistd.h>' >> $@; \
-	if [ -n "$(CPROTO)" ]; then \
-		echo '#define _BBS_LIB_PROTO_H_' >> $@; \
-		$(CPROTO) -O /dev/null -m -E"$(CC) $(CFLAGS) -pipe -E" -I../include $(KHBBSDEFINES) \
-			$(LIBSRCS) >> $@; \
-	fi
 
 install install_once: 
 
