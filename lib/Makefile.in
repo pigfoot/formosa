@@ -6,7 +6,7 @@
 
 DEFINES   = @OS_DEF@ $(SITE_DEF)
 CC        = @CC@
-CFLAGS	  = @CFLAGS@ -I../include -I.
+CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
 
 CPROTO    = @CPROTO@
 

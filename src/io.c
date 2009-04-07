@@ -2,16 +2,14 @@
 #include "bbs.h"
 #include "tsbbs.h"
 
-#if defined(LINUX)
-#if (__GLIBC__ == 2)
-#define USE_POLL
+#if defined(HAVE_POLL)
+#if defined(HAVE_POLL_H)
+#include <poll.h>
+#elif defined(HAVE_SYS_POLL_H)
 #include <sys/poll.h>
 #endif
-#endif
-
-#if defined(SOLARIS) || defined(__FreeBSD__) || defined(__MACH__)
-#define USE_POLL
-#include <poll.h>
+#else
+#error poll(2) is needed!
 #endif
 
 extern int dumb_term;

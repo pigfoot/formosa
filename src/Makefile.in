@@ -9,7 +9,7 @@ HOMEBBS   = @prefix@
 
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@
-CFLAGS	  = @CFLAGS@ -I../include -I../lib
+CFLAGS	  = @CFLAGS@ -I.. -I../include -I../lib
 LDLIBS	  = @LIBS@ -lncurses
 
 STRIP     = @STRIP@

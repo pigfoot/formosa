@@ -28,21 +28,16 @@
 #include <dirent.h>
 #endif
 
-#if 0
-#ifdef  AIX
-#include <sys/select.h>
-#endif
-#endif
-
 /* asuka: 2001/8/30 */
 #ifdef HAVE_CONFIG_H
-#include "../config.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
 #endif
 
+#include "bbsconfig.h"
 
 /*******************************************************************
  *	§C¶¥©w¸q

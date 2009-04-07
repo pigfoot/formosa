@@ -4,7 +4,6 @@ AC_CONFIG_AUX_DIR(cfgaux)
 AC_VALIDATE_CACHED_SYSTEM_TUPLE(rm -f config.cache)
 AC_CANONICAL_SYSTEM
 
-
 LDFLAGS="-g"
 
 case ${target} in
@@ -205,6 +204,11 @@ AC_TRY_COMPILE([
 AC_MSG_RESULT($enableval)
 if test "${enableval}" = "yes"; then
 	AC_DEFINE(HAVE_POLL, 1, [Define if poll is available in <poll.h> or <sys/poll.h>.])
+else
+	echo "*******************************"
+	echo "* System MUST support poll(2) *"
+	echo "*******************************"
+	exit
 fi
 
 AC_CACHE_CHECK(if sys_siglist is already defined, ac_cv_needs_sys_siglist,

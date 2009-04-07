@@ -16,7 +16,7 @@
 #include <sys/shm.h>
 #include <time.h>
 
-#include "config.h"
+#include "bbsconfig.h"
 #include "struct.h"
 #include "libproto.h"
 

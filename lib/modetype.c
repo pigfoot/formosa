@@ -5,7 +5,7 @@
 
 #include <sys/types.h>
 #include <stdio.h>
-#include "config.h"
+#include "bbsconfig.h"
 #include "struct.h"
 #include "modes.h"
 
