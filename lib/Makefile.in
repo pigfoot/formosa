@@ -27,7 +27,7 @@ endif
 
 
 
-LIBSRCS   = misc.c conf.c bbslib.c modetype.c \
+LIBSRCS   = ap_board.c misc.c conf.c bbslib.c modetype.c \
             mod_article.c mod_board.c mod_mail.c mod_net.c \
             mod_pass.c mod_post.c mod_readrc.c mod_record.c mod_sem.c \
             mod_shm.c mod_talk.c mod_user.c mod_zap.c 
@@ -38,11 +38,8 @@ endif
 
 LIBBBS    = libbbs.a
 
-
-.SUFFIXES: .o .c
-
-.c.o:  ;   $(CC) $(CFLAGS) $(DEFINES) -c $*.c
-
+%.o: libproto.h %.c
+	$(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
 all: $(LIBBBS)
 

@@ -1,8 +1,11 @@
 
+#define __AP_BOARD_C__
+#include "bbs.h"
+#include "../src/tsbbs.h"
 
-static int num_brds = 0;
-static int num_alloc_brds = 0;
-static struct BoardList *all_brds = NULL;	/* pointer of all boards allocated */
+int num_brds = 0;
+int num_alloc_brds = 0;
+struct BoardList *all_brds = NULL;	/* pointer of all boards allocated */
 
 static int malloc_board(struct board_t *binfr)
 {
@@ -126,7 +129,7 @@ struct BoardList *SearchBoardList(char bname[])
 		memset(&which_be, 0, sizeof(which_be));
 		which_be.bhr = &target_bh;
 		if ((be1 = (struct BoardList *)bsearch(&which_be, all_brds, num_brds,
-			sizeof(struct BoardList), cmp_bname)) != NULL)
+			sizeof(struct BoardList), (compare_proto)cmp_bname)) != NULL)
 		{
 			return be1;
 		}

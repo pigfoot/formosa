@@ -8,7 +8,7 @@
 #include "bbsconfig.h"
 #include "struct.h"
 #include "modes.h"
-
+#include "libproto.h"
 
 static char * ModeType[] = {
 

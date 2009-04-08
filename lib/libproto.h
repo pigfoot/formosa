@@ -1,8 +1,21 @@
+#ifndef __LIBPROTO_H_INCLUDDED__
+#define __LIBPROTO_H_INCLUDDED__
+
 #include "struct.h"
 #include "linklist.h"
 #include <stdio.h>
 #include <netdb.h>
 #include <unistd.h>
+
+/* ap_board.c */
+#ifndef __AP_BOARD_C__
+extern int num_brds;
+extern int num_alloc_brds;
+extern struct BoardList *all_brds;
+#endif
+typedef int (*compare_proto)(const void *, const void *);
+int CreateBoardList();
+struct BoardList *SearchBoardList(char bname[]);
 
 /* misc.c */
 int flock(int fd, int op);
@@ -157,3 +170,4 @@ size_t strlcat(char *dst, const char *src, size_t siz);
 /* strlcpy.c */
 size_t strlcpy(char *dst, const char *src, size_t siz);
 
+#endif

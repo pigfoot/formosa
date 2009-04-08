@@ -1,8 +1,5 @@
-
 #include "bbs.h"
 #include "tsbbs.h"
-
-#include "../lib/ap_board.c"
 
 static int num_class = 0;
 static struct BoardList *all_cs = NULL;	/* pointer of all class allocated */

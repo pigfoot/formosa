@@ -20,7 +20,6 @@
 #include "struct.h"
 #include "libproto.h"
 
-
 void attach_err(int key, char *name)
 {
 	fprintf(stderr, "[%s error] key = %X\n", name, key);
