@@ -214,20 +214,24 @@ igetagain:
 			return I_OTHERDATA;
 		if (!(pd[0].events & pd[0].revents))
 			goto igetagain;
-		while ((ibufsize = read(0, inbuf, IBUFSIZE)) <= 0)
-		{
-			if (ibufsize < 0 && errno == EINTR)
-				continue;
 
-			if (curuser.userid[0])
+		int len;
+		do {
+			len = tty_read(inbuf, IBUFSIZE);
+#ifdef DBG_OUTRPT
+			// if (0)
 			{
-				if (ibufsize < 0 && errno == ECONNRESET)
-					abort_bbs(0);	/* lthuang */					
-				abort_bbs(0);	/* lthuang */
+				static char xbuf[128];
+				sprintf(xbuf, ESC_STR "[s" ESC_STR "[2;1H [%ld] "
+					ESC_STR "[u", len);
+				write(1, xbuf, strlen(xbuf));
+				fsync(1);
 			}
+#endif
 
-			longjmp(byebye, -1);
-		}
+		} while (len <= 0);
+		ibufsize = len;
+
 		icurrchar = 0;
 	}
 

@@ -101,7 +101,7 @@ char *argv[];
 	}
 	else
 #endif	
-		Formosa(host, telnet(&term[0]), argc, argv);
+		Formosa(host, telnet_init(), argc, argv);
 
 	shutdown(0, 2);
 	exit(0);
@@ -299,6 +299,7 @@ char *argv[];
 	}
 }
 
+#if 0
 
 char *
 telnet(term)
@@ -383,3 +384,5 @@ char *term;
 	write(1, o5, sizeof(o5));
 	return term;
 }
+
+#endif
