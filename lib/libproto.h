@@ -14,7 +14,7 @@ extern int num_alloc_brds;
 extern struct BoardList *all_brds;
 #endif
 typedef int (*compare_proto)(const void *, const void *);
-int CreateBoardList();
+int CreateBoardList(const USEREC *curuserp);
 struct BoardList *SearchBoardList(char bname[]);
 
 /* misc.c */

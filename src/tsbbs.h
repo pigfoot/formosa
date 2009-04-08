@@ -112,8 +112,6 @@ int set_article_title(char title[]);
 int tag_article(int ent, FILEHEADER *finfo, char *direct);
 int range_tag_article(int ent, FILEHEADER *finfo, char *direct);
 /* board.c */
-int CreateBoardList(void);
-struct BoardList *SearchBoardList(char bname[]);
 int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple);
 int select_board(void);
 int Boards(void);

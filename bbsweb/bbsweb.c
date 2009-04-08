@@ -34,7 +34,7 @@ char BBS_SUBDIR[PATHLEN];
 char WEBBBS_ERROR_MESSAGE[PATHLEN];
 
 #ifdef WEB_ACCESS_LOG
-char log[HTTP_REQUEST_LINE_BUF];	/* buffer for weblog() */
+char logstr[HTTP_REQUEST_LINE_BUF];	/* buffer for weblog() */
 #endif
 
 #ifdef TORNADO_OPTIMIZE
@@ -537,7 +537,7 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 
 #ifdef WEB_EVENT_LOG
 	if (result == WEB_OK || result == WEB_OK_REDIRECT)
-		weblog_line(server->access_log, "%s", log);
+		weblog_line(server->access_log, "%s", logstr);
 #endif
 
 	return result;
@@ -694,7 +694,7 @@ ParseCommand(char *inbuf)
 	bzero(skin_file, SF_SIZE);
 	bzero(post_file, PF_SIZE);
 	bzero(&curuser, sizeof(USEREC));
-	log[0] = 0x00;
+	logstr[0] = 0x00;
 	WEBBBS_ERROR_MESSAGE[0] = 0x00;
 
 	request_rec->URLParaType = OtherFile;

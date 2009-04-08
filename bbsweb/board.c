@@ -9,7 +9,7 @@
 #include "bbswebproto.h"
 
 #ifdef WEB_ACCESS_LOG
-extern char log[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
+extern char logstr[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
 #endif
 
 
@@ -30,10 +30,9 @@ struct _board_attrib
 	{NULL, 0x00}
 };
 
-static int num_brds;
+static int web_num_brds;
+struct BoardList web_all_brds[MAXBOARD];
 char board_class;
-
-struct BoardList all_brds[MAXBOARD];
 
 static int
 malloc_boards(binfr)
@@ -58,10 +57,10 @@ struct board_t *binfr;
 
 	if (binfr->rank < 1 || binfr->rank > MAXBOARD)
 		return -1;
-	all_brds[binfr->rank - 1].binfr = binfr;
-	all_brds[binfr->rank - 1].bhr = bhentp;
+	web_all_brds[binfr->rank - 1].binfr = binfr;
+	web_all_brds[binfr->rank - 1].bhr = bhentp;
 
-	num_brds++;
+	web_num_brds++;
 
 	return 0;
 }
@@ -169,8 +168,8 @@ ShowBoardList(char *tag, POST_FILE * pf)
 	GetPara3(format, "CLASS", tag, 2, "*");
 
 	board_class = *format;
-	num_brds = 0;
-	memset(all_brds, 0, sizeof(all_brds));
+	web_num_brds = 0;
+	memset(web_all_brds, 0, sizeof(web_all_brds));
 	apply_brdshm_board_t(malloc_boards);
 
 	GetPara3(format, "FORMAT", tag, sizeof(format), "");
@@ -187,7 +186,7 @@ ShowBoardList(char *tag, POST_FILE * pf)
 		{
 			fprintf(fp_out, "<%c,!%s!>\r\n", format_array[i].type, format_array[i].ptr);
 		}
-		fprintf(fp_out, "---------recidx=%d-%d----------\r\n", 1, num_brds);
+		fprintf(fp_out, "---------recidx=%d-%d----------\r\n", 1, web_num_brds);
 		fflush(fp_out);
 	}
 #endif
@@ -196,13 +195,13 @@ ShowBoardList(char *tag, POST_FILE * pf)
 	{
 		int i;
 
-		if (!all_brds[recidx - 1].bhr)
+		if (!web_all_brds[recidx - 1].bhr)
 			continue;
 
 		idx++;
 		if (idx < 1)
 			continue;
-		else if (idx > num_brds)
+		else if (idx > web_num_brds)
 			break;
 
 		for (i = 0; format_array[i].type; i++)
@@ -219,23 +218,23 @@ ShowBoardList(char *tag, POST_FILE * pf)
 				if (!strncasecmp(tag, "NUM", tag_len))
 					fprintf(fp_out, "%d", idx);
 				else if (!strncasecmp(tag, "CLASS", tag_len))
-					fprintf(fp_out, "%c", toupper((int) (all_brds[recidx - 1].bhr->class)));
+					fprintf(fp_out, "%c", toupper((int) (web_all_brds[recidx - 1].bhr->class)));
 				else if (!strncasecmp(tag, "BID", tag_len))
-					fprintf(fp_out, "%d", all_brds[recidx - 1].bhr->bid);
+					fprintf(fp_out, "%d", web_all_brds[recidx - 1].bhr->bid);
 				else if (!strncasecmp(tag, "E-BNAME", tag_len))
-					fprintf(fp_out, "%s", all_brds[recidx - 1].bhr->filename);
+					fprintf(fp_out, "%s", web_all_brds[recidx - 1].bhr->filename);
 				else if (!strncasecmp(tag, "E-BNAME-LINK", tag_len))
 					fprintf(fp_out, "%s/%s",
-					 all_brds[recidx - 1].bhr->filename,
-						all_brds[recidx - 1].binfr->bm_welcome ? HTML_BmWelcome : "");
+					 web_all_brds[recidx - 1].bhr->filename,
+						web_all_brds[recidx - 1].binfr->bm_welcome ? HTML_BmWelcome : "");
 				else if (!strncasecmp(tag, "C-BNAME", tag_len))
-					fprintf(fp_out, "%s ", all_brds[recidx - 1].bhr->title);	/* add space */
+					fprintf(fp_out, "%s ", web_all_brds[recidx - 1].bhr->title);	/* add space */
 				else if (!strncasecmp(tag, "BM", tag_len))
-					fprintf(fp_out, "%s", all_brds[recidx - 1].bhr->owner);
+					fprintf(fp_out, "%s", web_all_brds[recidx - 1].bhr->owner);
 				else if (!strncasecmp(tag, "LEVEL", tag_len))
-					fprintf(fp_out, "%d", all_brds[recidx - 1].bhr->level);
+					fprintf(fp_out, "%d", web_all_brds[recidx - 1].bhr->level);
 				else if (!strncasecmp(tag, "Posts", tag_len))
-					fprintf(fp_out, "%d", all_brds[recidx - 1].binfr->numposts);
+					fprintf(fp_out, "%d", web_all_brds[recidx - 1].binfr->numposts);
 				else if (!strncasecmp(tag, "BBS_SubDir", tag_len))
 					fprintf(fp_out, "/%s", BBS_SUBDIR);
 			}
@@ -320,7 +319,7 @@ ModifyAcl(char *pbuf, char *boardname)
 #ifdef WEB_EVENT_LOG	
 	if (retval == WEB_OK_REDIRECT)
 	{
-		sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
+		sprintf(logstr, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
 			POST_AclModify, boardname, username, 
 			request_rec->user_agent);
 	}
@@ -380,7 +379,7 @@ not effect statement ?
 	fclose(fp);
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
 		POST_SkinModify, board->filename, username, request_rec->user_agent);
 #endif
 
@@ -509,7 +508,7 @@ ModifyBoard(char *pbuf, BOARDHEADER * board)
 	rebuild_brdshm(TRUE);
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", POST_BoardModify, board->filename, username, request_rec->user_agent);
+	sprintf(logstr, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", POST_BoardModify, board->filename, username, request_rec->user_agent);
 #endif
 
 	return WEB_OK_REDIRECT;

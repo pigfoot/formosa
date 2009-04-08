@@ -413,7 +413,7 @@ int adminCreateBoard()
 /*
  * add to newclass -ToDo-
  */
-		CreateBoardList();
+		CreateBoardList(&curuser);
 
 		showmsg(_msg_finish);
 	}
@@ -526,7 +526,7 @@ int adminMaintainBoard()
 		return C_FULL;
 	}
 	rebuild_brdshm(FALSE);
-	CreateBoardList();
+	CreateBoardList(&curuser);
 
 	showmsg(_msg_finish);
 	return C_FULL;

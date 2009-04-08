@@ -85,7 +85,7 @@ main (argc, argv)
 	}
 
 	apply_brdshm (list_bm);
-	qsort ((void *) all_bm_id, num_bm, IDLEN, strcmp);
+	qsort ((void *) all_bm_id, num_bm, IDLEN, (compare_proto)strcmp);
 
 #if 1
 	printf ("%s(%d): %s (%s)\n", userid, ident, bm_fname, bm_title);

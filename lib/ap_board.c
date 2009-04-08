@@ -1,4 +1,3 @@
-
 #define __AP_BOARD_C__
 #include "bbs.h"
 #include "../src/tsbbs.h"
@@ -6,18 +5,19 @@
 int num_brds = 0;
 int num_alloc_brds = 0;
 struct BoardList *all_brds = NULL;	/* pointer of all boards allocated */
+static const USEREC *cp = NULL;
 
 static int malloc_board(struct board_t *binfr)
 {
 	int rank;
-	
-#ifndef _BBS2G4_C_	
-	if (!can_see_board(&(binfr->bhr), curuser.userlevel))
-		return -1;
-#else
-	if (!can_see_board(&(binfr->bhr), 0))
-		return -1;
-#endif		
+
+	if (cp) {
+		if (!can_see_board(&(binfr->bhr), cp->userlevel))
+			return -1;
+	} else {
+		if (!can_see_board(&(binfr->bhr), 0))
+			return -1;
+	}
 
 	if (num_brds >= num_alloc_brds)	/* lthuang: 99/08/20 debug */
 		return -1;
@@ -25,36 +25,31 @@ static int malloc_board(struct board_t *binfr)
 	if (rank < 1 || rank > num_alloc_brds)	/* debug */
 		return -1;
 	
-#ifndef _BBS2G4_C_		
-	if ((binfr->bhr.brdtype & BRD_UNZAP)
-	    || !(ZapRC_IsZapped(binfr->bhr.bid, binfr->bhr.ctime) && (curuser.flags[0] & YANK_FLAG)))
-#endif	    
-	{
-		all_brds[rank - 1].enter_cnt = 0;
-#ifndef _BBS2G4_C_		
-#ifdef USE_VOTE
-		all_brds[rank - 1].voting = is_new_vote(binfr->bhr.filename, curuser.lastlogin);
-#endif
-#endif
-		all_brds[rank - 1].bcur = 0;	/* init */
-		all_brds[rank - 1].bhr = &(binfr->bhr);
-		all_brds[rank - 1].binfr = binfr;
+	if (cp && 
+		!(binfr->bhr.brdtype & BRD_UNZAP) &&
+		(ZapRC_IsZapped(binfr->bhr.bid, binfr->bhr.ctime) && (cp->flags[0] & YANK_FLAG)))
+		return -1;
 
-		num_brds++;
-		return 0;
+	all_brds[rank - 1].enter_cnt = 0;
+	if (cp) {
+#ifdef USE_VOTE
+		all_brds[rank - 1].voting = is_new_vote(binfr->bhr.filename, cp->lastlogin);
+#endif
 	}
-	
-	return -1;
+	all_brds[rank - 1].bcur = 0;	/* init */
+	all_brds[rank - 1].bhr = &(binfr->bhr);
+	all_brds[rank - 1].binfr = binfr;
+
+	num_brds++;
+	return 0;
 }
 
-
-int CreateBoardList()
+int CreateBoardList(const USEREC *curuserp)
 {
-#ifndef _BBS2G4_C_
+	int i, j;
 	char fname_zaprc[PATHLEN];
-#endif
-	
 
+	cp = curuserp;
 	if (all_brds)	/* lthuang */
 	{
 		free(all_brds);
@@ -71,18 +66,14 @@ int CreateBoardList()
 		}
 	}						     
 
-#ifndef _BBS2G4_C_
-	sethomefile(fname_zaprc, curuser.userid, UFNAME_ZAPRC);
-	ZapRC_Init(fname_zaprc);
-#endif	
+	if (cp) {
+		sethomefile(fname_zaprc, cp->userid, UFNAME_ZAPRC);
+		ZapRC_Init(fname_zaprc);
+	}
 
 	apply_brdshm_board_t(malloc_board);
-#if 0
-	qsort(all_brds, num_brds, sizeof(struct BoardList), cmp_bname);
-#else
-	{ 
-	int i, j;
-	/*ARGUSED*/
+
+	/* Bubble sort ARGUSED */
 	for (i = 0; i < num_brds; i++)
 	{
 		if (!all_brds[i].bhr)
@@ -98,8 +89,6 @@ int CreateBoardList()
 			}
 		}
 	}
-	}
-#endif
 	
 #if 0
 	/* 為配合主選單的 (R)ead 功能 */	

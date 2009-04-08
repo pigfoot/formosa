@@ -7,7 +7,7 @@
 
 
 #ifdef WEB_ACCESS_LOG
-extern char log[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
+extern char logstr[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
 #endif
 
 
@@ -320,11 +320,11 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 
 #ifdef WEB_EVENT_LOG
 	if (URLParaType == MailSend)
-		sprintf(log, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_MailSend, username, address, subject, request_rec->user_agent);
+		sprintf(logstr, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_MailSend, username, address, subject, request_rec->user_agent);
 	else if (URLParaType == AclMail)
-		sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_AclMail, username, board->filename, subject, request_rec->user_agent);
+		sprintf(logstr, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_AclMail, username, board->filename, subject, request_rec->user_agent);
 	else
-		sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_PostSend, username, board->filename, subject, request_rec->user_agent);
+		sprintf(logstr, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_PostSend, username, board->filename, subject, request_rec->user_agent);
 #endif
 
 	return WEB_OK_REDIRECT;
@@ -433,7 +433,7 @@ EditArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
+	sprintf(logstr, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
 		POST_PostEdit, username, board->filename, subject, request_rec->user_agent);
 #endif
 
@@ -502,10 +502,10 @@ DeleteArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 
 #ifdef WEB_EVENT_LOG
 	if (request_rec->URLParaType == MailDelete)
-		sprintf(log, "%s ID=\"%s\" SJT=\"%s\" UA=\"%s\"",
+		sprintf(logstr, "%s ID=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			POST_MailDelete, username, pf->fh.title, request_rec->user_agent);
 	else
-		sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
+		sprintf(logstr, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			POST_PostDelete, username, board->filename, pf->fh.title, request_rec->user_agent);
 #endif
 
@@ -561,7 +561,7 @@ ForwardArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", 
 			(request_rec->URLParaType == MailForward) ? POST_MailForward : POST_PostForward,
 			username, address, pf->fh.title, request_rec->user_agent);
 #endif

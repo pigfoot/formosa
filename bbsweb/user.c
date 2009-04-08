@@ -4,7 +4,7 @@
 #include "bbswebproto.h"
 
 #ifdef WEB_ACCESS_LOG
-extern char log[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
+extern char logstr[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
 #endif
 extern struct array aloha_cache;
 
@@ -646,7 +646,7 @@ NewUser(char *pbuf, USEREC * curuser)
 	request_rec->URLParaType = UserQuery;	/* for HTML_UserNewOK use */
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" UA=\"%s\"", POST_UserNew, curuser->userid, request_rec->user_agent);
+	sprintf(logstr, "%s ID=\"%s\" UA=\"%s\"", POST_UserNew, curuser->userid, request_rec->user_agent);
 #endif
 
 	return WEB_OK;
@@ -805,7 +805,7 @@ DoUserIdent(char *pbuf, USEREC * curuser)
 #endif
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" UA=\"%s\"", POST_UserIdent, curuser->userid, request_rec->user_agent);
+	sprintf(logstr, "%s ID=\"%s\" UA=\"%s\"", POST_UserIdent, curuser->userid, request_rec->user_agent);
 #endif
 
 	return WEB_OK;
@@ -855,7 +855,7 @@ UpdateUserData(char *pbuf, USEREC * curuser)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "%s ID=\"%s\" UA=\"%s\"", 
 		POST_UserData, curuser->userid, request_rec->user_agent);
 #endif
 
@@ -941,7 +941,7 @@ UpdateUserSign(char *pbuf, USEREC * curuser)
 	fclose(fp);
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "%s ID=\"%s\" UA=\"%s\"", 
 		POST_UserSign, curuser->userid, request_rec->user_agent);
 #endif
 
@@ -997,7 +997,7 @@ UpdateUserPlan(char *pbuf, USEREC * curuser)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "UserPlan ID=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "UserPlan ID=\"%s\" UA=\"%s\"", 
 		curuser->userid, request_rec->user_agent);
 #endif
 
@@ -1021,7 +1021,7 @@ UpdateUserFriend(char *pbuf, USEREC * curuser)
 #ifdef WEB_EVENT_LOG	
 	if (retval == WEB_OK_REDIRECT)
 	{
-		sprintf(log, "%s ID=\"%s\" UA=\"%s\"", 
+		sprintf(logstr, "%s ID=\"%s\" UA=\"%s\"", 
 			POST_UserFriend, curuser->userid, request_rec->user_agent);
 	}
 #endif
