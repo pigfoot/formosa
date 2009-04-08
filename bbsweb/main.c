@@ -132,8 +132,9 @@ sem_lock1(int semid, int op)
 static void 
 ChildMain(int num, int sock)
 {
+	socklen_t aha;
 	struct sockaddr_in from;
-	int aha, ns, on;
+	int ns, on;
 	char *host;
 	fd_set ibits;
 
@@ -293,6 +294,7 @@ MakeChild(int i, int sock)
 int 
 main(int argc, char *argv[])
 {
+	socklen_t scklen;
 	int aha, on, s;
 	struct sockaddr_in from, sin;
 	char check = 0;
@@ -548,7 +550,7 @@ main(int argc, char *argv[])
 	sleep(2);		/* wait for child to initial */
 #endif
 
-	aha = sizeof(from);
+	scklen = sizeof(from);
 	fp_in = stdin;
 	fp_out = stdout;
 
@@ -606,7 +608,7 @@ main(int argc, char *argv[])
 		if (!FD_ISSET(s, &ibits))
 			continue;
 
-		if ((ns = accept(s, (struct sockaddr *) &from, &aha)) < 0)
+		if ((ns = accept(s, (struct sockaddr *) &from, &scklen)) < 0)
 			continue;	/* 沒建立連結，繼續等待 while(1) */
 		else
 		{

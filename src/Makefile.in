@@ -47,7 +47,7 @@ LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
 
 SRCS      = admin.c article.c board.c chat.c chat2.c cursor.c edit.c formosa.c \
             globals.c ident.c io.c lang.c list.c mail.c main.c menu.c \
-            more.c pmore.c post.c screen.c stuff.c talk.c term.c vote.c xyz.c
+            more.c pmore.c post.c screen.c stuff.c talk.c telnet.c term.c vote.c xyz.c
 OBJS      = $(SRCS:.c=.o)
 
 .SUFFIXES: .o .c

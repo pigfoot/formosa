@@ -1,3 +1,8 @@
+#if defined(LINUX)
+#define _GNU_SOURCE
+#include <string.h>
+#endif
+
 #include "bbs.h"
 #include "bbsweb.h"
 #include "bbswebproto.h"
@@ -6,11 +11,6 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/socket.h>	/* for shutdown() */
-
-#if defined(LINUX)
-#define _GNU_SOURCE
-#include <string.h>
-#endif
 
 extern int RUNNING;
 extern int my_num;

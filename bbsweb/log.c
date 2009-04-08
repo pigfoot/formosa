@@ -35,7 +35,7 @@ weblog(char *msg, char *logfile)
 void
 weblog_line(FILE * fp, char *fmt,...)
 {
-	char timestr[18];
+	char timestr[32];
 	char msg[HTTP_REQUEST_LINE_BUF];
 	va_list args;
 
