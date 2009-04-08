@@ -3,164 +3,157 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <unistd.h>
-#define _BBS_LIB_PROTO_H_
-#if __STDC__ || defined(__cplusplus)
-#define P_(s) s
-#else
-#define P_(s) ()
-#endif
 
 /* misc.c */
-int flock P_((int fd, int op));
-int mycp P_((const char *from, const char *to));
-int myunlink P_((char name[]));
-int myrename P_((const char *from, const char *to));
-int isfile P_((const char *fname));
-int isdir P_((char *fname));
-int seekstr_in_file P_((char filename[], char seekstr[]));
-char *xstrncpy P_((register char *dst, const char *src, size_t n));
-char *xstrcat P_((register char *dst, const char *src, size_t maxlen));
-char *xgrep P_((char *pattern, char *filename));
-int append_file P_((char *afile, char *rfile));
-char *Ctime P_((register time_t *clock));
-void xsort P_((void *a, size_t n, size_t es, int (*cmp)(void)));
+int flock(int fd, int op);
+int mycp(const char *from, const char *to);
+int myunlink(char name[]);
+int myrename(const char *from, const char *to);
+int isfile(const char *fname);
+int isdir(char *fname);
+int seekstr_in_file(char filename[], char seekstr[]);
+char *xstrncpy(register char *dst, const char *src, size_t n);
+char *xstrcat(register char *dst, const char *src, size_t maxlen);
+char *xgrep(char *pattern, char *filename);
+int append_file(char *afile, char *rfile);
+char *Ctime(register time_t *clock);
+void xsort(void *a, size_t n, size_t es, int (*cmp)(void));
 /* conf.c */
-void *bbsconf_addstr P_((char *str));
-char *bbsconf_str P_((const char *key, const char *default_value));
-int bbsconf_eval P_((const char *key, const int default_value));
-void bbsconf_addkey P_((char *key, char *str, int val));
-void parse_bbsconf P_((char *fname));
-void build_bbsconf P_((char *configfile, char *imgfile));
-void load_bbsconf_image P_((char *imgfile));
-void load_bbsconf P_((void));
+void *bbsconf_addstr(char *str);
+char *bbsconf_str(const char *key, const char *default_value);
+int bbsconf_eval(const char *key, const int default_value);
+void bbsconf_addkey(char *key, char *str, int val);
+void parse_bbsconf(char *fname);
+void build_bbsconf(char *configfile, char *imgfile);
+void load_bbsconf_image(char *imgfile);
+void load_bbsconf(void);
 /* bbslib.c */
-void bbslog P_((const char *mode, const char *fmt, ...));
-void sethomefile P_((register char *buf, const char *userid, const char *filename));
-void setuserfile P_((register char *buf, const char *userid, const char *filename));
-void setboardfile P_((register char *buf, const char *bname, const char *filename));
-void setvotefile P_((register char *buf, const char *bname, const char *filename));
-void settreafile P_((register char *buf, const char *bname, const char *filename));
-void setmailfile P_((char *buf, const char *userid, const char *filename));
-void setdotfile P_((register char *buf, const char *dotfile, const char *fname));
-void init_bbsenv P_((void));
-int host_deny P_((char *host));
+void bbslog(const char *mode, const char *fmt, ...);
+void sethomefile(register char *buf, const char *userid, const char *filename);
+void setuserfile(register char *buf, const char *userid, const char *filename);
+void setboardfile(register char *buf, const char *bname, const char *filename);
+void setvotefile(register char *buf, const char *bname, const char *filename);
+void settreafile(register char *buf, const char *bname, const char *filename);
+void setmailfile(char *buf, const char *userid, const char *filename);
+void setdotfile(register char *buf, const char *dotfile, const char *fname);
+void init_bbsenv(void);
+int host_deny(char *host);
 /* modetype.c */
-char *modestring P_((USER_INFO *upent, int complete));
+char *modestring(USER_INFO *upent, int complete);
 /* mod_article.c */
-int pack_article P_((char *direct));
-int append_article P_((char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost));
-void include_ori P_((char *rfile, char *wfile));
-int include_sig P_((const char *name, const char *wfile, int num));
-int reserve_one_article P_((int ent, char *direct));
-char get_pushcnt P_((int ent, char *direct, int fd));
-int push_one_article P_((int ent, char *direct, int fd, char score));
-void write_article_header P_((FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin));
-int delete_one_article P_((int ent, FILEHEADER *finfo, char *direct, char *delby, int option));
+int pack_article(char *direct);
+int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
+void include_ori(char *rfile, char *wfile);
+int include_sig(const char *name, const char *wfile, int num);
+int reserve_one_article(int ent, char *direct);
+char get_pushcnt(int ent, char *direct, int fd);
+int push_one_article(int ent, char *direct, int fd, char score);
+void write_article_header(FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin);
+int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, int option);
 /* mod_board.c */
-int can_see_board P_((BOARDHEADER *bhr, unsigned int userlevel));
-int check_board_acl P_((char *boardname, char *userid));
+int can_see_board(BOARDHEADER *bhr, unsigned int userlevel);
+int check_board_acl(char *boardname, char *userid);
 /* mod_mail.c */
-int InvalidEmailAddr P_((char *addr));
-char *find_fqdn P_((char *a, struct hostent *p));
-int get_hostname_hostip P_((void));
-BOOL is_emailaddr P_((char *to));
-int CheckMail P_((USEREC *urc, char *to, BOOL strict));
-int SendMail P_((int ms, char *fname, char *from, char *to, char *title, char ident));
-int CreateMailSocket P_((void));
-int CloseMailSocket P_((int ms));
-int CheckNewmail P_((const char *name, BOOL force_chk));
+int InvalidEmailAddr(char *addr);
+char *find_fqdn(char *a, struct hostent *p);
+int get_hostname_hostip(void);
+BOOL is_emailaddr(char *to);
+int CheckMail(USEREC *urc, char *to, BOOL strict);
+int SendMail(int ms, char *fname, char *from, char *to, char *title, char ident);
+int CreateMailSocket(void);
+int CloseMailSocket(int ms);
+int CheckNewmail(const char *name, BOOL force_chk);
 /* mod_net.c */
-int ConnectServer P_((char *host, int port));
-int net_printf P_((int sd, char *fmt, ...));
-char *net_gets P_((int sd, char buf[], int buf_size));
+int ConnectServer(char *host, int port);
+int net_printf(int sd, char *fmt, ...);
+char *net_gets(int sd, char buf[], int buf_size);
 /* mod_pass.c */
-char *genpasswd P_((char *pw));
-int checkpasswd P_((char *passwd, char *test));
+char *genpasswd(char *pw);
+int checkpasswd(char *passwd, char *test);
 /* mod_post.c */
-int append_news P_((char *bname, char *fname, char *userid, char *username, char *title, char opt));
-int PublishPost P_((char *fname, char *userid, char *username, char *bname, char *title, char ident, char *fromhost, short tonews, char *postpath, unsigned char flag));
-int make_treasure_folder P_((char *direct, char *title, char *dirname));
+int append_news(char *bname, char *fname, char *userid, char *username, char *title, char opt);
+int PublishPost(char *fname, char *userid, char *username, char *bname, char *title, char ident, char *fromhost, short tonews, char *postpath, unsigned char flag);
+int make_treasure_folder(char *direct, char *title, char *dirname);
 /* mod_readrc.c */
-void ReadRC_Update P_((void));
-void ReadRC_Expire P_((void));
-void ReadRC_Init P_((unsigned int bid, char *userid));
-void ReadRC_Addlist P_((int artno));
-int ReadRC_UnRead P_((int artno));
-void ReadRC_Refresh P_((char *boardname));
-void ReadRC_Visit P_((unsigned int bid, char *userid, int bitset));
+void ReadRC_Update(void);
+void ReadRC_Expire(void);
+void ReadRC_Init(unsigned int bid, char *userid);
+void ReadRC_Addlist(int artno);
+int ReadRC_UnRead(int artno);
+void ReadRC_Refresh(char *boardname);
+void ReadRC_Visit(unsigned int bid, char *userid, int bitset);
 /* mod_record.c */
-long get_num_records P_((const char filename[], int size));
-long get_num_records1 P_((const char filename[], int size));
-long get_num_records_byfd P_((int fd, int size));
-int append_record P_((const char filename[], void *record, size_t size));
-int get_record P_((char *filename, void *rptr, size_t size, unsigned int id));
-int delete_record P_((char *filename, size_t size, unsigned int id));
-int substitute_record P_((char *filename, void *rptr, size_t size, unsigned int id));
+long get_num_records(const char filename[], int size);
+long get_num_records1(const char filename[], int size);
+long get_num_records_byfd(int fd, int size);
+int append_record(const char filename[], void *record, size_t size);
+int get_record(char *filename, void *rptr, size_t size, unsigned int id);
+int delete_record(char *filename, size_t size, unsigned int id);
+int substitute_record(char *filename, void *rptr, size_t size, unsigned int id);
 /* mod_sem.c */
-int sem_init P_((key_t key));
-void sem_cleanup P_((int sem_id));
-void sem_lock P_((int semid, int op));
+int sem_init(key_t key);
+void sem_cleanup(int sem_id);
+void sem_lock(int semid, int op);
 /* mod_shm.c */
-void *attach_shm P_((key_t shmkey, int shmsize));
-void resolve_utmp P_((void));
-USER_INFO *search_ulist P_((register int (*fptr)(char *, USER_INFO *), register char *farg));
-int apply_ulist P_((register int (*fptr)(USER_INFO *)));
-void num_ulist P_((int *total, int *csbbs, int *webbbs));
-void purge_ulist P_((USER_INFO *upent));
-void update_ulist P_((USER_INFO *cutmp, USER_INFO *upent));
-USER_INFO *new_utmp P_((void));
-void sync_ulist P_((void));
-int resolve_brdshm P_((void));
-int get_board_bid P_((register char *farg));
-void apply_brdshm P_((int (*fptr)(BOARDHEADER *bhr)));
-void apply_brdshm_board_t P_((int (*fptr)(struct board_t *binfr)));
-unsigned int get_board P_((BOARDHEADER *bhead, char *bname));
-BOOL is_new_vote P_((const char *bname, time_t lastlogin));
-void rebuild_brdshm P_((BOOL opt));
-void set_brdt_numposts P_((char *bname, BOOL reset));
-void set_brdt_vote_mtime P_((const char *bname));
-void resolve_classhm P_((void));
-CLASSHEADER *search_class_by_cid P_((unsigned int cid));
-void rebuild_classhm P_((void));
-void dump_classhm P_((void));
+void *attach_shm(key_t shmkey, int shmsize);
+void resolve_utmp(void);
+USER_INFO *search_ulist(register int (*fptr)(char *, USER_INFO *), register char *farg);
+int apply_ulist(register int (*fptr)(USER_INFO *));
+void num_ulist(int *total, int *csbbs, int *webbbs);
+void purge_ulist(USER_INFO *upent);
+void update_ulist(USER_INFO *cutmp, USER_INFO *upent);
+USER_INFO *new_utmp(void);
+void sync_ulist(void);
+int resolve_brdshm(void);
+int get_board_bid(register char *farg);
+void apply_brdshm(int (*fptr)(BOARDHEADER *bhr));
+void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr));
+unsigned int get_board(BOARDHEADER *bhead, char *bname);
+BOOL is_new_vote(const char *bname, time_t lastlogin);
+void rebuild_brdshm(BOOL opt);
+void set_brdt_numposts(char *bname, BOOL reset);
+void set_brdt_vote_mtime(const char *bname);
+void resolve_classhm(void);
+CLASSHEADER *search_class_by_cid(unsigned int cid);
+void rebuild_classhm(void);
+void dump_classhm(void);
 /* mod_talk.c */
-int can_override P_((char *userid, char *whoasks));
-int in_blacklist P_((char *userid, char *whoasks));
-int malloc_array P_((struct array *a, char *filename));
-int cmp_array P_((struct array *a, char *whoasks));
-void free_array P_((struct array *a));
-void msq_set P_((MSQ *msqp, const char *fromid, const char *fromnick, const char *toid, const char *msg));
-int msq_snd P_((USER_INFO *upent, MSQ *msqp));
-int msq_rcv P_((USER_INFO *upent, MSQ *msqp));
-void msq_tostr P_((MSQ *msqp, char *showed));
-int msq_record P_((MSQ *msqp, const char *filename, const char *to));
-char *pagerstring P_((USER_INFO *uentp));
-int query_user P_((int myulevel, char *userid, USER_INFO *upent, char *outstr, BOOL strip_ansi));
-int file_delete_line P_((const char *fname, const char *str));
-char *esc_filter P_((const char *buf));
+int can_override(char *userid, char *whoasks);
+int in_blacklist(char *userid, char *whoasks);
+int malloc_array(struct array *a, char *filename);
+int cmp_array(struct array *a, char *whoasks);
+void free_array(struct array *a);
+void msq_set(MSQ *msqp, const char *fromid, const char *fromnick, const char *toid, const char *msg);
+int msq_snd(USER_INFO *upent, MSQ *msqp);
+int msq_rcv(USER_INFO *upent, MSQ *msqp);
+void msq_tostr(MSQ *msqp, char *showed);
+int msq_record(MSQ *msqp, const char *filename, const char *to);
+char *pagerstring(USER_INFO *uentp);
+int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr, BOOL strip_ansi);
+int file_delete_line(const char *fname, const char *str);
+char *esc_filter(const char *buf);
 /* mod_user.c */
-BOOL invalid_new_userid P_((char *userid));
-unsigned int get_passwd P_((USEREC *urcp, char *userid));
-unsigned int update_passwd P_((USEREC *urcp));
-unsigned int update_user_passfile P_((USEREC *urcp));
-unsigned int new_user P_((USEREC *ubuf, BOOL force));
-int user_login P_((USER_INFO **cutmp, USEREC *urcp, char ctype, char *userid, char *passwd, char *fromhost));
-int cmp_userid P_((char *userid, USER_INFO *upent));
-void user_logout P_((USER_INFO *upent, USEREC *urcp));
+BOOL invalid_new_userid(char *userid);
+unsigned int get_passwd(USEREC *urcp, char *userid);
+unsigned int update_passwd(USEREC *urcp);
+unsigned int update_user_passfile(USEREC *urcp);
+unsigned int new_user(USEREC *ubuf, BOOL force);
+int user_login(USER_INFO **cutmp, USEREC *urcp, char ctype, char *userid, char *passwd, char *fromhost);
+int cmp_userid(char *userid, USER_INFO *upent);
+void user_logout(USER_INFO *upent, USEREC *urcp);
 #ifdef USE_ALOHA
 int mnt_alohalist(USER_INFO *upent);
 #endif
 /* mod_zap.c */
-void mymod P_((unsigned int id, int maxu, int *pp, unsigned char *qq));
-int ZapRC_Init P_((char *filename));
-int ZapRC_Update P_((char *filename));
-int ZapRC_IsZapped P_((register int bid, time_t brd_ctime));
-void ZapRC_DoZap P_((register unsigned int bid));
-void ZapRC_DoUnZap P_((register unsigned int bid));
-int ZapRC_ValidBid P_((register unsigned int bid));
+void mymod(unsigned int id, int maxu, int *pp, unsigned char *qq);
+int ZapRC_Init(char *filename);
+int ZapRC_Update(char *filename);
+int ZapRC_IsZapped(register int bid, time_t brd_ctime);
+void ZapRC_DoZap(register unsigned int bid);
+void ZapRC_DoUnZap(register unsigned int bid);
+int ZapRC_ValidBid(register unsigned int bid);
 /* strlcat.c */
-size_t strlcat P_((char *dst, const char *src, size_t siz));
+size_t strlcat(char *dst, const char *src, size_t siz);
 /* strlcpy.c */
-size_t strlcpy P_((char *dst, const char *src, size_t siz));
+size_t strlcpy(char *dst, const char *src, size_t siz);
 
-#undef P_
