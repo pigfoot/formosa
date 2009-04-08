@@ -9,7 +9,7 @@ HOMEBBS    = @prefix@
 
 DEFINES    = @OS_DEF@ $(SITE_DEF)
 CC         = @CC@
-CFLAGS	   := @CFLAGS@ -Wall -I../include -I../lib
+CFLAGS	   := @CFLAGS@ -Wall -I.. -I../include -I../lib
 LDLIBS	   = @LIBS@
 LDLIBS     := $(filter-out -ltermcap,$(LDLIBS))
 

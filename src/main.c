@@ -27,19 +27,20 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#if defined(LINUX)
-#if (__GLIBC__ == 2)
-#define USE_POLL
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#if defined(HAVE_POLL)
+#if defined(HAVE_POLL_H)
+#include <poll.h>
+#elif defined(HAVE_SYS_POLL_H)
 #include <sys/poll.h>
 #endif
+#else
+#error poll(2) is needed!
 #endif
 
-#if defined(SOLARIS) || defined(__FreeBSD__)
-#define USE_POLL
-#include <poll.h>
-#endif
-
-#include "config.h"
 #include "struct.h"
 #include "globals.h"
 
@@ -115,13 +116,7 @@ char *argv[];
 	int aha, on = 1;
 	struct sockaddr_in from, sin;
 	int s = 0, ns;
-#if defined(USE_POLL)
 	struct pollfd pd;
-#else
-	fd_set ibits;
-	struct timeval wait;
-	int maxs = 0;
-#endif
 	extern int utmp_semid;
 	int inetd, port;
 #if defined(SOLARIS)
@@ -256,29 +251,14 @@ char *argv[];
 
 	aha = sizeof(from);
 
-#if defined(USE_POLL)
 	pd.fd = s;
 	pd.events = POLLIN;
-#else
-	maxs = s + 1;
-	wait.tv_usec = 0;
-	wait.tv_sec = (int) 5;
-#endif
 
 	for(;;)
 	{
-#if defined(USE_POLL)
 		pd.revents = 0;
 		if ((on = poll(&pd, 1, 5000)) < 1)
 		{
-#else
-		FD_ZERO(&ibits);
-		FD_SET(s, &ibits);
-		wait.tv_sec = 5;
-		wait.tv_usec = 0;
-		if ((on = select(maxs, &ibits, 0, 0, &wait)) < 1)
-		{
-#endif
 			if (!on || errno == EINTR)
 				continue;
 			else
@@ -293,13 +273,9 @@ char *argv[];
 				continue;
 			}
 		}
-#if defined(USE_POLL)
 		if (!(pd.events & pd.revents))
 			continue;
-#else
-		if (!FD_ISSET(s, &ibits))
-			continue;
-#endif
+
 		if ((ns = accept(s, (struct sockaddr *) &from, (int *) &aha)) < 0)
 			continue;
 		else

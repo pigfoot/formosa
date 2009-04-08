@@ -4,11 +4,10 @@
 #
 # This Makefile for "@systype@"
 
+OSTYPE    = @systype@
 DEFINES   = @OS_DEF@ $(SITE_DEF)
 CC        = @CC@
-CFLAGS	  = @CFLAGS@ -I../include -I.
-
-CPROTO    = @CPROTO@
+CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
 
 ifeq (-DANIMEBBS,$(SITE_DEF))
   LDLIBS  = -ltermcap
@@ -28,38 +27,28 @@ endif
 
 
 
-LIBSRCS   = misc.c conf.c bbslib.c modetype.c \
+LIBSRCS   = ap_board.c misc.c conf.c bbslib.c modetype.c \
             mod_article.c mod_board.c mod_mail.c mod_net.c \
             mod_pass.c mod_post.c mod_readrc.c mod_record.c mod_sem.c \
             mod_shm.c mod_talk.c mod_user.c mod_zap.c 
+
+ifeq ($(OSTYPE), LINUX)
+  LIBSRCS += strlcat.c strlcpy.c
+endif
+
 LIBBBS    = libbbs.a
 
-
-.SUFFIXES: .o .c
-
-.c.o:  ;   $(CC) $(CFLAGS) $(DEFINES) -c $*.c
-
+%.o: libproto.h %.c
+	$(CC) $(CFLAGS) $(DEFINES) -c $*.c
 
 all: $(LIBBBS)
 
 debug: CFLAGS+= -g
 debug: all
 
-$(LIBBBS): libproto.h $(LIBSRCS:.c=.o)
+$(LIBBBS): $(LIBSRCS:.c=.o)
 	$(AR) ru $(LIBBBS) $(LIBSRCS:.c=.o)
 	@RANLIB@ $(LIBBBS)
-
-libproto.h: $(LIBSRCS)
-	echo '#include "struct.h"' > $@; \
-	echo '#include "linklist.h"' >> $@; \
-	echo '#include <stdio.h>' >> $@; \
-	echo '#include <netdb.h>' >> $@; \
-	echo '#include <unistd.h>' >> $@; \
-	if [ -n "$(CPROTO)" ]; then \
-		echo '#define _BBS_LIB_PROTO_H_' >> $@; \
-		$(CPROTO) -O /dev/null -m -E"$(CC) $(CFLAGS) -pipe -E" -I../include $(KHBBSDEFINES) \
-			$(LIBSRCS) >> $@; \
-	fi
 
 install install_once: 
 

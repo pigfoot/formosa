@@ -20,7 +20,7 @@ MakeBoardList()
 		int flags = curuser.flags[0];
 		
 		curuser.flags[0] &= ~YANK_FLAG;	/* lthuang: 99/11/24 */
-		CreateBoardList();
+		CreateBoardList(&curuser);
 		curuser.flags[0] = flags;
 	}
 	return (num_brds > 0) ? 0 : -1;

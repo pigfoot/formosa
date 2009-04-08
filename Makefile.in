@@ -49,8 +49,6 @@ distclean: clean
 	done
 #	@(cd innbbsd; ${MAKE} clean; cd innd; ${MAKE} clean)
 #	@rm -f bbshome/HTML/*.html
-	@-rm -f src/tsbbsproto.h
-	@-rm -f lib/libproto.h
 	@-rm -f *~
 	@-rm -f configure config.cache config.status config.log
 

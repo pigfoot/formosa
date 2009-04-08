@@ -274,7 +274,7 @@
  // key mapping
  //
  // environments and features
- #undef PMORE_USE_INTERNAL_HELP
+ // #undef PMORE_USE_INTERNAL_HELP
  #undef PMORE_USE_SOB_THREAD_NAV
  #define PMORE_USE_FORMOSA_NAV
  #undef PMORE_USE_REPLYKEY_HINTS
@@ -1980,10 +1980,12 @@ static const char    * const pmore_help[] = {
     "數字鍵 1-9 (;/:)      跳至輸入的頁數或行數",
     "\01進階瀏覽",
     "(/)  (s)              搜尋關鍵字/切換至其它看板",
+#ifdef PMORE_USE_SOB_THREAD_NAV
     "(n/N)                 重複正/反向搜尋",
     "(f/b)                 跳至下/上篇",
     "(a/A)                 跳至同一作者下/上篇",
     "(t/[-/]+)             主題式瀏覽: 循序/前/後篇",
+#endif
     "\01其他",
 
     // the line below is already aligned, because of the backslash.

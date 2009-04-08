@@ -17,20 +17,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#if 0
-#include <termios.h>
-#endif
 #include <stdarg.h>
 
 #include <sys/resource.h>
 #include <limits.h>
 
-#if	defined(AIX)
-#include <sys/select.h>
-#include <sys/pathname.h>
-#endif
-
-#include "config.h"
+#include "bbsconfig.h"
 #include "struct.h"
 #include "chat.h"
 #include "conf.h"

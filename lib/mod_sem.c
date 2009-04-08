@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include "libproto.h"
 
 	/* ref. semctl() */
 #ifdef SOLARIS

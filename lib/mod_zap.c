@@ -13,6 +13,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include "libproto.h"
 
 
 #define ZAPRC_MAXSIZE   (512)

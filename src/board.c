@@ -1,8 +1,5 @@
-
 #include "bbs.h"
 #include "tsbbs.h"
-
-#include "../lib/ap_board.c"
 
 static int num_class = 0;
 static struct BoardList *all_cs = NULL;	/* pointer of all class allocated */
@@ -23,7 +20,7 @@ int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple)
 	
 	if (!num_brds)
 	{
-		CreateBoardList();
+		CreateBoardList(&curuser);
 		if (num_brds <= 0)
 			return -1;
 	}
@@ -136,7 +133,7 @@ static void board_btitle()
 static int board_max(char *direct, int size)
 {
 	if (!num_brds)
-		CreateBoardList();
+		CreateBoardList(&curuser);
 	return num_brds;
 }
 
@@ -185,7 +182,7 @@ static int bcmd_yankin(int ent, struct BoardList *bent, char *direct)
 		return C_NONE;
 
 	curuser.flags[0] &= ~YANK_FLAG;
-	CreateBoardList();
+	CreateBoardList(&curuser);
 	return C_INIT;
 }
 
@@ -196,7 +193,7 @@ static int bcmd_yankout(int ent, struct BoardList *bent, char *direct)
 		return C_NONE;
 
 	curuser.flags[0] |= YANK_FLAG;
-	CreateBoardList();
+	CreateBoardList(&curuser);
 	return C_INIT;
 }
 
@@ -376,7 +373,7 @@ static int class_max(char *direct, int size)
 	struct BoardList *be1;
 
 	if (!num_brds)
-		CreateBoardList();
+		CreateBoardList(&curuser);
 
 	if (!all_cs)
 	{

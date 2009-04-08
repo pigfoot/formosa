@@ -12,7 +12,7 @@
 #include <ctype.h>	/* for tolower() */
 #include <fcntl.h>
 #include <time.h>
-       
+#include "libproto.h"
 
 #ifdef SYSV
 #ifndef LOCK_EX

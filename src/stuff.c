@@ -225,6 +225,27 @@ void show_byebye(BOOL idle)
 	}
 }
 
+// TODO
+// move this function to visio.c or visio.c
+void
+show_help(const char * const helptext[])
+{
+    const char     *str;
+    int             i;
+
+    clear();
+    for (i = 0; (str = helptext[i]); i++) {
+	if (*str == '\0')
+	    prints(ANSI_COLOR(1) "¡i %s ¡j" ANSI_COLOR(0) "\n", str + 1);
+	else if (*str == '\01')
+	    prints("\n" ANSI_COLOR(36) "¡i %s ¡j" ANSI_RESET "\n", str + 1);
+	else
+	    prints("        %s\n", str);
+    }
+//    PRESSANYKEY();
+    pressreturn();
+}
+
 FILE *bbsd_log_fp = NULL;
 
 

@@ -1,13 +1,11 @@
-
 #ifndef _BBS_TSBBS_H_
 #define _BBS_TSBBS_H_
 
-
+#include "struct.h"
 #include "linklist.h"
 #include "globals.h"		/* global variables */
 #include "libproto.h"	/* function prototype of library */
 #include "io.h"
-
 
 /*******************************************************************
  *	general define
@@ -84,48 +82,211 @@ struct one_key {           /* Used to pass commands to the readmenu */
 
 extern int t_lines, t_columns;  /* Screen size, hieght, width */
 
-#include "tsbbsproto.h"		/* other function prototype */
 #include "lang.h"
 
-#ifndef _BBS_PROTO_H_
-extern int do_post(), read_help(), bm_manage_file(), select_board(),
-       display_bmwel(), read_article(), edit_article(),
-       title_article(), cross_article(), mail_article(), delete_article(),
-       reserve_article(), tag_article(), range_tag_article(), push_article(),
-       treasure_article(), visit_article(), rcmd_query(), author_backward(), 
-       author_forward(), title_backward(), title_forward(), thread_backward(), 
-       thread_forward(), thread_original(), resv_backward(), resv_forward();
-extern int mkdir_treasure(), xchg_treasure();       
-extern void move();
-extern int read_max(), read_get();
-extern void read_entry(), read_btitle();
-extern void init_alarm();
-extern void printchatline(const char *str);
-extern int cmp_userid();
-extern void *malloc_str(char *str);
-extern void *xstrdup(const char *str);
-
-/*extern int select_board(),
-        read_article(), edit_article(),
-       title_article(), cross_article(), mail_article(), delete_article(),
-       reserve_article(), tag_article(), range_tag_article(), push_article(),
-       treasure_article(), rcmd_query(), author_backward(), 
-       author_forward(), title_backward(), title_forward(), thread_backward(), 
-       thread_forward(), thread_original(), resv_backward(), resv_forward();
-extern int mkdir_treasure(), xchg_treasure();       
-extern void move();
-extern int read_max(), read_get();
-extern void read_entry(), read_btitle();
-extern void init_alarm();
-extern void printchatline(const char *str);
-extern int cmp_userid();
-extern void *malloc_str(char *str);
-extern void *xstrdup(const char *str);*/
-
-
-       
-#endif	/* !_BBS_PROTO_H */
-
+/*
+ * Prototypes
+ */
+/* admin.c */
+int adminMaintainUser(void);
+void setskinfile(char *fname, char *boardname, char *skin);
+int adminCreateBoard(void);
+int adminMaintainBoard(void);
+int fwUserMail(char *userid_del);
+int adminEditConf(void);
+int adminBroadcast(void);
+int adminMailBm(void);
+int adminSyscheck(void);
+int adminListUsers(void);
+/* article.c */
+int title_article(int ent, FILEHEADER *finfo, char *direct);
+int edit_article(int ent, FILEHEADER *finfo, char *direct);
+int reserve_article(int ent, FILEHEADER *finfo, char *direct);
+int read_article(int ent, FILEHEADER *finfo, char *direct);
+int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop, int option);
+int delete_article(int ent, FILEHEADER *finfo, char *direct);
+int mail_article(int ent, FILEHEADER *finfo, char *direct);
+int cross_article(int ent, FILEHEADER *finfo, char *direct);
+int push_article(int ent, FILEHEADER *finfo, char *direct);
+int set_article_title(char title[]);
+int tag_article(int ent, FILEHEADER *finfo, char *direct);
+int range_tag_article(int ent, FILEHEADER *finfo, char *direct);
+/* board.c */
+int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple);
+int select_board(void);
+int Boards(void);
+int Class(void);
+/* chat.c */
+void *xstrdup(const char *str);
+int chat_write(int fd, void *buf);
+int chat_printf(int sd, char *fmt, ...);
+void printchatline(const char *str);
+int mygets(int fd, char *buf, int size);
+int t_chat(void);
+/* chat2.c */
+char *mycrypt(char *pw);
+int t_chat2(void);
+/* cursor.c */
+int read_get(char *direct, void *s, int size, int top);
+void chk_str(char str[]);
+void read_entry(int x, void *ent, int idx, int top, int last, int rows);
+int read_max(char *direct, int size);
+int rcmd_query(int ent, FILEHEADER *finfo, char *direct);
+int search_article(register char *direct, register int ent, register char *string, register char op, register struct word **srchwtop);
+int author_backward(int ent, FILEHEADER *finfo, char *direct);
+int author_forward(int ent, FILEHEADER *finfo, char *direct);
+int title_backward(int ent, FILEHEADER *finfo, char *direct);
+int title_forward(int ent, FILEHEADER *finfo, char *direct);
+int thread_backward(int ent, FILEHEADER *finfo, char *direct);
+int thread_forward(int ent, FILEHEADER *finfo, char *direct);
+int thread_original(int ent, FILEHEADER *finfo, char *direct);
+int resv_forward(int ent, FILEHEADER *finfo, char *direct);
+int resv_backward(int ent, FILEHEADER *finfo, char *direct);
+void title_func(char *text1, char *text2);
+void read_btitle(void);
+int Select(void);
+int MainRead(void);
+int Read(void);
+int cursor_menu(int y, int x, char *direct, struct one_key *comm, int hdrsize, int *ccur, void (*cm_title)(void), void (*cm_btitle)(void), void (*cm_entry)(int, void *, int, int, int, int), int (*cm_get)(char *, void *, int, int), int (*cm_max)(char *, int), int (*cm_findkey)(char *, void *, int, int), int opt, int autowarp, int rows);
+/* edit.c */
+int vedit(const char *filename, const char *saveheader, char *bname);
+/* formosa.c */
+void saybyebye(int s);
+void abort_bbs(int s);
+int Announce(void);
+void Formosa(char *host, char *term, int argc, char **argv);
+/* globals.c */
+/* ident.c */
+int x_idcheck(void);
+/* io.c */
+void oflush(void);
+void output(char *s, int len);
+int ochar(char c);
+void add_io(int fd, int timeout);
+void add_flush(int (*flushfunc)(void));
+int num_in_buf(void);
+int igetch(void);
+int getkey(void);
+int igetkey(void);
+void bell(void);
+int getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
+/* lang.c */
+void lang_init(char lang);
+/* list.c */
+int t_list(void);
+int t_friends(void);
+/* mail.c */
+BOOL check_mail_num(int opt);
+int m_group(void);
+int m_send(int ent, FILEHEADER *finfo, char *direct);
+int m_new(void);
+int m_read(void);
+/* main.c */
+int main(int argc, char *argv[]);
+char *telnet(char *term);
+/* menu.c */
+void domenu(void);
+/* more.c */
+int more(char *filename, BOOL promptend);
+/* pmore.c */
+int pmore(const char *fpath, int promptend);
+void mf_float2tv(float f, struct timeval *ptv);
+int mf_str2float(unsigned char *p, unsigned char *end, float *pf);
+unsigned char *mf_movieFrameHeader(unsigned char *p, unsigned char *end);
+/* post.c */
+int visit_article(int ent, FILEHEADER *finfo, char *direct);
+int display_bmwel(int ent, FILEHEADER *finfo, char *direct);
+int display_bmas(void);
+int bm_manage_file(void);
+int read_help(void);
+int has_postperm(BOARDHEADER *bh1);
+int PrepareMail(char *fn_src, char *to, char *title);
+int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath);
+int do_post(int ent, FILEHEADER *finfo, char *direct);
+int treasure_article(int ent, FILEHEADER *finfo, char *direct);
+int mkdir_treasure(int ent, FILEHEADER *finfo, char *direct);
+int xchg_treasure(int ent, FILEHEADER *finfo, char *direct);
+/* screen.c */
+void initscr(void);
+void standoutput(char *buf, int ds, int de, int sso, int eso);
+void redoscr(void);
+void refresh(void);
+void clear(void);
+void clrtoeol(void);
+void clrtobot(void);
+void move(int y, int x);
+void standout(void);
+void standend(void);
+void getyx(int *y, int *x);
+int outc(register unsigned char c);
+void outs(register char *str);
+void prints(char *fmt, ...);
+void msg(char *fmt, ...);
+void scroll(void);
+void rscroll(void);
+void save_all_screen(void);
+void restore_all_screen(void);
+void save_screen(void);
+void restore_screen(void);
+/* stuff.c */
+int pressreturn(void);
+int showmsg(char *text);
+int outdoor(char *cmd);
+void show_byebye(BOOL idle);
+void bbsd_log_open(void);
+void bbsd_log_write(char *mode, char *fmt, ...);
+void bbsd_log_close(void);
+int Goodbye(void);
+void free_wlist(struct word **wtop, void (*freefunc)(void *));
+void add_wlist(struct word **wtop, char *str, void *(*addfunc)(char *));
+int cmp_wlist(struct word *wtop, char *str, int (*cmpfunc)(const char *, const char *));
+struct word *cmpd_wlist(struct word **pwtop, char *str, int (*cmpfunc)(const char *, const char *), void (*freefunc)(void *));
+int namecomplete(struct word *toplev, char data[], BOOL simple);
+void update_umode(int mode);
+void *malloc_str(char *str);
+/* talk.c */
+void friendAdd(char *ident, char type);
+void friendDelete(char *ident, char type);
+void toggle_pager(void);
+int t_pager(void);
+void toggle_bpager(void);
+int t_bpager(void);
+int QueryUser(char *userid, USER_INFO *upent);
+int t_query(void);
+BOOL servicepage(int arg);
+int namecomplete_onlineuser(char *data);
+int check_page_perm(void);
+int talk_user(USER_INFO *tkuinf);
+int t_talk(void);
+int talkreply(void);
+int get_message_file(char *fname, char *title);
+int prepare_message(char *who, BOOL is_broadcast);
+int SendMesgToSomeone(char *ident);
+int msq_reply(void);
+int t_review(void);
+int t_msq(void);
+int t_fmsq(void);
+/* term.c */
+void init_vtty(void);
+int outcf(char ch);
+int term_init(char *term);
+void do_move(int destcol, int destline, int (*outc)(char));
+/* vote.c */
+void DisplayNewVoteMesg(void);
+void CheckNewSysVote(void);
+int v_board(void);
+/* xyz.c */
+int x_info(void);
+int x_date(void);
+int x_signature(void);
+void set_ufile(char *ufname);
+int x_plan(void);
+int x_override(void);
+int x_blacklist(void);
+int set_user_info(char *userid);
+int x_uflag(void);
+int x_bakpro(void);
+int x_viewnote(void);
 
 #define ROWSIZE (SCREEN_SIZE - 4)
 

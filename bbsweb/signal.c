@@ -16,7 +16,7 @@ extern int RUNNING;
 extern int my_num;
 extern sigjmp_buf env;
 extern int mysocket;
-extern char log[HTTP_REQUEST_LINE_BUF];
+extern char logstr[HTTP_REQUEST_LINE_BUF];
 
 extern void lingering_close(int sock);
 

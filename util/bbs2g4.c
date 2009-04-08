@@ -16,11 +16,6 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 */
-
-#define _BBS2G4_C_
-#include "../lib/ap_board.c"
-
-
 #define BBS2G4_PID 	"tmp/BBS2G4.pid"
 #define GOPHER_PORT 70
 
@@ -390,7 +385,7 @@ char   *argv[];
 
 	init_bbsenv();	
 
-	CreateBoardList();	/* lthuang */
+	CreateBoardList(NULL);	/* lthuang */
 
 	while (1)
 	{			/* Main Loop */

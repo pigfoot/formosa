@@ -3,8 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
-
+#include "libproto.h"
 
 #ifndef LOCK_EX
 #define LOCK_EX	F_LOCK	/* exclusive lock */

@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "config.h"
+#include "bbsconfig.h"
 #define _BBS_CONF_C_
 #include "conf.h"
 
