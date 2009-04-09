@@ -58,7 +58,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 
-#include "config.h"
+#include "bbsconfig.h"
 #include "struct.h"
 #include "libproto.h"
 
@@ -927,6 +927,10 @@ int main(int argc, char *argv[])
 		printf("Write output file => %s\n", outputfile);
 	
 	fp = fopen(outputfile, "w");
+	if (!fp) {
+		fprintf(stderr, "Opening output file error.");
+		exit(1);
+	}
 
 	max_access = 0;
 	for(i=0; i<=date_index; i++)

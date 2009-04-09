@@ -43,6 +43,9 @@ PROG       = top10 weblog_analyzer postcount saveuser
 
 all: $(PROG)
 
+debug: CFLAGS+= -g
+debug: all
+
 weblib.o: ../weblib.c
 	$(CC) $(CFLAGS) $(DEFINES) -c ../weblib.c
 
