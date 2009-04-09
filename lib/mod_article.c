@@ -397,11 +397,10 @@ int append_article(char *fname, char *path, char *author, char *title,
 	return 0;
 }
 
-
 /*
    引入原文 
 */
-void include_ori(char *rfile, char *wfile)
+void include_ori(char *rfile, char *wfile, char reply_mode)
 {
 	FILE *fpr, *fpw;
 	char *author = NULL, *name = NULL;
@@ -472,10 +471,14 @@ void include_ori(char *rfile, char *wfile)
 			}
 		}
 		/* sarek:07xx2001:多加一個> */
-		if (author != NULL && name != NULL)
-			fprintf(fpw, "> ==> %s (%s) %s:\n", author, name, STR_QUOTE_SAID);
-		else if (author != NULL)
-			fprintf(fpw, "> ==> %s %s:\n", author, STR_QUOTE_SAID);
+		if (author != NULL) {
+			if (reply_mode != 'r')
+				fprintf(fpw, "> ");
+			if (name != NULL)
+				fprintf(fpw, "==> %s (%s) %s:\n", author, name, STR_QUOTE_SAID);
+			else
+				fprintf(fpw, "==> %s %s:\n", author, STR_QUOTE_SAID);
+		}
 	}
 
 	/* skip header line */
@@ -487,24 +490,30 @@ void include_ori(char *rfile, char *wfile)
 
 	while (fgets(inbuf, sizeof(inbuf), fpr))
 	{
-		/* skip blank line */
-		if (inbuf[0] == '\n') 
-			continue;
-		if ((inbuf[0] == '>' && inbuf[INCLUDE_DEPTH - 1] == '>')
-		  || (inbuf[0] == ':' && inbuf[INCLUDE_DEPTH - 1] == ':'))
-		{
-			continue;
+		if (reply_mode != 'r') {
+			/* skip blank line */
+			if (inbuf[0] == '\n') 
+				continue;
+			if ((inbuf[0] == '>' && inbuf[INCLUDE_DEPTH - 1] == '>')
+					|| (inbuf[0] == ':' && inbuf[INCLUDE_DEPTH - 1] == ':'))
+			{
+				continue;
+			}
 		}
 		/* skip signature */
 		if (!strcmp(inbuf, "--\n"))	
 			break;
 		/* add quote character */
 		/* kmwang:20000815:將 quote 字元換成 : 減少對 tag 的誤判 */
+		if (reply_mode == 'r')
+			fprintf(fpw, "%s", inbuf);
+		else {
 #ifndef USE_HTML
-		fprintf(fpw, "> %s", inbuf);	
+			fprintf(fpw, "> %s", inbuf);	
 #else
-		fprintf(fpw, ": %s", inbuf);
+			fprintf(fpw, ": %s", inbuf);
 #endif
+		}
 	}
 	if (wfile)
 	{
