@@ -9,6 +9,7 @@ HOMEBBS   = @prefix@
 
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@
+MAKE      = @MAKE@
 CFLAGS	  = @CFLAGS@ -I.. -I../include -I../lib
 LDLIBS	  = @LIBS@ -lncurses
 
@@ -75,7 +76,7 @@ genlogin: genlogin.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LDLIBS) $(LIBFILE)
 
 $(LIBFILE): $(LIBSRCS)
-	cd ../lib; make 
+	cd ../lib; $(MAKE)
 
 install_once: all genlogin
 	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \

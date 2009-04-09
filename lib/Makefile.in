@@ -8,6 +8,7 @@ OSTYPE    = @systype@
 DEFINES   = @OS_DEF@ $(SITE_DEF)
 CC        = @CC@
 CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
+MAKE      = @MAKE@
 
 ifeq (-DANIMEBBS,$(SITE_DEF))
   LDLIBS  = -ltermcap
