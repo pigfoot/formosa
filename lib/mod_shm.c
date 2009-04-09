@@ -245,25 +245,22 @@ static int cmp_brdt_bname(const void *a, const void *b)
 
 BOOL fast_rebuild = FALSE;
 
+static struct board_t *all_brdt[MAXBOARD];
+static int all_brdt_isset;
 int resolve_brdshm()
 {
 	int fd;
-	
-	
+	int n;
+
 	if (!brdshm)
 		brdshm = attach_shm(BRDSHM_KEY, sizeof(struct BRDSHM));
-	
-	if (!brdshm->mtime)
-	{
-		if ((fd = open(BOARDS, O_RDONLY)) > 0)
-		{
-			struct board_t *all_brdt[MAXBOARD];
+
+	if (!brdshm->mtime) {
+		if ((fd = open(BOARDS, O_RDONLY)) > 0) {
 			struct stat st;
-			int n;
 			BOARDHEADER bhbuf;
 			char bfname[PATHLEN];
-			
-		
+
 			n = 0;
 			memset(brdshm->brdt, 0, sizeof(brdshm->brdt));
 			while (read(fd, &bhbuf, BH_SIZE) == BH_SIZE)
@@ -298,28 +295,48 @@ int resolve_brdshm()
 			qsort(all_brdt, n, sizeof(struct board_t *), cmp_brdt_bname);
 			for (n = 0; n < brdshm->number; n++)
 				(all_brdt[n])->rank = n+1;
+			all_brdt_isset = 1;
 		}
 	}
+
+	if (!all_brdt_isset) {
+		for (n = 0; n < MAXBOARD; ++n)
+			all_brdt[n] = &(brdshm->brdt[n]);
+		qsort(all_brdt, MAXBOARD, sizeof(struct board_t *), cmp_brdt_bname);
+		all_brdt_isset = 1;
+	}
+
 	return brdshm->number;
 }
 
+static struct board_t *search_brdt_by_bname(const char *bname)
+{
+	struct board_t **brdtpp;
+	struct board_t key, *keyp;
+
+	strcpy(key.bhr.filename, bname);
+	keyp = &key;
+	brdtpp = bsearch(&keyp, all_brdt, brdshm->number,
+		sizeof(struct board_t *), cmp_brdt_bname);
+	
+	if (brdtpp)
+		return *brdtpp;
+
+	return NULL;
+}
 
 int get_board_bid(register char *farg)
 {
 	register int i;
+	struct board_t *brdtp;
 
 	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (brdshm->brdt[i].bhr.filename[0])
-		{
-			if (!strcmp(farg, brdshm->brdt[i].bhr.filename))
-				return (i+1);
-		}
-	}
-	return -1;
+	brdtp = search_brdt_by_bname(farg);
+	if (brdtp)
+		return brdtp->bhr.bid;
+	else
+		return -1;
 }
-
 
 void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
 //int (*fptr)(BOARDHEADER *bhr);
@@ -334,7 +351,6 @@ void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
 	}
 }	
 
-
 void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
 //int (*fptr)(struct board_t *binfr);
 {
@@ -348,46 +364,39 @@ void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
 	}
 }	
 
-		
 unsigned int get_board(BOARDHEADER *bhead, char *bname)
 {
 	register int i;
+	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
 		return 0;
 	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (!strcasecmp(bname, brdshm->brdt[i].bhr.filename))
-		{
-			if (bhead)
-				memcpy(bhead, &(brdshm->brdt[i].bhr), BH_SIZE);
-			return (i+1);
-		}
+	brdtp = search_brdt_by_bname(bname);
+
+	if (brdtp && bhead) {
+		memcpy(bhead, &(brdtp->bhr), BH_SIZE);
+		return brdtp->bhr.bid;
 	}
 	return 0;
 }
 
-
 BOOL is_new_vote(const char *bname, time_t lastlogin)
 {
 	register int i;
+	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
 		return FALSE;
 	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (!strcasecmp(bname, brdshm->brdt[i].bhr.filename))
-		{
-			/* sarek:12/16/2001:這樣判斷只有一次有效,必須另想辦法 */
-			if (brdshm->brdt[i].vote_mtime > lastlogin)
-				return TRUE;
-		}
+	brdtp = search_brdt_by_bname(bname);
+	if (brdtp) {
+		/* sarek:12/16/2001:這樣判斷只有一次有效,必須另想辦法 */
+		if (brdtp->vote_mtime > lastlogin)
+			return TRUE;
 	}
 	return FALSE;
 }
-		
 
 void rebuild_brdshm(BOOL opt)
 {
@@ -397,52 +406,39 @@ void rebuild_brdshm(BOOL opt)
 	resolve_brdshm();
 }
 
-
 void set_brdt_numposts(char *bname, BOOL reset)
 {
 	register int i;
-	
+	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
 		return;
 	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (!strcasecmp(bname, brdshm->brdt[i].bhr.filename))
-		{
-			if (reset)
-			{
-				char bfname[PATHLEN];			
-				
-				setboardfile(bfname, bname, DIR_REC);
-				brdshm->brdt[i].numposts = get_num_records(bfname, FH_SIZE);
-			}
-			else
-				brdshm->brdt[i].numposts += 1;
-			break;
+	brdtp = search_brdt_by_bname(bname);
+	if (brdtp) {
+		if (reset) {
+			char bfname[PATHLEN];			
+			
+			setboardfile(bfname, bname, DIR_REC);
+			brdtp->numposts = get_num_records(bfname, FH_SIZE);
+		} else {
+			brdtp->numposts += 1;
 		}
 	}
 }
-
 
 void set_brdt_vote_mtime(const char *bname)
 {
 	register int i;
-	
+	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
 		return;
 	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (!strcasecmp(bname, brdshm->brdt[i].bhr.filename))
-		{
-			time(&(brdshm->brdt[i].vote_mtime));
-			break;
-		}
-	}
+	brdtp = search_brdt_by_bname(bname);
+	if (brdtp)
+		time(&(brdtp->vote_mtime));
 }
-
 
 #define MAXCLASS	(MAXBOARD + 64)
 

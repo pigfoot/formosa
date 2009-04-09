@@ -218,7 +218,7 @@ struct LANG {
 #define	_msg_fail	MsgInfo(264)	/*	"失敗."	*/
 #define	_msg_finish	MsgInfo(266)	/*	"完成."	*/
 #define	_msg_in_processing	MsgInfo(268)	/*	"處理中, 請稍候 ..."	*/
-#define	_msg_include_ori	MsgInfo(269)	/*	"\n是否引入原文 (y/n) ? [y]: "	*/
+#define	_msg_include_ori	MsgInfo(269)	/*	"\n是否引入原文 (y/n/r) ? [y]: "	*/
 #define	_msg_message_fail	MsgInfo(270)	/*	"送出訊息失敗."	*/
 #define	_msg_message_finish	MsgInfo(271)	/*	"送出訊息完成."	*/
 #define	_msg_no_board_exist	MsgInfo(272)	/*	"讀不到任何看板 !!\n"	*/
