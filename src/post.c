@@ -404,7 +404,7 @@ static int mail1(char *to)
 int PrepareMail(char *fn_src, char *to, char *title)
 {
 	int save_umode = uinfo.mode;
-	char tempfile[PATHLEN];
+	char tempfile[PATHLEN], include_mode;
 	int retval;
 
 
@@ -434,8 +434,9 @@ int PrepareMail(char *fn_src, char *to, char *title)
 	if (fn_src)
 	{
 		outs(_msg_include_ori);
-		if (igetkey() != 'n')
-			include_ori(fn_src, tempfile);
+		include_mode = igetkey();
+		if (include_mode != 'n')
+			include_ori(fn_src, tempfile, include_mode);
 	}
 
 	update_umode(SMAIL);
@@ -456,7 +457,7 @@ int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath)
 #endif
 {
 	int save_umode = uinfo.mode;
-	char tempfile[PATHLEN];
+	char tempfile[PATHLEN], include_mode;
 
 	if (option & PMP_POST)
 	{
@@ -487,8 +488,10 @@ int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath)
 		if (fn_src)
 		{
 			outs(_msg_include_ori);
-			if (igetkey() != 'n')
-				include_ori(fn_src, tempfile);
+			include_mode = igetkey();
+			if (include_mode != 'n')
+				include_ori(fn_src, tempfile, include_mode);
+
 		}
 	
 		update_umode(POSTING);

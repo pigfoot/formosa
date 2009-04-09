@@ -56,7 +56,7 @@ char *modestring(USER_INFO *upent, int complete);
 /* mod_article.c */
 int pack_article(char *direct);
 int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
-void include_ori(char *rfile, char *wfile);
+void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);
 int reserve_one_article(int ent, char *direct);
 char get_pushcnt(int ent, char *direct, int fd);

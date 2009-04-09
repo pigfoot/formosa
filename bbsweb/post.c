@@ -221,7 +221,7 @@ ShowPost(char *tag, POST_FILE * pf)
 		if (request_rec->URLParaType == MailRead && PSCorrect != Correct)
 			return;
 			
-		include_ori(pf->POST_NAME, NULL);	/* lthuang */
+		include_ori(pf->POST_NAME, NULL, 'y');	/* lthuang */
 	}
 	else if (!strcasecmp(tag, "ReplyTitle") || !strcasecmp(tag, "ReplySubject"))
 	{
