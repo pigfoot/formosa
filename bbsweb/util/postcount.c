@@ -2,7 +2,7 @@
 #include "bbsweb.h"
 #include <sys/stat.h>
 
-static int num_brds;
+static int numbrds;
 char board_class;
 BOARDHEADER *allboards[MAXBOARD];
 char allboards_welcome[MAXBOARD+64];	/* just for safety with more 64 element */
@@ -19,7 +19,7 @@ BOARDHEADER *bhentp;
 	if(board_class != '*' && bhentp->class != board_class)	/* '*' is all class */
 		return -1;
 	
-	allboards[num_brds++] = bhentp;
+	allboards[numbrds++] = bhentp;
 	return 0;
 }
 
@@ -38,13 +38,13 @@ int main(int argc, char *argv[])
 	char fname[PATHLEN];
 	
 	board_class = '*';
-	num_brds = 0;
+	numbrds = 0;
 	init_bbsenv();
 	
     apply_brdshm(malloc_boards);
-    qsort(allboards, num_brds, sizeof(BOARDHEADER *), cmp_bname);
+    qsort(allboards, numbrds, sizeof(BOARDHEADER *), cmp_bname);
     
-	for(i=0; i<num_brds; i++)
+	for(i=0; i<numbrds; i++)
 	{
 		setboardfile(fname, allboards[i]->filename, DIR_REC);
 		
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	printf("total: %d, num_brd=%d\n", k, num_brds);
+	printf("total: %d, num_brd=%d\n", k, numbrds);
 	
 	return 0;
 	

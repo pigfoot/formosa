@@ -22,6 +22,10 @@ util/Makefile
 
 
 bbsweb/bbsweb
+bbsweb/util/postcount
+bbsweb/util/saveuser
+bbsweb/util/top10
+bbsweb/util/weblog_analyzer
 csbbs/csbbsd
 src/bbsd
 src/bbschatd
@@ -42,3 +46,4 @@ util/menushow
 util/onlinesrv
 util/packbbs
 util/userstat
+

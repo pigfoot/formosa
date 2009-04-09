@@ -2,8 +2,8 @@
 # Makefile for Formosa BBS v1.4.0              #
 ################################################
 
-SUBDIRS := lib src csbbs util bbsweb
-CLEANDIRS := $(SUBDIRS) bbsweb/util src/util
+SUBDIRS := lib src csbbs util bbsweb bbsweb/util
+CLEANDIRS := $(SUBDIRS) src/util
 PHONY_TARGETS := all debug clean distclean install install_once update
 VERSION := 1.4.0
 HOMEBBS := @prefix@
@@ -20,14 +20,14 @@ debug: target := debug
 debug: $(SUBDIRS)
 
 update: install
-	kill `cat /tmp/formosa.23`
+	-kill `cat /tmp/formosa.23`
 	$(HOMEBBS)/bin/bbsd 23
 
-config: distclean
+config:
 	./autogen.sh
 	./configure
 
-config_bbs3: distclean
+config_bbs3:
 	./autogen.sh
 	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
 

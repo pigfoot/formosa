@@ -473,9 +473,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 # userstat 平均線上人數/狀態分佈統計取樣
 # bbsmail 自動處理寄自站外 E-mail
 #
-00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail;
-   /home/bbs/bin/userstat -c;
-   /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
+00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail; /home/bbs/bin/userstat -c; /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
 #
 # 請於負荷低時執行 (如清晨). 執行後並未真正刪除帳號，只是把過期帳號資料移到
 #        /home/bbs/home/.del     
@@ -487,9 +485,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
 #
 #
-30 8 * * * (/home/bbs/bin/expire 3500 500; 
-   /home/bbs/bin/packbbs -b ID > /dev/null; 
-   /home/bbs/bin/userstat -k -p sysop )
+30 8 * * * (/home/bbs/bin/expire 3500 500; /home/bbs/bin/packbbs -b ID > /dev/null; /home/bbs/bin/userstat -k -p sysop )
 #
 # 將 'syscheck' 的信箱內所有由使用者回覆的認證函處理完畢.
 #
@@ -501,8 +497,16 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 #
 # 定期清理暫存檔/文書編輯備份檔
 #
-10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1 
-	-exec /bin/rm -f {}; > /dev/null 2>&1)
+10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1 -exec /bin/rm -f {}; > /dev/null 2>&1)
+#
+# 更新熱門話題網頁
+#
+37 * * * * /home/bbs/bin/top10 1 2 -y
+
+#
+# 分析網頁Log, 產生分析網頁
+#
+15 5 * * * (/home/bbs/bin/weblog_analyzer /home/bbs/log/web-access.log /home/bbs/HTML/log/index.html -m >/dev/null 2>&1)
 
 
 十一、定期清理

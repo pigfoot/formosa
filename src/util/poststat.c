@@ -1,6 +1,6 @@
 
 #include "bbs.h"
-#include "config.h"
+#include "bbsconfig.h"
 #include <sys/mman.h>
 
 typedef struct
