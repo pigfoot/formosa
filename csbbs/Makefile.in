@@ -9,6 +9,7 @@ HOMEBBS = @prefix@
 
 DEFINES  = @OS_DEF@ $(SITE_DEF)
 CC       = @CC@
+MAKE     = @MAKE@
 CFLAGS	 = @CFLAGS@ -I.. -I../include -I../lib
 LDLIBS	 = @LIBS@
 
@@ -75,7 +76,7 @@ install_once install installcsbbsd: $(PROGNAME)
 	cp -p $(PROGNAME) $(HOMEBBS)/bin
 
 $(LIBFILE): $(LIBSRCS)
-	cd ../lib; make
+	cd ../lib; $(MAKE)
 
 clean:
 	rm -f *.o $(PROGNAME) core a.out

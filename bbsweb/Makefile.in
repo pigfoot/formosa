@@ -9,6 +9,7 @@ HOMEBBS    = @prefix@
 
 DEFINES    = @OS_DEF@ $(SITE_DEF)
 CC         = @CC@
+MAKE       = @MAKE@
 CFLAGS	   := @CFLAGS@ -Wall -I.. -I../include -I../lib
 LDLIBS	   = @LIBS@
 LDLIBS     := $(filter-out -ltermcap,$(LDLIBS))
@@ -56,7 +57,7 @@ $(PROG): $(OBJS) $(LIBFILE) bbsweb.h log.h
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
 
 $(LIBFILE): $(LIBSRCS)
-	cd ../lib; make
+	cd ../lib; $(MAKE)
 
 install_once install: $(PROG)
 	-cp -p $(PROG) $(HOMEBBS)/bin

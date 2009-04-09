@@ -92,9 +92,21 @@ dnl Checks for programs.
 #AC_PROG_AWK
 #AC_PROG_YACC
 AC_PROG_CC
-#AC_C_BIGENDIAN
+
+if test -z "${MAKE}"; then
+	dnl Find GNU Make. 1) search $PATH, 2) search specified path
+	AC_CHECK_PROG([MAKE], [gmake], [gmake], [])
+	if test -z "${MAKE}"; then
+		dnl use AC_PATH_PROG because we need to set variable to the absolute name of gmake if found.
+		AC_PATH_PROG([MAKE], [gmake], [no], [/usr/bin:/usr/local/bin:/usr/sfw/bin:/usr/local/gnu/bin])
+	fi
+fi
+makever=`${MAKE} --version 2>&1 | grep "GNU Make"`
+if test -z "$makever"; then
+	AC_MSG_ERROR(GNU Make is not installed.)
+fi
+
 AC_PROG_INSTALL
-AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PATH_PROG(TRUE,true)
 AC_PATH_PROG(PERL,perl)
