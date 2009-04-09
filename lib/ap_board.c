@@ -24,7 +24,7 @@ static int malloc_board(struct board_t *binfr)
 	rank = binfr->rank;		
 	if (rank < 1 || rank > num_alloc_brds)	/* debug */
 		return -1;
-	
+
 	if (cp && 
 		!(binfr->bhr.brdtype & BRD_UNZAP) &&
 		(ZapRC_IsZapped(binfr->bhr.bid, binfr->bhr.ctime) && (cp->flags[0] & YANK_FLAG)))
@@ -73,7 +73,7 @@ int CreateBoardList(const USEREC *curuserp)
 
 	apply_brdshm_board_t(malloc_board);
 
-	/* Bubble sort ARGUSED */
+	/* Merge spaces to tail */
 	for (i = 0; i < num_brds; i++)
 	{
 		if (!all_brds[i].bhr)
@@ -89,7 +89,7 @@ int CreateBoardList(const USEREC *curuserp)
 			}
 		}
 	}
-	
+
 #if 0
 	/* 為配合主選單的 (R)ead 功能 */	
 	curbe = &(all_brds[0]);
