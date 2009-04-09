@@ -257,12 +257,12 @@ igetagain:
 		{
 			if (two_enter)
 				press_enter++;
-			return '\n';
+			return KEY_ENTER;
 		}
 		else
 		{
 			press_enter++;
-			return '\n';
+			return KEY_ENTER;
 		}
 	}
 	else
