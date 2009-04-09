@@ -6,6 +6,8 @@
 #include "globals.h"		/* global variables */
 #include "libproto.h"	/* function prototype of library */
 #include "io.h"
+#include "screen.h"
+#include "visio.h"
 
 /*******************************************************************
  *	general define
