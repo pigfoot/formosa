@@ -7,6 +7,7 @@
  *******************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -38,6 +39,15 @@
 #endif
 
 #include "bbsconfig.h"
+#ifdef __GNUC__
+#define GCC_CHECK_FORMAT(a,b) __attribute__ ((format (printf, a, b)))
+#define GCC_NORETURN          __attribute__ ((__noreturn__))
+#define GCC_UNUSED            __attribute__ ((__unused__))
+#else
+#define GCC_CHECK_FORMAT(a,b)
+#define GCC_NORETURN
+#define GCC_UNUSED
+#endif
 
 /*******************************************************************
  *	§C¶¥©w¸q
