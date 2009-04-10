@@ -156,12 +156,14 @@ typedef struct user_info {
 #endif
 
 /*
- * SCORE_* for FILEHEADER.pushcnt
+ * FHF_* for FILEHEADER.flags
  */
-#define SCORE_NONE	0x00
-#define SCORE_ZERO	0x10
-#define SCORE_MAX	0x1F
-#define SCORE_MIN	0x01
+#define PUSH_ERR	9999
+#define PUSH_FIRST	8888
+#define FHF_SIGN	0x01
+#define FHF_PUSHED	0x02
+#define SCORE_MAX	255
+#define SCORE_MIN	-255
 
 struct fileheader {
 	char filename[STRLEN-8-12-4-4];
@@ -169,9 +171,10 @@ struct fileheader {
 	int thrpostidx;			/* syhu: relative idx of this post in .THREADPOST */
 	char date[12];			/* yy/mm/dd */
 	int  postno;			/* unique no. of post */
-	char ident;				/* ident of owner */
-	char pushcnt;
-	char unused_str1[2];
+	char ident;			/* ident of owner */
+	unsigned char pushcnt;
+	unsigned char flags;
+	char unused_ch;
 	char owner[STRLEN];
 	char title[STRLEN-IDLEN];
 	char delby[IDLEN];

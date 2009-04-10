@@ -348,6 +348,8 @@ void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
 	{
 		if (brdshm->brdt[i].bhr.filename[0])
 			(*fptr)(&(brdshm->brdt[i].bhr));
+		else
+			break;
 	}
 }	
 
@@ -361,6 +363,8 @@ void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
 	{
 		if (brdshm->brdt[i].bhr.filename[0])
 			(*fptr)(&(brdshm->brdt[i]));
+		else
+			break;
 	}
 }	
 

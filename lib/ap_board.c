@@ -31,11 +31,10 @@ static int malloc_board(struct board_t *binfr)
 		return -1;
 
 	all_brds[rank - 1].enter_cnt = 0;
-	if (cp) {
 #ifdef USE_VOTE
+	if (cp)
 		all_brds[rank - 1].voting = is_new_vote(binfr->bhr.filename, cp->lastlogin);
 #endif
-	}
 	all_brds[rank - 1].bcur = 0;	/* init */
 	all_brds[rank - 1].bhr = &(binfr->bhr);
 	all_brds[rank - 1].binfr = binfr;
