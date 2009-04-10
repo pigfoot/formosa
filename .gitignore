@@ -3,6 +3,7 @@
 cscope.out
 tags
 
+.dotest/
 Makefile
 config.cache
 config.status
@@ -32,6 +33,7 @@ src/bbschatd
 src/genlogin
 src/util/list_postno
 src/util/moduser
+src/util/fixoldpush
 util/bbs-news
 util/bbs2g4
 util/bbsfingerd
