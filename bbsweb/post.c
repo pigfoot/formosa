@@ -276,16 +276,17 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 	int recidx;
 	FILEHEADER fileinfo;	
 	BOOL hasUpperDir = FALSE;	
-	char senderid[STRLEN], sender[STRLEN], date[STRLEN];
+	char senderid[STRLEN], sender[STRLEN], date[STRLEN], pushstr[STRLEN];
 	char title[STRLEN + PATHLEN + 1];
 	char UpperDir[PATHLEN];
 	char *p;	
 	int fd;
 	char *type = "";
-	char *tags[7] = {"Num", "Sender", "Date", "Title", "SenderID", "READ", "FILENAME"};
-	char *strings[7];
+	char *tags[8] = {"Num", "Sender", "Date", "Title", "SenderID", "READ", "FILENAME", "PushCNT"};
+	char *strings[8];
 	char recidx_string[10];
 	char format[FORMAT_LEN];		
+	int score;
 	
 
 	if (request_rec->URLParaType == MailList && PSCorrect != Correct)
@@ -451,6 +452,18 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 					xstrncpy(senderid, fileinfo.owner, sizeof(senderid));
 				}
 
+				score = get_pushcnt(&fileinfo);
+				if (score != PUSH_FIRST) {
+					if (score > 0)
+						sprintf(pushstr, "<font color=red>%2.2X</font>", score);
+					else if (score < 0)
+						sprintf(pushstr, "<font color=green>%2.2X</font>", 0 - score);
+					else
+						sprintf(pushstr, "<font color=yellow>&bnsp;0</font>");
+				} else {
+					sprintf(pushstr, "&nbsp;&nbsp;");
+				}
+
 				if (fileinfo.accessed & FILE_DELE)
 					sprintf(title, "<<本篇已被 %s 刪除>> ", fileinfo.delby);	/* add space at last prevent html tag error */
 				else
@@ -493,6 +506,7 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 		strings[4] = senderid;
 		strings[5] = type;	/* used in MailList */
 		strings[6] = fileinfo.filename;
+		strings[7] = pushstr;
 
 #if 0		
 		for (i = 0; i < 6; i++)
@@ -522,7 +536,7 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 				fflush(fp_out);
 #endif			
 			/* BBS TAG */
-				for (j = 0; j < 7; j++)
+				for (j = 0; j < 8; j++)
 				{
 					if (!strncasecmp(format + offset1 + 1, tags[j], offset2 - offset1 - 2))
 					{
