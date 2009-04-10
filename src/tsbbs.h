@@ -190,6 +190,7 @@ int igetch(void);
 int getkey(void);
 int igetkey(void);
 void bell(void);
+int getdataln(char *prompt, char *buf, int len, int echo);
 int getdata(int line, int col, char *prompt, char *buf, int len, int echo);
 int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo);
 int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);

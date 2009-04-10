@@ -356,6 +356,18 @@ void bell()
 }
 
 
+/*
+ * Move to next line before getdata
+ *
+ */
+int getdataln(char *prompt, char *buf, int len, int echo)
+{
+	int  line, col;
+
+	getyx(&line, &col);
+	return _getdata(line + 1, col, prompt, buf, len, echo, NULL);
+}
+
 int getdata(int line, int col, char *prompt, char *buf, int len, int echo)
 {
 	return _getdata(line, col, prompt, buf, len, echo, NULL);
