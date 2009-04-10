@@ -538,6 +538,7 @@ void outs(register char *str)
 }
 
 
+#ifndef USE_VISIO
 void prints(char *fmt, ...)
 {
 	va_list args;
@@ -552,6 +553,7 @@ void prints(char *fmt, ...)
 	va_end(args);
 	outs(buff);
 }
+#endif
 
 
 void msg(char *fmt, ...)			/* by lthuang */

@@ -248,7 +248,9 @@ void standend(void);
 void getyx(int *y, int *x);
 int outc(register unsigned char c);
 void outs(register char *str);
+#ifndef USE_VISIO
 void prints(char *fmt, ...);
+#endif
 void msg(char *fmt, ...);
 void scroll(void);
 void rscroll(void);
