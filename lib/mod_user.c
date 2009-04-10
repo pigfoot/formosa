@@ -535,7 +535,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 
 	log_visitor(upent->userid, upent->from, (time(0)-upent->login_time)/60, 
 		upent->ctype, TRUE);
-		
+
 #ifdef GUEST
 	if (!strcmp(urcp->userid, GUEST))
 	{
@@ -567,7 +567,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 		if (usrbuf.passwd[0])
 			xstrncpy(urcp->passwd, usrbuf.passwd, PASSLEN);
 	}
-	
+
 	strcpy(urcp->lasthost, upent->from);
 	urcp->lastlogin = upent->login_time;
 	urcp->lastctype = upent->ctype;
@@ -577,7 +577,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 	update_user_passfile(urcp);
 
 	purge_ulist(upent);
-	
+
 	/* In regard to multi-login, online message file should be removed */
 	if (!search_ulist(cmp_userid, urcp->userid))
 	{

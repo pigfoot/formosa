@@ -1036,7 +1036,7 @@ static int pushCheckPerm(FILEHEADER *finfo)
  */
 int push_article(int ent, FILEHEADER *finfo, char *direct)
 {
-	int fd, ch, rt, first = 0;
+	int fd, ch, rt, score, first = 0;
 	static char *yes = "±À", *no = "©A";
 	char cyes[3], cno[3], *ptr = NULL;
 	char msgbuf[64], pushline[PUSHLEN], fn_art[PATHLEN], writebuf[STRLEN << 1], c;
@@ -1088,20 +1088,24 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_FULL;
 	flock(fd, LOCK_EX);
 
-	rt = get_pushcnt(ent, direct, fd);
-	if (rt != -1)
-		finfo->pushcnt = rt;
+	score = read_pushcnt(ent, direct, fd);
+	if (score == PUSH_ERR) {
+		rt = -1;
+		goto push_err;
+	}
 
-	if (finfo->pushcnt == SCORE_NONE) {
-		finfo->pushcnt = SCORE_ZERO;
+	if (score == PUSH_FIRST) {
+		score = 0;
 		first = 1;
 	}
-	if ((ptr == yes || ptr == cyes) && finfo->pushcnt < SCORE_MAX)
-		++(finfo->pushcnt);
-	else if ((ptr == no || ptr == cno) && finfo->pushcnt > SCORE_MIN)
-		--(finfo->pushcnt);
+	if ((ptr == yes || ptr == cyes) && score < SCORE_MAX)
+		++score;
+	else if ((ptr == no || ptr == cno) && score > SCORE_MIN)
+		--score;
 
-	rt = push_one_article(ent, direct, fd, finfo->pushcnt);
+	save_pushcnt(finfo, score);
+	rt = push_one_article(ent, direct, fd, score);
+push_err:
 	flock(fd, LOCK_UN);
 	close(fd);
 

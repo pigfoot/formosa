@@ -613,9 +613,25 @@ int reserve_one_article(int ent, char *direct)
 }
 
 /*
+   取得推文分數
+*/   
+int get_pushcnt(const FILEHEADER *fhr)
+{
+	int rt;
+	if (fhr->flags & FHF_PUSHED) {
+		rt = fhr->pushcnt;
+		if (fhr->flags & FHF_SIGN)
+			rt = 0 - rt;
+		return rt;
+	} else {
+		return PUSH_FIRST;
+	}
+}
+
+/*
    讀取推文分數
 */   
-char get_pushcnt(int ent, char *direct, int fd)
+int read_pushcnt(int ent, char *direct, int fd)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
@@ -623,15 +639,30 @@ char get_pushcnt(int ent, char *direct, int fd)
 	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
 	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
-		return fhr->pushcnt;
+		return get_pushcnt(fhr);
 	}
-	return -1;
+	return PUSH_ERR;
+}
+
+/*
+   轉換存入推文分數
+*/   
+void save_pushcnt(FILEHEADER *fhr, int score)
+{
+	fhr->flags |= FHF_PUSHED;
+	if (score < 0) {
+		fhr->flags |= (unsigned char)FHF_SIGN;
+		score = 0 - score;
+	} else {
+		fhr->flags &= ~((unsigned char)FHF_SIGN);
+	}
+	fhr->pushcnt = (unsigned char)score;
 }
 
 /*
    存入推文分數
 */   
-int push_one_article(int ent, char *direct, int fd, char score)
+int push_one_article(int ent, char *direct, int fd, int score)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
@@ -639,7 +670,7 @@ int push_one_article(int ent, char *direct, int fd, char score)
 	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
 	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
-		fhr->pushcnt = score;
+		save_pushcnt(fhr, score);
 		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) != -1
 		    && write(fd, fhr, FH_SIZE) == FH_SIZE)
 			return 0;

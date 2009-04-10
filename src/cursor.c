@@ -70,6 +70,7 @@ char memtitle[STRLEN] = STR_REPLY;
 void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 {
 	register int num, len;
+	int score;
 	unsigned char *str;
 	static char chdate[9];
 	time_t date;
@@ -142,36 +143,33 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 		else
 			outs("   ");
 #else
-		if (fhr->pushcnt != SCORE_NONE) {
-			if (fhr->pushcnt > SCORE_ZERO)
-				prints("\033[1;31m%01.1X\033[m",
-					fhr->pushcnt - SCORE_ZERO);
-			else if (fhr->pushcnt < SCORE_ZERO)
-				prints("\033[32m%01.1X\033[m",
-					SCORE_ZERO - fhr->pushcnt);
+		score = get_pushcnt(fhr);
+		if (score != PUSH_FIRST) {
+			if (score > 0)
+				prints("\033[1;31m%2.2X\033[m", score);
+			else if (score < 0)
+				prints("\033[32m%2.2X\033[m", 0 - score);
 			else
-				prints("\033[1;33m0\033[m");
+				prints("\033[1;33m 0\033[m");
 		} else {
-			outs(" ");
+			outs("  ");
 		}
 #endif		
 
 		/* if treausure sub-folder */
 		if (fhr->accessed & FILE_TREA)
-			prints("[1;36m  %-12.12s[m", _msg_read_4);
+			prints("[1;36m  %-11.11s[m", _msg_read_4);
 		else
 		{
-			len = 12;
-			if (curuser.ident == 7 && fhr->ident == 7)
+			len = 11;
+			if (curuser.ident == 7 && fhr->ident == 7) {
 				outs(_str_marker);
-			else if (fhr->owner[0] == '#')
-			{
-				len = 13;
+			} else if (fhr->owner[0] == '#') {
+				len = 12;
 				outs(" ");
-			}
-			else
+			} else {
 				outs("  ");
-			
+			}
 
 			str = fhr->owner;
 			while (len > 0 && *str && *str != '@' && *str != '.')
