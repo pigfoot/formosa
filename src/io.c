@@ -17,10 +17,10 @@ extern int dumb_term;
 #define OBUFSIZE  (4096)
 #define IBUFSIZE  (256)
 
-static char outbuf[OBUFSIZE];
+static unsigned char outbuf[OBUFSIZE];
 static int obufsize = 0;
 
-static char inbuf[IBUFSIZE];
+static unsigned char inbuf[IBUFSIZE];
 static int ibufsize = 0;
 static int icurrchar = 0;
 
