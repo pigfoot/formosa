@@ -10,7 +10,6 @@ LDLIBS	  = @LIBS@
 
 STRIP     = @STRIP@
 PERL      = @PERL@
-CPROTO    = @CPROTO@
 INSTALL   = @INSTALL@
 ECHO_N    = @ac_n@
 
@@ -119,8 +118,11 @@ syscheck: syscheck.c $(INCLUDES)
 showboard: showboard.c $(INCLUDES)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
 
-fixbid: fixbid.c 
+fixbid: fixbid.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) ../bbslib.o
+
+fixoldpush: fixoldpush.c
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
 
 countuser: countuser.c $(INCLUDES)
 	$(CC) $(CFLAGS) $(DEFINES) -o countuser countuser.c $(LIBS)
