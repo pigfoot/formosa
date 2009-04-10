@@ -1,4 +1,4 @@
-
+#include <assert.h>
 #include "bbs.h"
 #include "tsbbs.h"
 
@@ -24,6 +24,10 @@ static unsigned char inbuf[IBUFSIZE];
 static int ibufsize = 0;
 static int icurrchar = 0;
 
+
+// If you want old Formosa code, undef USE_VISIO
+#undef USE_VISIO
+//#define USE_VISIO
 
 int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
 
@@ -361,6 +365,7 @@ drop_input(void)
     icurrchar = ibufsize = 0;
 }
 
+#ifndef USE_VISIO
 /*
  * Move to next line before getdata
  *
@@ -383,6 +388,7 @@ int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo)
 	return _getdata(line, col, prompt, buf, len, echo, NULL);
 }
 
+/* With default value */
 int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
 {
 	return _getdata(line, col, prompt, buf, len, echo, prefix);
@@ -516,3 +522,55 @@ int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char
 	outc('\n');
 	return clen;
 }
+#endif // ifndef USE_VISIO
+
+#ifdef USE_VISIO
+static int
+getdata2vgetflag(int echo)
+{
+    assert(echo != GCARRY);
+
+    if (echo == LCECHO)
+        echo = VGET_LOWERCASE;
+    else if (echo == NUMECHO)
+        echo = VGET_DIGITS;
+    else if (echo == NOECHO)
+        echo = VGET_PASSWORD;
+    else if (echo == XNOSP || echo == ECHONOSP)
+    	echo = VGET_NO_SPACE;
+    else
+        echo = VGET_DEFAULT;
+
+    return echo;
+}
+
+/* Ptt */
+int
+getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo)
+{
+    move(line, col);
+    if(prompt && *prompt) outs(prompt);
+    return vgetstr(buf, len, getdata2vgetflag(echo), buf);
+}
+
+
+int
+getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *defaultstr)
+{
+    move(line, col);
+    if(prompt && *prompt) outs(prompt);
+    return vgetstr(buf, len, getdata2vgetflag(echo), defaultstr);
+}
+
+int
+getdata(int line, int col, char *prompt, char *buf, int len, int echo)
+{
+    move(line, col);
+    if(prompt && *prompt) outs(prompt);
+    return vgets(buf, len, getdata2vgetflag(echo));
+}
+#endif // ifdef USE_VISIO
+
+/* vim:sw=4
+ */
+

@@ -1090,6 +1090,13 @@ vgetstring(char *_buf, int len, int flags, const char *defstr, const VGET_CALLBA
 			bell(); continue;
 		    }
 		}
+		if (flags & VGET_NO_SPACE)
+		{
+		    if (c == ' ')
+		    {
+			bell(); continue;
+		    }
+		}
 
 		// size check
 		if(rt.iend+1 >= len)

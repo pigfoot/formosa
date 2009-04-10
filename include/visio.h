@@ -55,6 +55,7 @@
 #define VGET_DIGITS		(0x04)
 #define VGET_TRANSPARENT	(0x08)
 #define VGET_ASCII_ONLY		(0x10)
+#define VGET_NO_SPACE		(0x20)
 #define VGET_PASSWORD		(VGET_NOECHO | VGET_ASCII_ONLY)
 
 // DATATYPE DEFINITION -------------------------------------------------
