@@ -50,6 +50,18 @@ SRCS      = admin.c article.c board.c chat.c chat2.c cursor.c edit.c formosa.c \
             globals.c ident.c io.c lang.c list.c mail.c main.c menu.c \
             more.c pmore.c post.c screen.c string.c stuff.c talk.c telnet.c term.c \
             vote.c xyz.c
+
+#######################################################################
+# conditional configurations and optional modules
+#######################################################################
+
+ifdef WITH_VISIO
+CFLAGS += -DUSE_VISIO
+SRCS += visio.c
+endif
+
+#######################################################################
+
 OBJS      = $(SRCS:.c=.o)
 
 .SUFFIXES: .o .c

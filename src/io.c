@@ -25,10 +25,6 @@ static int ibufsize = 0;
 static int icurrchar = 0;
 
 
-// If you want old Formosa code, undef USE_VISIO
-#undef USE_VISIO
-//#define USE_VISIO
-
 int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
 
 void oflush()
