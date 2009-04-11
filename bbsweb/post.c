@@ -454,8 +454,12 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 
 				score = get_pushcnt(&fileinfo);
 				if (score != PUSH_FIRST) {
-					if (score > 0)
+					if (score == SCORE_MAX)
+						sprintf(pushstr, "<font color=red>\xA1\xDB</font>");
+					else if (score > 0)
 						sprintf(pushstr, "<font color=red>%2.2X</font>", score);
+					else if (score == SCORE_MIN)
+						sprintf(pushstr, "<font color=green>\xA3\x58</font>");
 					else if (score < 0)
 						sprintf(pushstr, "<font color=green>%2.2X</font>", 0 - score);
 					else
