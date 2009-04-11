@@ -459,7 +459,7 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 					else if (score < 0)
 						sprintf(pushstr, "<font color=green>%2.2X</font>", 0 - score);
 					else
-						sprintf(pushstr, "<font color=yellow>&bnsp;0</font>");
+						sprintf(pushstr, "<font color=yellow>&nbsp;0</font>");
 				} else {
 					sprintf(pushstr, "&nbsp;&nbsp;");
 				}
