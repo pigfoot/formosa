@@ -15,6 +15,17 @@ typedef struct
 }
 HYPER_LINK;
 
+struct RepStr {
+	char ch;
+	const char *str;
+};
+struct RepStr repstr[] = {
+	{'<', "&lt;"},
+	{'>', "&gt;"},
+	{'"', "&quot;"},
+	{'&', "&amp;"},
+	{'\0', NULL}
+};
 
 /*******************************************************************
  *	輸出佈告、信件、名片檔 檔案內容
@@ -170,6 +181,30 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 			buffer[0] = '\0';
 		}
 #endif
+
+		/*
+		 * Replace special chars
+		 */
+		{
+			int i, j, k = 0, r;
+			buffer[0] = '\0';
+			for (i = 0 ; data[i] ; ++i) {
+				r = 0;
+				for (j = 0 ; repstr[j].ch ; ++j) {
+					if (data[i] == repstr[j].ch) {
+						strcpy(buffer + k, repstr[j].str);
+						k += strlen(repstr[j].str);
+						r = 1;
+						break;
+					}
+				}
+				if (!r)
+					buffer[k++] = data[i];
+			}
+			buffer[k] = '\0';
+			xstrncpy(data, buffer, sizeof(pbuf));
+			buffer[0] = '\0';
+		}
 
 #ifdef PARSE_ANSI
 		/* search article content for ANSI CODE and convert to HTML code */
