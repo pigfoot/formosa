@@ -335,11 +335,14 @@ static int mail2(char *to, char *filename, char *title)
 
 #ifndef IGNORE_CASE
         retval = SendMail(-1, filename, curuser.userid, to,
+                          title, curuser.ident);
 #else   
         strtolow(to);
-        retval = SendMail(-1, filename, strcasecmp(curuser.fakeuserid, curuser.userid)? curuser.userid:curuser.fakeuserid, to,
+        retval = SendMail(-1, filename,
+			strcasecmp(curuser.fakeuserid, curuser.userid)?
+				curuser.userid : curuser.fakeuserid,
+			to, title, curuser.ident);
 #endif
-                          title, curuser.ident);
 
 	msg("自己保存寄件備份 (y/n) ? [n]: ");	/* lang.h */
 	if (igetkey() == 'y')
@@ -348,11 +351,14 @@ static int mail2(char *to, char *filename, char *title)
 		sprintf(genbuf, "[寄件備份] %s -- %s", to, title);	/* lang.h */
 #ifndef IGNORE_CASE
                 SendMail(-1, filename, curuser.userid, curuser.userid,
-#else
-                SendMail(-1, filename, strcasecmp(curuser.fakeuserid,
-curuser.userid)? curuser.userid:curuser.fakeuserid, curuser.userid,
-#endif
                          genbuf, curuser.ident);
+#else
+                SendMail(-1, filename,
+			strcasecmp(curuser.fakeuserid, curuser.userid)?
+				curuser.userid : curuser.fakeuserid,
+			curuser.userid,
+			genbuf, curuser.ident);
+#endif
 	}
 
 	return retval;
@@ -537,28 +543,38 @@ int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath)
                              uinfo.from, tonews, postpath, 0,
 							 thrheadpos, thrpostidx);
 */							 
- #ifndef IGNORE_CASE
+#ifndef IGNORE_CASE
                 postno = PublishPost(tempfile, curuser.userid, uinfo.username,
- #else
-                postno = PublishPost(tempfile, trcasecmp(curuser.fakeuserid, curuser.userid)? curuser.userid:curuser.fakeuserid, uin
-fo.username,
- #endif
-                             CurBList->filename, title, curuser.ident,
-                             uinfo.from, tonews, postpath, 0,
-							 thrheadpos, thrpostidx);
+			CurBList->filename, title, curuser.ident,
+			uinfo.from, tonews, postpath, 0,
+			thrheadpos, thrpostidx);
+#else
+                postno = PublishPost(tempfile,
+			strcasecmp(curuser.fakeuserid, curuser.userid)?
+				curuser.userid : curuser.fakeuserid,
+			uinfo.username,
+			CurBList->filename, title, curuser.ident,
+			uinfo.from, tonews, postpath, 0,
+			thrheadpos, thrpostidx);
+#endif
 #else 
 /*
 			postno = PublishPost(tempfile, curuser.userid, curuser.username,
 					             CurBList->filename, title, curuser.ident, 
 				             uinfo.from, tonews, postpath, 0);
 */				             
- #ifndef IGNORE_CASE
+#ifndef IGNORE_CASE
                 postno = PublishPost(tempfile, curuser.userid, uinfo.username,
- #else
-                postno = PublishPost(tempfile, strcasecmp(curuser.fakeuserid, curuser.userid)? curuser.userid:curuser.fakeuserid, uinfo.username,
- #endif
-				             CurBList->filename, title, curuser.ident, 
-				             uinfo.from, tonews, postpath, 0);
+			CurBList->filename, title, curuser.ident, 
+			uinfo.from, tonews, postpath, 0);
+#else
+                postno = PublishPost(tempfile,
+			strcasecmp(curuser.fakeuserid, curuser.userid)?
+				curuser.userid:curuser.fakeuserid,
+			uinfo.username,
+			CurBList->filename, title, curuser.ident, 
+			uinfo.from, tonews, postpath, 0);
+#endif
 #endif
 
 			if (postno == -1)
@@ -645,7 +661,7 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 	FILEHEADER *fhr = &fhGol;	/* lthuang ? */
 	extern int nowdepth;
 	BOOL combin = FALSE;
-	char fn_comb[PATHLEN];
+	char fn_comb[PATHLEN], msgbuf[STRLEN];
 	int result = 0;
 
 
@@ -750,27 +766,37 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 			else
 			{
 #ifdef USE_THREADING	/* syhu */
-				result += PublishPost(fname, fhr->owner, NULL, NULL, 
-							fhr->title, fhr->ident, NULL, FALSE, tpath,0,-1,-1);
+				if (PublishPost(fname, fhr->owner, NULL, NULL, 
+						fhr->title, fhr->ident, NULL, FALSE, tpath,0,-1,-1) != -1)
 #else
-				result += PublishPost(fname, fhr->owner, NULL, NULL, 
-							fhr->title, fhr->ident, NULL, FALSE, tpath, 0);
+				if (PublishPost(fname, fhr->owner, NULL, NULL, 
+						fhr->title, fhr->ident, NULL, FALSE, tpath, 0) != -1)
 #endif
+				{
+					++result;
+				} else {
+					result = -1;
+					break;
+				}
 			}
 		}
 
-		if (combin)
+		if (combin) {
 #ifdef USE_THREADING	/* syhu */
-			result = PublishPost(fn_comb, curuser.userid, NULL, NULL, 
+			if (PublishPost(fn_comb, curuser.userid, NULL, NULL, 
 						_str_combined_treasure_title,
-						curuser.ident, NULL, FALSE, tpath, 0, -1, -1);
+						curuser.ident, NULL, FALSE, tpath, 0, -1, -1) != -1)
 #else
-			result = PublishPost(fn_comb, curuser.userid, NULL, NULL, 
+			if (PublishPost(fn_comb, curuser.userid, NULL, NULL, 
 						_str_combined_treasure_title,
-						curuser.ident, NULL, FALSE, tpath, 0);
+						curuser.ident, NULL, FALSE, tpath, 0) != -1)
 #endif
+				result = 1;
+			else
+				result = -1;
+		}
 
-		if (ch == 'T' && result == 0)
+		if (ch == 'T' && result != -1)
 		{
 			if (lseek(fd, 0, SEEK_SET) != -1)
 			{
@@ -796,10 +822,12 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 		close(fd);
 		if (combin)
 			unlink(fn_comb);
-		if (result < 0)
+		if (result < 0) {
 			msg(_msg_fail);
-		else
-			msg(_msg_finish);
+		} else {
+			sprintf(msgbuf, "%s %d篇", _msg_finish, result);
+			msg(msgbuf);
+		}
 		getkey();
 		if (ch == 'T' && !in_board)
 			pack_article(direct);	/* treasure need deleted immediately */
