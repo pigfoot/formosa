@@ -1,4 +1,3 @@
-
 #include "bbs.h"
 #include "bbsconfig.h"
 #include <sys/mman.h>
@@ -10,6 +9,7 @@ typedef struct
 	time_t stamp;
 	char filename[STRLEN];
 	int count;
+	int pcount;
 }
 POST_TITLE;
 
@@ -30,27 +30,29 @@ POST_TITLE total_title[MAXBOARD * NUM_TITLE_SELECT];
 static int cnt = 0;
 #endif	
 
-
 int 
 cmp_count (a, b)
      POST_TITLE **a, **b;
 {
-	return (*b)->count - (*a)->count;
+	return ((*b)->count + (*b)->pcount)
+		- ((*a)->count + (*a)->pcount);
 }
-
 
 int 
 cmp_count2 (a, b)
      POST_TITLE *a, *b;
 {
-	return (b)->count - (a)->count;
+	return ((b)->count + (b)->pcount)
+		- ((a)->count + (a)->pcount);
 }
 
-
 int 
-add_post_title (char *boardname, char *title, time_t stamp, char *filename)
+add_post_title(char *boardname, char *title, int pushcnt, time_t stamp, char *filename)
 {
 	int i;
+
+	if (pushcnt == PUSH_FIRST)
+		pushcnt = 0;
 
 	if (!strncmp (title, "Re: ", 4))
 		title += 4;
@@ -69,6 +71,7 @@ add_post_title (char *boardname, char *title, time_t stamp, char *filename)
 		if (!strncmp (post_title[i].title, title, strlen(post_title[i].title)))
 		{
 			post_title[i].count++;
+			post_title[i].pcount += pushcnt;
 /*			post_title[i].stamp = stamp; */
 			return i;
 		}
@@ -83,11 +86,10 @@ add_post_title (char *boardname, char *title, time_t stamp, char *filename)
 	xstrncpy (post_title[i].filename, filename, sizeof(post_title[i].filename));
 	xstrncpy (post_title[i].boardname, boardname, sizeof(post_title[i].boardname));
 	post_title[i].count++;
+	post_title[i].pcount += pushcnt;
 
 	return -1;
-
 }
-
 
 int 
 get_article_of_day (char *boardname, int num_days)
@@ -132,9 +134,10 @@ get_article_of_day (char *boardname, int num_days)
 				break;
 
 			if (!((fileinfo+(i-1))->accessed & FILE_DELE))
-				add_post_title (boardname, (fileinfo+(i-1))->title, date, (fileinfo+(i-1))->filename);
+				add_post_title (boardname, (fileinfo + (i - 1))->title,
+					get_pushcnt(fileinfo + (i - 1)),
+					date, (fileinfo + (i - 1))->filename);
 		}
-
 
 #else
 #if 0
@@ -155,7 +158,9 @@ get_article_of_day (char *boardname, int num_days)
 					break;
 				}
 				if (!(fileinfo.accessed & FILE_DELE))
-					add_post_title (boardname, fileinfo.title, date, fileinfo.filename);
+					add_post_title (boardname, fileinfo.title,
+						get_pushcnt(&fileinfo),
+						date, fileinfo.filename);
 
 				if (lseek (fd, -((off_t)(FH_SIZE * 2)), SEEK_CUR) == -1)
 					break;
@@ -193,6 +198,7 @@ select_top (int *total_title_num, int num_select)
 		total_title[*total_title_num].stamp = pt[j]->stamp;
 		strcpy(total_title[*total_title_num].filename, pt[j]->filename);
 		total_title[*total_title_num].count = pt[j]->count;
+		total_title[*total_title_num].pcount = pt[j]->pcount;
 		(*total_title_num)++;
 	}
 }
@@ -216,6 +222,7 @@ BOARDHEADER *bhentp;
 		return -1;
 	if (!checkNews && (bhentp->brdtype & BRD_NEWS))
 		return -1;
+
 #ifdef NSYSUBBS1
 	if (!strncmp(bhentp->filename, "cna-", 4) 
 	    || !strcmp(bhentp->filename, "test")
@@ -235,11 +242,6 @@ BOARDHEADER *bhentp;
 int
 poststat(int num_days, int num_posts, BOOL bNews, POST_TITLE **toplist, int *total_title_num)
 {
-#if 0	
-	int i;
-	extern struct BRDSHM *brdshm;
-#endif	
-
 	resolve_brdshm();
 	*total_title_num = 0;
 	
@@ -248,47 +250,23 @@ poststat(int num_days, int num_posts, BOOL bNews, POST_TITLE **toplist, int *tot
 	checknum_posts = num_posts;
 	checktotal_title_num = total_title_num;
 	apply_brdshm(fptr);
-#if 0	
-	for (i=0; i<MAXBOARD && *(brdshm->brdinf[i].bhr.filename) != 0x00; i++)
-	{
-	#if 0
-		if (bhentp->filename[0] == '\0')
-			continue;
-	#endif
-	
-		if (!can_see_board (&(brdshm->brdinf[i].bhr), 0))
-			continue;
-		if (!bNews && (brdshm->brdinf[i].bhr.brdtype & BRD_NEWS))
-			continue;
-#ifdef NSYSUBBS1
-		if (!strncmp(brdshm->brdinf[i].bhr.filename, "cna-", 4) 
-		    || !strcmp(brdshm->brdinf[i].bhr.filename, "test"))
-		{		    
-			continue;
-		}
-#endif
-		memset(post_title, 0, sizeof(post_title));
-		get_article_of_day (brdshm->brdinf[i].bhr.filename, num_days);
-		select_top (total_title_num, num_posts);
-	}
-#endif	
 	
 	qsort (total_title, *total_title_num, sizeof (POST_TITLE), cmp_count2);
 
 	*toplist = &(total_title[0]);
 
-#if 1
 	if (cnt > MAX_POSTS)
 	{
 		fprintf(stderr, "max posts over range, cnt=[%d]\n", cnt);
 		fflush(stderr);
 		return -1;
 	}
-#endif	
+
 	return 0;
 }
 
-#ifndef BBSWEB
+//#ifndef BBSWEB
+#if 0
 int
 do_showfile(num_posts, total_title_num, toplist)
 int num_posts, total_title_num;

@@ -157,6 +157,8 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 				
 				if(!strncasecmp(tag, "Num", tag_len))
 					fprintf(fp, "%d", pt[idx].count);
+				else if(!strncasecmp(tag, "PushNum", tag_len))
+					fprintf(fp, "%2.2X", pt[idx].pcount);
 				else if(!strncasecmp(tag, "PostTitle", tag_len))
 				{
 				#if 0
