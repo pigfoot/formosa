@@ -145,8 +145,12 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 #else
 		score = get_pushcnt(fhr);
 		if (score != PUSH_FIRST) {
-			if (score > 0)
+			if (score == SCORE_MAX)
+				prints("\033[1;31m\xA1\xDB\033[m");
+			else if (score > 0)
 				prints("\033[1;31m%2.2X\033[m", score);
+			else if (score == SCORE_MIN)
+				prints("\033[32m\xA3\x58\033[m");
 			else if (score < 0)
 				prints("\033[32m%2.2X\033[m", 0 - score);
 			else

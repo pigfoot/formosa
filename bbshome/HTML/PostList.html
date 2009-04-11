@@ -49,7 +49,7 @@ function PostJump()
 
 <TABLE align="Left" border="0" cellspacing="0">
 <TR BGCOLOR="Orange">
-	<TD COLSPAN="4">
+	<TD COLSPAN="5">
 	<FONT color="Blue">
 	『<!BBS_Board_Title!>』&nbsp;&nbsp;&nbsp;&nbsp;
 	管理員：
@@ -67,12 +67,12 @@ function PostJump()
 	</FONT></TD>
 </TR>
 <TR>
-	<TD width="5%">篇號</TD><TD width="15%">作者</TD><TD width="10%">張貼日</TD><TD width="70%">標題</TD>
+	<TD width="7%">篇號</TD><TD width="6%">推文</TD><TD width="20%">作者</TD><TD width="12%">張貼日</TD><TD width="55%">標題</TD>
 </TR>
-<!BBS_PostList FORMAT="<TR><TD>%NUM%  </TD><TD>%SENDER% </TD><TD>%DATE%</TD><TD>%TITLE%</TD></TR>"!>
+<!BBS_PostList FORMAT="<TR><TD>%NUM%</TD><TD>%PushCNT%</TD><TD>%SENDER%</TD><TD>%DATE%</TD><TD>%TITLE%</TD></TR>"!>
 
 <TR>
-	<td colspan="4">
+	<td colspan="5">
 	<HR>
 	<!BBS_PostList_PageUp!>&nbsp;&nbsp;
 	<!BBS_PostList_PageDown!>&nbsp;&nbsp;

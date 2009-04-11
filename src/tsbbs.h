@@ -6,6 +6,8 @@
 #include "globals.h"		/* global variables */
 #include "libproto.h"	/* function prototype of library */
 #include "io.h"
+#include "screen.h"
+#include "visio.h"
 
 /*******************************************************************
  *	general define
@@ -98,6 +100,9 @@ struct one_key {           /* Used to pass commands to the readmenu */
  * 	other define or macro
  *******************************************************************/
 #define b_line    (t_lines-1)
+/* Maple compatible */
+#define b_lines   b_line
+#define vkey      getkey
 
 #define HAS_PERM(x)	  CHECK_PERM(curuser.userlevel, x) 	/* -ToDo- */
 
@@ -190,6 +195,7 @@ int igetch(void);
 int getkey(void);
 int igetkey(void);
 void bell(void);
+int getdataln(char *prompt, char *buf, int len, int echo);
 int getdata(int line, int col, char *prompt, char *buf, int len, int echo);
 int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo);
 int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix);
@@ -244,7 +250,9 @@ void standend(void);
 void getyx(int *y, int *x);
 int outc(register unsigned char c);
 void outs(register char *str);
+#ifndef USE_VISIO
 void prints(char *fmt, ...);
+#endif
 void msg(char *fmt, ...);
 void scroll(void);
 void rscroll(void);
@@ -323,6 +331,12 @@ int x_viewnote(void);
 #else
 #define isprint2(ch) ((ch == 0x1B) || isprint(ch))
 #endif
+
+#ifndef USE_PFTERM
+# define SOLVE_ANSI_CACHE() {}
+#else  // !USE_PFTERM
+# define SOLVE_ANSI_CACHE() { outs(" \b"); }
+#endif // !USE_PFTERM
 
 
 #endif /* _BBS_TSBBS_H_ */
