@@ -7,6 +7,24 @@
 #include "tsbbs.h"
 #include <sys/socket.h>
 
+/**
+ * In previous revision use getdata() in screen.c, and login_query() are
+ * called before initscr(), thus getdata(0,...) and '\n' in
+ * outs(), prints() will scroll physical screen.
+ *
+ * The getdata() in visio.c must be called after initscr(), we no logner
+ * could depends on the scroll behavior.
+ *
+ * Change all the getdata(0,...) to getdata(some_line, ...)
+ *
+ * XXX:  The total lines of BBSSRV_WELCOME + ACTFILE + SHOW_UPTIME
+ * should not exceed 17 (when USE_VISIO or USE_PFTERM)
+ *
+ */
+#if defined(USE_VISIO) || defined(USE_PFTERM)
+#undef ACTFILE
+#undef SHOW_UPTIME
+#endif
 
 char myfromhost[HOSTLEN];
 char myuserid[IDLEN];
@@ -275,10 +293,12 @@ static void user_init()
 
 static void new_register(USEREC *nu)
 {
+	const int ln_base = 15;
 	int attempt = 0;
 
 	int fd;
 		
+	clear();
 
 	if ((fd = open(NEWID_HELP, O_RDONLY)) > 0)
 	{
@@ -299,7 +319,7 @@ static void new_register(USEREC *nu)
 			exit(0);	/* abort bbs */
 		}
 
-		getdata(0, 0, _msg_formosa_2, nu->userid, IDLEN, ECHONOSP);
+		getdata(ln_base, 0, _msg_formosa_2, nu->userid, IDLEN, ECHONOSP);
 #ifdef IGNORE_CASE
                 strcpy(nu->fakeuserid, nu->userid);
                 /* kmwang:20000629:將 nu->userid 全轉為小寫 */
@@ -324,7 +344,7 @@ static void new_register(USEREC *nu)
 	/* enter new user date, password, etc. */
 	while (1)
 	{
-		getdata(0, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), XNOECHO);
+		getdata(ln_base+1, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), XNOECHO);
 		if (strlen(mypasswd) < 4)
 		{
 			outs(_msg_formosa_7);
@@ -335,7 +355,7 @@ static void new_register(USEREC *nu)
 			outs(_msg_formosa_8);
 			continue;
 		}
-		getdata(0, 0, _msg_formosa_9, genbuf, sizeof(mypasswd), XNOECHO);
+		getdata(ln_base+2, 0, _msg_formosa_9, genbuf, sizeof(mypasswd), XNOECHO);
 		if (strcmp(genbuf, mypasswd))
 		{
 			outs(_msg_formosa_10);
@@ -344,9 +364,9 @@ static void new_register(USEREC *nu)
 		break;
 	}
 
-	getdata(0, 0, _msg_formosa_11, nu->username, sizeof(nu->username),
+	getdata(ln_base+3, 0, _msg_formosa_11, nu->username, sizeof(nu->username),
 		XECHO);
-	getdata(0, 0, _msg_formosa_12, nu->email, sizeof(nu->email),
+	getdata(ln_base+4, 0, _msg_formosa_12, nu->email, sizeof(nu->email),
 		ECHONOSP);
 
 	nu->firstlogin = time(0);	/* lthuang */
@@ -371,12 +391,17 @@ static void login_query()
 {
 	int act, attempt = 0, n;
 	FILE *fp;
+	int y=0;
+	const int line_err = 23;
 
 
 	if ((fp = fopen(BBSSRV_WELCOME, "r")) != NULL)
 	{
 		while (fgets(genbuf, sizeof(genbuf), fp))
+		{
+			move(y++, 0);
 			outs(genbuf);
+		}
 		fclose(fp);
 	}
 
@@ -384,12 +409,16 @@ static void login_query()
 	if ((fp = fopen(ACTFILE, "r")) != NULL)
 	{
 		while (fgets(genbuf, sizeof(genbuf), fp))
+		{
+			move(y++, 0);
 			outs(genbuf);
+		}
 		fclose(fp);
 	}
 #endif
 
 	num_ulist(&act, NULL, NULL);
+	move(17, 0);
 	prints(_msg_formosa_14, BBSTITLE, act, MAXACTIVE);
 
 #if 0
@@ -402,6 +431,7 @@ static void login_query()
 		if (fgets(genbuf, sizeof(genbuf), fp))
 		{
 // lmj
+			move(18, 0);
 			prints(_msg_formosa_15, genbuf);
 /*
 			char *ptr;
@@ -422,6 +452,7 @@ static void login_query()
 
 	if (act > MAXACTIVE)
 	{
+		move(18, 0);
 		prints(_msg_formosa_16, MAXACTIVE);
 		oflush();
 		shutdown(0, 2);
@@ -432,12 +463,14 @@ static void login_query()
 	{
 		if (attempt++ >= 3)	/* too many times, fail login */
 		{
+			move(line_err, 0);
 			prints(_msg_formosa_17, 3);
 			oflush();
 			shutdown(0, 2);
 			exit(0);
 		}
 
+		move(19, 0);
 #if	defined(LOGINASNEW)
 		outs(_msg_formosa_18);
 #ifdef GUEST
@@ -449,9 +482,10 @@ static void login_query()
 #endif
 #endif /* !LOGINASNEW */
 
-		if (!getdata(0, 0, _msg_formosa_21, myuserid, sizeof(myuserid),
+		if (!getdata(21, 0, _msg_formosa_21, myuserid, sizeof(myuserid),
 			     ECHONOSP))
 		{
+			move(line_err, 0);
 			outs(_msg_err_userid);
 			continue;
 		}
@@ -478,13 +512,13 @@ static void login_query()
 #ifdef GUEST
 		else if (!strcmp(myuserid, GUEST))
 		{
-			getdata(0, 0, _msg_formosa_25, mypasswd, sizeof(mypasswd),
+			getdata(22, 0, _msg_formosa_25, mypasswd, sizeof(mypasswd),
 				XNOECHO);
 		}
 #endif
 		else
 		{
-			getdata(0, 0, _msg_formosa_26, mypasswd, sizeof(mypasswd),
+			getdata(22, 0, _msg_formosa_26, mypasswd, sizeof(mypasswd),
 				XNOECHO);
 		}
 
@@ -498,9 +532,11 @@ static void login_query()
 		}
 		else if (n == ULOGIN_PASSFAIL)
 		{
+			move(line_err, 0);
 			outs(_msg_formosa_27);
 			continue;
 		}
+		move(line_err, 0);
 		outs(_msg_formosa_44);
 	}
 }
@@ -609,6 +645,10 @@ void Formosa(char *host, char *term, int argc, char **argv)
 
 	/* initialize virtual terminal */
 	init_vtty();
+#if defined(USE_VISIO) || defined(USE_PFTERM)
+	term_init("vt100");	/* only support 'vt100' now */
+	initscr();
+#endif
 
 	/* start timeout alarm */
 	signal(SIGALRM, saybyebye);
@@ -634,8 +674,10 @@ void Formosa(char *host, char *term, int argc, char **argv)
 
 	bbsd_log_open();
 
+#if !defined(USE_VISIO) && !defined(USE_PFTERM)
 	term_init("vt100");	/* only support 'vt100' now */
 	initscr();
+#endif
 	multi_user_check();
 	user_init();
 	/* bakfiletest by  wnlee */
