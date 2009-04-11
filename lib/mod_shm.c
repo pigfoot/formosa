@@ -249,8 +249,7 @@ static struct board_t *all_brdt[MAXBOARD];
 static int all_brdt_isset;
 int resolve_brdshm()
 {
-	int fd;
-	int n;
+	int fd, i, n;
 
 	if (!brdshm)
 		brdshm = attach_shm(BRDSHM_KEY, sizeof(struct BRDSHM));
@@ -300,9 +299,12 @@ int resolve_brdshm()
 	}
 
 	if (!all_brdt_isset) {
-		for (n = 0; n < MAXBOARD; ++n)
-			all_brdt[n] = &(brdshm->brdt[n]);
-		qsort(all_brdt, MAXBOARD, sizeof(struct board_t *), cmp_brdt_bname);
+		for (i = 0, n = 0; n < MAXBOARD; ++n) {
+			if (brdshm->brdt[n].rank != 0)
+				all_brdt[i++] = &(brdshm->brdt[n]);
+		}
+		qsort(all_brdt, brdshm->number,
+			sizeof(struct board_t *), cmp_brdt_bname);
 		all_brdt_isset = 1;
 	}
 
