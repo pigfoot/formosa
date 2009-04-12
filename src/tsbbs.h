@@ -99,14 +99,15 @@ struct one_key {           /* Used to pass commands to the readmenu */
 /*******************************************************************
  * 	other define or macro
  *******************************************************************/
-#define b_line    (t_lines-1)
 /* Maple compatible */
 #define b_lines   b_line
 #define vkey      getkey
+#define redoscr   redrawwin
 
 #define HAS_PERM(x)	  CHECK_PERM(curuser.userlevel, x) 	/* -ToDo- */
 
 extern int t_lines, t_columns;  /* Screen size, hieght, width */
+extern int b_line; /* The bottom line of screen */
 
 #include "lang.h"
 
@@ -256,8 +257,6 @@ void prints(char *fmt, ...);
 void msg(char *fmt, ...);
 void scroll(void);
 void rscroll(void);
-void save_all_screen(void);
-void restore_all_screen(void);
 void save_screen(void);
 void restore_screen(void);
 /* stuff.c */

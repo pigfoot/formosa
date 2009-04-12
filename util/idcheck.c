@@ -120,6 +120,7 @@ char *stamp_fn;
 		if (!strcmp(fhr->filename, stamp_fn))
 		{
 			fhr->accessed |= FILE_DELE;
+			xstrncpy(fhr->delby, "idcheck", IDLEN);
 			if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) != -1)
 			{
 				if (write(fd, fhr, FH_SIZE) == FH_SIZE)

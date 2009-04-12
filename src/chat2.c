@@ -323,10 +323,8 @@ int t_chat2()
 		else if (ch == CTRL('Q'))
 		{
 			add_io(0, 0);
-			save_all_screen();
 			t_query();
 			add_io(ac, 0);
-			restore_all_screen();
 			continue;
 		}
 		move(PLINE, currchar + SAYWORD_POINT);

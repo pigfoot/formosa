@@ -148,6 +148,7 @@ int endstandoutlen;
 
 int t_lines = 24;
 int t_columns = 80;
+int b_line = 23;
 
 int automargins;
 
@@ -164,6 +165,43 @@ int outcf(char ch)
 	return 0;	/* ? */
 }
 
+static void
+sig_term_resize(int sig)
+{
+    struct winsize  newsize;
+    signal(SIGWINCH, SIG_IGN);	/* Don't bother me! */
+    ioctl(0, TIOCGWINSZ, &newsize);
+    term_resize(newsize.ws_col, newsize.ws_row);
+}
+
+void term_resize(int w, int h)
+{
+    int dorefresh = 0;
+
+    signal(SIGWINCH, SIG_IGN);	/* Don't bother me! */
+
+    /* make sure reasonable size */
+    h = MAX(24, MIN(100, h));
+    w = MAX(80, MIN(200, w));
+
+    if (w != t_columns || h != t_lines)
+    {
+	// invoke terminal system resize
+	resizeterm(h, w);
+
+	t_lines = h;
+	t_columns = w;
+	dorefresh = 1;
+    }
+    b_line = t_lines - 1;
+
+    signal(SIGWINCH, sig_term_resize);
+    if (dorefresh)
+    {
+	redrawwin();
+	refresh();
+    }
+}
 
 int term_init(char *term)
 {
@@ -253,6 +291,8 @@ int term_init(char *term)
 	UP = tgetstr("up", &sbp);
 	sbp = BCbuf;
 	BC = tgetstr("bc", &sbp);
+
+	signal(SIGWINCH, sig_term_resize);
 
 	return 1;
 }

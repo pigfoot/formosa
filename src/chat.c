@@ -115,14 +115,15 @@ void printchatline(const char *str)
 {
 	int i = 0;
 	int wrap = 0;
-	extern unsigned char cur_col;
+	int y, x;
 	
 	move(chat_line, i);
 	clrtoeol();
 
 	while (*str)
 	{
-		if (cur_col == 79 || *str == '\n')
+		getyx(&y, &x);
+		if (y == 79 || *str == '\n')
 		{
 			chat_line++;
 			if (chat_line == ECHATWIN)
@@ -137,7 +138,7 @@ void printchatline(const char *str)
 		}
 		else
 		{
-			if (cur_col == 0 && wrap)
+			if (y == 0 && wrap)
 				outs("  ");
 			outc(*str);
 		}
@@ -902,10 +903,8 @@ int t_chat()
 		else if (ch == CTRL('Q'))
 		{
 			add_io(0, 0);
-			save_all_screen();
 			t_query();
 			add_io(ac, 0);
-			restore_all_screen();
 			continue;
 		}
 		move(PLINE, currchar + SAYWORD_POINT);

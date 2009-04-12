@@ -65,6 +65,59 @@ int pack_article(char *direct)
 	return -1;
 }
 
+/* 
+ * Delete records pointed to missing article file
+ */
+int clean_dirent(char *direct)
+{
+	int fdr, fdw, fdt;
+	FILEHEADER fhTmp, *fhr = &fhTmp;
+	char fn_dirty[PATHLEN], fn_new[PATHLEN], fn_del[PATHLEN];
+	int result = 0;
+
+	sprintf(fn_new, "%s.new", direct);
+	sprintf(fn_del, "%s.del", direct);
+
+	if ((fdr = open(direct, O_RDONLY)) < 0)
+		return -1;
+	if ((fdw = open(fn_new, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
+	{
+		close(fdr);
+		return -1;
+	}
+	flock(fdr, LOCK_EX);
+	while (read(fdr, fhr, FH_SIZE) == FH_SIZE)
+	{
+		if (fhr->filename[0]) {
+			fhr->filename[sizeof(fhr->filename)-1] = '\0';
+			setdotfile(fn_dirty, direct, fhr->filename);
+			if ((fdt = open(fn_dirty, O_RDONLY)) > 0) {
+				close(fdt);
+				if (write(fdw, fhr, FH_SIZE) != FH_SIZE) {
+					result = -1;
+					break;
+				}
+			}
+		}
+	}
+	close(fdw);
+	flock(fdr, LOCK_UN);
+	close(fdr);
+	if (result == 0)
+	{
+		if (myrename(direct, fn_del) == 0)
+		{
+			if (myrename(fn_new, direct) == 0)
+			{
+				unlink(fn_del);
+				return 0;
+			}
+			myrename(fn_del, direct);
+		}
+	}
+	unlink(fn_new);
+	return -1;
+}
 
 /*
  * create a unique stamp filename (M.nnnnnnnnnn.??)

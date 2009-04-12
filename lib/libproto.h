@@ -55,6 +55,7 @@ int host_deny(char *host);
 char *modestring(USER_INFO *upent, int complete);
 /* mod_article.c */
 int pack_article(char *direct);
+int clean_dirent(char *direct);
 int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
 void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);

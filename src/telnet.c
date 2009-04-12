@@ -52,7 +52,7 @@ telnet_init(void)
 	IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE,
 
 	/* i'm a smart term with resize ability. */
-//	IAC, DO, TELOPT_NAWS,
+	IAC, DO, TELOPT_NAWS,
 
 	/* i will echo. */
 	IAC, WILL, TELOPT_ECHO,
@@ -302,7 +302,7 @@ telnet_handler(unsigned char c)
 		    {
 			int w = (iac_buf[1] << 8) + (iac_buf[2]);
 			int h = (iac_buf[3] << 8) + (iac_buf[4]);
-//			term_resize(w, h);	TODO
+			term_resize(w, h);
 #ifdef DETECT_CLIENT
 			if(cuser.userid[0]==0) {
 			    UpdateClientCode(iac_buf[0]);
