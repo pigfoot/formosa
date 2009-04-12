@@ -37,7 +37,7 @@ char *argv[];
 		exit(-1);
 	}
 
-	while ((c = getopt (argc, argv, "ab:m:")) != -1)
+	while ((c = getopt (argc, argv, "ab:f:m:")) != -1)
 	{
 		switch (c)
 		{
@@ -46,6 +46,10 @@ char *argv[];
 			break;
 		case 'b':
 			mode = 'b';
+			strcpy (id, optarg);
+			break;
+		case 'f':
+			mode = 'f';
 			strcpy (id, optarg);
 			break;
 		case 'm':
@@ -88,6 +92,17 @@ char *argv[];
 		else
 			printf ("finished!!\r\n");
 		set_brdt_numposts(id, TRUE);	/* lthuang: 99/08/20 */			
+		break;
+	/* fix specified board */
+	case 'f':
+		setboardfile(path, id, DIR_REC);
+		printf ("Fix board '%s' ... ", id);
+		fflush(stdout);
+		if (clean_dirent(path) == -1)
+			printf ("failed!!\r\n");
+		else
+			printf ("finished!!\r\n");
+		set_brdt_numposts(id, TRUE);
 		break;
 	/* pack user mail box */		
 	case 'm':
