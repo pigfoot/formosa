@@ -406,8 +406,8 @@ int     innstr      (char *str, int n); // n includes \0
 int     inansistr   (char *str, int n); // n includes \0
 
 // deprecated
-void    standout    (void);
-void    standend    (void);
+void    standout    (void) {};
+void    standend    (void) {};
 
 // grayout advanced control
 void    grayout     (int y, int end, int level);
