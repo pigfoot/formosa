@@ -256,8 +256,6 @@ void prints(char *fmt, ...);
 void msg(char *fmt, ...);
 void scroll(void);
 void rscroll(void);
-void save_all_screen(void);
-void restore_all_screen(void);
 void save_screen(void);
 void restore_screen(void);
 /* stuff.c */

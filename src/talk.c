@@ -1125,9 +1125,7 @@ int msq_reply()		/* lthuang */
 		}
 		else if (ch == CTRL('Q'))
 		{
-			save_all_screen();
 			QueryUser(allmsqs[ccur].fromid, NULL);
-			restore_all_screen();
 		}
 #if defined(NSYSUBBS1) || defined(KHBBS) /* sarek:01/05/2001:高市資教要求 */
 		else if (ch == CTRL('X'))

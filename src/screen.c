@@ -602,18 +602,6 @@ void rscroll()
 }
 
 
-#if 1
-void save_all_screen()
-{
-}
-
-
-void restore_all_screen()
-{
-}
-#endif
-
-
 struct screenline save_big_picture[2];
 int save_x, save_y;
 
