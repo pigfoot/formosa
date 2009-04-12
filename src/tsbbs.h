@@ -99,7 +99,6 @@ struct one_key {           /* Used to pass commands to the readmenu */
 /*******************************************************************
  * 	other define or macro
  *******************************************************************/
-#define b_line    (t_lines-1)
 /* Maple compatible */
 #define b_lines   b_line
 #define vkey      getkey
@@ -108,6 +107,7 @@ struct one_key {           /* Used to pass commands to the readmenu */
 #define HAS_PERM(x)	  CHECK_PERM(curuser.userlevel, x) 	/* -ToDo- */
 
 extern int t_lines, t_columns;  /* Screen size, hieght, width */
+extern int b_line; /* The bottom line of screen */
 
 #include "lang.h"
 

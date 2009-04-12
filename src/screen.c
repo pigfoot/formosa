@@ -60,6 +60,28 @@ void initscr()
 	}
 }
 
+int resizeterm(int w, int h)
+{
+    struct screenline   *new_picture;
+
+    /* make sure reasonable size */
+    h = MAX(24, MIN(100, h));
+    w = MAX(80, MIN(200, w));
+
+    if (h > t_lines && big_picture) {
+	new_picture = (struct screenline *) 
+		calloc(h, sizeof(struct screenline));
+	if (new_picture == NULL) {
+	    return 0;
+	}
+	memcpy(new_picture, big_picture, t_lines * sizeof(struct screenline));
+	free(big_picture);
+	big_picture = new_picture;
+	return 1;
+    }
+    return 0;
+}
+
 
 static void rel_move(int was_col, int was_ln, int new_col, int new_ln)
 {
