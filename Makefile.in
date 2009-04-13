@@ -54,5 +54,9 @@ distclean: clean
 	@-rm -f configure config.cache config.status config.log
 
 install: target := install
-install: $(SUBDIRS)
+install: $(SUBDIRS) $(HOMEBBS)/bin
+
+$(HOMEBBS)/bin:
+	mkdir -p $@
+	chown bbs:bbs $@
 

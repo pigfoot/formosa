@@ -102,7 +102,6 @@ $(LIBFILE): $(LIBSRCS)
 install_once: all genlogin
 	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \
 		../Install.sh)
-	$(MAKE) install_once
 	@(./genlogin -c Sysop -p SYSOP -l 255 -i 7 SYSOP)
 	@(./genlogin -c Guest -p guest -l 0   -i 0 guest)
 
