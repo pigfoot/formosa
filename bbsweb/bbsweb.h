@@ -1,7 +1,6 @@
 /*
  *	Formosa WEB-BBS main header file
  */
-#include "../config.h"
 #ifdef HAVE_MMAP
 #include <sys/mman.h>
 #endif

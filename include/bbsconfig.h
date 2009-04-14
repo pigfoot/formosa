@@ -9,7 +9,10 @@
 #define BBS_GID             999         /* BBS user Run Time 系統 gid */
 #define MAXACTIVE           64         /* 線上容許人數 */
 #define MAXBOARD            256
+#ifndef HOMEBBS
+/* a fallback in case we don't have the config.h */
 #define HOMEBBS             "/home/bbs"
+#endif
 
 /*******************************************************************
  *    系統組態

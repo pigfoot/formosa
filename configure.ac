@@ -229,6 +229,8 @@ ECHO_T=${ac_t}
 
 AC_PREFIX_DEFAULT(/home/bbs)
 
+AC_DEFINE_UNQUOTED(HOMEBBS,"$prefix",[Define the home directory of BBS])
+
 #AC_SUBST(BBS_UID)
 #AC_SUBST(BBS_GID)
 #AC_SUBST(HOMEBBS)
