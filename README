@@ -4,24 +4,22 @@ DOCUMENTATION
 
 Please see README or Makefile for document :)
 
-Now, some document are provided, in HTML format, in the manual/
-directory. For the up-to-date document, visit us on the WWW, at
-<URL:http://ftp.nsysu.edu.tw/docs/>.
+For the up-to-date document, visit us on the WWW, at
+<URL:http://formosabbs.blogspot.com/>.
 
 
 NEW INSTALLATIONS
 ------------------
 
-Now, our porgrams support several Un*X OS, eg: SunOS, Solaris 2.x,
-IBM AIX, Linux, FreeBSD. You can get the complete package from our
-ftp site at
-<URL:ftp://ftp.nsysu.edu.tw/NSYSU/BBS/>.
+Now, our porgrams support several Un*X OS, eg: Linux, FreeBSD,
+MacOS, Solaris.
 
-The latest version is 1.1.2, the filename is 
-<URL:ftp//ftp.nsysu.edu.tw/NSYSU/BBS/FormosaBBS-1.3.0-bin.tar.gz>.
+The latest version we are working on is 1.5-current. You can
+download the source codes from:
+<URL:http://github.com/pigfoot/formosa/tree/master>.
 
-NOTE: Please read 'INSTALL' for detail, 'QuickStart' for few
-      step in installations.
+NOTE: Please read 'INSTALL' for detail, 'QUICKSTART' for few
+      steps in installations.
 
 
 DIRECTORIES
