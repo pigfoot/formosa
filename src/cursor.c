@@ -1220,8 +1220,7 @@ int acl_edit()
 	        {
 			num_acl = display_acl();
 			if (num_acl)
-		           	getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE,
-					);
+		           	getdata(1, 0, _msg_choose_add_delete, genbuf, 2, ECHONOSP | XLCASE);
                         else
                                 getdata(1, 0, _msg_choose_add, genbuf, 2, ECHONOSP | XLCASE);
                         if (genbuf[0] == 'a')
