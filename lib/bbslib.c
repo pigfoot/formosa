@@ -12,9 +12,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "bbsconfig.h"
-#include "struct.h"
-#include "libproto.h"
+#include "bbs.h"
 
 #ifndef LOCK_EX
 # define LOCK_EX               F_LOCK     /* exclusive lock */

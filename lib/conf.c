@@ -19,12 +19,25 @@
 
 char file_buffer[SC_BUFSIZE];
 
+#undef DEBUG
+
+char genbuf[512];
+#ifdef DEBUG
+static void report(const char *msg)
+{
+	char buf[1024];
+	sprintf(buf, "echo '%s\' >> /tmp/lala", msg);
+	system(buf);
+}
+#else
+#define report(x)
+#endif
+
 struct sdefine
 {
 	char *key, *str;
 	int val;
-}
- *bbsvar;
+} *bbsvar;
 
 char *bbsconf_buf;
 int bbsconf_key, bbsconf_len;
@@ -80,10 +93,9 @@ void bbsconf_addkey (char *key, char *str, int val)
 		bbsvar[bbsconf_key].str = str;
 		bbsvar[bbsconf_key].val = val;
 		bbsconf_key++;
-/*
-   sprintf( genbuf, "%s = %s (%x).", key, str, val );
-   report( genbuf );
- */
+
+		sprintf( genbuf, "%s = %s (%d).", key, str, val);
+		report( genbuf );
 	}
 }
 
@@ -104,21 +116,19 @@ void parse_bbsconf (char *fname)
 	{
 		ptr = buf;
 		while (*ptr == ' ' || *ptr == '\t')
-			ptr++;
+			++ptr;
 
 		if (*ptr == '#' || *ptr == '\n')
 			continue;
 		
-		key = strtok (ptr, "=#\n");
-		str = strtok (NULL, "#\n");
-	#if 0
-		if (key != NULL & str != NULL)	/* why only 1 & */
-	#endif
-		if (key != NULL && str != NULL)
-		{
+		key = strtok (ptr, "=# \n");
+		str = strtok (NULL, "=#\n");
+		sprintf(genbuf, "&%s& => &%s&\n", key, str);
+		report(genbuf);
+		if (key != NULL && str != NULL) {
 			strtok (key, " \t");
-			while (*str == ' ' || *str == '\t')
-				str++;
+			while (isspace(*str))
+				++str;
 			if (*str == '"')
 			{
 				str++;
@@ -138,12 +148,8 @@ void parse_bbsconf (char *fname)
 				}
 				bbsconf_addkey (key, NULL, val);
 			}
-		}
-		else
-		{
-/*		
+		} else {
 			report (ptr);
-*/			
 		}
 	}
 	fclose (fp);
@@ -168,17 +174,17 @@ void build_bbsconf (char *configfile, char *imgfile)
 	old_key = bbsconf_key;
 	old_buf = bbsconf_buf;
 	old_len = bbsconf_len;
-	
+
 	if((bbsvar = (void *) malloc (SC_KEYSIZE * sizeof (struct sdefine))) == NULL)
 		exit(1);
 	bbsconf_key = 0;	
-	
+
 	if((bbsconf_buf = (void *) malloc (SC_BUFSIZE)) == NULL)
 		exit(1);
 	bbsconf_len = 0;
-	
+
 	parse_bbsconf (configfile);
-	
+
 	if ((fh = open (imgfile, O_WRONLY | O_CREAT | O_TRUNC, 0600)) > 0)
 	{
 		shead.buf = bbsconf_buf;
@@ -191,7 +197,7 @@ void build_bbsconf (char *configfile, char *imgfile)
 	}
 	free (bbsvar);
 	free (bbsconf_buf);
-	
+
 	bbsvar = old_bbsvar;
 	bbsconf_key = old_key;
 	bbsconf_buf = old_buf;
@@ -254,53 +260,37 @@ void load_bbsconf ()
 		build_bbsconf (fname, path);
 	}
 	load_bbsconf_image(path);
-		
-	BBSNAME = bbsconf_str("BBSNAME", "ForBBS");		/* ¯¸¦W (Short) */
-	BBSTITLE = bbsconf_str("BBSTITLE", "FormosaBBS System");		/* ¯¸¦W (Long) */
-	MULTILOGINS = bbsconf_eval("MULTILOGINS", 1);		/* ³Ì¦h¤¹³\¦P®É´X¦¸­«ÂÐ¤W½u */
+
+	BBSNAME = bbsconf_str("BBSNAME", "ForBBS");			/* ¯¸¦W (Short) */
+	BBSTITLE = bbsconf_str("BBSTITLE", "FormosaBBS System");	/* ¯¸¦W (Long) */
+	MAILSERVER = bbsconf_str("MAILSERVER", "127.0.0.1");		/* SMTP Server */
+
+	MULTILOGINS = bbsconf_eval("MULTILOGINS", 3);			/* ³Ì¦h¤¹³\¦P®É´X¦¸­«ÂÐ¤W½u */
 	MAX_SIG_LINES = bbsconf_eval("MAX_SIG_LINES", 4);		/* Ã±¦WÀÉ¦æ¼Æ */
-	MAX_SIG_NUM = bbsconf_eval("MAX_SIG_NUM", 3);	/* Ã±¦WÀÉ­Ó¼Æ */
+	MAX_SIG_NUM = bbsconf_eval("MAX_SIG_NUM", 3);			/* Ã±¦WÀÉ­Ó¼Æ */
 	IDLE_TIMEOUT = bbsconf_eval("IDLE_TIMEOUT", 40);		/* ¨Ï¥ÎªÌ¶¢¸m®É¶¡ */
-	MAX_MAILGROUPS = bbsconf_eval("MAX_MAILGROUPS", 70);	/* ¸s²Õ±H«H¤H¼Æ */
-	MAX_KEEP_MAIL = bbsconf_eval("MAX_KEEP_MAIL", 100);	/* ¤@¯ë¨Ï¥ÎªÌ«H½c«O¯d«H¥ó«Ê¼Æ */
+	MAX_MAILGROUPS = bbsconf_eval("MAX_MAILGROUPS", 70);		/* ¸s²Õ±H«H¤H¼Æ */
+	MAX_KEEP_MAIL = bbsconf_eval("MAX_KEEP_MAIL", 100);		/* ¤@¯ë¨Ï¥ÎªÌ«H½c«O¯d«H¥ó«Ê¼Æ */
 	SPEC_MAX_KEEP_MAIL = bbsconf_eval("SPEC_MAX_KEEP_MAIL", 200);	/* ªO¥D«H½c«O¯d«H¥ó«Ê¼Æ */
-	MAX_MAIL_SIZE = bbsconf_eval("MAX_MAIL_SIZE", 32768);	/* ³æ«Ê«H¥ó³Ì¤j®e¶q */
-	MAX_FRIENDS = bbsconf_eval("MAX_FRIENDS", 1000);	/* ¨C¤H¦n¤Í­Ó¼Æ¤W­­ */
+	MAX_GUEST_LOGINS = bbsconf_eval("MAX_GUEST_LOGINS", 100);	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */
+	MAX_MAIL_SIZE = bbsconf_eval("MAX_MAIL_SIZE", 32768);		/* ³æ«Ê«H¥ó³Ì¤j®e¶q */
+	MAX_FRIENDS = bbsconf_eval("MAX_FRIENDS", 1000);		/* ¨C¤H¦n¤Í­Ó¼Æ¤W­­ */
 	MENU_TITLE_COLOR = bbsconf_str("MENU_TITLE_COLOR", "[1;37;44m");
 	MENU_TITLE_COLOR1 = bbsconf_str("MENU_TITLE_COLOR1", "[1;36;44m");
-	CHATPORT = bbsconf_eval("CHATPORT", 6177);	/* port numbers for the chat rooms */
-
-	MAILSERVER = bbsconf_str("MAILSERVER", "127.0.0.1");	/* SMTP Server */
-	MAX_GUEST_LOGINS = bbsconf_eval("MAX_GUEST_LOGINS", 100);	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */
 	_STR_BOARD_GUEST = bbsconf_str("_STR_BOARD_GUEST", "sysop test");
+	CHATPORT = bbsconf_eval("CHATPORT", 6177);			/* port numbers for the chat rooms */
 
-#ifdef PHBBS
-	MAX_SIG_LINES =6;		/* Ã±¦WÀÉ¦æ¼Æ */
-	BBSNAME = "PHBBS";		/* ¯¸¦W (Short) */
-	BBSTITLE = "¼ê´ò¿¤±Ð¨|ºô¸ô¤¤¤ß";		/* ¯¸¦W (Long) */
-	MAX_GUEST_LOGINS = 100;	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */
-	_STR_BOARD_GUEST = "sysop test";
-	return;
-#endif			
-#ifdef TESTBBS
-	MAX_SIG_LINES =6;		/* Ã±¦WÀÉ¦æ¼Æ */
-	BBSNAME = "American School";		/* ¯¸¦W (Short) */
-	BBSTITLE = "American School";		/* ¯¸¦W (Long) */
-	MAX_GUEST_LOGINS = 20;	/* ¦P®É½u¤W°ÑÆ[±b¸¹­Ó¼Æ */
-	_STR_BOARD_GUEST = "sysop test";
-#endif
-	
 #if 0
 TODO
 	BBSLOG_IDLE_OUT = "Yes"					/* ¶¢¸mÂ÷½u°O¿ý */
-	BBSLOG_MAIL = "No"						/* ±H«H¦Ü¯¸¥~°O¿ý */
+	BBSLOG_MAIL = "No"					/* ±H«H¦Ü¯¸¥~°O¿ý */
 	ACTFILE = "conf/actfile"				/* Åã¥Ü¥¦¯¸¤W½u¤H¼Æ (for nsysubbs) */
 	BBS_UID = 9999 
 	BBS_GID = 999
 	HOMEBBS = bbsconf_str("HOMEBBS");
 	SPOOL_MAIL = bbsconf_str("SPOOL_MAIL");
-	MAXACTIVE = 2048						/* ³Ì¦h¤¹³\¦P®É¤W½u¤H¼Æ */
-	MAXBOARD = 512							/* ¬ÝªO­Ó¼Æ */
+	MAXACTIVE = 2048					/* ³Ì¦h¤¹³\¦P®É¤W½u¤H¼Æ */
+	MAXBOARD = 512						/* ¬ÝªO­Ó¼Æ */
 	CHROOT_BBS = "Yes" 
 	SYSOP_BIN = "Yes" 
 	NSYSUBBS = "Yes" 

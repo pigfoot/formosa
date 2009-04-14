@@ -1,6 +1,11 @@
-
 #ifndef _BBS_BBS_H_
 #define _BBS_BBS_H_
+
+/* asuka: 2001/8/30 */
+/* config.h rules! */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /*******************************************************************
  * 	®t≤Œßt¨A¿…
@@ -27,11 +32,6 @@
 #include <sys/dir.h>
 #else
 #include <dirent.h>
-#endif
-
-/* asuka: 2001/8/30 */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #ifdef HAVE_MMAP

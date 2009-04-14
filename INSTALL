@@ -1,6 +1,6 @@
-+--------------------------------------------------+
-| 中山 Formosa BBS Server 系統安裝手冊  for v1.3.1 |
-+--------------------------------------------------+
++------------------------------------------------------------------+
+| 中山 Formosa BBS Community Edition 系統安裝手冊 for v1.5-current |
++------------------------------------------------------------------+
 
 	一、程式發展歷史
 	二、程式所在
@@ -24,7 +24,11 @@
     本 BBS 所用的程式是根據 Eagles BBS 1.0 版改寫而來. 歷經數次改版, 中文
     化, 一直到 NSYSUBBS 3.0.0 (支援 Linux), 都還是使用 TTY-Based 系統. 配
     合 Client/Server 的發展, 將原本的 TTY-Based 改為 NOTTY-BBS Server. 即
-    FormosaBBS v1.0.0, 目前已發展至 FormosaBBS v1.1.1 (支援 FreeBSD).
+    FormosaBBS v1.0.0, 發展至 FormosaBBS v1.1.1 (支援 FreeBSD).
+
+    目前以中山計中的 FormosaBBS v1.4.0 為基礎，由在校同學與畢業校友等組成
+    義工團隊，繼續開發與維護 Formosa BBS Community Edition  (簡稱 FBCE)，
+    目前最新的版本是 v1.5-current，已支援推文、行內編輯等。
 
     註：自 FormosaBBS 1.0.0 版之後, 不再使需要 tty 來執行 BBS.
         故若要提高上線人數, 不需要 patch kernel.
@@ -32,10 +36,10 @@
 
 二、程式所在：
 
-    本 BBS 程式目前仍持續不斷更新中，請不定期到下列 Anonymous FTP Site 取
-    得最新版本的程式, 或修正檔案.
+    本 BBS 程式目前仍持續不斷更新中，請不定期到 github 網站取得最新版本的
+    程式, 或修正檔案.
 
-    <URL:ftp.nsysu.edu.tw/NSYSU/BBS/lastest/>
+    <URL:http://github.com/pigfoot/formosa/tree/master>
 
 
 三、安裝 BBS 的基本需求：
@@ -46,17 +50,17 @@
 
     OPERATING SYSTEMS
 
-       SunOS 4.1.x
-       Solaris 2.4 or above (recommended)
-       IBM AIX 4.x
-       RedHat Linux (6.0 recommened), Slackware Linux 3.x
-       FreeBSD 3.3-RELEASE
+       Gentoo GNU/Linux (recommended)
+       Debian GNU/Linux (recommended)
+       FreeBSD 4.0 or above (recommended)
+       MacOS 10.5 or above (recommended)
+       Solaris 10 (x86 and sparc)
 
     FEEDBACK:
 
        如果您使用較不常見的系統，可能要自行對原始程式碼做些修改。若您自行修
        改以支援不同的作業系統, 歡迎將原始程式碼寄回給我們.
-       <email:bbsmaster@cc.nsysu.edu.tw>
+       <email:formosa@cdpa.nsysu.edu.tw>
 
     DEMOE SITES 
 
@@ -573,7 +577,7 @@ ntelnet         24/tcp          normal login port
 
 十五、問題諮詢：
 
-      最好是到中山 BBS (bbs.nsysu.edu.tw) 的 FormosaBBS 板詢問，
+      歡迎到 bbs.cdpa.cc 的 FormosaBBS 板詢問，
       其次是 E-mail 下列給下列之人：
 
       formosa@cdpa.nsysu.edu.tw

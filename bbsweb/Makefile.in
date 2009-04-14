@@ -7,7 +7,7 @@
 # The home directory for the user 'bbs'
 HOMEBBS    = @prefix@
 
-DEFINES    = @OS_DEF@ $(SITE_DEF)
+DEFINES    = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC         = @CC@
 MAKE       = @MAKE@
 CFLAGS	   := @CFLAGS@ -Wall -I.. -I../include -I../lib

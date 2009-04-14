@@ -9,7 +9,10 @@
 #define BBS_GID             999         /* BBS user Run Time ╰参 gid */
 #define MAXACTIVE           64         /* 絬甧砛计 */
 #define MAXBOARD            256
+#ifndef HOMEBBS
+/* a fallback in case we don't have the config.h */
 #define HOMEBBS             "/home/bbs"
+#endif
 
 /*******************************************************************
  *    ╰参舱篈
@@ -24,6 +27,7 @@
 #define LEAST_IDLEN         (2)         /* userid 程祏 */
 #define GUEST               "guest"     /* 琌钡把芠ノ眀腹秈 */
 #define LOCAL_MAX_MSQ       (8)         /* 臮癟计 */
+#define MYCHARSET	    "big5"
 
 /*******************************************************************
  *    闽粄靡
