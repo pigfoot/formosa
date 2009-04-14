@@ -121,23 +121,23 @@ void parse_bbsconf (char *fname)
 		if (*ptr == '#' || *ptr == '\n')
 			continue;
 		
-		key = strtok (ptr, "=# \n");
-		str = strtok (NULL, "=#\n");
+		key = strtok (ptr, "=# \t\n");
+		if (key) {
+			str = key + strlen(key) + 1;
+			while (isspace(*str) || *str == '=')
+				++str;
+		} else {
+			str = NULL;
+		}
 		sprintf(genbuf, "&%s& => &%s&\n", key, str);
 		report(genbuf);
 		if (key != NULL && str != NULL) {
-			strtok (key, " \t");
-			while (isspace(*str))
-				++str;
-			if (*str == '"')
-			{
+			if (*str == '"') {
 				str++;
 				strtok (str, "\"");
 				val = atoi (str);
 				bbsconf_addkey (key, str, val);
-			}
-			else
-			{
+			} else if (isdigit(*str)) {
 				val = 0;
 				strcpy (tmp, str);
 				ptr = strtok (tmp, ", \t");
@@ -147,6 +147,8 @@ void parse_bbsconf (char *fname)
 					ptr = strtok (NULL, ", \t");
 				}
 				bbsconf_addkey (key, NULL, val);
+			} else {
+				report (ptr);
 			}
 		} else {
 			report (ptr);
