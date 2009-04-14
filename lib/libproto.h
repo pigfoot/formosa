@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <sys/shm.h>
 
 /* ap_board.c */
 #ifndef __AP_BOARD_C__
