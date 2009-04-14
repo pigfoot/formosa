@@ -35,7 +35,7 @@ LIBSRCS  = ../lib/bbslib.c ../lib/conf.c ../lib/misc.c \
            ../lib/mod_net.c ../lib/mod_pass.c ../lib/mod_post.c \
            ../lib/mod_readrc.c ../lib/mod_record.c ../lib/mod_sem.c \
            ../lib/mod_shm.c ../lib/mod_user.c ../lib/mod_zap.c \
-           ../lib/modetype.c
+           ../lib/modetype.c ../lib/lib_mail.c ../lib/lib_str.c
 LIBFILE  = ../lib/libbbs.a
 
 

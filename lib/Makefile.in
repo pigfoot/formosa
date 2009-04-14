@@ -31,7 +31,8 @@ endif
 LIBSRCS   = ap_board.c misc.c conf.c bbslib.c modetype.c \
             mod_article.c mod_board.c mod_mail.c mod_net.c \
             mod_pass.c mod_post.c mod_readrc.c mod_record.c mod_sem.c \
-            mod_shm.c mod_talk.c mod_user.c mod_zap.c 
+            mod_shm.c mod_talk.c mod_user.c mod_zap.c \
+	    lib_mail.c lib_str.c
 
 ifeq ($(OSTYPE), LINUX)
   LIBSRCS += strlcat.c strlcpy.c

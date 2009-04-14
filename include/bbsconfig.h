@@ -27,6 +27,7 @@
 #define LEAST_IDLEN         (2)         /* userid 最短長度 */
 #define GUEST               "guest"     /* 是否接受參觀用帳號進站 */
 #define LOCAL_MAX_MSQ       (8)         /* 回顧訊息個數上限 */
+#define MYCHARSET	    "big5"
 
 /*******************************************************************
  *    關於認證

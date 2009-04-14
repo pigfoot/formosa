@@ -200,8 +200,8 @@ BOOL is_emailaddr(char *to)
  * 寄信至站外
  **************************************************************/
 static int SendMail_Internet(int ms, char *fname,
-							char *from, char *to,
-							char *title, char *forward)
+				char *from, char *to,
+				char *title, char *forward)
 {
 	int msTmp, result;
 	char fromTmp[STRLEN];
@@ -286,7 +286,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 			from, to, retval);
 		return -2;
 	}
-	
+
 	/* Auto-Forward */
 	if ((urcTmp.flags[0] & FORWARD_FLAG) && is_emailaddr(urcTmp.email))
 	{
@@ -301,7 +301,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 #endif					
 		bbslog("ERR", "auto-forward: %s", urcTmp.email);
 	}
-	
+
 	setmailfile(pathTmp, to, NULL);
 	if (!isdir(pathTmp))
 	{
@@ -325,6 +325,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 	if (append_article(fname, pathTmp, from, title, ident, NULL, FALSE, 0, NULL) == -1)
 #endif
 		return -1;
+
 	return 0;
 }
 
@@ -348,10 +349,6 @@ int CreateMailSocket()		/* open socket to mail server */
 	ms = ConnectServer(MAILSERVER, SMTPPORT);	
 	if (ms < 0)
 		ms = ConnectServer("127.0.0.1", SMTPPORT);
-#ifdef NSYSUBBS
-	if (ms < 0)
-		ms = ConnectServer("140.117.11.16", SMTPPORT);
-#endif		
 	if (ms > 0)
 	{
 		while (net_gets(ms, buffer, sizeof(buffer)))

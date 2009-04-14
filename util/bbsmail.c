@@ -11,28 +11,12 @@
 #define ANTISPAM
 
 #include "bbs.h"
-#include "str_codec.h"
 #include <stdarg.h>
 #include <sys/stat.h>
 
-#ifdef USE_QMAIL
-#include <pwd.h>
-#include <dirent.h>
-#endif        
-
 int     verbose = 0;
-
 char    genbuf[1024];
 time_t  now;
-
-#if 0
-char    sContentType[128], sContentTransferEncoding[128];	/* lthuang */
-#endif
-#if 1
-char	bDeliveredTo = 0;
-#endif
-char    received[4096];
-
 
 struct mail_info
 {
@@ -43,18 +27,17 @@ struct mail_info
 	char    sender[IDLEN + 2];
 	char    passwd[PASSLEN];
 	char    board[STRLEN];
+	char	mi_type[STRLEN];
 };
-
 struct mail_info minfo;
 
 int bbsmail_log_fd = -1;
 
-void
-bbsmail_log_write(char *mode, char *fmt, ...)
+void bbsmail_log_write(char *mode, char *fmt, ...)
 {
 	va_list args;
 	time_t  now;
-	char    msgbuf[1024], buf[1024], timestr[20];
+	char    msgbuf[1024], buf[1024], timestr[32];
 
 
 	if (bbsmail_log_fd < 0)
@@ -75,32 +58,18 @@ bbsmail_log_write(char *mode, char *fmt, ...)
 	write(bbsmail_log_fd, buf, strlen(buf));
 }
 
-
-void
-bbsmail_log_open()
+void bbsmail_log_open(void)
 {
 	bbsmail_log_fd = open(PATH_BBSMAIL_LOG, O_APPEND | O_CREAT | O_WRONLY, 0600);
 }
 
-
-void
-bbsmail_log_close()
+void bbsmail_log_close(void)
 {
 	if (bbsmail_log_fd > 0)
 		close(bbsmail_log_fd);
 }
-	
 
-#define GET_NEXTONE	0
-#define GET_NEXTALL	1
-#define GET_HEADER	2
-#define GET_PASSWD	3
-
-char   *
-mygets(buf, bsize, fp)
-char   *buf;
-int     bsize;
-FILE   *fp;
+char *mygets(char *buf, int bsize, FILE *fp)
 {
 	register char *p;
 
@@ -116,77 +85,7 @@ FILE   *fp;
 	return NULL;
 }
 
-
-/* if type == 0 ¥u§ì¥X¤U¤@¶µ
- *    type == 1 ²Ä¤G¶µ¥H«áªº¥þ«þ
- *    type == 2 ¨ú±o¼ÐÀY¼Æ¦æ«áªº¸ê®Æ
- *    type == 3 ¨ú±o password
- */
-int
-next_arg(from, to, len, type)
-register char *from, *to;
-register int len, type;
-{
-	register int i = 0, j = 0;
-	register char ccc;
-
-	if (type == GET_NEXTONE)
-		ccc = ' ';
-	else
-		ccc = ':';
-
-	while (from[i] != ccc)
-		if (from[i] == '\n' || from[i] == '\0')
-			return -1;
-		else
-			i++;
-	if (type != GET_NEXTONE)
-		i++;
-	while (isspace((int)from[i]))
-		i++;
-	i--;
-	switch (type)
-	{
-	case GET_NEXTONE:
-		while (from[++i] != ' ' && from[i] != '\0' && j < len - 1)
-		{
-			/* 0x1b is ESC */
-			if (from[i] == 0x1b || from[i] == '\t' || from[i] == '\n')
-				to[j++] = ' ';
-			else
-				to[j++] = from[i];
-		}
-		break;
-	case GET_NEXTALL:
-		while (from[++i] != '\n' && from[i] != '\0' && j < len - 1)
-		{
-			if (from[i] == 0x1b || from[i] == '\t')
-				to[j++] = ' ';
-			else
-				to[j++] = from[i];
-		}
-		break;
-	case GET_HEADER:
-		while (from[++i] != '\n' && from[i] != ' ' && from[i] != '\0' && j < len - 1)
-		{
-			if (from[i] == 0x1b || from[i] == '\t')
-				to[j++] = ' ';
-			else
-				to[j++] = from[i];
-		}
-		break;
-	case GET_PASSWD:
-		while (from[++i] != '\n' && from[i] != '\0' && j < len - 1)
-			to[j++] = from[i];
-	}
-	to[j] = '\0';
-	return 0;
-}
-
-
-int
-increase_user_postnum(userid)
-char    userid[];
+int increase_user_postnum(const char *userid)
 {
 	int     fd;
 	USEREC  urc;
@@ -214,9 +113,7 @@ char    userid[];
 
 USEREC  user;
 
-int
-do_sign(r_file)
-char    r_file[];
+int do_sign(const char *r_file)
 {
 	FILE   *fpr, *fpw;
 	int     line;
@@ -250,9 +147,7 @@ char    r_file[];
 }
 
 
-int
-do_plan(r_file)
-char    r_file[];
+int do_plan(const char *r_file)
 {
 	FILE   *fpr, *fpw;
 	int     line;
@@ -287,31 +182,30 @@ char    r_file[];
 
 #ifdef ANTISPAM
 
-#define RULE  3			/* rule 2 .... 10 (¤£«ØÄ³¶W¹L 10 ) */
-#define SPAM_MAIL_POOL_SIZE  1024
-#define SPAM_POST_POOL_SIZE  64
-#define REACH_SPAM_MAIL_NUM  3
-#define REACH_SPAM_POST_NUM  1
+#define SAMPLE_RATE		3	/* SAMPLE_RATE: ¶V°ª¶V¬Ù¸ê·½ */
+#define SPAM_MAIL_POOL_SIZE	0x2000
+#define SPAM_POST_POOL_SIZE	0x100
+#define REACH_SPAM_MAIL_NUM	3
+#define REACH_SPAM_POST_NUM	1
+#define SEARCH_MAIL		0
+#define SEARCH_POST		1
+#define SPAM_TIMEOUT		600
 
 struct spam
 {
-	int     hs_a;
-	int     hs_b;
-	int     hs_c;
-	int     val;
+	time_t	timeout;
+	int     hit;
 };
 
 struct SPAMSHM
 {
 	struct spam mail_pool[SPAM_MAIL_POOL_SIZE];
 	struct spam post_pool[SPAM_POST_POOL_SIZE];
-	time_t  mtime;		/* unused */
 };
 
 struct SPAMSHM *spamshm = NULL;
 
 #define SPAMSHM_KEY 0x1729
-
 
 void
 resolve_spamshm()
@@ -319,118 +213,68 @@ resolve_spamshm()
 	if (!spamshm)
 	{
 		spamshm = (void *) attach_shm(SPAMSHM_KEY, sizeof(struct SPAMSHM));
-
 		memset(spamshm, 0, sizeof(spamshm));
 	}
 }
 
-
-static int
-spam_filehash(filename, hs_a, hs_b, hs_c)
-const char   *filename;
-int    *hs_a, *hs_b, *hs_c;
+static int spam_filehash(const char *filename, int pool_size)
 {
-	FILE   *fp;
-	char    buf[4096];
+	int	fd;
+	size_t	fsize;
+	char	*ptr;
+	long	*hptr, *eptr, idx;
 
-	if ((fp = fopen(filename, "r")) == NULL)
+	if ((fd = open(filename, O_RDONLY)) < 0)
 		return -1;
 
-	*hs_a = 0;
-	*hs_b = 0;
-	*hs_c = 0;
-	while (fgets(buf, sizeof(buf), fp))
+	fsize = get_num_records(filename, sizeof(char));
+	ptr = (char *) mmap(NULL, fsize, PROT_READ,
+		MAP_PRIVATE, fd, (off_t) 0);
+
+	hptr = (long *)ptr;
+	eptr = (long *)(ptr + fsize - (2 * sizeof(long)));
+
+	while (hptr < eptr)
 	{
-		(*hs_b)++;
-		*hs_a += buf[strlen(buf) / ((*hs_b % RULE) + 1)];
-		*hs_c += buf[strlen(buf) / RULE];
+		idx ^= *hptr;
+		hptr += SAMPLE_RATE;
 	}
-	fclose(fp);
-	return 0;
+
+	munmap(ptr, fsize);
+	close(fd);
+	return idx & (pool_size - 1);
 }
 
-
-int
-search_spamshm(filename, opt)
-const char *filename;
-int opt;
+int search_spamshm(const char *filename, int opt)
 {
-	int     hs_a, hs_b, hs_c;
-	register int i, pool_size, spam_num;
-	struct spam *sentp, *pool;
-
-#if 0
-	/* obsolute: for nschen's graduate student */
-	if (!strcmp(minfo.from, "workforstudy.bbs@bbs.nsysu.edu.tw"))
-	{
-		return 0;
-	}
-#endif	
+	int idx, spam_num;
+	struct spam *pool;
 
 	resolve_spamshm();
-	
-	spam_filehash(filename, &hs_a, &hs_b, &hs_c);
 
-	if (hs_a == 0 && hs_b == 0 && hs_c == 0)
-		return 0;
-
-	if (!opt)
-	{
+	if (opt == SEARCH_MAIL) {
+		idx = spam_filehash(filename, SPAM_MAIL_POOL_SIZE);
 		pool = spamshm->mail_pool;
-		pool_size = SPAM_MAIL_POOL_SIZE;
 		spam_num = REACH_SPAM_MAIL_NUM;
-	}
-	else
-	{
+	} else if (opt == SEARCH_POST) {
+		idx = spam_filehash(filename, SPAM_POST_POOL_SIZE);
 		pool = spamshm->post_pool;
-		pool_size = SPAM_POST_POOL_SIZE;
 		spam_num = REACH_SPAM_POST_NUM;
+	} else {
+		return 0;
 	}
 
-	sentp = pool;
-	for (i = 0; i < pool_size; i++, sentp++)
-	{
-		if (sentp->hs_a == hs_a && sentp->hs_b == hs_b && sentp->hs_c == hs_c)
-		{
-			if (sentp->val++ < spam_num)
-				return 0;
-			else
-				return 1;
-		}
-	}
-
-	sentp = pool;
-	for (i = 0; i < pool_size; i++, sentp++)
-	{
-		if (sentp->val == 0)
-		{
-			sentp->hs_a = hs_a;
-			sentp->hs_b = hs_b;
-			sentp->hs_c = hs_c;
-			sentp->val = 1;
-			return 0;
-		}
-	}
-
-	sentp = pool;
-	for (i = 0; i < pool_size; i++, sentp++)
-	{
-		if (sentp->val <= 3)
-		{
-			sentp->val = 0;
-			sentp->hs_a = 0;
-			sentp->hs_b = 0;
-			sentp->hs_c = 0;
-		}
-	}
-	return 0;
+	time(&now);
+	if (now > pool[idx].timeout)
+		pool[idx].hit = 0;
+	pool[idx].timeout = now + SPAM_TIMEOUT;
+	++(pool[idx].hit);
+	return pool[idx].hit > spam_num;
 }
 #endif /* ANTISPAM */
 
 
-int
-do_post(r_file)
-char    r_file[];
+int do_post(const char *r_file)
 {
 	char    path[PATHLEN], fname[PATHLEN];
 	FILE   *fpr, *fpw;
@@ -445,7 +289,7 @@ char    r_file[];
 		return -1;
 
 #ifdef ANTISPAM
-	if (search_spamshm(r_file, 1))
+	if (search_spamshm(r_file, SEARCH_POST))
 	{
 		bbsmail_log_write("POSTSPAM", "from=<%s>, board=<%s>, subject=<%s>",
 		            minfo.from, minfo.board, minfo.subject);
@@ -541,9 +385,7 @@ char    r_file[];
 }
 
 
-int
-do_mail(r_file)
-char    r_file[];
+int do_mail(const char *r_file)
 {
 	char    fn_new[PATHLEN];
 	FILE   *fpr, *fpw;
@@ -556,9 +398,9 @@ char    r_file[];
 #ifdef ANTISPAM
 	if (strcmp(minfo.from, "MAILER-DAEMON"))
 	{
-		if (search_spamshm(r_file, 0))
+		if (search_spamshm(r_file, SEARCH_MAIL))
 		{
-			bbsmail_log_write("MAILSPAM: from=<%s>, to=<%s>, subject=<%s>",
+			bbsmail_log_write("MAILSPAM", "from=<%s>, to=<%s>, subject=<%s>",
 			            minfo.from, minfo.sender, minfo.subject);
 			return -1;
 		}
@@ -576,13 +418,7 @@ char    r_file[];
 	}
 
 	if (minfo.subject[0] != '\0')
-	{
 		subject = minfo.subject;
-#if 1
-		strcpy(genbuf, subject);
-		decode_line(subject, genbuf);	/* check subject length, and how ? */
-#endif
-	}
 	else
 		subject = "(no subject)";
 
@@ -591,76 +427,45 @@ char    r_file[];
 
 	write_article_header(fpw, minfo.from, "", NULL, timestr, subject, NULL);
 	
-#if 0	
-	if (sContentType[0])
-	{
-		if (strncmp(sContentType, "text/plain", 10))
-		{
-			fprintf(fpw, "%s\n", sContentType);
-#endif			
-			fputs("\n", fpw);
-			while (mygets(genbuf, sizeof(genbuf), fpr))
-				fputs(genbuf, fpw);
-#if 0				
-		}
-		else 
-		{
-			char line[4096];		
-			int qp = 0;
-			
-			if (!strncmp(sContentTransferEncoding, "quoted-printable", 16))
-				qp = 1;
-			fputs("\n", fpw);
-			while (mygets(genbuf, sizeof(genbuf), fpr))
-			{
-				strcpy(line, genbuf);
-				/* check subject length, and how ? */
-				if (qp)
-					qp_decode_str(genbuf, line);
-				else
-					base64_decode_str(genbuf, line);
-				fputs(genbuf, fpw);
-			}
-		}
-	}
-#endif	
+	fputs("\n", fpw);
+	while (mygets(genbuf, sizeof(genbuf), fpr))
+		fputs(genbuf, fpw);
 
 	fputs("[m\n", fpw);	
 	fclose(fpr);
 	fclose(fpw);
 	chmod(fn_new, 0600);
 
-	bbsmail_log_write("MAIL", "from=<%s>, to=<%s>, subject=<%s>, path=<%s>",
-	            minfo.from, minfo.sender, subject, received);	/* lthuang */
-		    
 	result = SendMail(-1, fn_new, minfo.from, minfo.sender,
 				subject, user.ident);
-	if (result < 0)
-	{
+	if (result < 0) {
 		bbsmail_log_write("ERROR", "SendMail for %s => %s",
 			minfo.from, minfo.sender);
+	} else {
+		bbsmail_log_write("MAIL", "from=<%s>, to=<%s>, subject=<%s>",
+			    minfo.from, minfo.sender, subject);	/* lthuang */
 	}
 	unlink(fn_new);
 
 	return result;
 }
 
-
-int
-access_mail(r_file)
-char    r_file[];
+static void access_mail(const char *r_file)
 {
 	int tsize;
 	
 	memset(&user, 0, sizeof(user));
-
-	if (minfo.to[0] != '\0')
-		strcpy(minfo.sender, minfo.to);
 	if (get_passwd(&user, minfo.sender) <= 0)
 	{
 		bbsmail_log_write("ENOENT", "from=<%s>, to=<%s>, subject=<%s>", 
 				minfo.from, minfo.sender, minfo.subject);
-		return -1;
+#ifdef ANTISPAM
+		/*
+		 * Adding to spam entry
+		 */
+		search_spamshm(r_file, SEARCH_MAIL);
+#endif
+		return;
 	}
 
 	if (verbose)
@@ -678,312 +483,151 @@ char    r_file[];
 			minfo.from, minfo.sender, minfo.subject, tsize);
 	}
 
-	if (minfo.type == 's' && checkpasswd(user.passwd, minfo.passwd))
-		do_sign(r_file);
-	else if (minfo.type == 'l' && checkpasswd(user.passwd, minfo.passwd))
-		do_plan(r_file);
-#ifdef IDENT	
-	else if (minfo.type == 'c')
-		do_syscheck(r_file);
-#endif		
-	else if (minfo.type != 'm' && minfo.passwd[0] != '\0' 
-	         && minfo.sender[0] != '\0' 
-	         && checkpasswd(user.passwd, minfo.passwd))
-	{
-		do_post(r_file);
+	if (minfo.type != 'm') {
+		if (checkpasswd(user.passwd, minfo.passwd)) {
+			switch (minfo.type) {
+			case 's':
+				do_sign(r_file);
+				return;
+			case 'l':
+				do_plan(r_file);
+				return;
+			case 'p':
+				do_post(r_file);
+				return;
+			default:
+				return;
+			}
+		} else {
+			bbsmail_log_write("EPASS", "from=<%s>, sender=<%s>, subject=<%s>", 
+				minfo.from, minfo.sender, minfo.subject);
+			return;
+		}
 	}
-	else
-		do_mail(r_file);
-	return 0;
+
+	do_mail(r_file);
 }
 
-
-int readin_mail(const char *const filename)
+static void classfy_mail(const char *const filename, const struct MailHeader *mh)
 {
-	int     i, ok_num, rec_len, save_rec_len, invalid;
-	char    rbuf[8192], w_file[PATHLEN], *s, outside[4096];
-	FILE   *fp, *fp_sys;
-	
+	char *s;
 
-#ifdef TEST
-	fp_sys = stdin;
-#else	
-	if ((fp_sys = fopen(filename, "r")) == NULL)
-		return -1;
-#endif		
+	xstrncpy(minfo.from, mh->xfrom, sizeof(minfo.from));
+	xstrncpy(minfo.to, mh->xorigto, sizeof(minfo.to));
+	if (!minfo.subject[0])
+		xstrncpy(minfo.subject, mh->subject, sizeof(minfo.subject));
 
-
-	i = 0;
-	ok_num = 0;
-	invalid = 0;
-	fp = NULL;
-
-	while (mygets(rbuf, sizeof(rbuf), fp_sys))
-	{
-		if (!strncasecmp(rbuf, "From ", 5))
-			break;
+	if ((s = strstr(minfo.to, ".bbs")) != NULL || (s = strstr(minfo.to, ".BBS")) != NULL) {
+		*s = '\0';
+		if (minfo.to[0] == '\0') {
+			bbsmail_log_write("EINVALRCPT", "from=<%s>, subject=<%s>", 
+				minfo.from, minfo.subject);
+			return;
+		}
+		minfo.type = 'm';				
+		strcpy(minfo.sender, minfo.to);
+	} else if (!strncmp(minfo.to, "bbs@", 4)) {
+		minfo.to[0] = '\0';		
+		minfo.type = 'p';
+	} else if (minfo.to[0] != '\0') {
+		bbsmail_log_write("EINVAL", "from=<%s>, to=<%s>", 
+			minfo.from, minfo.to);
+		return;
+	} else if (minfo.to[0] == '\0') {
+		bbsmail_log_write("ENORCPT", "from=<%s>, subject=<%s>", 
+			minfo.from, minfo.subject);
+		return;
 	}
 
-	for (;;)
-	{
-		if (i > 0)
+	if (minfo.type == 'p') {
+		if (!strncmp(minfo.mi_type, "sign", 4))
+			minfo.type = 's';
+		else if (!strncmp(minfo.mi_type, "plan", 4))
+			minfo.type = 'l';
+
+		if (minfo.sender[0] == '\0' ||
+		    minfo.passwd[0] == '\0' ||
+		    minfo.subject[0] == '\0'
+		    || (minfo.board[0] == '\0' && minfo.type == 'p'))
 		{
-			fclose(fp);
-
-			if (invalid)
-				bbsmail_log_write("EINVAL", "from=<%s>, to=<%s>", 
-					minfo.from, outside);
-			else if (ok_num == 5)
-				access_mail(w_file);			
-			else if (minfo.to[0] == '\0')	/* lthuang */
-				bbsmail_log_write("ENORCPT", "from=<%s>, subject=<%s>", 
-					minfo.from, minfo.subject);
-
-			unlink(w_file);
-		}
-	
-		if (strncasecmp(rbuf, "From ", 5))
-			break;
-	
-		sprintf(w_file, "%s-%d", filename, ++i);
-		if ((fp = fopen(w_file, "w")) == NULL)
-		{
-			fclose(fp_sys);
-			return -1;
-		}
-		chmod(w_file, 0600);
-
-		memset(&minfo, 0, sizeof(minfo));
-		received[0] = '\0';
-		rec_len = 0;
-		save_rec_len = 0;
-#if 0		
-		sContentType[0] = '\0';		/* lthuang */
-#endif		
-		invalid = 0;		
-		ok_num = 0;				
-#if 1
-		bDeliveredTo = 0;
-#endif
-		
-		next_arg(rbuf, minfo.from, sizeof(minfo.from), GET_NEXTONE);
-
-		while (mygets(rbuf, sizeof(rbuf), fp_sys))
-		{
-			if (!strncasecmp(rbuf, "To: ", 4)
-				 || !strncasecmp(rbuf, "Apparently-To: ", 15)
-				 || !strncasecmp(rbuf, "Delivered-To: ", 14))
-			{
-				char *sb;
-
-				if (bDeliveredTo)
-					continue;
-				/* Delivered-To: */
-				if (rbuf[0] == 'D' && strncasecmp(rbuf, "Delivered-To: bbs@", 18))
-					bDeliveredTo = 1;
-				
-				if ((sb = strchr(rbuf, '<')) != NULL)
-				{
-					sb++;
-					if ((s = strchr(sb, '>')) != NULL)
-						*s = '\0';
-				}
-				else
-				{
-					sb = rbuf;
-					while (!isspace((int)*sb))
-						sb++;
-					while (isspace((int)*sb))
-						sb++;
-				}
-				
-				if ((s = strchr(sb, '\n')) != NULL)
-					*s = '\0';
-				strcpy(outside, sb);	/* lthuang */
-				
-				if ((s = strstr(sb, "@")) != NULL)
-					*(s--) = '\0';
-				else
-					s = sb + strlen(sb);
-					
-				strncpy(minfo.to, sb, sizeof(minfo.to));
-
-#if 1
-				if (minfo.to[0] == '\0')
-					bDeliveredTo = 0;
-#endif
-			}
-			else if (!strncasecmp(rbuf, "Subject: ", 9))
-				next_arg(rbuf, minfo.subject, sizeof(minfo.subject), GET_NEXTALL);
-#if 0				
-			else if (!strncasecmp(rbuf, "Content-Type: ", 14))
-				strcpy(sContentType, rbuf);
-			else if (!strncasecmp(rbuf, "Content-Transfer-Encoding: ", 27))
-				strcpy(sContentTransferEncoding, rbuf);
-#endif				
-			else if (!strncasecmp(rbuf, "Received: ", 10))
-			{
-				char   *path;
-
-				if ((path = strstr(rbuf+10, "from")) != NULL)
-				{
-					path += 5;
-
-					rec_len = save_rec_len;
-					received[rec_len++] = '!';
-
-					while (*path != '\0' && *path != '\n')
-					{
-/*                                      
-   if (*path == 'b' && *(path+1) == 'y')
-   {
-   if (*(path-1) == ' ')
-   rec_len--;
-   break;
-   }
- */
-						received[rec_len++] = *path++;
-					}
-					received[rec_len] = '\0';
-					if (save_rec_len == 0)
-						save_rec_len = rec_len;
-				}
-			}
-			if (rbuf[0] == '\n')
-				break;
-#if 0
-			fprintf(fp, "%s", rbuf);	/* not strip mail header any more */
-#endif
-		}
-
-		if ((s = strstr(minfo.to, ".bbs")) != NULL || (s = strstr(minfo.to, ".BBS")) != NULL)
-		{
-			*s = '\0';
-			if (minfo.to[0] != '\0')
-				ok_num = 5;
-			minfo.type = 'm';				
-		}
-		else if (!strcmp(minfo.to, "bbs"))
-		{
-			minfo.to[0] = '\0';		
-#ifdef IDENT			
-			if (!strncmp(minfo.subject, "[syscheck]", 10))
-			{
-				minfo.type = 'c';
-			}
-			else
-#endif			
-			minfo.type = 'p';
-		}
-		else if (minfo.to[0] != '\0')
-		{
-			invalid = 1;
-		}
-			
-		while (mygets(rbuf, sizeof(rbuf), fp_sys))
-		{
-			if (!strncasecmp(rbuf, "From ", 5))
-				break;
-				
-			if (ok_num == 5)
-			{
-				fprintf(fp, "%s", rbuf);
-				continue;
-			}
-
-			if (ok_num < 5 && (s = strstr(rbuf, "#type:")) != NULL)
-			{
-				ok_num++;
-				if (strstr(s, "sign"))
-					minfo.type = 's';
-				else if (strstr(s, "plan"))
-					minfo.type = 'l';
-			}
-			else if (minfo.sender[0] == '\0' && (s = strstr(rbuf, "#name:")) != NULL)
-			{
-				ok_num++;
-				next_arg(s, minfo.sender, sizeof(minfo.sender), GET_HEADER);
-			}
-			else if (minfo.passwd[0] == '\0' &&
-				 ((s = strstr(rbuf, "#password:")) != NULL
-				  || (s = strstr(rbuf, "#passwd:")) != NULL))
-			{
-				ok_num++;
-				next_arg(s, minfo.passwd, sizeof(minfo.passwd), GET_PASSWD);
-			}
-			else if (minfo.board[0] == '\0' && (s = strstr(rbuf, "#board:")) != NULL)
-			{
-				ok_num++;
-				next_arg(s, minfo.board, sizeof(minfo.board), GET_HEADER);
-			}
-			else if (
-/*			
-			minfo.title[0] == '\0' &&
-*/			
-			         ((s = strstr(rbuf, "#title:")) != NULL
-			          || (s = strstr(rbuf, "#subject:")) != NULL))
-			{
-				ok_num++;
-				next_arg(s, minfo.subject, sizeof(minfo.subject), GET_NEXTALL);
-			}
-			else
-			{
-				if (minfo.sender[0] != '\0' && minfo.passwd[0] != '\0'
-				    && minfo.board[0] != '\0' && minfo.subject[0] != '\0')
-				{
-					ok_num = 5;
-				}
-				fprintf(fp, "%s", rbuf);
-			}
+			bbsmail_log_write("EMPOSTHD",
+				"from=<%s>, sender=<%s>, board=<%s>, subject=<%s>", 
+				minfo.from, minfo.sender, minfo.board, minfo.subject);
+			return;
 		}
 	}
-#ifdef TEST
-#else
-	fclose(fp_sys);
-#endif	
-	return 0;
+
+	access_mail(filename);
 }
 
+#define HEAD_VAR_NR 6
+struct HeadVar {
+	const char *key;
+	char *holder;
+	size_t len;
+};
+static const struct HeadVar head_vars[HEAD_VAR_NR] = {
+	{"#type:", minfo.mi_type, sizeof(minfo.mi_type)},
+	{"#name:", minfo.sender, sizeof(minfo.sender)},
+	{"#password:", minfo.passwd, sizeof(minfo.passwd)},
+	{"#board:", minfo.board, sizeof(minfo.board)},
+	{"#title:", minfo.subject, sizeof(minfo.subject)},
+	{"#subject:", minfo.subject, sizeof(minfo.subject)}
+};
 
-int
-main(argc, argv)
-int     argc;
-char   *argv[];
+static char *get_mail_post_vars(char *ptr)
 {
-	char    spool_tmp[PATHLEN], bbsmail_box[PATHLEN];
-#ifdef USE_QMAIL	
-	struct passwd *bbsuser;
-#endif	
+	int i;
+	static char *buf = NULL;
+	static size_t buflen = 1024;
 
-	if (argc == 2)
-	{
+	if (!ptr)
+		return NULL;
+
+	memset(&minfo, 0, sizeof(minfo));
+	if (!buf)
+		buf = malloc(buflen);
+	if (!buf) {
+		bbsmail_log_write("EMEM", "Out of memory");
+		return NULL;
+	}
+
+	while (1) {
+		for (i = 0; i < HEAD_VAR_NR ; ++i) {
+			if (!strncmp(ptr, head_vars[i].key, strlen(head_vars[i].key))) {
+				ptr += strlen(head_vars[i].key);
+				ptr = cgetline(ptr, &buf, 0, &buflen);
+				if (!ptr)
+					return NULL;
+				str_trim(buf);
+				xstrncpy(head_vars[i].holder, buf, head_vars[i].len);
+				break;
+			}
+		}
+		if (i == HEAD_VAR_NR)
+			break;
+	}
+	return ptr;
+}
+
+#undef TEST
+
+int main(int argc, char *argv[])
+{
+	char spool_tmp[PATHLEN], bbsmail_box[PATHLEN], w_file[PATHLEN];
+	char msg[512];
+	char *ptr, *nextp, *endp;
+	size_t fsize;
+	struct MailHeader mh;
+	int fd, n = 0, rt;
+	FILE *fp;
+
+	if (argc == 2) {
 		if (!strcmp(argv[1], "-v"))
 			verbose = 1;
 	}
 
-#ifdef TEST
-#else
 	strcpy(bbsmail_box, "/var/spool/mail/bbs");
-#ifdef USE_QMAIL
-	if ((bbsuser = getpwuid(BBS_UID)) == NULL)
-	{
-		perror("getpwuid");
-		exit(-1);
-	}
-	if ((dirp = opendir(bbsuser->pw_dir)) == NULL)
-	{
-		fprintf(stderr, "cannot opendir: %s\n", bbsuser->pw_dir);
-		exit(-1);
-	}
-	while ((dent = readdir(dirp)) != NULL)
-	{
-		if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, ".."))
-			continue;
-		sprintf(fname, "%s/%s", bbsuser->pwd_dir, dent_d_name);
-		append_file(bbsmail_box, fname);
-	}
-	closedir(dirp);
-#endif
 	if (get_num_records(bbsmail_box, sizeof(char)) == 0)
 	{
 		strcpy(bbsmail_box, "/var/mail/bbs");	
@@ -993,7 +637,6 @@ char   *argv[];
 			exit(0);
 		}
 	}
-#endif	
 	
 	if (chdir(HOMEBBS) == -1)
 	{
@@ -1001,24 +644,73 @@ char   *argv[];
 		exit(0);
 	}
 
-	now = time(0);
-	sprintf(spool_tmp, "tmp/_bbsmail.%d", (int)now);
-#ifndef TEST	
+	time(&now);
+	sprintf(spool_tmp, "tmp/_bbsmail.%lu", now);
+
+#ifdef TEST
+	sprintf(msg, "/bin/cp %s %s", bbsmail_box, spool_tmp);
+	system(msg);
+#else
 	if (myrename(bbsmail_box, spool_tmp) == -1)
 	{
 		printf("cannot rename: from %s to %s\n", bbsmail_box, spool_tmp);
 		exit(1);
 	}
-#endif	
+#endif
 
 	chown(spool_tmp, BBS_UID, BBS_GID);
-
+	fsize = get_num_records(spool_tmp, sizeof(char));
 	init_bbsenv();
-
 	bbsmail_log_open();
-	readin_mail(spool_tmp);
+	if((fd = open(spool_tmp, O_RDONLY)) > 0) {
+		ptr = (char *) mmap(NULL,
+			fsize,
+			PROT_READ | PROT_WRITE,
+			MAP_PRIVATE, fd, (off_t) 0);
+		ptr[fsize - 1] = '\0';
+
+		nextp = ptr;
+		while (nextp) {
+			nextp = parse_header(nextp, &mh);
+			nextp = get_mail_post_vars(nextp);
+			if (nextp) {
+				sprintf(w_file, "%s-%d", spool_tmp, ++n);
+				if ((fp = fopen(w_file, "w")) == NULL) {
+					bbsmail_log_write("OPFILE", "file=%s", 
+						w_file);
+					break;
+				}
+				chmod(w_file, 0600);
+				endp = strstr(nextp, "\n\nFrom ");
+
+				if (endp)
+					*endp = '\0';
+
+				rt = print_content(nextp, fp, msg, &mh);
+				fclose(fp);
+				if (rt == -1)
+					bbsmail_log_write("PNTERR",
+						"%s: from=<%s>, subject=<%s>", 
+						msg, mh.xfrom, mh.subject);
+				else
+					classfy_mail(w_file, &mh);
+				unlink(w_file);
+
+				if (endp)
+					nextp = endp + 2;
+				else
+					nextp = endp;
+			} else {
+				bbsmail_log_write("PARSE", "Mail header parse error");
+				break;
+			}
+		}
+
+		munmap(ptr, fsize);
+		close(fd);
+	}
 	unlink(spool_tmp);
 	bbsmail_log_close();	
-	
+
 	return 0;
 }

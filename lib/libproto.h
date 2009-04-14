@@ -173,5 +173,47 @@ int ZapRC_ValidBid(register unsigned int bid);
 size_t strlcat(char *dst, const char *src, size_t siz);
 /* strlcpy.c */
 size_t strlcpy(char *dst, const char *src, size_t siz);
+/* lib_mail.c */
+enum lengths {
+	CONTENTTYPE_LEN = 32,
+	CHARSET_LEN = 32,
+	TRANSENC_LEN = 32,
+	NAME_LEN = 256,
+	ADDR_LEN = 256,
+	BOUNDARY_LEN = 1024,
+	SUBJECT_LEN = 1024,
+};
+enum nrs {
+	MAX_ADDR_NR = 8,
+};
+struct MailHeader {
+	char content_type[CONTENTTYPE_LEN];
+	char charset[CHARSET_LEN];
+	char transenc[TRANSENC_LEN];
+	char xfrom[ADDR_LEN];
+	char xorigto[ADDR_LEN];
+	char xdelivto[ADDR_LEN];
+	char from_name[NAME_LEN];
+	char from_addr[ADDR_LEN];
+	char cc_name[MAX_ADDR_NR][NAME_LEN];
+	char cc_addr[MAX_ADDR_NR][ADDR_LEN];
+	char to_name[MAX_ADDR_NR][NAME_LEN];
+	char to_addr[MAX_ADDR_NR][ADDR_LEN];
+	char boundary[BOUNDARY_LEN];
+	char subject[SUBJECT_LEN];
+};
+char *cgetline(char *input, char **buf, size_t offset, size_t *buflen);
+int is_notmycharset(const char *cs);
+char *parse_header(char *input, struct MailHeader *mh);
+int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh);
+/* lib_str.c */
+int str_conv(iconv_t ict, char *str, size_t maxlen);
+void str_trim(volatile char *buf);
+void str_ansi(volatile char *dst, const char *str, int max);
+void str_unquote(volatile char *str);
+void str_notab(char *buf);
+int mmdecode(const unsigned char *src, char encode, volatile unsigned char *dst);
+void str_decode(unsigned char *str);
+void str_deqp(char *d, const char *src);
 
 #endif
