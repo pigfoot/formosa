@@ -4,7 +4,7 @@
 
 SUBDIRS := lib src csbbs util bbsweb bbsweb/util
 CLEANDIRS := $(SUBDIRS) src/util
-PHONY_TARGETS := all debug clean distclean install install_once update
+PHONY_TARGETS := all debug clean distclean install install_once update kill_process
 VERSION := 1.4.0
 HOMEBBS := @prefix@
 MAKE    := @MAKE@
@@ -19,9 +19,13 @@ $(SUBDIRS):
 debug: target := debug
 debug: $(SUBDIRS)
 
-update: install
+kill_process:
 	-kill `cat /tmp/formosa.23`
+	-killall bbsweb
+
+update: kill_process install
 	$(HOMEBBS)/bin/bbsd 23
+	$(HOMEBBS)/bin/bbsweb
 
 config:
 	./autogen.sh

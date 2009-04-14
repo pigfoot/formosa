@@ -253,13 +253,13 @@ void load_bbsconf_image (char *imgfile)
 void load_bbsconf ()
 {
 	char path[255], fname[255];
-	struct stat st;
+	struct stat stc, sti;
 
 	sprintf(fname, "conf/%s", BBS_CONF);
 	sprintf(path, "conf/%s", BBS_IMG);	
-	if (stat(path, &st) != 0)
-	{
-		build_bbsconf (fname, path);
+	if (stat(fname, &stc) == 0) {
+		if ((stat(path, &sti) != 0) || stc.st_mtime > sti.st_mtime)
+			build_bbsconf (fname, path);
 	}
 	load_bbsconf_image(path);
 
