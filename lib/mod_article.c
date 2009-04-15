@@ -393,7 +393,7 @@ int append_article(char *fname, char *path, char *author, char *title,
 #endif
 {
 	char dotdir[PATHLEN], fn_stamp[PATHLEN];
-	char stampbuf[15];	/* M.0987654321.A */
+	char stampbuf[64];	/* M.0987654321.[A-Z]+ */
 	FILEHEADER fhbuf, *fhr = &fhbuf;
 	struct stat st;
 	char buffer[256];

@@ -776,7 +776,7 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 				{
 					++result;
 				} else {
-					result = -1;
+					result = 0 - result;
 					break;
 				}
 			}
@@ -797,7 +797,7 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 				result = -1;
 		}
 
-		if (ch == 'T' && result != -1)
+		if (ch == 'T' && result > 0)
 		{
 			if (lseek(fd, 0, SEEK_SET) != -1)
 			{
@@ -825,7 +825,8 @@ lock_err:
 		if (combin)
 			unlink(fn_comb);
 		if (result <= 0) {
-			msg(_msg_fail);
+			sprintf(msgbuf, "²Ä%d½g«á¿ù»~", 0 - result);
+			msg(msgbuf);
 		} else {
 			sprintf(msgbuf, "%s %d½g", _msg_finish, result);
 			msg(msgbuf);
