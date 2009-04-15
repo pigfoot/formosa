@@ -484,9 +484,8 @@ int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh
 			fputs(buf, output);
 			strcpy(subhdr.boundary, mh->boundary);
 
-			if (strstr(subhdr.content_type, "application") ||
-			    strstr(subhdr.content_type, "octet-stream")) {
-			    	fputs("It's binary file, ignored printing.\n", output);
+			if (strncasecmp(subhdr.content_type, "text/", 5)) {
+			    	fputs("It's not a text file, ignored printing.\n", output);
 				rt = print_simple_content(next_line, NULL, errmsg, &subhdr, &next_line);
 			} else {
 				rt = print_simple_content(next_line, output, errmsg, &subhdr, &next_line);
