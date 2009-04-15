@@ -550,7 +550,10 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 
 	if ((fd = open(direct, O_RDWR)) < 0)
 		return -1;
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		return -1;
+	}
 
 	/* jump to current post if not deleting tagged files */
 	if (!wtop)
@@ -1101,7 +1104,10 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 
 	if ((fd = open(direct, O_RDWR)) < 0)
 		return C_FULL;
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		rt = -1;
+		goto lock_err;
+	}
 
 	score = read_pushcnt(ent, direct, fd);
 	if (score == PUSH_ERR) {
@@ -1122,6 +1128,7 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	rt = push_one_article(ent, direct, fd, score);
 push_err:
 	flock(fd, LOCK_UN);
+lock_err:
 	close(fd);
 
 	date = time(NULL);
@@ -1130,7 +1137,10 @@ push_err:
 		setdotfile(fn_art, direct, finfo->filename);
 		if ((fd = open(fn_art, O_RDWR | O_APPEND, 0600)) < 0)
 			return C_FULL;
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return C_FULL;
+		}
 
 		ptr = writebuf;
 

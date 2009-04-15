@@ -14,7 +14,10 @@ static int rewind_board(char *bname)
 
 	if ((fd = open(BOARDS, O_RDWR)) > 0)
 	{
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return -1;
+		}
 		while (read(fd, &sbh, sizeof(sbh)) == sizeof(sbh))
 		{
 			if (!strcmp(sbh.filename, bname))
@@ -47,7 +50,6 @@ int append_news(char *bname, char *fname,
 {
 	FILE *fp;
 	char nbuf[PATHLEN];
-	extern int flock(int fd, int op);
 
 /* TODO
 	if (opt == 'D')
@@ -66,7 +68,10 @@ int append_news(char *bname, char *fname,
 	sprintf(nbuf, "news/output/%s", bname);
 	if ((fp = fopen(nbuf, "a+")) == NULL)
 		return -1;
-	flock(fileno(fp), LOCK_EX);
+	if (myflock(fileno(fp), LOCK_EX)) {
+		fclose(fp);
+		return -1;
+	}
 	if (opt == 'D')
 		fprintf(fp, "-%s\n", fname);
 	else
@@ -201,7 +206,12 @@ int make_treasure_folder(char *direct, char *title, char *dirname)
 
 	result = 0;
 	insert_ok = FALSE;
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		close(fdnew);
+		rmdir(path);
+		return -1;
+	}
 	while (read(fd, &fhbuf, FH_SIZE) == FH_SIZE)
 	{
 		if (!insert_ok && !(fhbuf.accessed & FILE_TREA))

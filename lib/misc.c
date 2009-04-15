@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/file.h>
+#include <errno.h>
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>	/* for close() */
@@ -37,6 +39,15 @@ int flock(int fd, int op)
 }
 #endif
 
+int myflock(int fd, int op)
+{
+	int rt;
+	do {
+		rt = flock(fd, op);
+	} while (rt == -1 && errno == EINTR);
+
+	return rt;
+}
 
 /*
  * copy file, first remove the dest file

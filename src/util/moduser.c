@@ -48,14 +48,22 @@ rebuild(char *id)
 
 	if ((fdi = open(USERIDX, O_RDONLY | O_CREAT, 0644)) < 0)
 		return -1;
-	flock(fdi, LOCK_EX);
+	if (myflock(fdi, LOCK_EX)) {
+		close(fdi);
+		return -1;
+	}
 	if ((fdp = open(PASSFILE, O_RDONLY | O_CREAT, 0644)) < 0)
 	{
 		flock(fdi, LOCK_UN);
 		close(fdi);
 		return -1;
 	}
-	flock(fdp, LOCK_EX);
+	if (myflock(fdp, LOCK_EX)) {
+		flock(fdi, LOCK_UN);
+		close(fdi);
+		close(fdp);
+		return -1;
+	}
 	if ((fd_new = open("conf/useridx.new", O_WRONLY | O_CREAT, 0644)) < 0)
 	{
 		close(fdi);

@@ -114,7 +114,10 @@ char *stamp_fn;
 	sprintf(filename, "ID/%s", DIR_REC);
 	if ((fd = open(filename, O_RDWR)) < 0)
 		return -1;
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		return -1;
+	}
 	while (read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
 		if (!strcmp(fhr->filename, stamp_fn))
@@ -159,7 +162,10 @@ char *userid, *subject;
 #endif
 		return -1;
 	}
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		return -1;
+	}
 	sprintf(fname, "log/ident_cheat.log");
 	if( (fpw = fopen(fname, "a+")) ==NULL)
 	{
