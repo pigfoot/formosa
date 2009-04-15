@@ -306,16 +306,25 @@ int do_post(const char *r_file)
 	else
 		treasure = FALSE;
 
-	if (get_board(&bhead, minfo.board) <= 0)
-		return -1;
-	if (!can_see_board(&bhead, user.userlevel)
-		|| user.userlevel < bhead.level
-	    || ((bhead.brdtype & BRD_IDENT) && user.ident != 7))
-	{
+	if (get_board(&bhead, minfo.board) <= 0) {
+		bbsmail_log_write("BRDERR", "from=<%s>, sender<%s>, board=<%s>, subject=<%s>",
+		            minfo.from, minfo.sender, minfo.board, minfo.subject);
 		return -1;
 	}
-	if (treasure == TRUE && strcmp(minfo.sender, bhead.owner))
+	if (!can_see_board(&bhead, user.userlevel)
+		|| user.userlevel < bhead.level
+	    || ((bhead.brdtype & BRD_IDENT) && user.ident != 7)
+	    || (bhead.brdtype & BRD_CROSS))
+	{
+		bbsmail_log_write("POSTPERM", "from=<%s>, sender<%s>, board=<%s>, subject=<%s>",
+		            minfo.from, minfo.sender, minfo.board, minfo.subject);
 		return -1;
+	}
+	if (treasure == TRUE && strcmp(minfo.sender, bhead.owner)) {
+		bbsmail_log_write("POSTPERM", "from=<%s>, sender<%s>, board=<%s>, subject=<%s>",
+		            minfo.from, minfo.sender, minfo.board, minfo.subject);
+		return -1;
+	}
 
 	strcpy(minfo.board, bhead.filename);
 
