@@ -1,10 +1,6 @@
-
+#include "bbs.h"
 #ifndef _BBS_GLOBALS_H_
 #define _BBS_GLOBALS_H_
-
-
-#include "bbs.h"
-
 
 extern USEREC curuser;
 extern USER_INFO uinfo;
