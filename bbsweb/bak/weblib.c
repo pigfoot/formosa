@@ -9,15 +9,15 @@
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為佈告&信件檔案 (不作額外判斷)
- *	
+ *
  *	ie: M.871062060.A		->yes
  *		M.871062060.A.html	->yes
  *		^^         ^  ->check point
  *******************************************************************/
 BOOL isPost(const char *para)
 {
-	if (( para[0]=='M' || para[0]=='D') 
-	&& para[1]=='.' 
+	if (( para[0]=='M' || para[0]=='D')
+	&& para[1]=='.'
 	&& (para[11] == '.' || para[12] == '.'))
 		return TRUE;
 	return FALSE;
@@ -25,7 +25,7 @@ BOOL isPost(const char *para)
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為篇號 (範圍)
- *	
+ *
  *	ie:	*			= 全部
  *		all.html	= 全部
  *		$			= 最後的 DEFAULT_PAGE_SIZE 篇
@@ -37,10 +37,10 @@ BOOL isList(const char *para, int *start, int *end)
 {
 	char *p, data[STRLEN];
 	int len;
-	
+
 	xstrncpy(data, para, sizeof(data));
 	p = data;
-	
+
 	if(*p == '*'
 	|| !strcasecmp(p, "all.html"))			/* list all post */
 	{
@@ -55,10 +55,10 @@ BOOL isList(const char *para, int *start, int *end)
 	else
 	{
 		for(len = strlen(p); len>0; len--)
-			if(!isdigit((int)*(p+len-1)) 
+			if(!isdigit((int)*(p+len-1))
 			&& ((*(p+len-1) != '-') && (*(p+len-1) != '$')))
 				return FALSE;
-		
+
 		strtok(p, "-");
 		*start = atoi(p);
 		p += strlen(p) + 1;
@@ -67,10 +67,10 @@ BOOL isList(const char *para, int *start, int *end)
 		else
 			*end = atoi(p);
 	}
-	
-	/* 
-		we assume 50000 is a sufficient large number that 
-		online user & post & mail number should not exceed it 
+
+	/*
+		we assume 50000 is a sufficient large number that
+		online user & post & mail number should not exceed it
 	*/
 	if(*start>0 && *start<50000)
 		return TRUE;
@@ -81,7 +81,7 @@ BOOL isList(const char *para, int *start, int *end)
 
 /*******************************************************************
  *	判斷 uri 是否合法
- *	
+ *
  *******************************************************************/
 BOOL isBadURI(const char *uri)
 {
@@ -101,21 +101,21 @@ BOOL isBadURI(const char *uri)
 void strip_html(char *fname)
 {
 	char *p;
-	
+
 	if((p = strrchr(fname, '.'))!=NULL && !strcasecmp(p+1, "html"))
 		*p = '\0';
 }
 
 
 /*******************************************************************
- *	find record List range 
- *	
+ *	find record List range
+ *
  *******************************************************************/
 void find_list_range(int *start, int *end, int current, int page_size, int max_size)
 {
 	if(page_size <= 0)
 		page_size = DEFAULT_PAGE_SIZE;
-	
+
 	*start = current - ((current - 1) % page_size);
 	*end = *start + page_size -1;
 #if 0
@@ -133,7 +133,7 @@ typedef struct {
 }
 S2H;
 
-S2H s2h[] = 
+S2H s2h[] =
 {
 	{'"', "&quot;", 6},
 	{'<', "&lt;", 4},
@@ -143,7 +143,7 @@ S2H s2h[] =
 
 /*******************************************************************
  *	convert some special character to HTML code
- *	
+ *
  *******************************************************************/
 void souts(char *str, int maxlen)
 {
@@ -151,11 +151,11 @@ void souts(char *str, int maxlen)
 	int i, len, type;
 	char *data;
 	char buf[1024];
-	
+
 	len = strlen(str);
 	data = buf;
 	i = 0;
-	
+
 	do{
 		for(type=0; s2h[type].ch; type++)
 		{
@@ -166,23 +166,23 @@ void souts(char *str, int maxlen)
 				break;
 			}
 		}
-		
+
 		if(s2h[type].ch == 0)
 		{
 			*data = *(str+i);
 			data ++;
 		}
 	} while(i++ < len);
-	
+
 	*data = 0x00;
 	xstrncpy(str, buf, maxlen);
-	
+
 }
 
 
 /*******************************************************************
  *	find WEB-BBS Special Tags
- *	
+ *
  *	<!BBS_Type_Name OPTION=   !>
  *
  *	<!BBS_Post_FileName!>
@@ -195,8 +195,8 @@ void souts(char *str, int maxlen)
 char *GetBBSTag(char *type, char *tag, char *data)
 {
 	char *start, *end, *p;
-	
-	if((start = strstr(data, "<!")) != NULL 
+
+	if((start = strstr(data, "<!")) != NULL
 	&& !strncasecmp(start+2, "BBS", 3)
 	&& (end = strstr(start+6, "!>")) != NULL)
 	{
@@ -209,7 +209,7 @@ char *GetBBSTag(char *type, char *tag, char *data)
 		}
 		else
 			*tag = '\0';
-		
+
 		strcpy(type, start+6);
 		return end+2;
 	}
@@ -232,12 +232,12 @@ char *GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
 		strcpy(WEBBBS_ERROR_MESSAGE, "Content-length required");
 		return NULL;
 	}
-	
+
 	if(content_length>=MAX_FORM_SIZE)
 	{
 		char temp[1024];
 		form_size = sizeof(temp);
-		
+
 		/* discard unwanted form body */
 		do
 		{
@@ -247,7 +247,7 @@ char *GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
 				form_size = content_length;
 		}
 		while(content_length>0);
-		
+
 		strcpy(WEBBBS_ERROR_MESSAGE, "Content-length too long");
 		return NULL;
 	}
@@ -257,11 +257,11 @@ char *GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
 		strcpy(WEBBBS_ERROR_MESSAGE, "Memory allocation error");
 		return NULL;
 	}
-	
+
 	if(fgets(buffer, content_length+1, fp_in) == NULL)
 	{
 #if 1
-		sprintf(WEBBBS_ERROR_MESSAGE, "Content-length not match<!--%d %d-->", 
+		sprintf(WEBBBS_ERROR_MESSAGE, "Content-length not match<!--%d %d-->",
 			strlen(buffer), content_length);
 #else
 		strcpy(WEBBBS_ERROR_MESSAGE, "Content-length not match");
@@ -274,12 +274,12 @@ char *GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
 
 	if(strlen(buffer) != content_length)
 	{
-		sprintf(WEBBBS_ERROR_MESSAGE, "Content-length not match<!--%d %d-->", 
+		sprintf(WEBBBS_ERROR_MESSAGE, "Content-length not match<!--%d %d-->",
 			strlen(buffer), content_length);
 		free(buffer);
 		return NULL;
 	}
-	
+
 	return buffer;
 }
 
@@ -294,8 +294,8 @@ char *GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
  *	'S' = !BBS_TAG
  *
  *	offset = type offset from data
- *	
- *	return: 
+ *
+ *	return:
  *		number of tag section
  *******************************************************************/
 int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head, char *tail, int max_tag_section)
@@ -303,17 +303,17 @@ int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head,
 	int i=0, head_len, tail_len;
 	const char *ori;
 	char *start, *end;
-	
+
 	ori = data;
 	head_len = strlen(head);
 	tail_len = strlen(tail);
-	
+
 	while(1)
 	{
 		if(i >= max_tag_section-2)	/* exceed array range */
 			return -1;
-		
-		if((start = strstr(data, head)) != NULL 
+
+		if((start = strstr(data, head)) != NULL
 		&& (end = strstr(start+head_len, tail)) != NULL)
 		{
 			if((int)(start-data)>0)
@@ -322,7 +322,7 @@ int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head,
 				format_array[i].offset = (int)(data - ori);
 				i++;
 			}
-			
+
 			format_array[i].type = 'T';		/* BBS tag */
 			format_array[i].offset = (int)(start - ori);
 			i++;
@@ -391,7 +391,7 @@ void Convert(char *from, char *to)
 
 
 /*******************************************************************
- *	convert escaped Cookie 
+ *	convert escaped Cookie
 ********************************************************************/
 void Convert1(char *from, char *to)
 {
@@ -513,7 +513,7 @@ int len;
 		xstrncpy(Para, start+1, (int)(end-start-1) < len ? (int)(end-start) : len+1);
 	else
 		xstrncpy(Para, start, (int)(end-start) < len ? (int)(end-start+1) : len+1);
-		
+
 	return TRUE;
 
 }
@@ -579,7 +579,7 @@ int len;
 void mk_timestr1(char *str, time_t when)
 {
 	struct tm *tm;
-	
+
 	tm = localtime(&when);
 	sprintf(str, "%02d/%02d/%02d",
 		tm->tm_year-11, tm->tm_mon+1, tm->tm_mday);
@@ -593,9 +593,9 @@ void mk_timestr1(char *str, time_t when)
 void mk_timestr2(char *str, time_t when)
 {
 	struct tm *tm;
-	
+
 	tm = localtime(&when);
-	sprintf(str, "%02d/%02d/%02d %02d:%02d:%02d", 
+	sprintf(str, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_mon+1, tm->tm_mday, tm->tm_year,
 		tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
@@ -649,7 +649,7 @@ unsigned char name[];
 
 #if 0
 /*
- *	determine the number of records in file 
+ *	determine the number of records in file
  *	return -1 if file not exist!
  */
 long get_num_records1(const char *filename, int size)
@@ -690,7 +690,7 @@ char *f_map(char *fpath, size_t *fsize, int prot, int flags)
 		close(fd);
 		return (char *) -1;
 	}
-	
+
 	fdata = (char *) mmap((caddr_t) 0, size, prot, flag, fd, 0);
 	close(fd);
 	*fsize = size;
@@ -700,11 +700,11 @@ char *f_map(char *fpath, size_t *fsize, int prot, int flags)
 
 
 
-/** 
+/**
  **	set web skin file string
- **	by asuka: 990714 
+ **	by asuka: 990714
  **/
-void 
+void
 setskinfile(char *fname, char *boardname, char *skin)
 {
 	if(skin)

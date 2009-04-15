@@ -100,7 +100,7 @@ int   get_record(char *filename, void *rptr, size_t size, unsigned int id)
 /**
  ** delete the nTH record in file
  **/
-/*ARGUSED*/ 
+/*ARGUSED*/
 int delete_record(char *filename, size_t size, unsigned int id)
 {
 	int fdr, fdw, fd;
@@ -171,7 +171,7 @@ int delete_record(char *filename, size_t size, unsigned int id)
 
 /**
  ** substitute the nTH record in file
- **/ 
+ **/
 int substitute_record(char *filename, void *rptr, size_t size, unsigned int id)
 {
 	int fd;

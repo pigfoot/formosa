@@ -56,7 +56,7 @@ char *userid;
 		buf[i] = tolower(ch);
 	}
 	buf[i] = '\0';
-	
+
 	if (!strcmp(buf, "new") || strstr(buf, "sysop")/* || xgrep(buf, BADUSERID)*/)
 	{
 		return 1;
@@ -74,19 +74,19 @@ read_passwds (fname, procfunc, size, pname)
      char *pname;
 {
 	char orifile[255];
-	
+
 	if (_invalid_userid(pname))
 	{
 #ifdef NSYSUBBS1
 		char *p = pname;
-		
+
 		while (*p != '\0' && isdigit(*p))
 			p++;
 		if (*p != '\0')
 #endif
 #if 1
-		printf("# /bin/rm -rf %s\n", pname);	
-#endif		
+		printf("# /bin/rm -rf %s\n", pname);
+#endif
 		return -1;
 	}
 
@@ -103,7 +103,7 @@ read_passwds (fname, procfunc, size, pname)
 	}
 #if 1
 	printf("# /bin/rm -rf %s\n", pname);
-#endif	
+#endif
 	return -1;
 }
 
@@ -115,7 +115,7 @@ cmp_user(const void *a, const void *b)
 }
 
 
-int 
+int
 cmp_idx(const void *a, const void *b)
 {
 #if 0
@@ -129,7 +129,7 @@ cmp_idx(const void *a, const void *b)
 	{
 		return -1;
 	}
-#endif		
+#endif
 	return ((struct _useridx *)a)->uid - ((struct _useridx *)b)->uid;
 }
 
@@ -144,7 +144,7 @@ main ()
 
 	init_bbsenv ();
 
-	
+
 	if ((fd = open(USERIDX, O_RDWR)) < 0)
 	{
 		fprintf(stderr, "cannot open: %s\n", USERIDX);
@@ -155,7 +155,7 @@ main ()
 	*(uidxs[n_idx].userid) = '\0';
 	uidxs[n_idx].uid = n_idx + 1;
 	n_idx++;
-#endif		
+#endif
 
 	while (read(fd, &uidx, sizeof(uidx)) == sizeof(uidx))
 	{
@@ -174,11 +174,11 @@ main ()
 	{
 		printf("%6d (%s)\n", uidxs[i].uid, uidxs[i].userid);
 	}
-#endif	
+#endif
 
-#if 1	
+#if 1
 	chdir ("home/");
-	
+
 	procdir (0, 2, UFNAME_PASSWDS, read_passwds, NULL, -1, NULL);
 	qsort(users, total, sizeof(USEREC), cmp_user);
 #endif
@@ -189,7 +189,7 @@ main ()
 	{
 		printf("%6d (%s)\n", users[j].uid, users[j].userid);
 	}
-#endif	
+#endif
 
 	for (j = 0; j < total; j++)
 	{
@@ -201,7 +201,7 @@ main ()
 		else
 			uidxs[i].used = 1;
 	}
-	
+
 	i = 0;
 	for (j = 0; j < total; j++)
 	{
@@ -216,7 +216,7 @@ main ()
 			users[j].uid = i + 1;
 		}
 	}
-	
+
 #if 1
 	j = 0;
 	for (i = 0; i < n_idx; i++)
@@ -225,8 +225,8 @@ main ()
 			j = i+1;
 	}
 	n_idx = j;
-#endif	
-	
+#endif
+
 #if 1
 	printf("uidxs:\n");
 	for (i = 0; i < n_idx; i++)
@@ -235,13 +235,13 @@ main ()
 	}
 
 	qsort(users, total, sizeof(USEREC), cmp_user);
-	
+
 	printf("users:\n");
 	for (j = 0; j < total; j++)
 	{
 		printf("%6d (%s)\n", users[j].uid, users[j].userid);
 	}
-#endif	
+#endif
 
-	return 0;	
+	return 0;
 }

@@ -213,7 +213,7 @@ servicepage(arg)
 int arg;
 {
 	static time_t last_check;
-	
+
 
 	if (!searchuserlist(curuser.userid) || !ui.sockactive)
 		talkrequest = FALSE;
@@ -240,8 +240,8 @@ int arg;
 	else
 	{
 		time_t now;
-		
-		
+
+
 		now = time(0);
 		if (now - last_check > P_INT)
 		{
@@ -436,7 +436,7 @@ int fd;
 				break;
 
 			for (i = 0; i < datac; i++)
-				do_talk_char(itsfirstln, itslastln, &itsln, &itscol, 
+				do_talk_char(itsfirstln, itslastln, &itsln, &itscol,
 						itswordbuf, &itswordbuflen, data[i]);
 		}
 		else if (ch == CTRL('D') || ch == CTRL('C'))
@@ -449,7 +449,7 @@ int fd;
 			clrtoeol();
 			if (igetkey() == 'y')
 				break;
-				
+
 			move(mylastln + 1, 0);
 			prints(_msg_talk_35, curuser.userid, user.userid, user.username);
 			move(y, x);
@@ -457,9 +457,9 @@ int fd;
 		else if (isprint2(ch)
 				 || ch == CTRL('H') || ch == '\177' || ch == CTRL('G')
 			     || ch == '\n' || ch == '\r' || ch == CTRL('M')
-#if 0			     
-				 || ch == CTRL('X') || ch == CTRL('Y') || ch == CTRL('Z')			     
-#endif				 
+#if 0
+				 || ch == CTRL('X') || ch == CTRL('Y') || ch == CTRL('Z')
+#endif
 			     )
 		{
 			talkobuf[talkobuflen++] = ch;
@@ -750,7 +750,7 @@ talkreply()
 		write(a, "n", 1);
 	if (ch != 'y')
 	{
-#define MAX_REFUSAL 8	
+#define MAX_REFUSAL 8
 		char *talkrefuse[MAX_REFUSAL] =
 		{
 			_msg_talk_refusal_1,
@@ -828,7 +828,7 @@ char *showed;
 		mentp->stimestr,
 		(!mentp->out) ? "" : "°eµ¹ ",
 		mentp->userid, mentp->username, mentp->mtext);
-#endif		
+#endif
 	sprintf(showed, "[1;37;4%dm%s %s[33m%s:[36m %s [m",
 		(!mentp->out) ? 5 : 0,
 		mentp->stimestr,
@@ -857,17 +857,17 @@ char *title;
 			fputs("\n", fpw);
 
 			/* °t¦X­×§ï¤å³¹¥\¯à­­¨î */
-#if 0					
+#if 0
 			fprintf(fpw, "--\n");
 #endif
-			fprintf(fpw, "-- \n");					
+			fprintf(fpw, "-- \n");
 			while (read(fdr, &mrec, sizeof(mrec)) == sizeof(mrec))
 			{
 				parse_message(&mrec, genbuf);
 				fprintf(fpw, "%s\n", genbuf);
 			}
 			fclose(fpw);
-		}			
+		}
 		close(fdr);
 	}
 }
@@ -877,12 +877,12 @@ int
 backup_message()
 {
 	char fname[PATHLEN];
-	
-	
+
+
 	if (check_mail_num(0))	/* lthuang */
 		return -1;
-		
-	sprintf(fname, "tmp/_writebackup.%s", curuser.userid);		
+
+	sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
 	if (get_message_file(fname, "[°T®§³Æ¥÷]") == 0)
 	{
 		SendMail(-1, FALSE, fname, curuser.userid, curuser.userid,
@@ -899,9 +899,9 @@ char *who;
 BOOL is_broadcast;
 {
 	char my_mtext[MTEXTLEN];
-	
-	
-	if (getdata(b_line - 1, 0, _msg_talk_37, my_mtext, 
+
+
+	if (getdata(b_line - 1, 0, _msg_talk_37, my_mtext,
 				(is_broadcast) ? MTEXTLEN - strlen(who) : MTEXTLEN,
 				DOECHO, NULL))
 	{
@@ -910,7 +910,7 @@ BOOL is_broadcast;
 		{
 			if (is_broadcast)
 			{
-				/* ´¡¤J (¼s¼½) ¦r¼Ë */			
+				/* ´¡¤J (¼s¼½) ¦r¼Ë */
 				strcpy(genbuf, "(¼s¼½)");
 				strcat(genbuf, my_mtext);
 			}
@@ -942,7 +942,7 @@ char *ident;
 		update_umode(save_umode);
 		return -1;
 	}
-	
+
 	if (!(quinf = search_ulist(cmp_userid, ident)))
 	{
 		msg(_msg_talk_24);
@@ -951,7 +951,7 @@ char *ident;
 		update_umode(save_umode);
 		return -1;
 	}
-		
+
 	if (talkCheckPerm(quinf, TRUE) == 0)
 	{
 		if (message_send(quinf) == 0)
@@ -959,14 +959,14 @@ char *ident;
 			message_record(ufile_write, ident);
 			retval = 0;
 		}
-		
-		if (retval == 0)	
+
+		if (retval == 0)
 			msg(_msg_message_finish);
 		else
 			msg(_msg_message_fail);
 		getkey();
 	}
-			
+
 	uinfo.destid[0] = '\0';
 	update_umode(save_umode);
 
@@ -1097,7 +1097,7 @@ cx_curs:
 		else if (ch == CTRL('X'))
 		{
 			int retcode = -1;
-			char fname[PATHLEN];			
+			char fname[PATHLEN];
 
 
 			move(y - 1, 0);
@@ -1111,25 +1111,25 @@ cx_curs:
 				getkey();
 				continue;
 			}
-	
-			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);		
+
+			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
 			if (get_message_file(fname, "[°T®§°O¿ý]") == 0)
 			{
 				/*  post on board, postpath is NULL */
 				retcode = PublishPost(fname, curuser.userid, curuser.username,
-				                      CAPTURE_BOARD, "[°T®§°O¿ý]", 
-				                      curuser.ident, uinfo.from, 
+				                      CAPTURE_BOARD, "[°T®§°O¿ý]",
+				                      curuser.ident, uinfo.from,
 				                      FALSE, NULL, 0);
 				unlink(fname);
 			}
 			if (retcode == -1)
-				msg(_msg_fail);			
+				msg(_msg_fail);
 			else
-				msg(_msg_finish);												
+				msg(_msg_finish);
 			getkey();
 			break;
 		}
-#endif		
+#endif
 		if (ch == KEY_UP)
 			ccur--;
 		else if (ch == KEY_DOWN)
@@ -1171,7 +1171,7 @@ int
 t_review()
 {
 	ReplyLastCall(20);	/* rowsize is 20 */
-/*	
+/*
 	return C_FULL;
 */
 	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
@@ -1198,7 +1198,7 @@ fsendmsg(upent)
 USER_INFO *upent;
 {
 	int retval;
-	
+
 
 	if ((retval = isFriend(&friend_cache, upent->userid)) == -1)
 		return QUIT_LOOP;

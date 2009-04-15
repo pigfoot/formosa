@@ -21,7 +21,7 @@ extern int port;
 #endif
 
 
-static int 
+static int
 GetHttpRequestType(char *request)
 {
 	int type;
@@ -37,7 +37,7 @@ GetHttpRequestType(char *request)
 		{"KMP"},
 		{NULL}
 	};
-	
+
 
 	for (type = 0; http_request[type].method; type++)
 		if (!strcmp(request, http_request[type].method))
@@ -51,28 +51,28 @@ int
 httpRequest(char *line, REQUEST_REC *rq)
 {
 	char *p;
-	
+
 	if ((p = strtok(line, " \t\n")) == NULL)
 		return -1;
 
 	xstrncpy(rq->request_method, p, PROTO_LEN);
 	rq->HttpRequestType = GetHttpRequestType(rq->request_method);
-	
+
 	if ((p = strtok(NULL, " \t\r\n")) == NULL)
 		return -1;
 	xstrncpy(rq->URI, p, URI_LEN);
-	
+
 	return 0;
 }
 
 
 /*******************************************************************
  *	check if browser send reload command (Pragma: no-cache)
- *	
+ *
  *	......not work in IE 4........T_T
  *
  *******************************************************************/
-BOOL 
+BOOL
 client_reload(char *pragma)
 {
 	return strcasecmp(pragma, "no-cache") ? FALSE : TRUE;
@@ -83,7 +83,7 @@ struct _mime_type
 {
 	char *ext;
 	char *type;
-} mime_type[] = 
+} mime_type[] =
 {
 	{"html", "text/html; charset=big5"},
 	{"htm", "text/html; charset=big5"},
@@ -106,7 +106,7 @@ struct _mime_type
  *	根據 副檔名 判斷 MIME type
  *
  *******************************************************************/
-int 
+int
 GetMimeType(char *ext)
 {
 	int typeindex;
@@ -133,9 +133,9 @@ typedef struct
 	BOOL Allow;
 } HTTP_HEADER;
 
-/* 
+/*
 	define HTTP Status-Line
-	
+
  1xx: Informational - Request received, continuing process
  2xx: Success - The action was successfully received, understood, and accepted
  3xx: Redirection - Further action must be taken in order to complete the request
@@ -173,8 +173,8 @@ char *
 GetHttpRespondCode(REQUEST_REC *r)
 {
 	static char status_code[4];
-	
-	xstrncpy(status_code, http_header[r->HttpRespondType].status_line + 9, 
+
+	xstrncpy(status_code, http_header[r->HttpRespondType].status_line + 9,
 		sizeof(status_code));
 	return status_code;
 }
@@ -183,8 +183,8 @@ GetHttpRespondCode(REQUEST_REC *r)
 /*******************************************************************
  *	根據 HttpRespondType 及 檔案類型送出 HTTP Response Header
  *
- *	Response = Status-Line 
- *				*( general-header	
+ *	Response = Status-Line
+ *				*( general-header
  *				| response-header
  *				| entity-header )
  *				CRLF
@@ -194,7 +194,7 @@ GetHttpRespondCode(REQUEST_REC *r)
  *
  *	files should not be cached: almost all WEBBBS files
  *******************************************************************/
-void 
+void
 httpResponseHeader(REQUEST_REC * r, const SKIN_FILE * sf)
 {
 	HTTP_HEADER *hh = &(http_header[r->HttpRespondType]);
@@ -211,8 +211,8 @@ httpResponseHeader(REQUEST_REC * r, const SKIN_FILE * sf)
    According to RFC 2068 HTTP/1.1 January 1997
    To mark a response as "already expired," an origin server should use
    an Expires date that is equal to the Date header value.
-   Note that HTTP/1.0 caches may not implement Cache-Control 
-   and may only implement Pragma: no-cache (see section 14.32). 
+   Note that HTTP/1.0 caches may not implement Cache-Control
+   and may only implement Pragma: no-cache (see section 14.32).
  */
 	if (hh->Expires && sf->expire)
 		fprintf(fp_out, "Expires: %s\r\n", timestr);
@@ -223,7 +223,7 @@ httpResponseHeader(REQUEST_REC * r, const SKIN_FILE * sf)
 		fprintf(fp_out, "Last-Modified: %s\r\n", timestr);
 	}
 
-/* 
+/*
    NetscapeS 3.x cache html if "Pragma: no-cache" is absent
    so ...........
  */
@@ -284,14 +284,14 @@ httpResponseHeader(REQUEST_REC * r, const SKIN_FILE * sf)
  *
  *	return: none
  *******************************************************************/
-int 
+int
 httpGetHeader(REQUEST_REC * r, SERVER_REC * s)
 {
 	char *buffer;
 	int count = 0;
 	char req_buf[HTTP_REQUEST_LINE_BUF];
-	
-	
+
+
 	r->connection = FALSE;
 
 	while (++count < MAX_HTTP_HEADER)	/* prevent repeated header attack */
@@ -323,7 +323,7 @@ httpGetHeader(REQUEST_REC * r, SERVER_REC * s)
 		else if (!strncasecmp(buffer, "Cookie:", 7))
 		{
 			char pass[PASSLEN * 3];
-			
+
 			xstrncpy(r->cookie, buffer + 8, STRLEN * 2);
 			GetPara2(username, "Name", buffer, sizeof(username), "");
 			GetPara2(pass, "Password", buffer, PASSLEN * 3, "");
@@ -483,9 +483,9 @@ httpGetHeader(REQUEST_REC * r, SERVER_REC * s)
 			strtok(buffer, "\r\n");
 #if 0
 			fprintf(fp_out, "ori=[%s]", buffer);
-#endif			
+#endif
 			base64_decode_str(buffer);
-#if 0			
+#if 0
 			fprintf(fp_out, " , decode=[%s]\r\n", buffer);
 			fflush(fp_out);
 #endif

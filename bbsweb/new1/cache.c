@@ -1,14 +1,14 @@
 /*******************************************************************
  *	Shm cache for WEB-BBS (support from ver. 1.1.2+)
- *	
+ *
  *	== cache type ==
  *	1. normal file
  *		a. cache into file_shm
- *	
+ *
  *	2. html file (as skin file)
  *		a. cache into html_shm
  *		b. parse web-bbs tag & build format array
- *		
+ *
  *	== now with cache replacement policy ==
  *******************************************************************/
 #include "bbs.h"
@@ -24,7 +24,7 @@ extern REQUEST_REC *request_rec;
 /*******************************************************************
  *	alloc shm for cache file
  *******************************************************************/
-void 
+void
 init_cache()
 {
 
@@ -66,7 +66,7 @@ hash_string(const void *data)
  *		slot # of cache file
  *		-1 if file not in cache
  *******************************************************************/
-int 
+int
 CacheState(char *filename, SKIN_FILE * sf)
 {
 	register int i;
@@ -100,16 +100,16 @@ CacheState(char *filename, SKIN_FILE * sf)
 
 #ifdef USE_WEIGHT
 /*******************************************************************
- *	use LRU && cache hit to determine weight 
+ *	use LRU && cache hit to determine weight
  *******************************************************************/
-int 
+int
 test_weight(time_t now, time_t age, int hit)
 {
 	return (int) ((hit * 10) - (int) difftime(now, age));
 }
 #endif
 
-int 
+int
 select_file_cache_slot(char *file)
 {
 	int slot, selected = 0;
@@ -147,7 +147,7 @@ select_file_cache_slot(char *file)
 }
 
 
-int 
+int
 select_html_cache_slot(char *file)
 {
 	int slot, selected = 0;
@@ -185,7 +185,7 @@ select_html_cache_slot(char *file)
 }
 
 
-int 
+int
 do_cache_file(char *file)
 {
 	int slot, fd;
@@ -223,7 +223,7 @@ do_cache_file(char *file)
 
 }
 
-int 
+int
 do_cache_html(char *file)
 {
 	int slot, fd;

@@ -14,27 +14,27 @@ void main()
   long serno;
   char se1[8];
   struct sockaddr_in serv_addr;
-  
+
   int on=1;
 
   if(haveNo())
-  { 
+  {
     bzero((char *) &serv_addr,sizeof(serv_addr));
     serv_addr.sin_family=AF_INET;
     serv_addr.sin_addr.s_addr=inet_addr(SERV_HOST_ADDR);
     serv_addr.sin_port=htons(SERV_TCP_PORT);
-  
+
     if ((sockfd=socket(AF_INET,SOCK_STREAM,0))<0)
     {  exit(1);
        perror("client:");
     }
 
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr))<0)
-    {  
+    {
        exit(1);
        perror("client:");
     }
-  
+
     /* send my id */
     if (write(sockfd,curuser.userid,strlen(curuser.userid))<0)
     {
@@ -42,8 +42,8 @@ void main()
       exit(1);
     }
 
-    readResult(sockfd); 
-    close(sockfd); 
+    readResult(sockfd);
+    close(sockfd);
   }
   exit(1);
 }
@@ -70,16 +70,16 @@ int haveNo()
          break;
        }
       }
- 
+
       if(strcmp(ID,curuser.userid)==0)
       {
         for(k=strlen(ID)+1;k<strlen(line);k++)
-          Faxnum[h++]=line[k]; 
+          Faxnum[h++]=line[k];
         Faxnum[h]='\0';
-        printf("you are %s\n",ID); 
+        printf("you are %s\n",ID);
         printf("your Faxno is %s\n",Faxnum);
         return(0);
-      } 
+      }
     }
   }
   return(1);
@@ -107,7 +107,7 @@ int fd;
   {
     writeToMap(str1);   /* write map file */
     printf("\nYour fax no is : %s\n\n",str1);
-    
+
   }
 }
 
@@ -132,7 +132,7 @@ char *str;
       strcat(record,faxno);
       if(write(wf,record,strlen(record))==-1)
       {
-        printf("write error\n");       
+        printf("write error\n");
       }
       lockf(wf,F_ULOCK,0);
     }

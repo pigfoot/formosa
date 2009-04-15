@@ -8,7 +8,7 @@
 #define PERM_CHAT        20
 #define PERM_PAGE        1
 #define PERM_POST        10
-#define PERM_BM          100 
+#define PERM_BM          100
 #define PERM_CLOAK       255
 #define PERM_SYSOP       255
 

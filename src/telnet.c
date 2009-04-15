@@ -87,7 +87,7 @@ tty_read(unsigned char *buf, size_t max)
 	unsigned char *buf2 = buf;
 	size_t i = 0, i2 = 0;
 
-	/* prescan. because IAC is rare, 
+	/* prescan. because IAC is rare,
 	 * this cost is worthy. */
 	if (iac_state == IAC_NONE && memchr(buf, IAC, l) == NULL)
 	    return l;
@@ -110,8 +110,8 @@ extern unsigned char fakeEscape;
 /* input:  raw character
  * output: telnet command if c was handled, otherwise zero.
  */
-unsigned int 
-telnet_handler(unsigned char c) 
+unsigned int
+telnet_handler(unsigned char c)
 {
     static unsigned char iac_quote = 0; /* as byte to reduce memory */
     static unsigned char iac_opt_req = 0;
@@ -239,14 +239,14 @@ telnet_handler(unsigned char c)
 	    iac_state = IAC_NONE;
 	    /*
 	     * According to RFC, there're some tricky steps to prevent loop.
-	     * However because we have a poor term which does not allow 
+	     * However because we have a poor term which does not allow
 	     * most abilities, let's be a strong boss here.
 	     *
 	     * Although my old imeplementation worked, it's even better to follow this:
 	     * http://www.tcpipguide.com/free/t_TelnetOptionsandOptionNegotiation-3.htm
 	     */
 	    switch(c) {
-		/* i-dont-care: i don't care about what client is. 
+		/* i-dont-care: i don't care about what client is.
 		 * these should be clamed in init and
 		 * client must follow me. */
 		case TELOPT_TTYPE:	/* termtype or line. */
@@ -276,10 +276,10 @@ telnet_handler(unsigned char c)
 	case IAC_WAIT_SE:
 	    iac_buf[iac_buflen++] = c;
 	    /* no need to convert state because previous quoting will do. */
-		    
+
 	    if(iac_buflen == TELNET_IAC_MAXLEN) {
 		/* may be broken protocol?
-		 * whether finished or not, break for safety 
+		 * whether finished or not, break for safety
 		 * or user may be frozen.
 		 */
 		iac_state = IAC_NONE;
@@ -338,4 +338,4 @@ telnet_handler(unsigned char c)
     return 1; /* never reached */
 }
 
-// vim: sw=4 
+// vim: sw=4

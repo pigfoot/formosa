@@ -1,4 +1,4 @@
-/* 
+/*
  * Li-te Huang, lthuang@cc.nsysu.edu.tw, 03/09/98
  * Last updated: 06/02/98
  */
@@ -78,7 +78,7 @@ static void talk_request(int s)
 {
 #if	defined(LINUX) || defined(SOLARIS)
 	/*
-	 * Reset signal handler for SIGUSR1, when signal received, 
+	 * Reset signal handler for SIGUSR1, when signal received,
 	 * some OS set the handler to default, SIG_DFL. The SIG_DFL
 	 * usually is terminating the process. So, when user was paged
 	 * twice, he will be terminated.
@@ -95,17 +95,17 @@ static void msq_request(int s)
 	static char bigbuf[1024];
 	static int len;
 	static MSQ tmp;
-	
+
 	len = 0;
 	while (msq_rcv(cutmp, &tmp) == 0)
 	{
 		/* overwrite the previous when queue is full */
 		if (msq_last != -1 && (msq_last + 1) % LOCAL_MAX_MSQ == msq_first)
-			msq_first = (msq_first + 1) % LOCAL_MAX_MSQ;		
-		
+			msq_first = (msq_first + 1) % LOCAL_MAX_MSQ;
+
 		msq_last = (msq_last + 1) % LOCAL_MAX_MSQ;
 		memcpy(&(allmsqs[msq_last]), &tmp, sizeof(tmp));
-	
+
 		msq_tostr(&(allmsqs[msq_last]), genbuf);
 		strcpy(bigbuf + len, genbuf);
 		len += strlen(genbuf);
@@ -115,7 +115,7 @@ static void msq_request(int s)
 	if (len > 0)
 	{
 		int fd;
-		
+
 		if ((fd = open(ufile_write, O_WRONLY | O_CREAT | O_APPEND, 0600)) > 0)
 		{
 			lseek(fd, 0, SEEK_END);
@@ -126,14 +126,14 @@ static void msq_request(int s)
 /*
 for speed-up, not use lock-file append
 		append_record(ufile_write, bigbuf, len);
-*/		
+*/
 	}
 
 #if	defined(LINUX) || defined(SOLARIS)
 	signal(SIGUSR2, msq_request);
 #endif
 	warn_bell();
-		
+
 	msqrequest = TRUE;
 }
 
@@ -179,17 +179,17 @@ static void user_init()
 
 	ReadRC_Expire();
 
-	/* 
-	 * If user multi-login, 
+	/*
+	 * If user multi-login,
 	 * we should not remove the exist message. by lthuang
 	 */
 	if (multi_logins < 2)
 		unlink(ufile_write);
 	/*
-	 * Some user complain that there were some mail mark deleted in 
+	 * Some user complain that there were some mail mark deleted in
 	 * their mail box for a long time. In fact, they do not logout
 	 * in proper way, so result in this situation. We do this checking
-	 * for force-packing their mail box. by lthuang 
+	 * for force-packing their mail box. by lthuang
 	 */
 	if ((curuser.numlogins % 7) == 0)
 		pack_article(ufile_mail);
@@ -205,7 +205,7 @@ static void user_init()
 			curuser.pager = PAGER_FRIEND;
 	}
 
-	/* old PICTURE_FLAG is [1]:0x01 */ 
+	/* old PICTURE_FLAG is [1]:0x01 */
 	if (curuser.flags[1] & 0x01)
 	{
 		curuser.flags[0] |= PICTURE_FLAG;
@@ -248,7 +248,7 @@ static void user_init()
                 strcpy(curuser.fakeuserid, curuser.userid);
         }
 #endif
-	
+
 #if 0
 	{
 		FILE *fp;
@@ -297,7 +297,7 @@ static void new_register(USEREC *nu)
 	int attempt = 0;
 
 	int fd;
-		
+
 	clear();
 
 	if ((fd = open(NEWID_HELP, O_RDONLY)) > 0)
@@ -439,7 +439,7 @@ static void login_query()
 			if ((ptr = strrchr(genbuf, ':')) != NULL)
 			{
 				char *p;
-				
+
 				if ((p = strrchr(genbuf, '\n')) != NULL)
 					*p = '\0';
 				prints(_msg_formosa_15, ++ptr);
@@ -623,7 +623,7 @@ void Formosa(char *host, char *term, int argc, char **argv)
 	signal(SIGBUS, abort_bbs);
 #ifdef SYSV
 	signal(SIGSYS, abort_bbs);
-#endif	
+#endif
 	signal(SIGTERM, abort_bbs);
 	signal(SIGCHLD, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
@@ -654,21 +654,21 @@ void Formosa(char *host, char *term, int argc, char **argv)
 	signal(SIGALRM, saybyebye);
 	alarm(120);
 
-	/* default language is 'chinese' */	
-	lang_init(LANG_CHINESE);	
-	xstrncpy(myfromhost, (host ? host : "local"), sizeof(myfromhost));	
+	/* default language is 'chinese' */
+	lang_init(LANG_CHINESE);
+	xstrncpy(myfromhost, (host ? host : "local"), sizeof(myfromhost));
 	login_query();
 	/* multi-language message supported */
 	lang_init(curuser.lang);
-	
+
 	/* stop timeout alarm */
 	signal(SIGALRM, SIG_IGN);
 	alarm(0);
-	
+
 #if 0		/* !!! TEST !!! */
 	/* start normal alarm */
 	init_alarm();
-#endif	
+#endif
 
 	/* TODO: write 'bbsd: userid from' to /proc/<pid>/psinfo, argv */
 
@@ -696,13 +696,13 @@ void Formosa(char *host, char *term, int argc, char **argv)
 	}
 
 	/* welcome banner */
-	more(WELCOME0, TRUE);	
+	more(WELCOME0, TRUE);
 	/* Announce banner */
 	Announce();
 
 	if (!(curuser.flags[0] & NOTE_FLAG))	/* wnlee */
 		x_viewnote();
-		
+
 	/* new user guide */
 	if (curuser.userlevel <= 3)
 		more(NEWGUIDE, TRUE);

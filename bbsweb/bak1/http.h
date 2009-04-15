@@ -1,9 +1,9 @@
 #include <time.h>
 #include "bbs.h"
 
-/* 
+/*
 	define HTTP Status-Line
-	
+
  1xx: Informational - Request received, continuing process
  2xx: Success - The action was successfully received, understood, and accepted
  3xx: Redirection - Further action must be taken in order to complete the request
@@ -29,7 +29,7 @@
 #define URI_LEN						512					/* Bytes */
 #define PROTO_LEN					32					/* Bytes */
 
-typedef struct 
+typedef struct
 {
 /* == Client private data  == */
 	int URLParaType;
@@ -63,11 +63,11 @@ typedef struct
 
 
 enum http_request_method
-{ 
+{
 	GET, POST, HEAD, CERTILOG, UNKNOW
 };
 
-typedef struct 
+typedef struct
 {
 	char *method;
 } HTTP_REQUEST;
@@ -86,7 +86,7 @@ typedef struct
 }HTTP_HEADER;
 
 
-typedef struct 
+typedef struct
 {
 	char *ext;
 	char *type;
@@ -95,12 +95,12 @@ typedef struct
 
 enum http_respond_type
 {
-	OK 						, 
-	MOVED_PERMANENTLY	 	, 
-	NOT_MODIFIED 			, 
-	BAD_REQUEST 			, 
-	AUTHORIZATION_REQUIRED 	, 
+	OK 						,
+	MOVED_PERMANENTLY	 	,
+	NOT_MODIFIED 			,
+	BAD_REQUEST 			,
+	AUTHORIZATION_REQUIRED 	,
 	FORBIDDEN				,
-	FILE_NOT_FOUND 			, 
-	METHOD_NOT_IMPLEMENTED 	
+	FILE_NOT_FOUND 			,
+	METHOD_NOT_IMPLEMENTED
 };

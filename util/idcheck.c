@@ -23,22 +23,22 @@ char *file1, *file2, *file3;
 {
 /*
 	char gbuf[128];
-*/	
+*/
 
 	if (mycp(file1, file2) == -1)
 		return -1;
-/*		
-#ifdef NSYSUBBS		
+/*
+#ifdef NSYSUBBS
 	sprintf(gbuf, "%s -e %s \"%s\"", BIN_PGP, file2, PUBLIC_KEY);
-#ifdef DEBUG	
+#ifdef DEBUG
 	dprintf(3, ("file: %s\n", file2));
 	dprintf(2, ("command: %s\n", gbuf));
-#endif	
+#endif
 	system(gbuf);
 	sprintf(gbuf, "%s.pgp", file2);
-#ifdef DEBUG	
+#ifdef DEBUG
 	dprintf(2, ("pgp: %s\n", gbuf));
-#endif	
+#endif
 	if (isfile(gbuf))
 	{
 		if (rename(gbuf, file3) == 0)
@@ -47,11 +47,11 @@ char *file1, *file2, *file3;
 			return 0;
 		}
 	}
-#endif	
+#endif
 */
 #ifdef DEBUG
 	dprintf(2, ("nopgp: %s\n", file2));
-#endif	
+#endif
 	if (rename(file2, file3) == -1)
 	{
 		unlink(file2);
@@ -70,7 +70,7 @@ char cond;
 
 	if (get_passwd(&usr, name) > 0)
 	{
-#ifdef DEBUG	
+#ifdef DEBUG
 		dprintf(2, ("user: %s", usr.userid));
 #endif
 		usr.ident = cond;
@@ -145,27 +145,27 @@ char *stamp_fn;
 int
 del_cmp_file(userid, subject)	/* wnlee */
 char *userid, *subject;
-{	
+{
 	FILEHEADER fh;
 	char fname[PATHLEN];
 	int fd;
 	FILE *fpw;
-	
+
 	sprintf(fname, "ID/%s", DIR_REC);
 	if ((fd = open(fname, O_RDONLY)) < 0 )
 	{
-#ifdef DEBUG	
+#ifdef DEBUG
 		printf("cannot open: ", fname);
-#endif		
+#endif
 		return -1;
 	}
 	flock(fd, LOCK_EX);
 	sprintf(fname, "log/ident_cheat.log");
 	if( (fpw = fopen(fname, "a+")) ==NULL)
 	{
-#ifdef DEBUG	
-		printf("cannot write log: %s\n", fname);	
-#endif		
+#ifdef DEBUG
+		printf("cannot write log: %s\n", fname);
+#endif
 		return -1;
 	}
 	while( read(fd, &fh, sizeof(fh)) == sizeof(fh) )
@@ -197,9 +197,9 @@ char *subject;
 
 #ifdef DEBUG
 	dprintf(1, ("=> process_ident: %s\n", subject));
-#endif	
+#endif
 	append_file(PATH_IDENTLOG, filename);
-	
+
 	if ((tmp = strchr(subject, '(')) == NULL)
 		return -1;
 	tmp++;
@@ -218,10 +218,10 @@ char *subject;
 	stamp_fn[i] = '\0';
 	if (*tmp == '\0')
 		return -1;
-	
+
 #ifdef DEBUG
 	dprintf(3, ("\n=> stamp_fn: %s, userid: %s", stamp_fn, userid));
-#endif	
+#endif
 
 	sprintf(srcfile, "%s/%s", BBSPATH_IDENT, stamp_fn);
 	if ((fps = fopen(srcfile, "r")) == NULL)
@@ -246,23 +246,23 @@ char *subject;
 	while (*tmp && *tmp != ')')
 		realuserid[i++] = *tmp++;
 	realuserid[i] = '\0';
-	
+
 #ifdef DEBUG
 	dprintf(2, ("\n=> realuserid: [%s]", realuserid));
-#endif	
+#endif
 	if (strcmp(realuserid, userid))
 	{
 		del_cmp_file(userid, subject);	/* wnlee */
 		return -1;
 	}
 
-	sethomefile(buf, userid, UFNAME_IDENT);	
+	sethomefile(buf, userid, UFNAME_IDENT);
 	if (append_file(buf, filename) == -1)
 		return -1;
 
 #ifdef DEBUG
-	dprintf(2, ("\n=> a_ok "));	
-#endif	
+	dprintf(2, ("\n=> a_ok "));
+#endif
 	a_ok(userid, 7);
 
 	sprintf(destfile, "%s/%s", BBSPATH_REALUSER, userid);
@@ -270,38 +270,38 @@ char *subject;
 
 #ifdef DEBUG
 	dprintf(4, ("=> do_article\n"));
-#endif	
+#endif
 	do_article(srcfile, destfile, userid, title);
-	
+
 	sprintf(buf, "tmp/%sPGP", userid);
-#ifdef DEBUG	
+#ifdef DEBUG
 	dprintf(3, ("=> a_encode\n"));
-#endif	
+#endif
 	a_encode(srcfile, buf, destfile);
 
 #ifdef DEBUG
 	dprintf(4, ("=> del_ident_article [%s]\n", stamp_fn));
-#endif	
+#endif
 	del_ident_article(stamp_fn);
 
 	strcpy(buf, "tmp/idented");
 	if ((fps = fopen(buf, "w")) != NULL)
 	{
 		char title[] = "[通知] 您已通過本站身份認證！";
-		
+
 		write_article_header(fps, "SYSOP", "系統管理者", NULL, NULL, title, NULL);
 		fclose(fps);
 
 		append_file(buf, IDENTED);
 
-		/* mail to user to infor that he has been idented in our bbs */	
+		/* mail to user to infor that he has been idented in our bbs */
 		if (SendMail(-1, buf, "SYSOP", userid, title, 7) < 0)
 		{
-/*		
+/*
 			bbslog("ERROR", "idcheck: SendMail fail for idented notify!\n");
-*/			
-		}			
-		
+*/
+		}
+
 		unlink(buf);
 	}
 
@@ -316,7 +316,7 @@ char *subject;
  *  2) 如果是 Base64 編碼的，就一次讀 4個字元，合成一個 unsigned long
  *     在依照 base64 的規則，切成 3 個char output出去。
  **********************************************************************/
- 
+
 int
 get_subject(char *dst, char *buf, FILE *fp) /* wnlee */
 {
@@ -327,11 +327,11 @@ get_subject(char *dst, char *buf, FILE *fp) /* wnlee */
 		/* 有時 qp encoded , 會變成 subject:\n subject_content ,so 換行以取得 subject_content */
 #ifdef DEBUG
 		dprintf(1, ("buf:[%s]\n", buf));
-#endif		
+#endif
 		fgets(buf, 1024, fp);
-#ifdef DEBUG		
+#ifdef DEBUG
 		dprintf(1, ("buf:[%s]\n", buf));
-#endif		
+#endif
 	}
 
 	if( strstr(buf, "?Q?") != NULL )
@@ -347,23 +347,23 @@ get_subject(char *dst, char *buf, FILE *fp) /* wnlee */
 			strncat(dst, ptr+3, strlen(ptr+3));
 #ifdef DEBUG
 			dprintf(1, ("dst is %s\n", dst) );
-#endif			
+#endif
 			fgets(buf, 1024, fp);
 			if( strstr(buf, "?Q?") == NULL )
 			{
 #ifdef DEBUG
 				dprintf(1, ("字串中無 ?Q? .... 跳出\n") );
-#endif				
+#endif
 				break;
 			}
-		}	
+		}
 		/* step2 : decode the encoded string */
 
 		qp_decode_str(dst);
 		strcat(dst, "\n");
 #ifdef DEBUG
 		dprintf(1, ("dst decoded is %s\n", dst) );
-#endif		
+#endif
 		return 1;
 	}
 	else if( strstr(buf, "?B?") != NULL)
@@ -379,16 +379,16 @@ get_subject(char *dst, char *buf, FILE *fp) /* wnlee */
 			strncat(dst, ptr+3, strlen(ptr+3));
 #ifdef DEBUG
 			dprintf(1, ("dst is %s\n", dst) );
-#endif			
+#endif
 			fgets(buf, 1024, fp);
 			if( strstr(buf, "?B?") == NULL )
 			{
-#ifdef DEBUG			
+#ifdef DEBUG
 				dprintf(1, ("字串中無 ?B? .... 跳出\n") );
-#endif				
+#endif
 				break;
-			}				
-		}		
+			}
+		}
 		/* step2: 解開編碼字串 */
 		base64_decode_str(dst)	;
 		strcat(dst, "\n");
@@ -413,7 +413,7 @@ char *argv[];
 	char from[512] = "\0", dot_from[512] = "\0", subject[256] = "\0";
 	short invalid = FALSE, in_header = FALSE, first_line = TRUE;
 	long content_length = 0L, mail_size = 0L, mail_start = 0L, line_size = 0L;
-	time_t now;	
+	time_t now;
 
 #ifdef DEBUG
 	if (argc > 1)
@@ -425,15 +425,15 @@ char *argv[];
 		fprintf(stderr, "cannot chdir: %s\n", HOMEBBS);
 		exit(1);
 	}
-	time(&now);	
-	sprintf(fn_idcktmp, "%s.%d", IDC_TMP, (int)now);	
-	strcpy(fn_idckori, "/var/spool/mail/syscheck");	
+	time(&now);
+	sprintf(fn_idcktmp, "%s.%d", IDC_TMP, (int)now);
+	strcpy(fn_idckori, "/var/spool/mail/syscheck");
 	if (myrename(fn_idckori, fn_idcktmp) == -1)
 	{
 		strcpy(fn_idckori, "/var/mail/syscheck");
 		if (!isfile(fn_idckori))
 			exit(0);
-		if (myrename(fn_idckori, fn_idcktmp) == -1)	
+		if (myrename(fn_idckori, fn_idcktmp) == -1)
 		{
 			fprintf(stderr, "\ncannot rename %s to %s\n", fn_idckori, fn_idcktmp);
 			exit(2);
@@ -442,7 +442,7 @@ char *argv[];
 	chown(fn_idcktmp, BBS_UID, BBS_GID);
 
 	init_bbsenv();
-	
+
 	if ((fpr = fopen(fn_idcktmp, "r")) == NULL)
 	{
 		fprintf(stderr, "\ncannot open file: %s\n", fn_idcktmp);
@@ -473,7 +473,7 @@ char *argv[];
 			{
 #ifdef DEBUG
 				dprintf(1, ("subject is : [%s]" , buf) );
-#endif				
+#endif
 				get_subject(subject, buf, fpr);	/* wnlee:to suit encoded subject */
 			}
 		}
@@ -483,27 +483,27 @@ char *argv[];
 			{
 				if (from[0])
 				{
-#ifdef DEBUG				
+#ifdef DEBUG
 					dprintf(1, ("\n=> [%d] From %s", ++number, from));
 					dprintf(1, ("=> From: %s", dot_from));
 					dprintf(1, ("=> Subject: %s", subject));
 					dprintf(1, ("=> Mail_Start: %d\n", mail_start));
-					dprintf(1, ("=> Mail-Size: %d\n", mail_size));	
+					dprintf(1, ("=> Mail-Size: %d\n", mail_size));
 					dprintf(1, ("=> Content-Length: %d\n\n", content_length));
-#endif					
+#endif
 					if (!invalid)
 					{
 					if ((fdw = open(IDC_MAIL, O_WRONLY | O_CREAT| O_TRUNC, 0600)) > 0)
 					{
 						size_t r_cc = mail_size, w_cc = mail_size - content_length;
 						size_t r_size, w_size;
-						
-												
+
+
 						fseek(fpr, mail_start, SEEK_SET);
-						
+
 						while (r_cc > 0)
 						{
-							r_size = MIN(r_cc, sizeof(buf));	
+							r_size = MIN(r_cc, sizeof(buf));
 							if (read(fileno(fpr), buf, r_size) != r_size)
 							{
 								printf("\nerror: r_size");
@@ -518,22 +518,22 @@ char *argv[];
 							}
 							w_cc -= w_size;
 						}
-						fgets(buf, sizeof(buf), fpr);						
+						fgets(buf, sizeof(buf), fpr);
 						close(fdw);
-												
+
 						process_ident(IDC_MAIL, subject);
-						
+
 						unlink(IDC_MAIL);
 					}	/* if (open) */
 					}
-					
+
 					if (!strncasecmp("MAILER-DAEMON", from, 13)
 					    || strstr(from, "postmaster")
 					    || ((ptr = strchr(from, '.')) && strchr(ptr, '@')))
 					{
-#ifdef DEBUG					
+#ifdef DEBUG
 						dprintf(1, ("=> Invalid From %s\n", from));
-#endif						
+#endif
 						invalid = TRUE;
 					}
 					else
@@ -548,7 +548,7 @@ char *argv[];
 				dot_from[0] = '\0';
 				subject[0] = '\0';
 				content_length = 0;
-				
+
 				in_header = TRUE;
 			}
 			else
@@ -563,6 +563,6 @@ char *argv[];
 	fclose(fpr);
 
 	unlink(fn_idcktmp);
-	
+
 	return 0;
 }

@@ -7,7 +7,7 @@ char **argv;
 {
     long size, entry;
     if (argc > 1) {
-       entry = atol(argv[1]); 
+       entry = atol(argv[1]);
     } else {
        entry = 100000;
     }

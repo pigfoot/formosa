@@ -13,7 +13,7 @@ extern HTML_SHM *html_shm;
  *	如果是圖形或是其他類型檔案直接送出
  *	如果是 HTML 形式檔案則分析出 tag 將其代入適當的資料
  *******************************************************************/
-int 
+int
 ShowFile(SKIN_FILE * sf)
 {
 	FILE *fp;
@@ -125,7 +125,7 @@ ShowFile(SKIN_FILE * sf)
  *
  *	佈告區 & 精華區 & 信件 通用
  *******************************************************************/
-int 
+int
 GetPostInfo(BOARDHEADER * board, POST_FILE * pf)
 {
 	int fd;
@@ -217,7 +217,7 @@ GetPostInfo(BOARDHEADER * board, POST_FILE * pf)
 			}
 
 			pf->num--;
-/*                      
+/*
    bug fixed as follows in 64-bit OS
    lseek(fd, -(FH_SIZE*2), SEEK_CUR);
  */
@@ -354,7 +354,7 @@ GetPostInfo(BOARDHEADER * board, POST_FILE * pf)
 	while (1)
 	{
 /*
-   bug fixed as follows in 64-bit OS    
+   bug fixed as follows in 64-bit OS
  */
 		if (lseek(fd, -((off_t) (FH_SIZE * 2)), SEEK_CUR) == -1)
 		{
@@ -462,13 +462,13 @@ GetPostInfo(BOARDHEADER * board, POST_FILE * pf)
 
 /*******************************************************************
  *	Get (skin) file info
- *	
+ *
  *	get file size, modify time
- *	determine MIME type & file exipre 
+ *	determine MIME type & file exipre
  *
  *	return: none
  *******************************************************************/
-BOOL 
+BOOL
 GetFileInfo(SKIN_FILE * sf)
 {
 	struct stat fstat;
@@ -493,9 +493,9 @@ GetFileInfo(SKIN_FILE * sf)
 
 /*******************************************************************
  *	Get file mime type
- *	
+ *
  *******************************************************************/
-int 
+int
 GetFileMimeType(char *filename)
 {
 	char *p;
@@ -511,11 +511,11 @@ GetFileMimeType(char *filename)
 
 
 /*******************************************************************
- *	Set file expire 
- *	
+ *	Set file expire
+ *
  *	call after mime_type set
  *******************************************************************/
-void 
+void
 SetExpire(SKIN_FILE * sf)
 {
 	sf->expire = TRUE;	/* default exipre all */

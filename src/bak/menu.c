@@ -9,7 +9,7 @@ extern struct commands MainMenu[];
 /*******************************************************************
  * Admin Menu
  *******************************************************************/
-extern int adminMaintainUser(), adminCreateBoard(), adminMaintainBoard(), 
+extern int adminMaintainUser(), adminCreateBoard(), adminMaintainBoard(),
 	adminEditConf(), adminListUsers(), adminBroadcast(), adminMailBm();
 
 #ifdef USE_DELUSER
@@ -36,22 +36,22 @@ struct commands AdminMenu[] =
 	'm', PERM_SYSOP, NULL, adminMaintainBoard, ADMIN, "Modify Board", "§ó§ï/§R°£/¾ã²z¬ÝªO³]©w",
 	'e', PERM_SYSOP, NULL, adminEditConf, ADMIN, "Edit Config", "½s¿è³]©wÀÉ®×",
     'u', PERM_SYSOP, NULL, adminListUsers, LAUSERS, "List All Users", "¦C¥X©Ò¦³¨Ï¥ÎªÌ",
-#if 0    
+#if 0
 	'k', PERM_SYSOP, NULL, adminKickUser, ADMIN, "Kick User", "±N½u¤W¨Ï¥ÎªÌÂ_½u",
-#endif	
+#endif
 	'a', PERM_SYSOP, NULL, adminBroadcast, SENDMSG, "BroadCast", "¥þ¯¸¼s¼½",
 	'b', PERM_SYSOP, NULL, adminMailBm, SMAIL, "Mail to all BMs", "±H«Hµ¹©Ò¦³ªO¥D",
 #ifdef NSYSUBBS1
 	'c', PERM_SYSOP, NULL, adminCancelUser, ADMIN, "Cancel User", "°±¥Î¨Ï¥ÎªÌ±b¸¹",
-#endif	
+#endif
 #ifndef NSYSUBBS
 	's', PERM_SYSOP, NULL, adminSyscheck, ADMIN, "Manually Check Ident", "¤â°Ê¨­¥÷»{ÃÒ",
-#endif	
+#endif
 #ifdef ANIMEBBS
 	'a', PERM_SYSOP, MainMenu, NULL, ADMIN, "Admin Menu", "¯«©x±K·µ",
 #else
 	'a', PERM_SYSOP, MainMenu, NULL, ADMIN, "Admin Menu", "ºÞ²zªÌ¿ì¤½«Ç",
-#endif	
+#endif
 	0, PERM_SYSOP, NULL, NULL, 0, NULL, NULL
 };
 
@@ -83,7 +83,7 @@ struct commands XyzMenu[] =
 	'x', 0, MainMenu, NULL, XMENU, "Xyz Menu", "¤u¨ãµó",
 #else
 	'x', 0, MainMenu, NULL, XMENU, "Xyz Menu", "­Ó¤H¸ê®ÆºûÅ@¤u¨ã½c",
-#endif	
+#endif
 	0, 0, NULL, NULL, 0, NULL, NULL
 };
 
@@ -103,7 +103,7 @@ struct commands MailMenu[] =
 	'm', 0, MainMenu, NULL, MAIL, "Mail Menu", "³½¶­©¹ªð«F",
 #else
 	'm', 0, MainMenu, NULL, MAIL, "Mail Menu", "­Ó¤H«H½c",
-#endif	
+#endif
 	0, 0, NULL, NULL, 0, NULL, NULL
 };
 
@@ -206,7 +206,7 @@ menu_title()
 			unsigned char chs;
 			static long randomseed = 1;
 
-			/*  
+			/*
 			 * This is a simple linear congruential random number
 			 * generator.  Hence, it is a bad random number
 			 * generator, but good enough for most randomized
@@ -224,7 +224,7 @@ menu_title()
 			prints("¡m´£¨Ñ¡n%s ", msshm->list[pict_no].owner);
 			j = 2;
 			move(j, 0);
-/*                      
+/*
  * prints("[7m¡m§@ªÌ¡n%35.35s  ¡m¼ÐÃD¡n%27.27s[m",
  * msshm->list[pict_no].owner, msshm->list[pict_no].title);
  */
@@ -240,7 +240,7 @@ menu_title()
 				else
 					break;
 			}
-			/* 
+			/*
 			 * Direct output the content in shared memory,
 			 * for better performance. by lthuang
 			 */
@@ -252,8 +252,8 @@ menu_title()
 
 			redraw = FALSE;
 		}
-/*              
- * move(b_line, 0); 
+/*
+ * move(b_line, 0);
  */
 	}
 #endif /* USE_MENUSHOW */

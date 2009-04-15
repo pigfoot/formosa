@@ -9,7 +9,7 @@ char *argv[];
 	int fd;
 	char obname[BNAMELEN], bname[BNAMELEN];
 	BOARDHEADER bh;
-	
+
 #if 0
 	if (argc != 3)
 	{
@@ -18,8 +18,8 @@ char *argv[];
 	}
 	xstrncpy(obname, argv[1], sizeof(obname));
 	xstrncpy(bname, argv[2], sizeof(bname));
-#endif	
-	
+#endif
+
 	init_bbsenv();
 	if ((fd = open(BOARDS, O_RDWR, 0644)) < 0)
 	{
@@ -27,7 +27,7 @@ char *argv[];
 		exit(2);
 	}
 
-	flock(fd, LOCK_EX);	
+	flock(fd, LOCK_EX);
 	while (read(fd, &bh, sizeof(BOARDHEADER)) == BH_SIZE)
 	{
 		printf("[%s] [%d] [%d]\n", bh.filename, bh.ctime, sizeof(BOARDHEADER));
@@ -41,12 +41,12 @@ char *argv[];
 		}
 		if (write(fd, &bh, BH_SIZE) != BH_SIZE)
 		{
-			flock(fd, LOCK_UN);		
+			flock(fd, LOCK_UN);
 			close(fd);
-			perror("write");			
+			perror("write");
 			return -1;
 		}
 	}
 	close(fd);
-	rebuild_brdshm();	
+	rebuild_brdshm();
 }

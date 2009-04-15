@@ -23,7 +23,7 @@
 
 #ifndef HIS_MAINT
 # define HIS_MAINT
-# define HIS_MAINT_HOUR 5 
+# define HIS_MAINT_HOUR 5
 # define HIS_MAINT_MIN  30
 #endif
 
@@ -52,7 +52,7 @@ channelcreate(client)
 ClientType *client;
 {
   buffer_t *in, *out;
-  in = &client->in; 
+  in = &client->in;
   out = &client->out;
   if (in->data != NULL)
     free(in->data);
@@ -92,7 +92,7 @@ ClientType *client;
 #if !defined(PowerBBS) && !defined(DBZSERVER)
    if (client->ihavecount >0 || client->statcount >0) {
      bbslog("%s@%s rec: %d dup: %d fail: %d size: %d, stat rec: %d fail: %d, time sec: %d\n",
-    client->username, client->hostname, client->ihavecount, 
+    client->username, client->hostname, client->ihavecount,
     client->ihaveduplicate, client->ihavefail, client->ihavesize,
     client->statcount, client->statfail, time(NULL) - client->begin);
     INNBBSD_STAT.ihavecount += client->ihavecount;
@@ -110,8 +110,8 @@ char *port, *path;
 {
      time_t tvec;
      int i;
-     int bbsinnd ; 
-     int localbbsinnd; 
+     int bbsinnd ;
+     int localbbsinnd;
      char obuf[4096];
      struct timeval tout;
      ClientType *client = (ClientType *)mymalloc( sizeof(ClientType) * Maxclient);
@@ -131,7 +131,7 @@ char *port, *path;
      if (localbbsinnd < 0) {
 	perror("local pmain, existing");
 	if (!inetdstart)
-	  fprintf(stderr, "if no other innbbsd running, try to remove %s\n",path); 
+	  fprintf(stderr, "if no other innbbsd running, try to remove %s\n",path);
         close(bbsinnd);
 	return(-1);
      } else {
@@ -142,7 +142,7 @@ char *port, *path;
      FD_SET(bbsinnd,&rfd);
      tvec = time((time_t *)0);
      for (i=0;i< Maxclient ;++i) {
-	 client[i].fd = -1; 
+	 client[i].fd = -1;
 	 client[i].access=0;
 	 client[i].buffer[0] = '\0';
 	 client[i].mode = 0;
@@ -174,7 +174,7 @@ char *port, *path;
 
 	time(&now);
 	local = localtime(&now);
-	if (local != NULL & local->tm_hour == His_Maint_Hour && 
+	if (local != NULL & local->tm_hour == His_Maint_Hour &&
 	    local->tm_min  >= His_Maint_Min ) {
            if (!maint) {
 	     bbslog(":Maint: start (%d:%d).\n",local->tm_hour,local->tm_min);
@@ -280,7 +280,7 @@ char *port, *path;
 	        client[i].Argv.out =  fdopen( ns,"w");
                 if ((char*)search_nodelist(client[i].hostname,client[i].username) == NULL) {
 		  bbslog(":Err: invalid connection (%s@%s).\n",client[i].username, client[i].hostname);
-		  fprintf(client[i].Argv.out,"502 You are not in my access file. (%s@%s)\r\n", client[i].username, client[i].hostname);   
+		  fprintf(client[i].Argv.out,"502 You are not in my access file. (%s@%s)\r\n", client[i].username, client[i].hostname);
 		  fflush(client[i].Argv.out);
 		  fclose(client[i].Argv.in);
 		  fclose(client[i].Argv.out);
@@ -291,7 +291,7 @@ char *port, *path;
 		}
 		bbslog("connected from (%s@%s).\n",client[i].username, client[i].hostname);
 		if (isPause()) {
-		  fprintf(client[i].Argv.out,"400 Server Paused. (%s@%s)\r\n", client[i].username, client[i].hostname);   
+		  fprintf(client[i].Argv.out,"400 Server Paused. (%s@%s)\r\n", client[i].username, client[i].hostname);
 		  fflush(client[i].Argv.out);
 		  fclose(client[i].Argv.in);
 		  fclose(client[i].Argv.out);
@@ -354,16 +354,16 @@ ClientType *client;
 {
    int len, clientlen;
    char buffer1[8192], buffer2[4096];
-   char *ptr; 
+   char *ptr;
    buffer_t *in = &client->in;
 
    if (in->left < ReadSize+3) {
       int need = in->used + in->left + ReadSize + 3;
       need += need/5 ;
-      in->data = (char*)myrealloc(in->data, need); 
+      in->data = (char*)myrealloc(in->data, need);
       in->left = need - in->used;
       verboselog("channelreader realloc %d\n",need);
-   } 
+   }
    len = read(client->fd, in->data+in->used, ReadSize);
 
    if (len <=0) return len;
@@ -381,7 +381,7 @@ ClientType *client;
      if ( (ptr=(char*)strchr(in->data,'\n')) != NULL) {
       if (in->data[0] != '\r')
         commandparse(client);
-     } 
+     }
    } else {
      commandparse(client);
    }
@@ -440,7 +440,7 @@ ClientType *client;
      }
      if (client->mode == 0) {
         struct Daemoncmd * dp;
-        Argv->argc = 0, Argv->argv = NULL, 
+        Argv->argc = 0, Argv->argv = NULL,
 	Argv->inputline= buffer;
         if ( ptr != NULL) *ptr = '\0';
 	verboselog("Get: %s\n",Argv->inputline);
@@ -589,8 +589,8 @@ char **argv;
     initial_lang();
 #endif
 
-    port = DefaultINNBBSPort;   
-    path = LOCALDAEMON;   
+    port = DefaultINNBBSPort;
+    path = LOCALDAEMON;
     Junkhistory = 0;
 
     time(&INNBBSDstartup);
@@ -616,7 +616,7 @@ char **argv;
        int rel;
        if ((rel=getsockname(0,(struct sockaddr *)&there,&len))< 0){
 	  fprintf(stdout,"You must run -i from inetd with inetd.conf line: \n");
-	  fprintf(stdout,"service-port stream  tcp wait  bbs  /home/bbs/innbbsd innbbsd -i port\n"); 
+	  fprintf(stdout,"service-port stream  tcp wait  bbs  /home/bbs/innbbsd innbbsd -i port\n");
 	  fflush(stdout);
 	  exit(5);
        }
@@ -634,7 +634,7 @@ char **argv;
       case 'h':
       case '?':
       default:
-        errflag ++;	
+        errflag ++;
       }
     if (errflag > 0) {
        innbbsusage(argv[0]);
@@ -642,7 +642,7 @@ char **argv;
     }
     if (argc - optind >= 1) {
       port = argv[optind];
-    } 
+    }
     if (argc - optind >= 2) {
       path = argv[optind+1];
     }
@@ -652,7 +652,7 @@ char **argv;
     initial_bbs("feed");
 
     if (!inetdstart)
-      fprintf(stderr, "Try to listen in port %s and path %s\n", port, path); 
+      fprintf(stderr, "Try to listen in port %s and path %s\n", port, path);
 
     HISmaint();
     HISsetup();

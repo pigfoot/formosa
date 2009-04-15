@@ -109,10 +109,10 @@ t_chat()
 		return C_FOOT;
 
 	chatport = CHATPORT;
-#if 1	
+#if 1
 	if (chatport == 0)
 		chatport = 6177;
-#endif		
+#endif
 
 #if	defined(NSYSUBBS1)
 	getdata(1, 0, _msg_chat_1, genbuf, 2, ECHONOSP, NULL);
@@ -166,7 +166,7 @@ t_chat()
 
 	PLINE = t_lines - 1;
 	ECHATWIN = t_lines - 2;
-	
+
 	clear();
 	move(ECHATWIN, 0);
 	outs("________________________________________________________________________________");
@@ -339,7 +339,7 @@ t_chat()
 /*
 	return C_FULL;
 */
-	return C_LOAD; /* because of ReplyLastCall had destroyed hdrs */	
+	return C_LOAD; /* because of ReplyLastCall had destroyed hdrs */
 }
 
 

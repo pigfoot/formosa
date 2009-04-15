@@ -71,7 +71,7 @@ struct board_t *binfr;
  *	顯示看板資訊
  *
  *******************************************************************/
-void 
+void
 ShowBoard(char *tag, BOARDHEADER * board, POST_FILE * pf)
 {
 
@@ -133,7 +133,7 @@ ShowBoard(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	else
 	{
 		int i;
-		
+
 		for (i = 0; btype[i].attr; i++)
 		{
 			if (!strcasecmp(tag, btype[i].attr))
@@ -147,13 +147,13 @@ ShowBoard(char *tag, BOARDHEADER * board, POST_FILE * pf)
 
 
 /*******************************************************************
- *	顯示看板列表 
+ *	顯示看板列表
  *
  *	<!BBS_BoardList CLASS="" FORMAT="">
  *
  *	不分 一般區 & 精華區 , 由 FORMAT 中指定
  *******************************************************************/
-void 
+void
 ShowBoardList(char *tag, POST_FILE * pf)
 {
 #if 1				/* lthuang */
@@ -183,7 +183,7 @@ ShowBoardList(char *tag, POST_FILE * pf)
 #if 1
 	pf->list_start = 1;
 	pf->list_end = num_brds;
-#endif	
+#endif
 
 #if 0
 	{
@@ -258,7 +258,7 @@ ShowBoardList(char *tag, POST_FILE * pf)
  *	check if userid in access list
  *
  ************************************************************/
-static int 
+static int
 CheckAccessList(char *boardname, char *userid)
 {
 	int check = check_board_acl(boardname, userid);
@@ -281,7 +281,7 @@ CheckAccessList(char *boardname, char *userid)
  *	check if user can access board
  *
  ************************************************************/
-int 
+int
 CheckBoardPerm(BOARDHEADER * board, USEREC * user)
 {
 
@@ -317,7 +317,7 @@ CheckBoardPerm(BOARDHEADER * board, USEREC * user)
  *
  *	input:	FORM body, item seperate by &
  ************************************************************/
-int 
+int
 ModifyAccessList(char *pbuf, BOARDHEADER *board)
 {
 	char file[PATHLEN];
@@ -326,11 +326,11 @@ ModifyAccessList(char *pbuf, BOARDHEADER *board)
 	setboardfile(file, board->filename, ACCESS_LIST);
 
 	retval = friend_list_set(file, pbuf, "板友名單");
-#ifdef WEB_EVENT_LOG	
+#ifdef WEB_EVENT_LOG
 	if (retval == WEB_OK_REDIRECT)
 	{
-		sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
-			POST_AccessListModify, board->filename, username, 
+		sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"",
+			POST_AccessListModify, board->filename, username,
 			request_rec->user_agent);
 	}
 #endif
@@ -346,14 +346,14 @@ ModifyAccessList(char *pbuf, BOARDHEADER *board)
  *
  *	return:	TRUE on success
  ************************************************************/
-int 
+int
 ModifySkin(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	FILE *fp;
 	char *p, fname[PATHLEN], fname_bak[PATHLEN];
-/*	
+/*
 	char skin[BNAMELEN + 3];
-*/	
+*/
 
 
 	if ((p = strstr(pbuf, "CONTENT=")) == NULL || strlen(p + 8) == 0)
@@ -362,12 +362,12 @@ ModifySkin(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 		return WEB_ERROR;
 	}
 	/* skip "CONTENT=" */
-	pbuf = p + 8;	
+	pbuf = p + 8;
 
 /*
 not effect statement ?
-	GetPara2(skin, "SKIN", pbuf, sizeof(skin), "");	
-*/	
+	GetPara2(skin, "SKIN", pbuf, sizeof(skin), "");
+*/
 
 	setskinfile(fname, board->filename, pf->POST_NAME);
 	sprintf(fname_bak, "%s.bak", fname);
@@ -389,7 +389,7 @@ not effect statement ?
 	fclose(fp);
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"", 
+	sprintf(log, "%s BRD=\"%s\" BY=\"%s\" UA=\"%s\"",
 		POST_SkinModify, board->filename, username, request_rec->user_agent);
 #endif
 
@@ -404,7 +404,7 @@ not effect statement ?
  *	input:	FORM body
  *	return:	TRUE on success
  ************************************************************/
-int 
+int
 ModifyBoard(char *pbuf, BOARDHEADER * board)
 {
 	int bid, recidx;
@@ -456,7 +456,7 @@ ModifyBoard(char *pbuf, BOARDHEADER * board)
 
 #if 0
 	sprintf(WEBBBS_ERROR_MESSAGE, "bname=%s, title=%s, owner=%s, level=%d, class=%c, MAX_BRDTYPE=%d
-		< br > IDENT = %s < br > NEWS = %s < br > UNZAP = %s < br > NOPOSTNUM = %s < br > ANNOUNCE = %s < br > PRIVATE = %s < br > WEBSKIN = %s < br > WEBONLY = %s ", 
+		< br > IDENT = %s < br > NEWS = %s < br > UNZAP = %s < br > NOPOSTNUM = %s < br > ANNOUNCE = %s < br > PRIVATE = %s < br > WEBSKIN = %s < br > WEBONLY = %s ",
 		board->filename, board->title, board->owner, board->level, board->class, sizeof(board->brdtype),
 		board->brdtype & BRD_IDENT ? "YES" : "NO",
 		board->brdtype & BRD_NEWS ? "YES" : "NO",

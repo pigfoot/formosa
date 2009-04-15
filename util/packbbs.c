@@ -1,9 +1,9 @@
 /*
- * Prune the articles in the boards or mail boxs, 
+ * Prune the articles in the boards or mail boxs,
  * which were marked delete.
  *
  * written by lthuang@cc.nsysu.edu.tw
- */  
+ */
 
 
 #include "bbs.h"
@@ -66,7 +66,7 @@ char *argv[];
 	switch (mode)
 	{
 	/* pack all boards */
-	case 'a':		
+	case 'a':
 		if ((fd = open (BOARDS, O_RDONLY)) > 0)
 		{
 			while (read (fd, &bh, sizeof (bh)) == sizeof (bh))
@@ -91,7 +91,7 @@ char *argv[];
 			printf ("failed!!\r\n");
 		else
 			printf ("finished!!\r\n");
-		set_brdt_numposts(id, TRUE);	/* lthuang: 99/08/20 */			
+		set_brdt_numposts(id, TRUE);	/* lthuang: 99/08/20 */
 		break;
 	/* fix specified board */
 	case 'f':
@@ -104,7 +104,7 @@ char *argv[];
 			printf ("finished!!\r\n");
 		set_brdt_numposts(id, TRUE);
 		break;
-	/* pack user mail box */		
+	/* pack user mail box */
 	case 'm':
 		setmailfile (path, id, DIR_REC);
 		printf ("Pack mailbox '%s' ... ", id);

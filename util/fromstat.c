@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-                   
+
 #define DEBUG
 #ifdef DEBUG
 int debug = 0;
@@ -50,12 +50,12 @@ create_host_list ()
 	{
 		if (buf[0] == '#')
 			continue;
-			
+
 		p = strtok(buf, "/");
 		if (p == NULL)
 			continue;
 		new->ip.s_addr = inet_addr(p);
-		
+
 		p = strtok(NULL, " \t");
 		if (p == NULL)
 			continue;
@@ -64,7 +64,7 @@ create_host_list ()
 		for (j = 0x80000000; bits > 0; j >>= 1, bits--)
 			new->netmask.s_addr |= j;
 		new->netmask.s_addr = ntohl(new->netmask.s_addr);
-		
+
 		p = strtok(NULL, "\t\r\n");
 		if (p == NULL)
 			continue;
@@ -75,7 +75,7 @@ create_host_list ()
 		if (debug)
 		{
 			struct in_addr tmp;
-			
+
 			tmp.s_addr = new->ip.s_addr & new->netmask.s_addr;
 			printf ("ip:[%s] masked_ip:[%s] host:[%s] cnt:[%d]\n",
 				inet_ntoa(new->ip), inet_ntoa(tmp),
@@ -128,9 +128,9 @@ countuser (host)
 	if (i < MAXNODEF)
 	{
 		NList[i].ip.s_addr = ip.s_addr;
-/*		
+/*
 		NList[i].netmask.s_addr = INADDR_BROADCAST;
-*/		
+*/
 		NList[i].netmask.s_addr = ntohl(0xffffff00);
 		xstrncpy (NList[i].host, host, sizeof(NList[i].host));
 		NList[i].cnt = 1;
@@ -138,7 +138,7 @@ countuser (host)
 #ifdef DEBUG
 		if (debug)
 			printf("nodef!\n");
-#endif				
+#endif
 	}
 	nodef++;		/* 未定義 */
 }
@@ -167,15 +167,15 @@ char *argv[];
 	int i, logins;
 #ifdef NSYSUBBS3
 	int bbs3 = 0;
-#endif		
+#endif
 
-	
-#ifdef DEBUG	
+
+#ifdef DEBUG
 	if (argc == 2)
 		debug = 1;
 	else
-		debug = 0;	
-#endif		
+		debug = 0;
+#endif
 
 	init_bbsenv();
 
@@ -239,7 +239,7 @@ char *argv[];
 		fprintf (fp, "總人次: %d\n", logins);
 #ifdef NSYSUBBS3
 		fprintf (fp, "校內總人次: %d\n", bbs3);
-#endif		
+#endif
 		fclose (fp);
 	}
 	chmod (PATH_FROMSTAT_LOG, 0644);

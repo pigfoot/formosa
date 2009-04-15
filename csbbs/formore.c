@@ -39,15 +39,15 @@ int sendok;
 
 	while ((len = readln(fp, buf, sizeof(buf)-2)))
 	{			/* start send article */
-#if 1	
+#if 1
 		if (len > 0 && buf[len - 1] == '\n')
 		{
 			len--;
 			buf[len] = '\0';
 		}
-#else		
-		StrDelR(buf);		
-#endif		
+#else
+		StrDelR(buf);
+#endif
 		if (buf[0] == '.' && buf[1] == '\0')
 		{
 			buf[1] = '.';
@@ -84,7 +84,7 @@ char *arg1, *title;
 	{
 #if 0
 		char time_str[80];
-		
+
 		fprintf(fp, "From: %s.bbs@%s\n", uid, host);
 		strftime(time_str, sizeof(time_str), "Date: %a, %d %b %Y %T +0800 (CST)", localtime(&ti));
 		fprintf(fp, "%s\n", time_str);
@@ -124,18 +124,18 @@ char *arg1, *arg2;
 	chmod(filename, 0644);
 	if (arg1)
 	{
-		write_article_header(fp, curuser.userid, curuser.username, 
-			(in_mail) ? NULL : arg1, NULL, arg2, 
+		write_article_header(fp, curuser.userid, curuser.username,
+			(in_mail) ? NULL : arg1, NULL, arg2,
 			"中山大學 Formosa BBS Client");
 		fprintf(fp, "\n");
 	}
-/*	
+/*
 	if (arg1 && write_header(fp, in_mail, arg1, arg2))
 	{
 		fclose(fp);
 		return -1;
 	}
-*/	
+*/
 	RespondProtocol(OK_CMD);
 
 	while (1)

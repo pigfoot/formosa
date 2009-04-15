@@ -8,8 +8,8 @@ cnvt_readrc(ptr)
 void *ptr;
 {
 	struct readrc *rrc = (struct readrc *)ptr;
-	
-	rrc->bid = big_endian_to_little_endian(rrc->bid);		
+
+	rrc->bid = big_endian_to_little_endian(rrc->bid);
 	rrc->mtime = big_endian_to_little_endian(rrc->mtime);
 }
 

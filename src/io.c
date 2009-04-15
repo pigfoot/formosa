@@ -130,7 +130,7 @@ igetagain:
 		{
 			if (ibufsize < 0 && errno == EINTR)
 				continue;
-			exit(0);				
+			exit(0);
 		}
 		icurrchar = 0;
 	}
@@ -146,13 +146,13 @@ igetagain:
 		icurrchar++;
 		goto igetagain;
 	}
-/*	
+/*
 	else if (inbuf[icurrchar] == 0x0d)
 	{
 		icurrchar++;
 		return '\n';
 	}
-*/	
+*/
 	return inbuf[icurrchar++];
 #else
       igetagain:
@@ -161,7 +161,7 @@ igetagain:
 		int sr;
 		struct pollfd pd[2];
 		char npd;
-		
+
 #if 1	/* !! TEST !! */
 		if (dumb_term)
 			oflush();
@@ -299,7 +299,7 @@ igetagain:
 		}
 	}
 	return inbuf[icurrchar++];
-#endif	/* !_BBS_UTIL_ */	
+#endif	/* !_BBS_UTIL_ */
 }
 
 
@@ -423,7 +423,7 @@ int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char
 		}
 		else
 			ch = igetch();
-#ifndef _BBS_UTIL_			
+#ifndef _BBS_UTIL_
 #if 1
 		if (dumb_term && !init_enter)
 		{
@@ -467,7 +467,7 @@ int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char
 				ch = igetch();
 				if (ch >= '1' && ch <= '6')
 					igetch();
-			}					
+			}
 			continue;
 		}
 #endif
@@ -515,8 +515,8 @@ int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char
 		buf[clen++] = (echo & XLCASE) ? tolower(ch) : ch;
 		outc((echo & XECHO) ? ch : '*');
 #ifdef _BBS_UTIL_
-		refresh();		
-#endif		
+		refresh();
+#endif
 		x++;
 	}
 	buf[clen] = '\0';

@@ -112,10 +112,10 @@ int t_chat2()
 		return C_FOOT;
 
 	chatport = CHATPORT;
-#if 1	
+#if 1
 	if (chatport == 0)
 		chatport = 6177;
-#endif		
+#endif
 
 #if 0
 #if	defined(NSYSUBBS1)
@@ -171,7 +171,7 @@ int t_chat2()
 
 	PLINE = t_lines - 1;
 	ECHATWIN = t_lines - 2;
-	
+
 	clear();
 	move(ECHATWIN, 0);
 	outs("________________________________________________________________________________");

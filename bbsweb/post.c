@@ -10,9 +10,9 @@ extern int isTORNADO;
 /*******************************************************************
  *	顯示佈告相關 TAG (一般區 & 精華區 & 信件 通用)
  *
- *	
+ *
  *******************************************************************/
-void 
+void
 ShowPost(char *tag, POST_FILE * pf)
 {
 	char *p, *para = NULL;
@@ -135,8 +135,8 @@ ShowPost(char *tag, POST_FILE * pf)
 #endif
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostReply);
 
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailReply : HTML_PostReply,
 			value);
 	}
@@ -172,8 +172,8 @@ ShowPost(char *tag, POST_FILE * pf)
 			return;
 
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostForward);
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailForward : HTML_PostForward,
 			value);
 	}
@@ -187,8 +187,8 @@ ShowPost(char *tag, POST_FILE * pf)
 			return;
 
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostDelete);
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailDelete : HTML_PostDelete,
 			value);
 	}
@@ -196,7 +196,7 @@ ShowPost(char *tag, POST_FILE * pf)
 	{
 		if (request_rec->URLParaType == MailRead && PSCorrect != Correct)
 			return;
-			
+
 		if (request_rec->URLParaType == SkinModify)
 			ShowArticle(pf->POST_NAME, FALSE, FALSE);
 		else
@@ -212,7 +212,7 @@ ShowPost(char *tag, POST_FILE * pf)
 			strcpy(source, pf->fh.title);
 			decode_line(pf->fh.title, source);
 		}
-#endif		
+#endif
 		souts(pf->fh.title, STRLEN);
 		fprintf(fp_out, "%s", pf->fh.title);
 	}
@@ -220,7 +220,7 @@ ShowPost(char *tag, POST_FILE * pf)
 	{
 		if (request_rec->URLParaType == MailRead && PSCorrect != Correct)
 			return;
-			
+
 		include_ori(pf->POST_NAME, NULL, 'y');	/* lthuang */
 	}
 	else if (!strcasecmp(tag, "ReplyTitle") || !strcasecmp(tag, "ReplySubject"))
@@ -274,20 +274,20 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 	FILEHEADER *fip;
 #endif
 	int recidx;
-	FILEHEADER fileinfo;	
-	BOOL hasUpperDir = FALSE;	
+	FILEHEADER fileinfo;
+	BOOL hasUpperDir = FALSE;
 	char senderid[STRLEN], sender[STRLEN], date[STRLEN], pushstr[STRLEN];
 	char title[STRLEN + PATHLEN + 1];
 	char UpperDir[PATHLEN];
-	char *p;	
+	char *p;
 	int fd;
 	char *type = "";
 	char *tags[8] = {"Num", "Sender", "Date", "Title", "SenderID", "READ", "FILENAME", "PushCNT"};
 	char *strings[8];
 	char recidx_string[10];
-	char format[FORMAT_LEN];		
+	char format[FORMAT_LEN];
 	int score;
-	
+
 
 	if (request_rec->URLParaType == MailList && PSCorrect != Correct)
 		return FALSE;
@@ -350,7 +350,7 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 	bzero(format_array, sizeof(format_array));
 	if (build_format_array(format_array, format, "%", "%", MAX_TAG_SECTION) == -1)
 		return FALSE;
-		
+
 #if 0
 	{
 		int i;
@@ -363,12 +363,12 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 	for (recidx = start; recidx <= end; recidx++)
 	{
 		int i;
-		
+
 		if (hasUpperDir)
 		{
 			strcpy(sender, MSG_TreaDir);
 			strcpy(senderid, MSG_TreaDir);
-			sprintf(title, "<A HREF=\"/%s%s/\">%s</A> ", BBS_SUBDIR, 
+			sprintf(title, "<A HREF=\"/%s%s/\">%s</A> ", BBS_SUBDIR,
 				UpperDir, MSG_TreaUpperDir);	/* add space at last prevent html tag error */
 			strcpy(date, "--/--/--");
 
@@ -378,14 +378,14 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 		else
 		{
 			time_t fdate;
-			
+
 			if (fileinfo.accessed & FILE_REPD)
 				type = "r";
 			else if (fileinfo.accessed & FILE_READ)
 				type = "-";
 			else
 				type = "N";
-			
+
 #ifdef USE_MMAP
 			memcpy(&fileinfo, fip + recidx - 1, FH_SIZE);
 #else
@@ -512,33 +512,33 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
 		strings[6] = fileinfo.filename;
 		strings[7] = pushstr;
 
-#if 0		
+#if 0
 		for (i = 0; i < 6; i++)
 			fprintf(fp_out, " [%s] ", strings[i]);
-#endif			
-		
+#endif
+
 		for (i = 0; format_array[i].type; i++)
 		{
 			int offset1 = format_array[i].offset;
 			int offset2 = format_array[i+1].offset;
-		
+
 			if (format_array[i].type == 'S')	/* not BBS TAG */
 			{
-				fwrite(format + offset1, sizeof(char), offset2 - offset1, 
+				fwrite(format + offset1, sizeof(char), offset2 - offset1,
 					fp_out);
 			}
 			else
-			{	
+			{
 				int j;
-				
+
 #if 0
 				fprintf(fp_out, "[");
-				fflush(fp_out);				
-				fwrite(format + offset1 + 1, sizeof(char), offset2 - offset1 - 1, 
-					fp_out);
-				fprintf(fp_out, "]");					
 				fflush(fp_out);
-#endif			
+				fwrite(format + offset1 + 1, sizeof(char), offset2 - offset1 - 1,
+					fp_out);
+				fprintf(fp_out, "]");
+				fflush(fp_out);
+#endif
 			/* BBS TAG */
 				for (j = 0; j < 8; j++)
 				{
@@ -566,8 +566,8 @@ ListPostRecord(char *tag, char *direct, int total_rec, int start, int end)
  *
  *	used by HTML_PostList, HTML_TreaList, HTML_MailList
  *******************************************************************/
-int 
-ShowPostList(char *tag, BOARDHEADER * board, char *POST_NAME, int total_rec, 
+int
+ShowPostList(char *tag, BOARDHEADER * board, char *POST_NAME, int total_rec,
 	int start, int end)
 {
 	int pagesize;
@@ -627,8 +627,8 @@ ShowPostList(char *tag, BOARDHEADER * board, char *POST_NAME, int total_rec,
 	}
 	else if (!strncasecmp(tag, "PageUp", 6))
 	{
-		char format[FORMAT_LEN];		
-		
+		char format[FORMAT_LEN];
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;
@@ -643,8 +643,8 @@ ShowPostList(char *tag, BOARDHEADER * board, char *POST_NAME, int total_rec,
 	}
 	else if (!strncasecmp(tag, "PageDown", 8))
 	{
-		char format[FORMAT_LEN];		
-		
+		char format[FORMAT_LEN];
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;
@@ -660,7 +660,7 @@ ShowPostList(char *tag, BOARDHEADER * board, char *POST_NAME, int total_rec,
 	else if (!strncasecmp(tag, "Send", 4))
 	{
 		char value[STRLEN];
-		
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;

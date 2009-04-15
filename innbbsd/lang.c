@@ -110,7 +110,7 @@ char *orgtxt;
      return 0;
 }
 
-initial_lang() 
+initial_lang()
 {
 	if (strcasecmp(LANG,"BIG5") == 0) {
 	       lang_init( Big5Locale );

@@ -141,7 +141,7 @@ int option;
 	sprintf(att_1, "--=====================_892784644==_--\n");
 	write(fp, att_1, strlen(att_1));
 	close(fp);
-		
+
 	if (option == 2 && is_emailaddr(to))
 	{
 		char fnameNew[PATHLEN] = "\0";
@@ -155,7 +155,7 @@ int option;
 		result = SendMail_Internet(-1, NULL, curuser.userid, to, title);
 #endif
 	else
-		result = SendMail(-1, FALSE, fnameTmp, curuser.userid, to, title, 
+		result = SendMail(-1, FALSE, fnameTmp, curuser.userid, to, title,
 		                  curuser.ident);
 	in_mail = save_mmode;
 	unlink(fnameTmp);
@@ -226,7 +226,7 @@ m_vmachine()			/* Seraph */
 	int sockfd;
 	char bbsid[IDLEN + 6];
 	struct sockaddr_in serv_addr;
-	
+
 
 	if (haveNo())
 	{
@@ -429,12 +429,12 @@ m_answer()			/* v-ans */
 #endif
 
 
-void 
+void
 getResult(fd)
 int fd;
 {
 	char Result[myProtocol];
-	
+
 
 	if ((read(fd, Result, sizeof(Result))) < 0)
 	{
@@ -450,7 +450,7 @@ int fd;
 
 
 /******* Send ID , password to NT Server for change *********/
-int 
+int
 ChangeNTPass(idno, newpass)
 unsigned int idno;
 char *newpass;
@@ -495,13 +495,13 @@ char *newpass;
 }
 
 
-void 
+void
 mod_telepass()
 {
 	int sockfd;
 	char oldpass[5], newpass1[5], newpass2[5];
 	struct sockaddr_in serv_addr;
-	
+
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = inet_addr(SERV_HOST_ADDR);

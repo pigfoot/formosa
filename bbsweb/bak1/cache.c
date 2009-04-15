@@ -1,14 +1,14 @@
 /*******************************************************************
  *	Shm cache for WEB-BBS (support from ver. 1.1.2+)
- *	
+ *
  *	== cache type ==
  *	1. normal file
  *		a. cache into file_shm
- *	
+ *
  *	2. html file (as skin file)
  *		a. cache into html_shm
  *		b. parse web-bbs tag & build format array
- *		
+ *
  *	== now with cache replacement policy ==
  *******************************************************************/
 #include "bbs.h"
@@ -26,10 +26,10 @@ extern REQUEST_REC *request_rec;
  *******************************************************************/
 void init_cache()
 {
-	
+
 	file_shm = attach_shm(FILE_SHM_KEY, FS_SIZE*NUM_CACHE_FILE);
 	html_shm = attach_shm(HTML_SHM_KEY, HS_SIZE*NUM_CACHE_HTML);
-	
+
 }
 
 
@@ -47,7 +47,7 @@ hash_string(const void *data)
 	unsigned int n = 0;
 	unsigned int j = 0;
 	unsigned int i = 0;
-	
+
 	while (*s) {
 		j++;
 		n ^= 271 * (unsigned) *s++;
@@ -68,7 +68,7 @@ int CacheState(char *filename, SKIN_FILE *sf)
 {
 	register int i;
 	unsigned int key = hash_string(filename);
-	
+
 	if(GetFileMimeType(filename) < 2)	/* html */
 	{
 		for(i=0; i<NUM_CACHE_HTML && html_shm[i].key; i++)
@@ -83,7 +83,7 @@ int CacheState(char *filename, SKIN_FILE *sf)
 	else
 	{
 		for(i=0; i<NUM_CACHE_FILE && file_shm[i].key; i++)
-			if(file_shm[i].key == key 
+			if(file_shm[i].key == key
 			&& !strcmp(filename, file_shm[i].file.filename))
 			{
 				if(sf)
@@ -92,12 +92,12 @@ int CacheState(char *filename, SKIN_FILE *sf)
 			}
 	}
 	return -1;
-	
+
 }
 
 #ifdef USE_WEIGHT
 /*******************************************************************
- *	use LRU && cache hit to determine weight 
+ *	use LRU && cache hit to determine weight
  *******************************************************************/
 int test_weight(time_t now, time_t age, int hit)
 {
@@ -118,7 +118,7 @@ int select_file_cache_slot(char *file)
 	for(slot=0; slot<NUM_CACHE_FILE; slot++)
 	{
 		if(*(file_shm[slot].file.filename) == 0x00
-		|| !strcmp(file_shm[slot].file.filename, file))	
+		|| !strcmp(file_shm[slot].file.filename, file))
 		{
 			return slot;
 		}
@@ -137,7 +137,7 @@ int select_file_cache_slot(char *file)
 		}
 #endif
 	}
-	
+
 	return selected;
 }
 
@@ -150,12 +150,12 @@ int select_html_cache_slot(char *file)
 #else
 	time_t age = request_rec->atime;
 #endif
-	
+
 	/* find empty || existed solt */
 	for(slot=0; slot<NUM_CACHE_HTML; slot++)
 	{
 		if(*(html_shm[slot].file.filename) == 0x00
-		|| !strcmp(html_shm[slot].file.filename, file))	
+		|| !strcmp(html_shm[slot].file.filename, file))
 		{
 			return slot;
 		}
@@ -174,7 +174,7 @@ int select_html_cache_slot(char *file)
 		}
 #endif
 	}
-	
+
 	return selected;
 }
 
@@ -183,7 +183,7 @@ int do_cache_file(char *file)
 {
 	int slot, fd;
 	SKIN_FILE sf;
-	
+
 	/* get file info */
 	strncpy(sf.filename, file, PATHLEN);
 	if(GetFileInfo(&(sf)) == FALSE
@@ -192,10 +192,10 @@ int do_cache_file(char *file)
 	{
 		return -1;
 	}
-	
+
 	/* select cache slot */
 	slot = select_file_cache_slot(file);
-	
+
 	/* load file into cache */
 	memset(&(file_shm[slot]), 0, FS_SIZE);
 	memcpy(&(file_shm[slot].file), &sf, SF_SIZE);
@@ -213,14 +213,14 @@ int do_cache_file(char *file)
 	file_shm[slot].atime = request_rec->atime;
 	file_shm[slot].hit = 0;
 	return slot;
-	
+
 }
 
 int do_cache_html(char *file)
 {
 	int slot, fd;
 	SKIN_FILE sf;
-	
+
 	/* get file info */
 	strncpy(sf.filename, file, PATHLEN);
 	if(GetFileInfo(&(sf)) == FALSE
@@ -229,10 +229,10 @@ int do_cache_html(char *file)
 	{
 		return -1;
 	}
-	
+
 	/* select cache slot */
 	slot = select_html_cache_slot(file);
-	
+
 	/* load file into cache */
 	memset(&(html_shm[slot]), 0, HS_SIZE);
 	memcpy(&(html_shm[slot].file), &sf, SF_SIZE);
@@ -249,7 +249,7 @@ int do_cache_html(char *file)
 	html_shm[slot].ctime = request_rec->atime;
 	html_shm[slot].atime = request_rec->atime;
 	html_shm[slot].hit = 0;
-	
+
 	/* build html format array */
 	if(build_format_array(html_shm[slot].format, html_shm[slot].data, "<!BBS", "!>", MAX_TAG_SECTION) == -1)
 	{
@@ -257,6 +257,6 @@ int do_cache_html(char *file)
 		return -1;
 	}
 	return slot;
-	
+
 }
 

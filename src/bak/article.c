@@ -1,4 +1,4 @@
-/* 
+/*
  * Li-te Huang, lthuang@cc.nsysu.edu.tw, 10/29/97
  */
 
@@ -19,7 +19,7 @@ FILEHEADER *finfo;
 /* by lthuang
 	if (HAS_PERM(PERM_SYSOP))
 		return 1;
-*/		
+*/
 	if (in_mail)
 		return 1;
 	else if (in_board)
@@ -120,7 +120,7 @@ char *direct;
 	FILE *fp_ori, *fp_edit, *fp_new;
 	int offset, retval;
 	time_t now;
-	
+
 
 	if (finfo->accessed & FILE_TREA)
 		return C_NONE;
@@ -137,10 +137,10 @@ char *direct;
 	if (!in_mail && !in_board)	/* 精華區文章可直接修改 */
 	{
 		vedit(fn_ori, NULL, NULL);
-/*		
+/*
 		return C_FULL;
 */
-		return C_LOAD;		
+		return C_LOAD;
 	}
 
 	sprintf(fn_edit, "tmp/_edit_art.%s.%d", curuser.userid, (int) getpid());
@@ -190,7 +190,7 @@ char *direct;
 	fclose(fp_edit);
 
 	retval = -1;
-	
+
 	if (!vedit(fn_edit, NULL, NULL))
 	{
 		fseek(fp_ori, 0, SEEK_SET);
@@ -219,22 +219,22 @@ char *direct;
 		fseek(fp_ori, offset, SEEK_CUR);
 		while (fgets(genbuf, sizeof(genbuf), fp_ori))
 			fputs(genbuf, fp_new);
-			
+
 		retval = 0;
 	}
 
 	fclose(fp_ori);
 	fclose(fp_new);
 	if (retval = 0)
-		retval = myrename(fn_new, fn_ori);			
+		retval = myrename(fn_new, fn_ori);
 	if (retval != 0)
 		unlink(fn_new);
 	unlink(fn_edit);
-	
-/*	
+
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -249,11 +249,11 @@ char *direct;
 {
 	FILEHEADER *fhr = &fhGol;
 	int fd;
-	
+
 
 	if ((finfo->accessed & FILE_DELE) || (finfo->accessed & FILE_TREA))
 		return C_NONE;
-	/* 
+	/*
 	 * 1. 精華區文章皆不可
 	 * 2. 個人信箱皆可
 	 * 3. 一般區文章, 惟有板主, 板主助手, 站長可
@@ -268,7 +268,7 @@ char *direct;
 		return 0;
 #endif
 
-	if (cmp_wlist(artwtop, finfo->filename, strcmp))	
+	if (cmp_wlist(artwtop, finfo->filename, strcmp))
 	{
 		msg("<<文章保留>>  (t)已標記的 (a)此篇? [a]: ");
 		if (igetkey() == 't')
@@ -277,7 +277,7 @@ char *direct;
 			if ((fd = open(direct, O_RDONLY)) > 0)
 			{
 				int entResv;
-				
+
 				for (entResv = 1; read(fd, fhr, FH_SIZE) == FH_SIZE; entResv++)
 				{
 					if (fhr->accessed & FILE_DELE || fhr->accessed & FILE_TREA)
@@ -421,8 +421,8 @@ char *direct;
 }
 
 
-/* 
- * prompt, when article display done 
+/*
+ * prompt, when article display done
  */
 int
 read_article(ent, finfo, direct)
@@ -440,9 +440,9 @@ char *direct;
 		char *pt;
 		extern int nowdepth;
 
-/*      
+/*
  * if (updown == C_DOWN)
- * return C_FULL;       
+ * return C_FULL;
  */
 		pt = strrchr(tmpdir, '/') + 1;
 		sprintf(pt, "%s/%s", finfo->filename, DIR_REC);
@@ -466,7 +466,7 @@ char *direct;
 
 	msg(_msg_article_5);
 	/*
-	 * If cursor is at the right side of two-bit word, 
+	 * If cursor is at the right side of two-bit word,
 	 * some system would send BackSpace or Del key twice.
 	 * As a result, we move cursor to first word to avoid this problem.
 	 */
@@ -738,8 +738,8 @@ char *direct;
 }
 
 
-/* 
- * mail article to someone in batch mode 
+/*
+ * mail article to someone in batch mode
  */
 static int
 mail_articles(finfo, direct, from, to, ident, uuencode, wtop)
@@ -855,7 +855,7 @@ char *direct;
 		bUUencode = TRUE;
 	else
 		bUUencode = FALSE;
-		
+
 	if (mail_articles(finfo, direct, curuser.userid, DefEmailAddr,
 			  curuser.ident, bUUencode, artwtop) == -1)
 		msg(_msg_fail);

@@ -9,9 +9,9 @@
 /* update user record */
 /*******************************************************************
  *	update user passwd file
- *	
+ *
  *******************************************************************/
-void 
+void
 UpdateUserRec(int action, USEREC * curuser, BOARDHEADER * board)
 {
 	FILE *fp;
@@ -55,10 +55,10 @@ UpdateUserRec(int action, USEREC * curuser, BOARDHEADER * board)
 
 /*******************************************************************
  *	check userlogin status
- *	
+ *
  *	return:	ps_correct
  *******************************************************************/
-int 
+int
 CheckUserPassword(char *username, char *password)
 {
 
@@ -66,7 +66,7 @@ CheckUserPassword(char *username, char *password)
 		return nLogin;
 	else if (!strcmp(username, "guest"))
 		return gLogin;
-	else 
+	else
 	{
 		bzero(&curuser, sizeof(USEREC));
 
@@ -82,11 +82,11 @@ CheckUserPassword(char *username, char *password)
 
 /*******************************************************************
  *	顯示 <BBS_User_xxxxx> TAG
- *	目前 UserQuery ,UserData 用的TAG一樣, 靠URLParaType區分 
+ *	目前 UserQuery ,UserData 用的TAG一樣, 靠URLParaType區分
  *
  *	in UserQuery mode , curuser is target for query, not original userdata
  *******************************************************************/
-void 
+void
 ShowUser(char *tag, USEREC * curuser)
 {
 
@@ -239,10 +239,10 @@ USER_INFO *upent;
 
 
 /*******************************************************************
- *	顯示線上 user 列表 
+ *	顯示線上 user 列表
  *
  *******************************************************************/
-void 
+void
 ShowUserList(char *tag, POST_FILE * pf)
 {
 	int recidx, pagesize, start, end;
@@ -361,7 +361,7 @@ ShowUserList(char *tag, POST_FILE * pf)
 /*******************************************************************
  *	由 WEB-BBS 新增一使用者
  *******************************************************************/
-int 
+int
 NewUser(char *pbuf, USEREC * curuser)
 {
 	char password[PASSLEN];
@@ -419,7 +419,7 @@ NewUser(char *pbuf, USEREC * curuser)
 	}
 
 	strcpy(username, curuser->userid);
-	
+
 	request_rec->URLParaType = UserQuery;	/* for HTML_UserNewOK use */
 
 #ifdef WEB_EVENT_LOG
@@ -483,7 +483,7 @@ unsigned char name[];
 /*******************************************************************
  *	User Identification
  *******************************************************************/
-int 
+int
 DoUserIdent(char *pbuf, USEREC * curuser)
 {
 	FILE *fp;
@@ -595,7 +595,7 @@ DoUserIdent(char *pbuf, USEREC * curuser)
  *	更新使用者設定
  *	modify only username, password, email
  *******************************************************************/
-int 
+int
 UpdateUserData(char *pbuf, USEREC * curuser)
 {
 	char passwd[PASSLEN], email[STRLEN], buffer[STRLEN];
@@ -635,7 +635,7 @@ UpdateUserData(char *pbuf, USEREC * curuser)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" UA=\"%s\"", 
+	sprintf(log, "%s ID=\"%s\" UA=\"%s\"",
 		POST_UserData, curuser->userid, request_rec->user_agent);
 #endif
 
@@ -646,7 +646,7 @@ UpdateUserData(char *pbuf, USEREC * curuser)
 /*******************************************************************
  *	修改 & 刪除 使用者簽名檔
  *******************************************************************/
-int 
+int
 UpdateUserSign(char *pbuf, USEREC * curuser)
 {
 	FILE *fp;
@@ -736,7 +736,7 @@ UpdateUserSign(char *pbuf, USEREC * curuser)
 /*******************************************************************
  *	更新使用者名片檔
  *******************************************************************/
-int 
+int
 UpdateUserPlan(char *pbuf, USEREC * curuser)
 {
 	char planfile[PATHLEN], buffer[2048];
@@ -758,8 +758,8 @@ UpdateUserPlan(char *pbuf, USEREC * curuser)
 	{
 		char plan[2048];
 		FILE *fp;
-		
-		
+
+
 		GetPara2(buffer, "CONTENT", pbuf, sizeof(buffer), "");
 
 		if (strlen(buffer) == 0)
@@ -782,7 +782,7 @@ UpdateUserPlan(char *pbuf, USEREC * curuser)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "UserPlan ID=\"%s\" UA=\"%s\"", 
+	sprintf(log, "UserPlan ID=\"%s\" UA=\"%s\"",
 		curuser->userid, request_rec->user_agent);
 #endif
 
@@ -793,20 +793,20 @@ UpdateUserPlan(char *pbuf, USEREC * curuser)
 /*******************************************************************
  *	更新好友名單
  *******************************************************************/
-int 
+int
 UpdateUserFriend(char *pbuf, USEREC * curuser)
 {
 	char file[PATHLEN];
 	int retval;
 
 
-	sethomefile(file, curuser->userid, UFNAME_OVERRIDES);	
+	sethomefile(file, curuser->userid, UFNAME_OVERRIDES);
 
 	retval = friend_list_set(file, pbuf, "好友名單");
-#ifdef WEB_EVENT_LOG	
+#ifdef WEB_EVENT_LOG
 	if (retval == WEB_OK_REDIRECT)
 	{
-		sprintf(log, "%s ID=\"%s\" UA=\"%s\"", 
+		sprintf(log, "%s ID=\"%s\" UA=\"%s\"",
 			POST_UserFriend, curuser->userid, request_rec->user_agent);
 	}
 #endif

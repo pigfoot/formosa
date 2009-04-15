@@ -6,8 +6,8 @@
 struct array {
 	int size;
 	char *ids;
-};	
- 
+};
+
 
 struct word	{
 	struct	word	*last;

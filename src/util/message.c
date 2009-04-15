@@ -30,7 +30,7 @@ char *showed;
 		(!mentp->out) ? 5 : 0,
 		mentp->stimestr,
 		(!mentp->out) ? "" : "°eµ¹ ",
-		(!mentp->out) ? mentp->fromid : mentp->toid, 
+		(!mentp->out) ? mentp->fromid : mentp->toid,
 		mentp->mtext);
 	return 0;
 }

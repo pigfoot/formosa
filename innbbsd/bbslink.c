@@ -334,7 +334,7 @@ char *filename, *userid;
 	else
 		BODY = "";
 	close(fd);
-#endif	
+#endif
 	return 1;
 }
 
@@ -455,7 +455,7 @@ soverview_t *sover;
 }
 #endif
 
-/*  
+/*
    process_article()
    read_article()
    save_outgoing()
@@ -504,9 +504,9 @@ char *board, *filename, *userid, *subject;
 			if (!VisitOnly)
 			{
 				save_outgoing(&sover, filename, userid, poster, lover.mtime);
-#if 0				
+#if 0
 				save_article(board, filename, &sover);
-#endif				
+#endif
 			}
 		}
 	}
@@ -1359,7 +1359,7 @@ char *tmpfile;
 	return (result);
 }
 
-/* 
+/*
    cancel moderating posts
  */
 
@@ -1436,7 +1436,7 @@ char *board, *filename, *from, *subject;
 	return 1;
 }
 
-/* 
+/*
    send_nntplink
    open_link
    read_outgoing
@@ -1622,7 +1622,7 @@ close_link()
 }
 
 
-/* 
+/*
    send_article()
    send_nntplink()
    read_outgoing()
@@ -1801,7 +1801,7 @@ send_article()
 	}
 }
 
-/* 
+/*
    bntplink()
    bbspost()
    process_article()

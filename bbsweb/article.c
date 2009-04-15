@@ -18,7 +18,7 @@ extern char logstr[HTTP_REQUEST_LINE_BUF];          /* buffer for weblog() */
  *
  *	destructive to FORM DATA
  *******************************************************************/
-static void 
+static void
 write_article_line(FILE * fp, char *data, int type)
 {
 	char *p;
@@ -56,11 +56,11 @@ write_article_line(FILE * fp, char *data, int type)
  *		POST_SKIN	html file
  *		POST_NORMAL	normal text file
  *
- *	Attention: 
+ *	Attention:
  *		fp must open in advance
  *		destructive to data in pbuf
  *******************************************************************/
-void 
+void
 write_article_body(FILE * fp, char *data, int type)
 {
 	char *p, *pp, buffer[1024];
@@ -99,8 +99,8 @@ static int
 postGetForm(char **pbuf, int *sign_num, char *subject)
 {
 	char buffer[STRLEN * 3], *p;
-	
-	
+
+
 	GetPara2(buffer, "SIGN", *pbuf, 3, "-1");	/* signature select */
 	*sign_num = atoi(buffer);
 
@@ -119,7 +119,7 @@ postGetForm(char **pbuf, int *sign_num, char *subject)
 		return -1;
 	}
 	*pbuf = p + 8;		/* point to content body */
-	
+
 	return 0;
 }
 
@@ -128,7 +128,7 @@ postGetForm(char **pbuf, int *sign_num, char *subject)
  *	check user has permission to send mail
  *
  ************************************************************/
-static int 
+static int
 MailCheck(char *address)
 {
 	if (!is_emailaddr(address))
@@ -166,7 +166,7 @@ MailCheck(char *address)
  *
  *	return:	WebRespondType
  *******************************************************************/
-int 
+int
 PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 {
 	BOOL tonews = FALSE;
@@ -257,7 +257,7 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 	chmod(fname, 0644);
 
 	sprintf(post_source, "%s WEB-BBS", BBSTITLE);
-	write_article_header(fp, username, curuser.username, 
+	write_article_header(fp, username, curuser.username,
 		(URLParaType == MailSend) ? NULL : board->filename,
 		NULL, subject, post_source);
 	fputs("\n", fp);
@@ -286,13 +286,13 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 	{
 		FILE *fp;
 		char buf[PATHLEN];
-		
+
 		setboardfile(buf, board->filename, ACL_REC);
 		if ((fp = fopen(buf, "r")) != NULL)
 		{
 			int ms;
 			char *p;
-			
+
 			if ((ms = CreateMailSocket()) > 0)
 			{
 				while (fgets(buf, sizeof(buf), fp))
@@ -306,7 +306,7 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 			fclose(fp);
 		}
 	}
-	else 
+	else
 	{
 		if (SendMail(-1, fname, username, address, subject, curuser.ident))
 		{
@@ -336,7 +336,7 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
  *
  *	return:	WebRespondType
  *******************************************************************/
-int 
+int
 EditArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	char *p;
@@ -449,7 +449,7 @@ EditArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
  *	input:	FORM body
  *	return:	TRUE on success
  ************************************************************/
-int 
+int
 DeleteArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	char fname[PATHLEN];
@@ -494,7 +494,7 @@ DeleteArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 		return WEB_ERROR;
 	}
 
-	if (request_rec->URLParaType == MailDelete 
+	if (request_rec->URLParaType == MailDelete
 		|| request_rec->URLParaType == TreaDelete)
 	{
 		pack_article(fname);
@@ -515,10 +515,10 @@ DeleteArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 
 /***********************************************************
  *	轉寄文章檔案
- *	
+ *
  *	一般區、精華區、信件區通用
  ************************************************************/
-int 
+int
 ForwardArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	int result;
@@ -561,7 +561,7 @@ ForwardArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(logstr, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+	sprintf(logstr, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			(request_rec->URLParaType == MailForward) ? POST_MailForward : POST_PostForward,
 			username, address, pf->fh.title, request_rec->user_agent);
 #endif

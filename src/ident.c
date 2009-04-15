@@ -40,7 +40,7 @@ static void sendckm_log(char *fmt, ...)
 	time_t now;
 	char msgbuf[80], timestr[22], obuf[128];
 
-	
+
 	va_start(args, fmt);
 	vsprintf(msgbuf, fmt, args);
 	va_end(args);
@@ -56,7 +56,7 @@ static void sendckm_log(char *fmt, ...)
 
 static int send_checkmail(char email[], char stamp[])
 {
-	char *p;	
+	char *p;
 	char from[80], title[80];
 	extern char myhostname[];
 
@@ -220,7 +220,7 @@ int x_idcheck()
 				if (*p == '\0')
 				{
 					static int i = 0;
-					
+
 					if (++i >= 3)
 					{
 						outs("\n");
@@ -236,14 +236,14 @@ int x_idcheck()
 					pressreturn();
 					continue;
 				}
-#if 0				
+#if 0
 				if (*(p+1) == '.')	/* @. */
 				{
 					outs("\n您所輸入的 E-mail是錯誤的!");
 					pressreturn();
 					continue;
 				}
-#endif				
+#endif
 				/* not accept pure 12-digit ip format */
 				for (p++; *p && !isalpha((int)(*p)); p++)	/*  ? */
 					/* NULL STATEMENT */ ;
@@ -261,7 +261,7 @@ int x_idcheck()
 					break;
 
 				/*
-				 * not allow user use the e-mail address which 
+				 * not allow user use the e-mail address which
 				 * we do not trust in identification -- lthuang
 				 */
 				pressreturn();

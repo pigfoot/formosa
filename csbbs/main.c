@@ -67,7 +67,7 @@ char *argv[];
 
 	if (argc > 1 && !strcmp(argv[1], "check"))
 		check++;
-		
+
 	if (fork() != 0)
 		exit(0);
 
@@ -95,7 +95,7 @@ char *argv[];
 #else
 	    listen(s, 5) < 0)
 #endif
-	{	
+	{
 		perror("bind");
 		exit(1);
 	}
@@ -122,7 +122,7 @@ char *argv[];
 
 	if (check)
 		host_deny((char *) NULL);
-	
+
 	utmp_semid = sem_init(UTMPSEM_KEY);
 
 	aha = sizeof(ifrom);
@@ -135,7 +135,7 @@ char *argv[];
 
 		wait.tv_sec = 5;
 		wait.tv_usec = 0;
-		
+
 		if ((on = select(maxs, &ibits, 0, 0, &wait)) < 1)
 		{
 			if ((on < 0 && errno == EINTR) || on == 0)
@@ -167,7 +167,7 @@ char *argv[];
 				case 0:
 					{
 						char *host;
-						
+
 						close(s);
 						dup2(ns, 0);
 						close(ns);
@@ -182,7 +182,7 @@ char *argv[];
 							RespondProtocol(NOT_WELCOME);
 							FormosaExit();	/* banned!! */
 						}
-						
+
 						Formosa(host);
 
 						shutdown(0, 2);

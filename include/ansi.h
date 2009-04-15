@@ -6,7 +6,7 @@
  * and then promoted by  Rong-en Fan (rafan). */
 
 /* to help pmore know that we've already included this. */
-#define PMORE_STYLE_ANSI 
+#define PMORE_STYLE_ANSI
 
 // Escapes.
 #define ESC_NUM (0x1b)

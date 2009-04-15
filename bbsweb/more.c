@@ -37,7 +37,7 @@ struct RepStr repstr[] = {
  *	body_only:	只輸出文章內容，不包含檔頭 (發信人,標題,發信站..等)
  *	process: 	要不要處理 ansi code 和 hyperlink
  *
- *	return 
+ *	return
  *******************************************************************/
 
 #define HyperLinkType	5	/* num of hyper link type to parse */
@@ -53,8 +53,8 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 	{"000000", "8f0000", "008f00", "8f8f00", "00008f", "8f008f", "008f8f", "cfcfcf",
 	/* HiColor */
 	 "8f8f8f", "ff0000", "00ff00", "ffff00", "0000ff", "ff00ff", "00ffff", "ffffff"};
-	
-	char *BgColor[] = 
+
+	char *BgColor[] =
 	{"000000", "a00000", "00a000", "a0a000", "0000a0", "a000a0", "00a0a0", "cfcfcf"};
 
 	int font_fg_color, font_bg_color;
@@ -65,9 +65,9 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 #ifdef PARSE_HYPERLINK
 	HYPER_LINK hlink[] =
 	{
-	/* 
+	/*
 	   format:
-	   hyperlink keyword, keyword length, hyperlink legal character , open target 
+	   hyperlink keyword, keyword length, hyperlink legal character , open target
 	 */
 
 		{"http", 4, "./:~?'=-_!&#%*+@\\", " TARGET=\"new\""},
@@ -146,7 +146,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 			if (inHeader)
 				continue;
 #if 0
-			/* 
+			/*
 			   break if find "--\r\n" when PostRead (signature below --)
 			   TreaRead and MailRead should continue
 			 */
@@ -309,17 +309,17 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				else if (color >= 30 && color <= 37)	/* set fg color */
 				{
 					if(font_fg_color != color - 30)
-					{	
+					{
 						set_fg_color = TRUE;
-						font_fg_color = color - 30;		
+						font_fg_color = color - 30;
 					}
 				}
 				else if(color >= 40 && color <= 47)		/* set bg color */
 				{
 					if(font_bg_color != color - 40)
-					{	
+					{
 						set_bg_color = TRUE;
-						font_bg_color = color - 40;		
+						font_bg_color = color - 40;
 					}
 				}
 				else
@@ -334,7 +334,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 			if (skip == FALSE)
 			{
-				/* reset_ansi should return all </font> 
+				/* reset_ansi should return all </font>
 					and set new font attrib (if any) */
 				if(reset_ansi == TRUE)
 				{
@@ -351,7 +351,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 				if(set_bg_color == TRUE)
 				{
-					sprintf(FontStr, "<FONT COLOR=\"#%s\" STYLE=\"Background-Color:#%s\">", 
+					sprintf(FontStr, "<FONT COLOR=\"#%s\" STYLE=\"Background-Color:#%s\">",
 						HTMLColor[font_fg_color + (font_hilight == TRUE ? 8 : 0)],
 						BgColor[font_bg_color]);
 					had_set_bg_color = TRUE;
@@ -359,13 +359,13 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 					if(had_set_bg_color == TRUE)
 					{
 						/* reset bg-color style */
-						sprintf(FontStr, "<FONT COLOR=\"#%s\" STYLE=\"\">", 
+						sprintf(FontStr, "<FONT COLOR=\"#%s\" STYLE=\"\">",
 							HTMLColor[font_fg_color + (font_hilight == TRUE ? 8 : 0)]);
 						had_set_bg_color = FALSE;
 					}
 					else
 					{
-						sprintf(FontStr, "<FONT COLOR=\"#%s\">", 
+						sprintf(FontStr, "<FONT COLOR=\"#%s\">",
 							HTMLColor[font_fg_color + (font_hilight == TRUE ? 8 : 0)]);
 					}
 					set_fg_color = FALSE;
@@ -408,14 +408,14 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 			{
 				p -= hlink[type].len;
 
-				/* 
-				   ignore '<a href' HTML Tag 
+				/*
+				   ignore '<a href' HTML Tag
 				   ie: <a href="http://www.nsysu.edu.tw"> www homepage</a>
 				   ie: <a href=http://www.nsysu.edu.tw> www homepage</a>
-				   ignore '<img src' HTML Tag 
+				   ignore '<img src' HTML Tag
 				   ie: <img src="http://www.nsysu.edu.tw/title.jpg">
 				   ie: <img src=http://www.nsysu.edu.tw/title.jpg>
-				   ignore '<body background' HTML Tag 
+				   ignore '<body background' HTML Tag
 				   ie: <body background="http://www.wow.org.tw/show/m-9.jpg"
 				   ignore 'URL' HTML Tag
 				 */
@@ -434,12 +434,12 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				else
 				{
 					/* now, converting... */
-					
+
 					char url[HTTP_REQUEST_LINE_BUF];
 					int i = hlink[type].len + 3; /* 3=strlen("://") */
 
 					while (((*(p + i) > 0x00)
-						&& ((isalnum((int) *(p + i)) 
+						&& ((isalnum((int) *(p + i))
 							|| (strchr(hlink[type].allow, (int) *(p + i)) != NULL)))))
 					{
 #if 0

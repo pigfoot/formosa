@@ -45,17 +45,17 @@ int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head,
 	int i=0, head_len, tail_len;
 	const char *ori;
 	char *start, *end;
-	
+
 	ori = data;
 	head_len = strlen(head);
 	tail_len = strlen(tail);
-	
+
 	while(1)
 	{
 		if(i >= max_tag_section-2)	/* exceed array range */
 			return -1;
-		
-		if((start = strstr(data, head)) != NULL 
+
+		if((start = strstr(data, head)) != NULL
 		&& (end = strstr(start+head_len, tail)) != NULL)
 		{
 			if((int)(start-data)>0)
@@ -64,7 +64,7 @@ int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head,
 				format_array[i].offset = (int)(data - ori);
 				i++;
 			}
-			
+
 			format_array[i].type = 'T';		/* BBS tag */
 			format_array[i].offset = (int)(start - ori);
 			i++;
@@ -89,8 +89,8 @@ int build_format_array(FORMAT_ARRAY *format_array, const char* data, char *head,
 char *GetBBSTag(char *type, char *tag, char *data)
 {
 	char *start, *end, *p;
-	
-	if((start = strstr(data, "<!")) != NULL 
+
+	if((start = strstr(data, "<!")) != NULL
 	&& !strncasecmp(start+2, "BBS", 3)
 	&& (end = strstr(start+6, "!>")) != NULL)
 	{
@@ -103,7 +103,7 @@ char *GetBBSTag(char *type, char *tag, char *data)
 		}
 		else
 			*tag = '\0';
-		
+
 		strcpy(type, start+6);
 		return end+2;
 	}
@@ -116,10 +116,10 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 	int i, idx, top;
 	char format[512];
 	FORMAT_ARRAY format_array[64];
-	
+
 	GetPara3(format, "NUM", tag, sizeof(format), "");
 	top = atoi(format);
-	
+
 	GetPara3(format, "FORMAT", tag, sizeof(format), "");
 	if(strlen(format)==0)
 		return;
@@ -134,7 +134,7 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 		exit(-1);
 	}
 
-	
+
 	for(idx=0; idx<top && idx<total_title_num; idx++)
 	{
 #if 0
@@ -144,7 +144,7 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 		for(i=0; format_array[i].type; i++)
 		{
 #if 0
-			printf("i=%d type=%c len=%d \n", 
+			printf("i=%d type=%c len=%d \n",
 				i, format_array[i].type, format_array[i+1].offset-format_array[i].offset);
 			fflush(stdout);
 #endif
@@ -154,7 +154,7 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 			{
 				int tag_len = format_array[i+1].offset-format_array[i].offset-2;
 				char *tag = &(format[format_array[i].offset+1]);
-				
+
 				if(!strncasecmp(tag, "Num", tag_len))
 					fprintf(fp, "%d", pt[idx].count);
 				else if(!strncasecmp(tag, "PushNum", tag_len))
@@ -169,7 +169,7 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 						decode_line(pt[idx].title, temp);
 					}
 				#endif
-					fprintf(fp, "%s", pt[idx].title);	
+					fprintf(fp, "%s", pt[idx].title);
 				}
 				else if(!strncasecmp(tag, "BBS_Subdir", tag_len))
 					fprintf(fp, "<!BBS_Subdir!>");
@@ -177,10 +177,10 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 					fprintf(fp, "%s.html", pt[idx].filename);
 				else if(!strncasecmp(tag, "BoardName", tag_len))
 					fprintf(fp, "%s", pt[idx].boardname);
-				
+
 			}
 		}
-		
+
 		fprintf(fp, "\n");
 	}
 }
@@ -210,27 +210,27 @@ int CreateHTML(int total_title_num, POST_TITLE *toplist, char *in, char *out)
 	FILE *fpr, *fpw;
 	char type[STRLEN], tag[512];
 	char pbuf[HTTP_REQUEST_LINE_BUF];
-	
+
 	char *p, *data, *next;
-	
-	
+
+
 	if ((fpr = fopen(in, "r")) == NULL)
 	{
 		fprintf(stderr, "open read file %s error\n", in);
 		return FALSE;
 	}
-	
+
 	if ((fpw = fopen(out, "w+")) == NULL)
 	{
 		fprintf(stderr, "open write file %s error\n", out);
 		return FALSE;
 	}
-	
+
 #if 0
 		printf("here....\n");
 		fflush(stdout);
 #endif
-	
+
 	while (fgets(pbuf, HTTP_REQUEST_LINE_BUF, fpr) != NULL)
 	{
 		if ((p = strchr(pbuf, '\n')) != NULL)
@@ -255,14 +255,14 @@ int CreateHTML(int total_title_num, POST_TITLE *toplist, char *in, char *out)
 				fflush(stdout);
 #endif
 				fprintf(fpw, "%s\n", data);
-				break;	
+				break;
 			}
 		}
 	}
-	
+
 	fclose(fpr);
 	fclose(fpw);
-	
+
 	return TRUE;
 }
 
@@ -294,7 +294,7 @@ main (int argc, char *argv[])
 
 	init_bbsenv ();
 
-	if (argc != 4)	
+	if (argc != 4)
 	{
 		fprintf(stderr, "usage: %s num_days num_posts [-y/-n]\n", argv[0]);
 		fprintf(stderr, "-y/-n: including news or not\n");
@@ -303,7 +303,7 @@ main (int argc, char *argv[])
 
 	num_days = atoi(argv[1]);
 	num_posts = atoi(argv[2]);
-	
+
 	if (!strcmp(argv[3], "-y"))
 		bNews = TRUE;
 	else
@@ -312,6 +312,6 @@ main (int argc, char *argv[])
 	poststat(num_days, num_posts, bNews, &toplist, &total_title_num);
 #endif
 	do_showfile(num_posts, total_title_num, toplist);
-	
+
 	return 0;
 }

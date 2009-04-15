@@ -4,7 +4,7 @@
 #define O_BM_LEN 60
 #define O_STRLEN 80
 
-struct o_boardheader   
+struct o_boardheader
 {                               /* This structure is used to hold data in */
 	char   filename[O_STRLEN];    /* the BOARDS files */
 	char   owner[O_STRLEN - O_BM_LEN];
@@ -30,8 +30,8 @@ struct boardheader {		/* This structure is used to hold data in */
 	char type;		/* 轉信類別  */
 	unsigned char attrib;	/* 看板屬性旗標 */
 	char owner[STRLEN];
-	char title[40];	
-	char unused_title[STRLEN-44] ; 
+	char title[40];
+	char unused_title[STRLEN-44] ;
 	unsigned int level;	/* ? */
 	unsigned char accessed[MAXUSERS];/* ? */
 } ;
@@ -48,19 +48,19 @@ char *argv[];
 	struct o_boardheader o_bh;
 	BOARDHEADER bh;
 	int bid;
-	
+
 	if (argc != 2)
 	{
 		printf("\nSyntax:\n  %s [PATH_DOTBOARDS]\n", argv[0]);
 		exit(1);
 	}
-	
+
 	strncpy(old, argv[1], STRLEN);
 	old[STRLEN - 1] = '\0';
-	
+
 	sprintf(new, "%s.new", old);
 	sprintf(tmp, "%s.tmp", old);
-	
+
 	if ((fdr = open(old, O_RDONLY)) < 0)
 	{
 		printf("\nCannot open file: %s", old);
@@ -72,19 +72,19 @@ char *argv[];
 		printf("nCannot open file: %s", new);
 		exit(-2);
 	}
-	
+
 	bid = 1;
-	
+
 	while (read(fdr, &o_bh, sizeof(o_bh)) == sizeof(o_bh))
 	{
 		memset(&bh, 0, sizeof(bh));
-printf("\n<%s>[%s]", o_bh.filename, o_bh.BM);				
+printf("\n<%s>[%s]", o_bh.filename, o_bh.BM);
 		strncpy(bh.filename, o_bh.filename, sizeof(bh.filename));
 		bh.filename[sizeof(bh.filename) - 1] = '\0';
 
 		strncpy(bh.owner, o_bh.BM, sizeof(bh.owner));
 		bh.owner[sizeof(bh.owner) - 1] = '\0';
-		
+
 		if (isalnum(o_bh.title[0]))
 		{
 			bh.class = o_bh.title[0];
@@ -96,12 +96,12 @@ printf("\n<%s>[%s]", o_bh.filename, o_bh.BM);
 			strncpy(bh.title, o_bh.title, sizeof(bh.title));
 			bh.title[sizeof(bh.title) - 1] = '\0';
 		}
-/*---		
+/*---
 		bh.level = o_bh.level;
-*/		
+*/
 		bh.level = 0;
 		bh.bid = bid++;
-		
+
 		if (write(fdw, &bh, sizeof(bh)) != sizeof(bh))
 		{
 			close(fdr);
@@ -112,7 +112,7 @@ printf("\n<%s>[%s]", o_bh.filename, o_bh.BM);
 	}
 	close(fdr);
 	close(fdw);
-	
+
 	if (rename(old, tmp) == -1)
 	{
 		printf("\nCannot rename file: %s", tmp);
@@ -125,5 +125,5 @@ printf("\n<%s>[%s]", o_bh.filename, o_bh.BM);
 		exit(-5);
 	}
 	exit(0);
-}	
-	
+}
+

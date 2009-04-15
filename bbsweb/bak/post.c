@@ -9,14 +9,14 @@ extern SKIN_FILE *skin_file;
 /*******************************************************************
  *	顯示佈告相關 TAG (一般區 & 精華區 & 信件 通用)
  *
- *	
+ *
  *******************************************************************/
 void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 {
 	char *p, *para = NULL;
 	int pagesize, start, end;
 	char value[256];
-	
+
 	if(request_rec->URLParaType != PostRead
 	&& request_rec->URLParaType != TreaRead
 	&& request_rec->URLParaType != MailRead
@@ -28,7 +28,7 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		*p = '\0';
 		para = p+1;
 	}
-	
+
 #if 0
 	fprintf(fp_out, "<%d>, tag=[%s], \n", request_rec->URLParaType, tag);
 	fflush(fp_out);
@@ -52,32 +52,32 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		if(isTORNADO)
 			return;
 #endif
-		
+
 		GetPara3(value, "PAGE", para, 4, "-1");
 		pagesize = atoi(value);
 		find_list_range(&start, &end, pf->num, pagesize, pf->total_rec);
-		
+
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostBackList);
 		fprintf(fp_out, "<A HREF=\"%d-%d\">%s</A>", start, end, value);
-		
+
 	}
 	else if(!strcasecmp(tag, "BackListNum"))
 	{
-		
+
 		GetPara3(value, "PAGE", para, 3, "-1");
 		pagesize = atoi(value);
 		find_list_range(&start, &end, pf->num, pagesize, pf->total_rec);
-		
+
 		fprintf(fp_out, "%d-%d", start, end);
 	}
 	else if(!strcasecmp(tag, "Last"))
-	{	
+	{
 #if 0
 		if(isTORNADO)
 			return;
 #endif
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostLast);
-		
+
 		if(!strcmp(pf->lfname, "-1"))
 		{
 			fprintf(fp_out, "%s", value);
@@ -91,7 +91,7 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		}
 	}
 	else if(!strcasecmp(tag, "Next"))
-	{	
+	{
 #if 0
 		if(isTORNADO)
 			return;
@@ -112,9 +112,9 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	}
 #ifdef TTT
 	else if(!strcasecmp(tag, "LastRelated"))
-	{	
+	{
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostLastRelated);
-		
+
 		if(!strcmp(pf->lrfname, "-1"))
 		{
 			fprintf(fp_out, "%s", value);
@@ -125,7 +125,7 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		}
 	}
 	else if(!strcasecmp(tag, "NextRelated"))
-	{	
+	{
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostNextRelated);
 
 		if(!strcmp(pf->nrfname, "-1"))
@@ -139,20 +139,20 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	}
 #endif
 	else if(!strcasecmp(tag, "Reply"))
-	{	
+	{
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
 			return;
 #endif
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostReply);
-	
+
 		if(request_rec->URLParaType == MailRead)
 			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", pf->fh.filename, HTML_MailReply, value);
 		else
 			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", pf->fh.filename, HTML_PostReply, value);
 	}
 	else if(!strcasecmp(tag, "Send"))
-	{	
+	{
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
 			return;
@@ -161,34 +161,34 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		fprintf(fp_out, "<A HREF=\"%s\">%s</A>", HTML_PostSend, value);
 	}
 	else if(!strcasecmp(tag, "Edit"))
-	{	
+	{
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
 			return;
 #endif
-		
+
 		if(PSCorrect == Correct)
 		{
 			GetPara3(value, "VALUE", para, sizeof(value), MSG_PostEdit);
-			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
+			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
 				pf->fh.filename, HTML_PostEdit, value);
 		}
 	}
 	else if(!strcasecmp(tag, "Forward"))
-	{	
+	{
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
 			return;
 #endif
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostForward);
-	
+
 		if(request_rec->URLParaType == MailRead)
 			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", pf->fh.filename, HTML_MailForward, value);
 		else if(PSCorrect == Correct)
 			fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", pf->fh.filename, HTML_PostForward, value);
 	}
 	else if(!strcasecmp(tag, "Delete"))
-	{	
+	{
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
 			return;
@@ -215,7 +215,7 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		if(strstr(pf->fh.title, "=?"))	/* title maybe encoded */
 		{
 			char source[STRLEN];
-			
+
 			strcpy(source, pf->fh.title);
 			decode_line(pf->fh.title, source);
 		}
@@ -241,7 +241,7 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		souts(pf->fh.title, STRLEN);
 		if(strncmp(pf->fh.title, STR_REPLY, REPLY_LEN))
 			fprintf(fp_out, "%s", STR_REPLY);
-		
+
 		fprintf(fp_out, "%s", pf->fh.title);
 	}
 	else if(!strcasecmp(tag, "Body"))
@@ -254,14 +254,14 @@ void ShowPost(char *tag, BOARDHEADER *board, POST_FILE *pf)
 			ShowArticle(pf->POST_NAME, TRUE, FALSE);
 		else
 			ShowArticle(pf->POST_NAME, TRUE, TRUE);
-	
+
 	}
 	else if(!strcasecmp(tag, "FileName"))
 	{
 		fprintf(fp_out, "%s", pf->fh.filename);
 	}
 	else if(!strcasecmp(tag, "LastFileName"))
-	{	
+	{
 		fprintf(fp_out, "%s.html", pf->lfname);
 	}
 	else if(!strcasecmp(tag, "NextFileName"))
@@ -293,19 +293,19 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	&& request_rec->URLParaType != TreaList
 	&& request_rec->URLParaType != MailList)
 		return FALSE;
-	
+
 	bzero(format_array, sizeof(format_array));
-	
+
 	GetPara3(format, "PAGE", tag, sizeof(format), "-1");
 	pagesize = atoi(format);
 	if(pagesize <= 0)
 		pagesize = DEFAULT_PAGE_SIZE;
 
 #if 0
-	fprintf(fp_out, "<in ShowPostList tag='%s', pf->list_start=%d, pf->list_end=%d, pagesize=%d, btotal_post=%d>\r\n<br>", 
+	fprintf(fp_out, "<in ShowPostList tag='%s', pf->list_start=%d, pf->list_end=%d, pagesize=%d, btotal_post=%d>\r\n<br>",
 		tag, pf->list_start, pf->list_end, pagesize, pf->total_rec);
 	fflush(fp_out);
-#endif	
+#endif
 
 	start = pf->list_start;
 	end = pf->list_end;
@@ -321,12 +321,12 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		else
 			start = pf->total_rec-pagesize+1 < 1 ? 1 : pf->total_rec-pagesize+1;
 	}
-	
+
 	if(pf->list_end == '$' || pf->list_end == '*')
 		end = pf->total_rec;
 	else if(pf->list_end < start || pf->list_end > pf->total_rec)
 		end = start+pagesize-1 > pf->total_rec ? pf->total_rec : start+pagesize-1;
-	
+
 	if(!strcasecmp(tag, "TotalRec"))
 	{
 		fprintf(fp_out, "%d", pf->total_rec);
@@ -334,7 +334,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	else if(!strncasecmp(tag, "PageUpNum", 9))
 	{
 		int start1, end1;
-		
+
 		if(start<=1)
 			fprintf(fp_out, "-1");
 		else
@@ -347,7 +347,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	else if(!strncasecmp(tag, "PageDownNum", 11))
 	{
 		int start1, end1;
-		
+
 		if((start1 = end+1) > pf->total_rec)
 			fprintf(fp_out, "-1");
 		else
@@ -363,9 +363,9 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		if(isTORNADO)
 			return TRUE;
 #endif
-		
+
 		GetPara3(format, "VALUE", tag, STRLEN, MSG_ListPageUp);
-		
+
 		if(start<=1)
 			fprintf(fp_out, "%s", format);
 		else
@@ -384,7 +384,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 #endif
 
 		GetPara3(format, "VALUE", tag, STRLEN, MSG_ListPageDown);
-		
+
 		if((start1 = end+1) > pf->total_rec)
 			fprintf(fp_out, "%s", format);
 		else
@@ -394,7 +394,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		}
 	}
 	else if(!strncasecmp(tag, "Send", 4))
-	{	
+	{
 		char value[STRLEN];
 #ifdef TORNADO_OPTIMIZE
 		if(isTORNADO)
@@ -415,18 +415,18 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 
 		if(pf->total_rec <= 0)
 			return TRUE;
-		
+
 		GetPara3(format, "FORMAT", tag, sizeof(format), "");
 		if(strlen(format)==0)
 			return FALSE;
-	
+
 		/* check if treasure has upper dir */
 		if(request_rec->URLParaType == TreaList)
 		{
 			xstrncpy(UpperDir, pf->POST_NAME, sizeof(UpperDir));
 			if((p = strrchr(UpperDir, '/')) != NULL)
 				*p = '\0';
-		
+
 			if((p = strrchr(UpperDir+9, '/')) != NULL) 		/* find sub dir */
 			{
 				*p = '\0';
@@ -435,25 +435,25 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 			else
 				hasUpperDir = FALSE;
 		}
-		
+
 		if ((fd = open(pf->POST_NAME, O_RDONLY)) < 0)
 		{
 			return FALSE;
 		}
-		
+
 		/* set pf->POST_NAME to current dir */
 		if((p = strrchr(pf->POST_NAME, '/')) == NULL)
 			return FALSE;	/* invalid format */
 		*p = '\0';
-		
+
 #if 0
 		fprintf(fp_out, "Start=%d, End=%d, B_totla=%d", start, end, pf->total_rec);
 		fflush(fp_out);
 #endif
 
 #ifdef USE_MMAP
-		fip = (FILEHEADER *) mmap((caddr_t) 0, 
-			(size_t)(pf->total_rec*FH_SIZE), 
+		fip = (FILEHEADER *) mmap((caddr_t) 0,
+			(size_t)(pf->total_rec*FH_SIZE),
 			PROT_READ, MAP_SHARED, fd, (off_t) 0);
 		if(fip == MAP_FAILED)
 		{
@@ -461,7 +461,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 			return FALSE;
 		}
 		close(fd);
-		
+
 #else
 		if (lseek(fd, (long) (FH_SIZE * (start - 1)), SEEK_SET) == -1)
 		{
@@ -480,21 +480,21 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		fflush(fp_out);
 }
 #endif
-		
+
 		for (recidx=start; recidx<= end; recidx++)
 		{
 			int i;
-		
+
 			if(hasUpperDir)
 			{
 				strcpy(sender, MSG_TreaDir);
 				strcpy(senderid, MSG_TreaDir);
 				sprintf(title, "<A HREF=\"/%s%s/\">%s</A>", BBS_SUBDIR, UpperDir, MSG_TreaUpperDir);
 				strcpy(date, "--/--/--");
-			
+
 				hasUpperDir = FALSE;
 				recidx = start - 1;
-			
+
 			}
 			else
 			{
@@ -508,20 +508,20 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 			#if 0
 				fprintf(fp_out, "[%d:%02x] %s", recidx, fileinfo.accessed, fileinfo.filename);
 			#endif
-			
+
 				/* transform special chars to html code */
 				souts(fileinfo.title, STRLEN);
-				
+
 				if (fileinfo.accessed & FILE_TREA)		/* file is treasure dir */
 				{
 					if(request_rec->URLParaType == TreaList)
 					{
 						strcpy(sender, MSG_TreaDir);
-			
-						sprintf(title, "<A HREF=\"/%s%s/%s/\">%s </A>", 
+
+						sprintf(title, "<A HREF=\"/%s%s/%s/\">%s </A>",
 							BBS_SUBDIR, pf->POST_NAME, fileinfo.filename, fileinfo.title);
 					}
-					else	
+					else
 					{
 						strcpy(sender, "unknow");
 						strcpy(title, "<< Invalid Entry >>");
@@ -539,7 +539,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 					if(strstr(fileinfo.owner, "=?"))	/* maybe encoded */
 					{
 						char source[STRLEN];
-					
+
 						xstrncpy(source, fileinfo.owner, STRLEN);
 						decode_line(fileinfo.owner, source);
 					}
@@ -558,11 +558,11 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 					else
 					{
 #ifdef USE_IDENT
-						sprintf(sender, "%s<A HREF=\"/%susers/%s\">%s</A>", 
+						sprintf(sender, "%s<A HREF=\"/%susers/%s\">%s</A>",
 							fileinfo.ident==7 ? MSG_IdentMark : "&nbsp;&nbsp;",
 							BBS_SUBDIR,	fileinfo.owner,	fileinfo.owner);
 #else
-						sprintf(sender, "<A HREF=\"/%susers/%s\">%s</A>", 
+						sprintf(sender, "<A HREF=\"/%susers/%s\">%s</A>",
 							BBS_SUBDIR,	fileinfo.owner,	fileinfo.owner);
 #endif
 						strcpy(senderid, fileinfo.owner);
@@ -576,7 +576,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 						if(strstr(fileinfo.title, "=?"))	/* maybe encoded */
 						{
 							char source[STRLEN*2];
-						
+
 							strcpy(source, fileinfo.title);
 							decode_line(fileinfo.title, source);
 						}
@@ -587,12 +587,12 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 							fileinfo.title[40] = '\0';
 							strcat(fileinfo.title, ".....");
 						}
-						
+
 						if(fileinfo.accessed & FILE_HTML)
-							sprintf(title, "<A HREF=\"/%s%s/%s/PostHtml.html\" Target=\"new\">%s </A>", 
+							sprintf(title, "<A HREF=\"/%s%s/%s/PostHtml.html\" Target=\"new\">%s </A>",
 								BBS_SUBDIR, request_rec->URLParaType == MailList ? "mail" : pf->POST_NAME, fileinfo.filename, fileinfo.title);
 						else
-							sprintf(title, "<A HREF=\"/%s%s/%s.html\">%s </A>", 
+							sprintf(title, "<A HREF=\"/%s%s/%s.html\">%s </A>",
 								BBS_SUBDIR, request_rec->URLParaType == MailList ? "mail" : pf->POST_NAME, fileinfo.filename, fileinfo.title);
 					}
 				}
@@ -602,7 +602,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 				else
 					mk_timestr1(date, (time_t)fdate);
 			}
-			
+
 			/* output data according to format */
 			for(i=0; format_array[i].type; i++)
 			{
@@ -642,7 +642,7 @@ int ShowPostList(char *tag, BOARDHEADER *board, POST_FILE *pf)
 		close(fd);
 #endif
 	}
-	
+
 	return TRUE;
-	
+
 }

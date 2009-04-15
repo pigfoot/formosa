@@ -140,7 +140,7 @@ strip_ansi_str(char *dst, const char *src, enum STRIP_FLAG mode)
  * query the offset of nth non-ANSI element in s
  * if string is less then nth, return missing blanks in negative value.
  */
-int 
+int
 strat_ansi(int count, const char *s)
 {
     register int mode = 0;
@@ -154,7 +154,7 @@ strat_ansi(int count, const char *s)
 	    case 0:
 		if (*s == ESC_CHR)
 		    mode = 1;
-		else 
+		else
 		    count --;
 		break;
 
@@ -180,7 +180,7 @@ strat_ansi(int count, const char *s)
     return s - os;
 }
 
-int  
+int
 strlen_noansi(const char *s)
 {
     // XXX this is almost identical to
@@ -198,7 +198,7 @@ strlen_noansi(const char *s)
 	    case 0:
 		if (*s == ESC_CHR)
 		    mode = 1;
-		else 
+		else
 		    count ++;
 		break;
 
@@ -276,7 +276,7 @@ int DBCS_RemoveIntrEscape(unsigned char *buf, int *len)
 	    isInAnsi = 1;
 	    iansi = i;
 	    continue;
-	} 
+	}
 
 	// character
 	if (isInAnsi)
@@ -294,7 +294,7 @@ int DBCS_RemoveIntrEscape(unsigned char *buf, int *len)
 	    case 2:
 		if (isEscapeParam(buf[i]))
 		    break;
-		else 
+		else
 		    isInAnsi = 0;
 		break;
 	    }
@@ -364,7 +364,7 @@ DBCS_strcasestr(const char* pool, const char *ptr)
             if (pool[i + i2] > 0)
             {
                 // ascii
-                if (ptr[i2] < 0 || 
+                if (ptr[i2] < 0 ||
 		    tolower(ptr[i2]) != tolower(pool[i+i2]))
                 {
 		    // printf("break on ascii (i=%d, i2=%d).\n", i, i2);
@@ -384,7 +384,7 @@ DBCS_strcasestr(const char* pool, const char *ptr)
             }
         }
 
-        if (found) 
+        if (found)
 	    return (char *)pool+i;
 
         // next iteration: if target is DBCS, skip one more byte.

@@ -14,10 +14,10 @@ static char *rcs_id="$Id: tty.c,v 1.9 1993/08/04 05:12:41 ygz Exp $";
 
 #include "config.h"
 
-/* 
+/*
  * Functions get_pty() and pty_search() in this file are adopted from
  * X11R5 xterm, copyrighted by DEC & MIT.
- */ 
+ */
 
 #ifdef hpux
 # define	PTYCHAR1	"zyxwvutsrqp"
@@ -75,7 +75,7 @@ int get_pty (pty)
 
 #if defined(AIXV3) || defined(_IBMR2)
 	{
-	    if ((*pty = open ("/dev/ptc", O_RDWR)) < 0) 
+	    if ((*pty = open ("/dev/ptc", O_RDWR)) < 0)
 		return 1;
 	    strcpy(ttydev, (char *)ttyname(*pty));
 	    return 0;

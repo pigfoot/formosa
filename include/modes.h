@@ -4,7 +4,7 @@
 
 /* Lots o' modes! */	/* see mode in struct user_info in bbs.h */
 
-enum modes {	
+enum modes {
 	MMENU, /* "主選單" */
 	XMENU, /* "工具選單" */
 /*
@@ -29,15 +29,15 @@ enum modes {
 	LFRIENDS, /* "看老朋友" */
 
 	CHATROOM, /* "站內聊天室" */
-	CHATROOM2, /* "知心茶室" for nsysubbs */	
-#if 0	
+	CHATROOM2, /* "知心茶室" for nsysubbs */
+#if 0
 	IRCCHAT, /* "國內聊天廣場" */
 	LOCALIRC, /* "跨站聊天廣場" */
-#endif	
+#endif
 	SENDMSG, /* "線上送訊息" */
 /*
 	ULDL, "傳檔"
-*/	
+*/
 	QUERY, /* "查詢某人" */
 	SELECT, /* "選看板" */
 	EDITSIG, /* "編簽名檔" */
@@ -49,7 +49,7 @@ enum modes {
 	LAUSERS, /* "查全部人" */
 /*
 	MONITOR, "監看中"
-*/	
+*/
 	CLIENT, /* "主從式閱\覽器" */
 	WEBBBS, /* "Web-BBS" */
 /*

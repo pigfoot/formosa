@@ -40,7 +40,7 @@ DoPostImp()
 
 /***************************************************************
 *		POSTNUM boardname type [PATH level1 level2 .. ]
-*			取得佈告數 佈告名稱 （0 一般區  1 精華區）	
+*			取得佈告數 佈告名稱 （0 一般區  1 精華區）
 ****************************************************************/
 DoGetPostNumber()
 {
@@ -52,7 +52,7 @@ DoGetPostNumber()
 		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-	
+
 	if (SelectBoard(BoardName, Get_para_number(2)))
 	{
 		ReadRC_Init(CurBList->bid, curuser.userid);	/* ? */
@@ -60,7 +60,7 @@ DoGetPostNumber()
 
 		inet_printf("%d\t%d\r\n", POST_NUM_IS,
 	 	           get_num_records(boarddirect, FH_SIZE));
-	}	           
+	}
 }
 
 
@@ -119,7 +119,7 @@ DoGetPostHead()
 
 	RespondProtocol(OK_CMD);
 	net_cache_init();
-	
+
 	for (i = start; i <= end && read(fd, &fileinfo, FH_SIZE) == FH_SIZE; i++)
 	{
 		if (fileinfo.accessed & FILE_DELE)
@@ -198,8 +198,8 @@ DoGetPost()
 
 /*****************************************************
  *		POSTPUT boardname type   sign    news title
- *		送出佈告 佈告名稱 精華區 簽名檔 
- *			              0/1    0-3	
+ *		送出佈告 佈告名稱 精華區 簽名檔
+ *			              0/1    0-3
  *****************************************************/
 DoSendPost()
 {
@@ -288,13 +288,13 @@ DoSendPost()
 		settreafile(path, bname, NULL);
 
 #ifdef	USE_THREADING	/* syhu */
-		if (PublishPost(fname, curuser.userid, curuser.username, bname, title, 
-				curuser.ident, uinfo.from, tonews, 
+		if (PublishPost(fname, curuser.userid, curuser.username, bname, title,
+				curuser.ident, uinfo.from, tonews,
 				(type == 1) ? path : NULL, 0,
 				-1, -1) != -1)
 #else
-		if (PublishPost(fname, curuser.userid, curuser.username, bname, title, 
-				curuser.ident, uinfo.from, tonews, 
+		if (PublishPost(fname, curuser.userid, curuser.username, bname, title,
+				curuser.ident, uinfo.from, tonews,
 				(type == 1) ? path : NULL, 0) != -1)
 #endif
 
@@ -357,7 +357,7 @@ DoMailPost()
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 
 	if (!SelectBoard(Get_para_string(1), Get_para_number(2)))
 		return;
@@ -368,8 +368,8 @@ DoMailPost()
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
-	idx = Get_para_number(3);	
+
+	idx = Get_para_number(3);
 	if (check_post_exist(idx, boarddirect, &fileinfo) < 0)
 		return;
 
@@ -410,7 +410,7 @@ DoKillPost()
 		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-	
+
 	if (!SelectBoard(Get_para_string(1), type))
 		return;
 
@@ -419,7 +419,7 @@ DoKillPost()
 		RespondProtocol(KILL_NOT_ALLOW);
 		return;
 	}
-	
+
 	idx = Get_para_number(3);
 	if (check_post_exist(idx, boarddirect, &fileinfo) < 0)
 		return;
@@ -441,14 +441,14 @@ DoKillPost()
 		if (fileinfo.accessed & FILE_RESV)
 		{
 			if (reserve_one_article(idx, boarddirect) != 0)
-			{			
-				RespondProtocol(WORK_ERROR);			
+			{
+				RespondProtocol(WORK_ERROR);
 				return;
 			}
 		}
 		if (delete_one_article(idx, &fileinfo, boarddirect, curuser.userid, 'd') < 0)
 		{
-			RespondProtocol(WORK_ERROR);		
+			RespondProtocol(WORK_ERROR);
 			return;
 		}
 	}
@@ -457,7 +457,7 @@ DoKillPost()
 	{
 		if (delete_record(boarddirect, FH_SIZE, idx) < 0)
 		{
-			RespondProtocol(WORK_ERROR);		
+			RespondProtocol(WORK_ERROR);
 			return;
 		}
 		setdotfile(buf, boarddirect, fileinfo.filename);
@@ -498,7 +498,7 @@ DoTreasurePost()
 	}
 
 	setdotfile(fname, boarddirect, fileinfo.filename);
-	
+
 	if (!SelectBoard(Get_para_string(1), 1))
 	{
 		RespondProtocol(WORK_ERROR);
@@ -507,10 +507,10 @@ DoTreasurePost()
 
 	settreafile(tpath, bname, NULL);
 #ifdef USE_THREADING	/* syhu */
-	if (PublishPost(fname, fileinfo.owner, NULL, NULL, fileinfo.title, 
+	if (PublishPost(fname, fileinfo.owner, NULL, NULL, fileinfo.title,
 			fileinfo.ident, NULL, FALSE, tpath, 0, -1, -1) == -1)
 #else
-	if (PublishPost(fname, fileinfo.owner, NULL, NULL, fileinfo.title, 
+	if (PublishPost(fname, fileinfo.owner, NULL, NULL, fileinfo.title,
 			fileinfo.ident, NULL, FALSE, tpath, 0) == -1)
 #endif
 		RespondProtocol(WORK_ERROR);
@@ -547,18 +547,18 @@ DoUnkillPost()
 	idx = Get_para_number(3);
 	if (check_post_exist(idx, boarddirect, &fileinfo) < 0)
 		return;
-	
-	if (curuser.userlevel != PERM_SYSOP && 
+
+	if (curuser.userlevel != PERM_SYSOP &&
 	    strcmp(fileinfo.delby, curuser.userid) &&
 		 (type == 1 || strcmp(CurBList->owner, curuser.userid) ||
 	 	  !strcmp(fileinfo.delby, fileinfo.owner)))
 	{
 		RespondProtocol(WORK_ERROR);
 		return;
-	}	
+	}
 
 	if (!delete_one_article(idx, &fileinfo, boarddirect, curuser.userid, 'u'))
-		inet_printf("%d\t%c\t%s\r\n", OK_CMD, 
+		inet_printf("%d\t%c\t%s\r\n", OK_CMD,
 		            (fileinfo.accessed & FILE_READ) ? 'R' : 'N',
 		            fileinfo.title);	/* respond title */
 		/* R: readed post N: new post */
@@ -586,28 +586,28 @@ DoEditPostTitle()
 	type =  Get_para_number(2);
 	if (type != 0 && type != 1)
 	{
-		RespondProtocol(SYNTAX_ERROR);	
+		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-		
+
 	if (!SelectBoard(Get_para_string(1), type))
 		return;
-		
+
 	if (type == 1 && !hasBMPerm)
 	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-		
+
 	idx = Get_para_number(3);
 	if (check_post_exist(idx, boarddirect, &fileinfo) < 0)
 		return;
 
 	owner = Get_para_string(4);
-#if 0	
+#if 0
 	if (curuser.userlevel != PERM_SYSOP)	/* Only sysop can change owner */
 		*owner = '\0';
-#endif		
+#endif
 
 	title = Get_para_string(5);
 	if (title != NULL)	/* get title */
@@ -623,16 +623,16 @@ DoEditPostTitle()
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
-/*	disable	
+
+/*	disable
 	if (*owner && get_passwd(NULL, owner) > 0)
 		strcpy(fileinfo.owner, owner);
-*/			
+*/
 	strcpy(fileinfo.title, title);
-	
+
 	if (substitute_record(boarddirect, &fileinfo, FH_SIZE, idx) == 0)
 	{
-		inet_printf("%d\t%s\r\n", OK_CMD, title);		
+		inet_printf("%d\t%s\r\n", OK_CMD, title);
 		return;
 	}
 }
@@ -652,14 +652,14 @@ DoEditPost()	/* -TODO- */
 #if 1
 	RespondProtocol(POST_NOT_ALLOW);
 	return;
-#endif	
+#endif
 
 	if (!strcmp(curuser.userid, GUEST))
 	{			/* 如果使用者為 guest 登陸 */
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
+
 	type = Get_para_number(2);
 	if ((type != 0) && (type != 1))
 	{
@@ -673,8 +673,8 @@ DoEditPost()	/* -TODO- */
 	idx = Get_para_number(3);
 	if (check_post_exist(idx, boarddirect, &fileinfo) < 0)
 		return;
-	
-	sign = Get_para_number(4);	
+
+	sign = Get_para_number(4);
 	if (sign < 0 || sign > 3)
 	{
 		RespondProtocol(SYNTAX_ERROR);
@@ -689,7 +689,7 @@ DoEditPost()	/* -TODO- */
 	if (curuser.userlevel != PERM_SYSOP &&
 	    !hasBMPerm && strcmp(fileinfo.owner, curuser.userid))
 	{
-		RespondProtocol(POST_NOT_ALLOW);	
+		RespondProtocol(POST_NOT_ALLOW);
 		return;
 	}
 
@@ -698,11 +698,11 @@ DoEditPost()	/* -TODO- */
 	{
 		if (sign != 0)
 			include_sig(curuser.userid, fname, sign);
-			
+
 		setdotfile(path, boarddirect, fileinfo.filename);
 		if (myrename(fname, path) == 0)
 		{
-			RespondProtocol(OK_CMD);		
+			RespondProtocol(OK_CMD);
 			return;
 		}
 	}
@@ -795,15 +795,15 @@ DoSendPostToBoards()
 			RespondProtocol(BOARD_NOT_EXIST);
 			break;
 		}
-	
-#if 1		
+
+#if 1
 		if (blist->bhr->brdtype & BRD_ACL)
 		{
 			retval = -1;
 			RespondProtocol(WORK_ERROR);
 			break;
 		}
-#endif		
+#endif
 
 		if (!check_can_post_board(blist->bhr))
 		{
@@ -841,7 +841,7 @@ DoSendPostToBoards()
 		{
 			blist = SearchBoardList(mboards[i]);
 			setboardfile(boarddirect, mboards[i], DIR_REC);
-			
+
 			if (*news == 'Y' &&	/* send to news */
 			    (blist->bhr->brdtype & BRD_NEWS) &&
 			    curuser.ident == 7)
@@ -859,7 +859,7 @@ DoSendPostToBoards()
 			                uinfo.from, tonews, NULL, 0) != -1)
 #endif
 
- 
+
 			{
 				if (!(blist->bhr->brdtype & BRD_NOPOSTNUM))
 					curuser.numposts++;
@@ -870,7 +870,7 @@ DoSendPostToBoards()
 	}
 	else
 	{
-		unlink(fname);	/* lthuang */	
+		unlink(fname);	/* lthuang */
 		RespondProtocol(WORK_ERROR);
 	}
 
@@ -901,12 +901,12 @@ DoMakeDirect()
 	trea_name = Get_para_string(2);
 	if (*trea_name != '\0')
 	{
-		if (make_treasure_folder(boarddirect, trea_name, NULL) == 0)	
+		if (make_treasure_folder(boarddirect, trea_name, NULL) == 0)
 		{
-			RespondProtocol(OK_CMD);			
+			RespondProtocol(OK_CMD);
 			return 0;
 		}
 	}
-	RespondProtocol(WORK_ERROR);	
+	RespondProtocol(WORK_ERROR);
 	return -1;
 }

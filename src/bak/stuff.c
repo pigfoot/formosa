@@ -116,9 +116,9 @@ char *com;
 		strcpy(path, BINDIR);
 		strncat(path, arglist[0], sizeof(path) - strlen(BINDIR) - 1);
 	}
-#if 0	
+#if 0
 	if ((pid = vfork()) == 0)
-#endif	
+#endif
 	if ((pid = fork()) == 0)
 	{
 		passid = getpwuid(BBS_UID);
@@ -152,8 +152,8 @@ char *com;
 }
 
 
-/* 
- * execute oudoor program 
+/*
+ * execute oudoor program
  */
 int
 outdoor(cmd)
@@ -208,7 +208,7 @@ va_dcl
 	va_list args;
 	time_t now;
 	char msgbuf[80], *fmt, timestr[22];
-	
+
 
 	if (bbsd_log_fp == NULL)
 		return;
@@ -222,9 +222,9 @@ va_dcl
 	strftime(timestr, sizeof(timestr), "%x %X", localtime(&now));
 	fprintf(bbsd_log_fp, "%s %-12.12s %-8.8s %s\n",
 		timestr, curuser.userid, mode, msgbuf);
-#if 0		
+#if 0
 	fflush(bbsd_log_fp);
-#endif	
+#endif
 }
 
 
@@ -276,7 +276,7 @@ left_note()			/* Seraph */
 		time(&(mynote.date));
 		sprintf(mynote.buf[3], _msg_stuff_18, mynote.userid, mynote.username, 80 - 24 - strlen(mynote.userid) - strlen(mynote.username) - 19, "                                    ", Ctime(&mynote.date));
 		write(fdt, &mynote, sizeof(mynote));
-	
+
 		if ((fdd = open(fdat, O_RDONLY)) > 0)
 		{
 			flock(fdd, LOCK_EX);
@@ -771,7 +771,7 @@ char *inbuf;
 
 
 /*
- * update the mode of online user_info 
+ * update the mode of online user_info
  */
 void
 update_umode(mode)

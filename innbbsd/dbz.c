@@ -232,7 +232,7 @@ static of_t bytemap();
 #endif
 #endif
 
-/* 
+/*
  * For a program that makes many, many references to the database, it
  * is a large performance win to keep the table in core, if it will fit.
  * Note that this does hurt robustness in the event of crashes, and
@@ -594,7 +594,7 @@ char *oldname;			/* base name; all must exist */
 	if (stat(oldname, &sb) != -1) {
 		 for (m = 1, i = 0; m < sb.st_size; i++, m <<= 1)
 			 continue;
-		 
+
 		 /* if we had more tags than the default, use the new data */
 		 if ((c.tagmask | c.tagenb) && m > (1 << TAGSHIFT)) {
 			  c.tagshift = i;
@@ -1006,7 +1006,7 @@ datum key;
 		/* try it */
 		buffer[keysize] = '\0';		/* terminated for DEBUG */
 		(void) mapcase(buffer, buffer, keysize);
-		DEBUG(("fetch: buffer (%s) looking for (%s) size = %d\n", 
+		DEBUG(("fetch: buffer (%s) looking for (%s) size = %d\n",
 						buffer, key.dptr, keysize));
 		if (memcmp((POINTER)key.dptr, (POINTER)buffer, cmplen) == 0 &&
 				(*sepp == conf.fieldsep || *sepp == '\0')) {
@@ -1213,7 +1213,7 @@ register struct dbzconfig *cp;
 		cp->tagmask = TAGMASK;
 		cp->tagshift = TAGSHIFT;
 		DEBUG(("getconf: defaults (%ld, %c, (0x%lx/0x%lx<<%d))\n",
-			cp->tsize, cp->casemap, cp->tagenb, 
+			cp->tsize, cp->casemap, cp->tagenb,
 			cp->tagmask, cp->tagshift));
 		return(0);
 	}
@@ -1363,7 +1363,7 @@ FILE *f;
 			return(NULL);
 		}
 	}
-	it = mmap((caddr_t)0, (size_t)conf.tsize * SOF, 
+	it = mmap((caddr_t)0, (size_t)conf.tsize * SOF,
 		pagronly ? PROT_READ : PROT_WRITE | PROT_READ, MAP__ARG,
 		(int)fileno(f), (off_t)0);
 	if (it == (char *)-1) {

@@ -36,7 +36,7 @@
 
 #if 1
 
-char *url[] = 
+char *url[] =
 {
 	"www.chinatimes.com.tw/news/papers/ctimes/cfocus/",
 	"www.chinatimes.com.tw/news/papers/ctimes/cfocus/",
@@ -45,7 +45,7 @@ char *url[] =
 	NULL
 };
 
-int tail[] = 
+int tail[] =
 {
 	1, 2, 1, 2
 };
@@ -83,7 +83,7 @@ int port;
 
 	if (!host || !(*host))
 		return -1;
-		
+
 	memset(&sin, 0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons((u_short) port);
@@ -139,8 +139,8 @@ size_t n;
 char *GetBBSTag(char *type, char *tag, char *data)
 {
 	char *start, *end, *p;
-	
-	if((start = strstr(data, "<!")) != NULL 
+
+	if((start = strstr(data, "<!")) != NULL
 	&& !strncasecmp(start+2, "BBS", 3)
 	&& (end = strstr(start+6, "!>")) != NULL)
 	{
@@ -153,7 +153,7 @@ char *GetBBSTag(char *type, char *tag, char *data)
 		}
 		else
 			*tag = '\0';
-		
+
 		strcpy(type, start+6);
 		return end+2;
 	}
@@ -164,7 +164,7 @@ char *GetBBSTag(char *type, char *tag, char *data)
 void ShowTitle(FILE *fpw, char *data1)
 {
 	char *start, *end, *data;
-	
+
 #if 1
 	if((data = strstr(data1, "</big>")) == NULL)
 		return;
@@ -184,7 +184,7 @@ void ShowTitle(FILE *fpw, char *data1)
 void ShowContent(FILE *fpw, char *data)
 {
 	char *start, *end;
-	
+
 	if((start = strstr(data, "</big></font><p>")) != NULL
 	&& (end = strstr(data, "<!-**¤º®eµ²§ô-->")) != NULL)
 	{
@@ -200,21 +200,21 @@ int CreateHTML(char *in, char *out, char *wdata)
 	FILE *fpr, *fpw;
 	char type[STRLEN], tag[512];
 	char pbuf[1024];
-	
+
 	char *p, *data, *next;
-	
+
 	if ((fpr = fopen(in, "r")) == NULL)
 	{
 		fprintf(stderr, "open read file %s error\n", in);
 		return FALSE;
 	}
-	
+
 	if ((fpw = fopen(out, "w")) == NULL)
 	{
 		fprintf(stderr, "open write file %s error\n", out);
 		return FALSE;
 	}
-	
+
 	while (fgets(pbuf, sizeof(pbuf), fpr) != NULL)
 	{
 		if ((p = strrchr(pbuf, '\n')) != NULL)
@@ -242,19 +242,19 @@ int CreateHTML(char *in, char *out, char *wdata)
 					else
 						fprintf(fpw, "<!BBS_%s!>", type);
 				}
-			
+
 			}
 			else
 			{
 				fprintf(fpw, "%s\n", data);
-				break;	
+				break;
 			}
 		}
 	}
-	
+
 	fclose(fpr);
 	fclose(fpw);
-	
+
 	return TRUE;
 }
 
@@ -263,7 +263,7 @@ void
 init_bbsenv()
 {
 	chdir(HOMEBBS);
-	
+
 	if (getuid() != BBS_UID)
 	{
 		if (chroot(HOMEBBS) == -1 || chdir("/") == -1)
@@ -290,9 +290,9 @@ int main(int argc, char *argv[])
 	char temp[2048];
 	char btemp[1024*256];
 	char title[STRLEN][10];
-	
+
 	init_bbsenv();
-	
+
 	while(url[index])
 	{
 		int failed = FALSE;
@@ -300,32 +300,32 @@ int main(int argc, char *argv[])
 		char server[STRLEN], uri[1024], file[32], findex[16], date[16];
 		time_t now;
 		int year;
-		
-		
+
+
 		if((p = strchr(url[index], '/')) == NULL)
 		{
 			fprintf(stderr, "%s format error...\n", url[index]);
 			index++;
 			continue;
 		}
-		
+
 		xstrncpy(server, url[index], p-(url[index])+1);
 		xstrncpy(uri, p, strlen(p)+1);
-		
+
 		bzero(findex, sizeof(findex));
 		bzero(file, sizeof(file));
-		
+
 		time(&now);
-		
+
 		strftime(date, sizeof(date), "%m%d", localtime(&now));
 		strftime(file, sizeof(file), "%y", localtime(&now));
 		year = atoi(file);
 		year -= 11;
-		
+
 		sprintf(findex, "%02d%s%02d.htm", year, date, tail[index]);
-		
+
 		strcat(uri, findex);
-		
+
 #if 1
 		fprintf(stdout, "[server=%s]\n", server);
 		fprintf(stdout, "[uri=%s]\n", uri);
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 		if((sd = ConnectServer(server, 80)) > 0)
 		{
 			FILE *fin, *fout;
-			
+
 			if((fin = fdopen(sd, "r")) == NULL
 			|| (fout = fdopen(sd, "w")) == NULL)
 			{
@@ -342,12 +342,12 @@ int main(int argc, char *argv[])
 				close(sd);
 				return -1;
 			}
-		
-			
+
+
 			fprintf(fout, "GET %s HTTP/1.1\r\n", uri);
 			fprintf(fout, "Host: %s\r\n\n", server);
 			fflush(fout);
-			
+
 			fgets(temp, sizeof(temp), fin);
 			/* exam respond */
 			if(strncmp(temp, "HTTP/1.1 200 ", 13))	/* 200 OK */
@@ -355,14 +355,14 @@ int main(int argc, char *argv[])
 				failed = TRUE;
 				fprintf(stderr, "%s", temp);
 			}
-			
+
 			/* skip remain respond header */
 			while(fgets(temp, sizeof(temp), fin))
 			{
 				if(*temp == '\r' && *(temp+1) == '\n')
 				break;
 			}
-			
+
 			if(failed)
 			{
 				index++;
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
 				close(sd);
 				continue;
 			}
-			
+
 			bzero(btemp, sizeof(btemp));
 			/* get content */
 			while(fgets(temp, sizeof(temp), fin))
@@ -384,10 +384,10 @@ int main(int argc, char *argv[])
 				}
 				strcat(btemp, temp);
 			}
-			
+
 			/* create html */
 			CreateHTML(html_in[index], html_out[index], btemp);
-		
+
 			fclose(fin);
 			fclose(fout);
 			close(sd);

@@ -8,13 +8,13 @@
 #include "bbswebproto.h"
 #include "webvar.h"
 
-typedef struct 
+typedef struct
 {
 	char *attr;
 	char mask;
 } BOARD_ATTRIBUTE;
 
-BOARD_ATTRIBUTE btype[] = 
+BOARD_ATTRIBUTE btype[] =
 {
 	{"IDENT", 		BRD_IDENT},
 	{"NEWS", 		BRD_NEWS},
@@ -22,9 +22,9 @@ BOARD_ATTRIBUTE btype[] =
 	{"NOPOSTNUM", 	BRD_NOPOSTNUM},
 #if 0
 	{"ANNOUNCE", 	BRD_ANNOUNCE},
-#endif	
+#endif
 	{"PRIVATE", 	BRD_PRIVATE},
-	{"WEBSKIN", 	BRD_WEBSKIN}, 
+	{"WEBSKIN", 	BRD_WEBSKIN},
 	{"ACCESSCTRL", 	BRD_ACCESSCTRL},
     {NULL,  0x00}
 };
@@ -39,14 +39,14 @@ malloc_boards(binfr)
 struct board_t *binfr;
 {
 	BOARDHEADER *bhentp;
-	
+
 	if (binfr == NULL)
 		return -1;
 	bhentp = &(binfr->bhr);
-	
+
 	if (bhentp == NULL || bhentp->filename[0] == '\0')
 		return -1;
-	
+
 	/* hide private board from user not SYSOP (webbbs) */
 	if((bhentp->brdtype & BRD_PRIVATE) && curuser.userlevel != PERM_SYSOP)
 		return -1;
@@ -54,7 +54,7 @@ struct board_t *binfr;
 		return -1;
 	if(board_class != '*' && bhentp->class != board_class)	/* '*' is all class */
 		return -1;
-	
+
 	if (binfr->rank < 1 || binfr->rank > MAXBOARD)
 		return -1;
 	all_brds[binfr->rank - 1].binfr = binfr;
@@ -99,7 +99,7 @@ void ShowBoard(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	else if(!strcasecmp(tag, "Welcome"))
 	{
 		char fname[PATHLEN];
-		
+
 		setboardfile(fname, board->filename, BM_WELCOME);
 		ShowArticle(fname, FALSE, TRUE);
 	}
@@ -107,22 +107,22 @@ void ShowBoard(char *tag, BOARDHEADER *board, POST_FILE *pf)
 	else if(!strcasecmp(tag, "Modify"))
 	{
 		if(PSCorrect == Correct && !strcmp(username, "supertomcat"))
-			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[ADM]修改看板設定</a>", 
+			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[ADM]修改看板設定</a>",
 				BBS_SUBDIR, board->filename, HTML_BoardModify);
 	}
 #endif
 	else if(!strcasecmp(tag, "AccessList"))
 	{
 		char file[PATHLEN];
-		
+
 		setboardfile(file, board->filename, ACCESS_LIST);
 		ShowArticle(file, FALSE, TRUE);
 	}
 	else if(!strcasecmp(tag, "ACL_Modify"))
 	{
-		if(PSCorrect==Correct && (board->brdtype & BRD_ACCESSCTRL) && 
+		if(PSCorrect==Correct && (board->brdtype & BRD_ACCESSCTRL) &&
 		(!strcmp(username, board->owner) || HAS_PERM(PERM_SYSOP)))
-			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[BM]修改板友名單</a>", 
+			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[BM]修改板友名單</a>",
 				BBS_SUBDIR, board->filename, HTML_AccessListModify);
 	}
 	else
@@ -138,7 +138,7 @@ void ShowBoard(char *tag, BOARDHEADER *board, POST_FILE *pf)
 }
 
 /*******************************************************************
- *	顯示看板列表 
+ *	顯示看板列表
  *
  *	<!BBS_BoardList CLASS="" FORMAT="">
  *
@@ -148,18 +148,18 @@ void ShowBoardList(char *tag, POST_FILE *pf)
 {
 #if 1 /* lthuang */
 	int idx = 0;
-#endif	
+#endif
 	int recidx;
 	FORMAT_ARRAY format_array[32];
 	char format[512];
-	
+
 	bzero(format_array, sizeof(format_array));
-	
+
 	GetPara3(format, "CLASS", tag, 2, "*");
-	
+
 	if(PSCorrect != Correct)
 		curuser.userlevel = PERM_DEFAULT;
-		
+
 	board_class = *format;
 	num_brds = 0;
 
@@ -168,14 +168,14 @@ void ShowBoardList(char *tag, POST_FILE *pf)
 
 	pf->list_start = 1;
     pf->list_end = num_brds;
-	
+
 	GetPara3(format, "FORMAT", tag, 512, "");
 	if(strlen(format)==0)
 		return;
-	
+
 	if(build_format_array(format_array, format, "%", "%", 32) == -1)
 		return;
-		
+
 #if 0
 {
 	int i;
@@ -192,8 +192,8 @@ void ShowBoardList(char *tag, POST_FILE *pf)
 	for (recidx=pf->list_start; recidx<= pf->list_end; recidx++)
 #else
 	for (recidx=1; recidx<=MAXBOARD; recidx++)
-#endif	
-	{	
+#endif
+	{
 		int i;
 
 		if (!all_brds[recidx - 1].bhr)
@@ -215,7 +215,7 @@ void ShowBoardList(char *tag, POST_FILE *pf)
 			{
 				int tag_len = format_array[i+1].offset-format_array[i].offset-2;
 				char *tag = &(format[format_array[i].offset+1]);
-				
+
 				if(!strncasecmp(tag, "NUM", tag_len))
 					fprintf(fp_out, "%d", idx);
 				else if(!strncasecmp(tag, "CLASS", tag_len))
@@ -225,8 +225,8 @@ void ShowBoardList(char *tag, POST_FILE *pf)
 				else if(!strncasecmp(tag, "E-BNAME", tag_len))
 					fprintf(fp_out, "%s", all_brds[recidx-1].bhr->filename);
 				else if(!strncasecmp(tag, "E-BNAME-LINK", tag_len))
-					fprintf(fp_out, "%s/%s", 
-						all_brds[recidx-1].bhr->filename, 
+					fprintf(fp_out, "%s/%s",
+						all_brds[recidx-1].bhr->filename,
 						all_brds[recidx-1].binfr->bm_welcome ? HTML_BmWelcome : "");
 				else if(!strncasecmp(tag, "C-BNAME", tag_len))
 					fprintf(fp_out, "%s ", all_brds[recidx-1].bhr->title);	/* add space */
@@ -249,7 +249,7 @@ void ShowBoardList(char *tag, POST_FILE *pf)
  *
  ************************************************************/
 int CheckBoardPerm(BOARDHEADER *board, USEREC *user)
-{		
+{
 
 	if(board->brdtype & BRD_ACCESSCTRL
 	&& CheckAccessList(board->filename, user->userid) != WEB_OK)
@@ -312,9 +312,9 @@ int ModifyAccessList(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	char file[PATHLEN], override[MAX_FRIENDS*IDLEN], override1[MAX_FRIENDS*IDLEN];
 
 	GetPara2(override, "CONTENT", pbuf, MAX_FRIENDS*IDLEN, "");
-	
+
 	setboardfile(file, board->filename, ACCESS_LIST);
-	
+
 	if(strlen(override)==0)
 	{
 		if(isfile(file) && unlink(file) == -1)
@@ -322,15 +322,15 @@ int ModifyAccessList(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			sprintf(WEBBBS_ERROR_MESSAGE, "刪除 %s 板友名單失敗", username);
 			return WEB_ERROR;
 		}
-		
+
 		return WEB_OK_REDIRECT;
 	}
-	
+
 	Convert(override, override1);
-	
+
 	p = override1;
 	*override = '\0';
-	
+
 	while(num_friend < MAX_FRIENDS
 	&& (friend = strtok(p, " \n\0")))
 	{
@@ -340,10 +340,10 @@ int ModifyAccessList(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			strcat(override, "\n");
 			num_friend++;
 		}
-	
+
 		p += strlen(friend) + 1;
 	}
-	
+
 	if(strlen(override)==0)
 	{
 		if(isfile(file) && unlink(file) == -1)
@@ -351,10 +351,10 @@ int ModifyAccessList(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			strcpy(WEBBBS_ERROR_MESSAGE, "刪除板友名單失敗");
 			return WEB_ERROR;
 		}
-		
+
 		return WEB_OK_REDIRECT;
 	}
-	
+
 	if((fp = fopen(file, "w"))==NULL)
 	{
 		strcpy(WEBBBS_ERROR_MESSAGE, "無法更新板友名單");
@@ -411,7 +411,7 @@ int ModifySkin(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		return WEB_ERROR;
 	}
 	chmod(fname, 0644);
-	
+
 	write_article_body(fp, pbuf, POST_SKIN);
 
 	fclose(fp);
@@ -436,7 +436,7 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 {
 	int bid, recidx;
 	char buffer[STRLEN*2];
-	char *custom_files[] = 
+	char *custom_files[] =
 	{
 		HTML_BmWelcome,
 		HTML_PostList,
@@ -450,7 +450,7 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 		HTML_TreaPost,
 		NULL
 	};
-	
+
 	if((bid = get_board(board, board->filename)) <=0)
 	{
 		sprintf(WEBBBS_ERROR_MESSAGE, "get_board %s error", board->filename);
@@ -459,30 +459,30 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 
 	GetPara2(buffer, "BNAME", pbuf, BNAMELEN*2, "");
 	Convert(buffer, board->filename);
-	
+
 	GetPara2(buffer, "CBNAME", pbuf, CBNAMELEN*3, "");
 	Convert(buffer, board->title);
-	
+
 	GetPara2(buffer, "BM", pbuf, IDLEN*2, "");
 	Convert(buffer, board->owner);
-	
+
 	GetPara2(buffer, "LEVEL", pbuf, 3, "");
 	board->level = atoi(buffer);
-	
+
 	GetPara2(buffer, "CLASS", pbuf, 2, "");
 	board->class = *buffer;
-	
+
 	for(recidx=0; btype[recidx].attr; recidx++)
 	{
 		GetPara2(buffer, btype[recidx].attr, pbuf, 4, "");
 		if(strlen(buffer))
 			!strcasecmp(buffer, "YES") ? (board->brdtype |= btype[recidx].mask) : (board->brdtype &= ~(btype[recidx].mask));
 	}
-	
+
 
 #if 0
 	sprintf(WEBBBS_ERROR_MESSAGE, "bname=%s, title=%s, owner=%s, level=%d, class=%c, MAX_BRDTYPE=%d
-		<br>IDENT=%s<br>NEWS=%s<br>UNZAP=%s<br>NOPOSTNUM=%s<br>ANNOUNCE=%s<br>PRIVATE=%s<br>WEBSKIN=%s<br>WEBONLY=%s", 
+		<br>IDENT=%s<br>NEWS=%s<br>UNZAP=%s<br>NOPOSTNUM=%s<br>ANNOUNCE=%s<br>PRIVATE=%s<br>WEBSKIN=%s<br>WEBONLY=%s",
 		board->filename, board->title, board->owner, board->level, board->class, sizeof(board->brdtype),
 		board->brdtype & BRD_IDENT ? "YES" : "NO",
 		board->brdtype & BRD_NEWS ? "YES" : "NO",
@@ -500,9 +500,9 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 	{
 		char skin[PATHLEN];
 		int i;
-		
+
 		setskinfile(buffer, board->filename, NULL);
-		
+
 		if(!isdir(buffer))
 		{
 			/* create webskin dir */
@@ -511,7 +511,7 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 				sprintf(WEBBBS_ERROR_MESSAGE, "Can't create dir: %s", buffer);
 				return WEB_ERROR;
 			}
-			
+
 			for(i=0; custom_files[i]; i++)
 			{
 				sprintf(buffer, "%s%s%s", HTML_PATH, BBS_SUBDIR, custom_files[i]);
@@ -521,12 +521,12 @@ int ModifyBoard(char *pbuf, BOARDHEADER *board)
 					sprintf(WEBBBS_ERROR_MESSAGE, "copy skin file failed: %s -> %s", buffer, skin);
 					return WEB_ERROR;
 				}
-				
+
 			}
 		}
 	}
-	
-	
+
+
 	if (substitute_record(BOARDS, board, BH_SIZE, bid) == -1)
 	{
 		sprintf(WEBBBS_ERROR_MESSAGE, "修改看板屬性失敗");

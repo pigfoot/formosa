@@ -31,7 +31,7 @@ ShowVoteList(char *tag, char *POST_NAME)
 		       "¤W¯¸¼Æ", "±i¶K¼Æ", "µù¥U®É¶¡");
 	fprintf(fp_out, "[7m  %4s %8s   %8s %8s[m",
 		       "»{ÃÒ", "§ë²¼¶}©l", "¹w­p¶}²¼", "¨C¤H²¼¼Æ");
-		
+
 	while (read(fd, &ent, sizeof(VOTE)) == sizeof(VOTE))
 	{
 		if (ent.firstlogin)
@@ -51,7 +51,7 @@ ShowVoteList(char *tag, char *POST_NAME)
 		fprintf(fp_out, " %s %s - %s   %2d\n",
 			       (ent.ident == 7) ? "¡À" : "  ",
 			       stime, etime, ent.tickets);
-		num++;			     
+		num++;
 	}
 	close(fd);
 
@@ -59,7 +59,7 @@ ShowVoteList(char *tag, char *POST_NAME)
 }
 
 
-int 
+int
 main()
 {
 	ShowVoteList("test", "/apps/bbs/boards/test/vote/.VOTE");

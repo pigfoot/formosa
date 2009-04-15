@@ -118,10 +118,10 @@ DoGetMailHead()
 			else
 				c = '*';
 			if (mail_state != 'D')
-				net_cache_printf("%d\t%c\t%c\t%s\t%s\t%s\r\n", 
+				net_cache_printf("%d\t%c\t%c\t%s\t%s\t%s\r\n",
 					i, mail_state, c, fh.owner, chdate, fh.title);
 			else
-				net_cache_printf("%d\t%c\t%c\t%s\t%s\r\n", 
+				net_cache_printf("%d\t%c\t%c\t%s\t%s\r\n",
 					i, mail_state, c, fh.owner, chdate);
 		}
 		else
@@ -140,14 +140,14 @@ FILEHEADER *fhr;
 {
 	int fd;
 	int maxkeepmail;
-	
-	
+
+
 	if (!strcmp(curuser.userid, GUEST))
 	{			/* 如果使用者為 guest 登陸 */
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
+
 	*idx = Get_para_number(1);
 	if (*idx < 1)
 	{
@@ -157,14 +157,14 @@ FILEHEADER *fhr;
 
 	if (PERM_BM == curuser.userlevel)
 		maxkeepmail = SPEC_MAX_KEEP_MAIL;
-	else  
+	else
 		maxkeepmail = MAX_KEEP_MAIL;
 	if (curuser.userlevel != PERM_SYSOP && *idx > maxkeepmail)	/* lthuang */
 	{
 		RespondProtocol(MAIL_NOT_EXIST);
 		return;
 	}
-	
+
 	if (*idx > get_num_records(maildirect, FH_SIZE))	/* get mail count */
 	{
 		RespondProtocol(MAIL_NOT_EXIST);
@@ -175,7 +175,7 @@ FILEHEADER *fhr;
 	{
 		if (lseek(fd, FH_SIZE * (*idx - 1), SEEK_SET) != -1
 		    && read(fd, fhr, FH_SIZE) == FH_SIZE)
-		{		    
+		{
 			close(fd);
 			return 0;
 		}
@@ -183,8 +183,8 @@ FILEHEADER *fhr;
 	}
 	RespondProtocol(WORK_ERROR);
 	return -1;
-}	
-	
+}
+
 
 /*****************************************************
  *  Syntax: MAILGET mailnum
@@ -197,7 +197,7 @@ DoGetMail()
 
 	if (set_mail(&idx, &fh) < 0)
 	{
-		RespondProtocol(WORK_ERROR);	
+		RespondProtocol(WORK_ERROR);
 		return;
 	}
 
@@ -208,7 +208,7 @@ DoGetMail()
 	}
 
 	fh.accessed |= FILE_READ;
-	
+
 	if (substitute_record(maildirect, &fh, FH_SIZE, idx) < 0)
 	{
 		RespondProtocol(WORK_ERROR);
@@ -237,11 +237,11 @@ DoSendMail()
 	}
 #ifdef NSYSUBBS1
 	if (curuser.ident != 7)
-	{	
+	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 
 	to = Get_para_string(1);
 	if (*to == '\0')
@@ -281,7 +281,7 @@ DoSendMail()
 		if ((sign >= 1) && (sign <= 3))
 			include_sig(curuser.userid, fname, sign);	/* include sign */
 
-		ch = SendMail(-1, fname, curuser.userid, to, title, 
+		ch = SendMail(-1, fname, curuser.userid, to, title,
 		              curuser.ident);
 		unlink(fname);
 		if (!ch)
@@ -345,11 +345,11 @@ DoMailGroup()
 	}
 #ifdef NSYSUBBS1
 	if (curuser.ident != 7)
-	{	
+	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 
 	sign = Get_para_number(1);
 	if (sign < 0)
@@ -370,7 +370,7 @@ DoMailGroup()
 	mgcount = 0;
 	for (i = 0; i < MAX_MAILGROUPS; i++)
 		mgroup[i] = (char *) NULL;
-		
+
 	retval = 0;
 
 	RespondProtocol(OK_CMD);
@@ -392,7 +392,7 @@ DoMailGroup()
 		if (!strchr(to, '@') && !get_passwd(NULL, to))
 		{
 			retval = -1;
-			RespondProtocol(USERID_NOT_EXIST);				
+			RespondProtocol(USERID_NOT_EXIST);
 			break;
 		}
 
@@ -403,7 +403,7 @@ DoMailGroup()
 			RespondProtocol(WORK_ERROR);
 			break;
 		}
-		
+
 		strcpy(mgroup[mgcount], to);
 		mgcount++;
 		RespondProtocol(OK_CMD);
@@ -426,11 +426,11 @@ DoMailGroup()
 			for (i = 0; i < mgcount; i++)
 			{
 				/* TODO: checking the return vaule of SendMail() here ? */
-				SendMail(ms, fname, curuser.userid, mgroup[i], 
+				SendMail(ms, fname, curuser.userid, mgroup[i],
 				                  title, curuser.ident);
 			}
 			CloseMailSocket(ms);
-			RespondProtocol(OK_CMD);						
+			RespondProtocol(OK_CMD);
 		}
 		unlink(fname);
 		return;
@@ -438,7 +438,7 @@ DoMailGroup()
 	else
 	{
 		unlink(fname);	/* lthuang */
-		RespondProtocol(WORK_ERROR);	
+		RespondProtocol(WORK_ERROR);
 	}
 
 	for (i = 0; i < mgcount; i++)
@@ -468,10 +468,10 @@ DoUnkillMail()
 
 	if (set_mail(&idx,&fh) < 0)
 		return;
-	
+
 	if (!delete_one_article(idx, &fh, maildirect, curuser.userid, 'u'))
-		inet_printf("%d\t%c\t%s\r\n", OK_CMD, 
-		            (fh.accessed & FILE_READ) ? 'R' : 'N', 
+		inet_printf("%d\t%c\t%s\r\n", OK_CMD,
+		            (fh.accessed & FILE_READ) ? 'R' : 'N',
 		            fh.title);
 	else
 		RespondProtocol(WORK_ERROR);
@@ -489,11 +489,11 @@ DoMailMail()
 
 #ifdef NSYSUBBS1
 	if (curuser.ident != 7)
-	{	
+	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 
 	if (set_mail(&idx, &fh) < 0)
 		return;
@@ -504,13 +504,13 @@ DoMailMail()
 		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-	
+
 	if (!is_emailaddr(to) && get_passwd(NULL, to) <= 0)
-	{	
+	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
+
 	if (fh.accessed & FILE_DELE)
 	{
 		RespondProtocol(MAIL_NOT_EXIST);

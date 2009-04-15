@@ -180,7 +180,7 @@ struct LANG {
 #define	_msg_list_16	MsgInfo(210)	/*	"¤¤¤å¥NºÙ"	*/
 #define	_msg_list_17	MsgInfo(211)	/*	"¨Ó¦Û"	*/
 #define	_msg_list_18	MsgInfo(212)	/*	"ª¬ºA"	*/
-#define	_msg_list_19	MsgInfo(213)	/*	"...¨Ï¥ÎªÌ¶i¯¸¤¤..."	*/                    
+#define	_msg_list_19	MsgInfo(213)	/*	"...¨Ï¥ÎªÌ¶i¯¸¤¤..."	*/
 #define	_msg_list_20	MsgInfo(215)	/*	" (¡ô)(¡õ)´å¼Ð (¡÷)(Enter)¬d¸ß (Ctrl-P)¤Á´«©I¥s¹a (h)»¡©ú  %s [m"	*/
 
 #define	_msg_ask_group_add	MsgInfo(228)	/*	"¿ï¶µ: [a]¥[¤J [d]§R°£ [f]¦n¤Í [e]§¹¦¨ [q]©ñ±ó : [e] "	*/

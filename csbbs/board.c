@@ -18,7 +18,7 @@ MakeBoardList()
 	if (!num_brds)
 	{
 		int flags = curuser.flags[0];
-		
+
 		curuser.flags[0] &= ~YANK_FLAG;	/* lthuang: 99/11/24 */
 		CreateBoardList(&curuser);
 		curuser.flags[0] = flags;
@@ -44,7 +44,7 @@ char *board;
 
 	if (bname[0] != '\0' && !strcmp(board, bname))
 		return ans;
-		
+
 	xstrncpy(bname, board, sizeof(bname));
 	setboardfile(filename, board, BM_ASSISTANT);
 	if (seekstr_in_file(filename, curuser.userid))
@@ -60,7 +60,7 @@ char *board;
  *               1 treasure
  *				¿ï¾Ü§G§i
  *****************************************************/
-/*ARGUSED*/ 
+/*ARGUSED*/
 SelectBoard(bname, type)
 char *bname;
 int type;
@@ -90,14 +90,14 @@ int type;
 		return 0;
 	}
 
-#if 1	
+#if 1
 /* TODO */
 	if (blist->bhr->brdtype & BRD_ACL)
 	{
 		RespondProtocol(WORK_ERROR);
 		return 0;
 	}
-#endif	
+#endif
 
 	ifpath = FALSE;
 	if (type)
@@ -117,7 +117,7 @@ int type;
 	}
 
 	CurBList = blist->bhr;
-	
+
 	sprintf(boarddirect, "%s/%s/%s",
 			(type) ? "treasure" : "boards", bname, DIR_REC);
 	if (ifpath)
@@ -153,14 +153,14 @@ int type;
 			sprintf(p, "/%s/%s", fileinfo.filename, DIR_REC);
 		}
 	}
-	
-	if (!strcmp(CurBList->owner, curuser.userid) || 
+
+	if (!strcmp(CurBList->owner, curuser.userid) ||
 	    CheckBoardHelper(CurBList->filename) ||
 	    curuser.userlevel == PERM_SYSOP)
 	{
 		hasBMPerm = TRUE;
 	}
-	
+
 	return TRUE;
 }
 
@@ -195,7 +195,7 @@ DoListBoard()
 
 	RespondProtocol(OK_CMD);
 	net_cache_init();
-	
+
 	for (i = 0; i < num_brds; i++)
 	{
 		bhr = all_brds[i].bhr;
@@ -207,10 +207,10 @@ DoListBoard()
 			net_cache_printf("%s\t%d\t%d\t%c\t%d\t%s\t%s\r\n",
 				bhr->filename, ifzap, ifpost,
 				(bhr->brdtype & BRD_NEWS) ? 'B' : '#', bhr->level,
-				(bhr->owner[0]) ? bhr->owner : "#", 
+				(bhr->owner[0]) ? bhr->owner : "#",
 				bhr->title);
 		}
-	}	
+	}
 	net_cache_printf(".\r\n");
 	net_cache_refresh();
 }
@@ -242,7 +242,7 @@ DoZap()
 		ZapRC_DoUnZap(blist->bhr->bid);
 	else
 		ZapRC_DoZap(blist->bhr->bid);
-	sethomefile(genbuf, curuser.userid, UFNAME_ZAPRC);		
+	sethomefile(genbuf, curuser.userid, UFNAME_ZAPRC);
 	ZapRC_Update(genbuf);
 	RespondProtocol(OK_CMD);
 }
@@ -307,7 +307,7 @@ static int
 BoardWelcome_Init(char *bname)
 {
 	struct BoardList *blist;
-	
+
 	if ((blist = SearchBoardList(bname)) == NULL)
 	{
 		RespondProtocol(BOARD_NOT_EXIST);
@@ -332,14 +332,14 @@ DoPutBoardWelcome()
 	char *bname;
 	char path[PATHLEN], temp[PATHLEN];
 
-	
+
 	bname = Get_para_string(1);
 	if (bname == NULL)
 	{
 		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-	
+
 	if (BoardWelcome_Init(bname) == -1)
 		return;
 
@@ -370,7 +370,7 @@ DoKillBoardWelcome()
 		RespondProtocol(SYNTAX_ERROR);
 		return;
 	}
-	
+
 	if (BoardWelcome_Init(bname) == -1)
 		return;
 

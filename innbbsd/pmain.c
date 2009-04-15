@@ -18,7 +18,7 @@ char *port;
 #ifdef DEBUG
 	printf("port fd %d allocated\n",rel);
 #endif
-	if (rel<0) { 
+	if (rel<0) {
 		fprintf(stderr,"Trying to listen in port %s\n",INNBBSDPORT2);
 		return open_listen(INNBBSDPORT2,"tcp",NULL);
 	}
@@ -28,7 +28,7 @@ char *port;
 	printf("start to allocate port\n");
 #endif
         return open_listen(port,"tcp",NULL);
-    } 
+    }
 }
 
 p_unix_main(path)
@@ -42,7 +42,7 @@ char *path;
 #ifdef DEBUG
 	printf("port fd %d allocated\n",rel);
 #endif
-	if (rel<0) { 
+	if (rel<0) {
 		fprintf(stderr,"Trying to listen in port %s\n",INNBBSDPATH2);
 		return open_listen(INNBBSDPATH2,"tcp",NULL);
 	}
@@ -52,11 +52,11 @@ char *path;
 	printf("start to allocate path %s\n", path);
 #endif
         int fd = unixclient(path,"tcp");
-	if (fd < 0) 
+	if (fd < 0)
 	   unlink(path);
         else
 	   close(fd);
         return open_unix_listen(path,"tcp",NULL);
-    } 
+    }
 }
 

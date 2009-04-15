@@ -54,14 +54,14 @@
 #endif
 
 /*
-   Maximum number of articles received for a newsgroup by bbsnnrp each time 
+   Maximum number of articles received for a newsgroup by bbsnnrp each time
 */
 #ifndef MAX_ARTS
 # define MAX_ARTS 100
 #endif
 
 /*
-   Maximum size of articles received 
+   Maximum size of articles received
 */
 #ifndef MAX_ART_SIZE
 # define MAX_ART_SIZE 1000000L
@@ -69,7 +69,7 @@
 
 
 /*
-   Maximum number of articles stated for a newsgroup by bbsnnrp each time 
+   Maximum number of articles stated for a newsgroup by bbsnnrp each time
 */
 #ifndef MAX_STATS
 # define MAX_STATS 1000
@@ -88,7 +88,7 @@
 #endif
 
 /*
-   time to maintain history database 
+   time to maintain history database
 */
 #ifndef HIS_MAINT
 # define HIS_MAINT
@@ -124,9 +124,9 @@
 /*
 # ifndef ARG
 #  ifdef __STDC__
-#   define ARG(x) (x) 
+#   define ARG(x) (x)
 #  else
-#   define ARG(x) () 
+#   define ARG(x) ()
 #  endif
 # endif
 */
@@ -138,7 +138,7 @@
 #endif
 
 #if !defined(__svr4__) || defined(sun)
-#  define WITH_TM_GMTOFF  
+#  define WITH_TM_GMTOFF
 #endif
 #if (defined(__svr4__) && defined(sun)) || defined(SOLARIS)
 # ifndef SOLARIS
@@ -191,10 +191,10 @@
 
 #ifdef HCCC
 #if defined(HC) || defined(WORDG2B)
-#  define Rfprintf b2gfprintf 
-#  define Sfprintf g2bfprintf 
-#  define Rfputs   b2gfputs 
-#  define Sfputs   g2bfputs 
+#  define Rfprintf b2gfprintf
+#  define Sfprintf g2bfprintf
+#  define Rfputs   b2gfputs
+#  define Sfputs   g2bfputs
 #else
 #  define Rfprintf fprintf
 #  define Sfprintf fprintf

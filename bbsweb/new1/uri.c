@@ -8,10 +8,10 @@ extern SKIN_FILE *skin_file;
 
 /*******************************************************************
  *	拆解 URI 成為三段
- *	
+ *
  *	不作額外判斷
  *******************************************************************/
-static void 
+static void
 GetURIToken(char *boardname, char *post, char *skin, const char *curi)
 {
 	const char *uri;
@@ -67,7 +67,7 @@ GetURIToken(char *boardname, char *post, char *skin, const char *curi)
  *
  *	return URLParaType
  *******************************************************************/
-int 
+int
 ParseURI(REQUEST_REC *r, BOARDHEADER *CurBList, POST_FILE *pf)
 {
 	char *p, *boardname;
@@ -145,7 +145,7 @@ ParseURI(REQUEST_REC *r, BOARDHEADER *CurBList, POST_FILE *pf)
 
 		if (strlen(post) == 0)
 		{
-			settreafile(pf->POST_NAME, boardname, 
+			settreafile(pf->POST_NAME, boardname,
 				(strlen(skin) == 0) ? DIR_REC : skin);
 		}
 		else
@@ -243,11 +243,11 @@ ParseURI(REQUEST_REC *r, BOARDHEADER *CurBList, POST_FILE *pf)
 		if (strlen(boardname) == 0)
 		{
 			/* case:
-			   /boards/ 
+			   /boards/
 					sprintf(skin_file->filename, "%s%s%s", HTML_PATH, BBS_SUBDIR, HTML_BoardList);
 					return BoardList;
 			   /boards/boardname
-					 skin is boardname 
+					 skin is boardname
 sprintf(skin_file->filename, "/%sboards/%s/", BBS_SUBDIR, skin);
 					return Redirect;
 			 */
@@ -446,7 +446,7 @@ sprintf(skin_file->filename, "/%sboards/%s/", BBS_SUBDIR, skin);
 		xstrncpy(username, skin, IDLEN);
 		sprintf(skin_file->filename, "%s%s%s", HTML_PATH, BBS_SUBDIR, HTML_UserQuery);
 		return UserQuery;
-		
+
 		/* MailRead, MailList, Mail */
 		/* UserData, UserData, UserQuery */
 	}

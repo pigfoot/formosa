@@ -1,4 +1,4 @@
-/* 
+/*
  * Li-te Huang, lthuang@cc.nsysu.edu.tw, 03/09/98
  * Last updated: 06/02/98
  */
@@ -43,7 +43,7 @@ int s;
 {
 #if	defined(LINUX) || defined(SOLARIS)
 	/*
-	 * Reset signal handler for SIGUSR1, when signal received, 
+	 * Reset signal handler for SIGUSR1, when signal received,
 	 * some OS set the handler to default, SIG_DFL. The SIG_DFL
 	 * usually is terminating the process. So, when user was paged
 	 * twice, he will be terminated.
@@ -110,17 +110,17 @@ user_init()
 
 	ReadRC_Expire();
 
-	/* 
-	 * If user multi-login, 
+	/*
+	 * If user multi-login,
 	 * we should not remove the exist message. by lthuang
 	 */
 	if (multi == 1)
 		unlink(ufile_write);
 	/*
-	 * Some user complain that there were some mail mark deleted in 
+	 * Some user complain that there were some mail mark deleted in
 	 * their mail box for a long time. In fact, they do not logout
 	 * in proper way, so result in this situation. We do this checking
-	 * for force-packing their mail box. by lthuang 
+	 * for force-packing their mail box. by lthuang
 	 */
 	if ((curuser.numlogins % 7) == 0)
 		pack_article(ufile_mail);
@@ -140,7 +140,7 @@ user_init()
 			curuser.pager = PAGER_FRIEND;
 	}
 
-	/* old PICTURE_FLAG is [1]:0x01 */ 
+	/* old PICTURE_FLAG is [1]:0x01 */
 	if (curuser.flags[1] & 0x01)
 	{
 		curuser.flags[0] |= PICTURE_FLAG;
@@ -189,7 +189,7 @@ USEREC *nu;
 	int attempt = 0;
 	extern char *genpasswd();
 	FILE *fp;
-		
+
 
 	if ((fp = fopen(NEWID_HELP, "r")) != NULL)
 	{
@@ -230,7 +230,7 @@ USEREC *nu;
 	/* enter new user date, password, etc. */
 	while (1)
 	{
-		getdata(0, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), NOECHO, 
+		getdata(0, 0, _msg_formosa_6, mypasswd, sizeof(mypasswd), NOECHO,
 		        NULL);
 		if (strlen(mypasswd) < 4)
 		{
@@ -541,9 +541,9 @@ char *host, *term, **argv;
 	user_init();
 
 	/* bakfiletest by  wnlee */
-#ifdef GUEST	
+#ifdef GUEST
 	if (strcmp(curuser.userid, GUEST))
-#endif	
+#endif
 	{
 		setuserfile(genbuf, curuser.userid, UFNAME_EDIT);
 		if (isfile(genbuf))

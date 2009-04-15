@@ -19,18 +19,18 @@ int ShowFile(SKIN_FILE *sf)
 	int cache_idx;
 	char type[STRLEN], tag[512];
 	char pbuf[HTTP_REQUEST_LINE_BUF];
-	
+
 #if 0
 	fprintf(fp_out, "ShowFile=%s", sf->filename);
 	fflush(fp_out);
 #endif
-	
+
 	if (sf->mime_type > 1)	/* 不是HTML, 不用處理 WEBBBS tag, 直接送出去 */
 	{
 		if((cache_idx = CacheState(sf->filename, NULL)) == -1
 		|| difftime(file_shm[cache_idx].file.mtime, sf->mtime) != 0)
 			cache_idx = do_cache_file(sf->filename);
-		
+
 		if(cache_idx != -1)		/* file is cached */
 		{
 			file_shm[cache_idx].atime = request_rec->atime;
@@ -40,13 +40,13 @@ int ShowFile(SKIN_FILE *sf)
 		else
 		{
 			int size;
-			
+
 			if((fp = fopen(sf->filename, "rb")) == NULL)
 				return FALSE;
-			
+
 			while((size = fread(pbuf, 1, sizeof(pbuf), fp)) != 0 )
 				fwrite(pbuf, 1, size, fp_out);
-				
+
 			fclose(fp);
 		}
 	}
@@ -59,7 +59,7 @@ int ShowFile(SKIN_FILE *sf)
 		fprintf(fp_out, "cache_idx = %d", cache_idx);
 		fflush(fp_out);
 #endif
-		
+
 		if(cache_idx != -1)		/* file is cached */
 		{
 			int i;
@@ -80,12 +80,12 @@ int ShowFile(SKIN_FILE *sf)
 					DoTagCommand(type, tag);
 				}
 			}
-			
+
 		}
 		else
 		{
 			char *p, *data, *next;
-			
+
 			if ((fp = fopen(sf->filename, "r")) == NULL)
 				return FALSE;
 
@@ -106,15 +106,15 @@ int ShowFile(SKIN_FILE *sf)
 					else
 					{
 						fprintf(fp_out, "%s\n", data);
-						break;	
+						break;
 					}
 				}
 			}
-			
+
 			fclose(fp);
 		}
 	}
-	
+
 	return TRUE;
 }
 
@@ -131,12 +131,12 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 	FILEHEADER *fileinfo;
 	int i;
 #else
-	FILEHEADER fileinfo;	
+	FILEHEADER fileinfo;
 #endif
 	char *p, board_dir[PATHLEN];
-	
+
 	/* ====== get post info from DIR_REC ====== */
-	
+
 	setdotfile(board_dir, pf->POST_NAME, DIR_REC);
 	pf->total_rec = get_num_records(board_dir, FH_SIZE);
 
@@ -149,28 +149,28 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 	fprintf(fp_out, "[board_dir=%s, total_post=%d, pf->POST_NAME=%s, pf->fh.filename=%s]\n", board_dir, pf->total_rec, pf->POST_NAME, pf->fh.filename);
 	fflush(fp_out);
 #endif
-	
+
 	if ((fd = open(board_dir, O_RDWR)) < 0)
 		return WEB_FILE_NOT_FOUND;
 
 	/* seek from .DIR back is better */
 	pf->num = pf->total_rec;
-	
+
 #ifdef USE_MMAP
-	fileinfo = (FILEHEADER *) mmap((caddr_t) 0, 
-		(size_t)(pf->total_rec*FH_SIZE), 
-		(PROT_READ | PROT_WRITE), 
+	fileinfo = (FILEHEADER *) mmap((caddr_t) 0,
+		(size_t)(pf->total_rec*FH_SIZE),
+		(PROT_READ | PROT_WRITE),
 		MAP_SHARED, fd, (off_t) 0);
 
 	if(fileinfo == MAP_FAILED)
 	{
-		sprintf(WEBBBS_ERROR_MESSAGE, "mmap failed: %s %d", 
+		sprintf(WEBBBS_ERROR_MESSAGE, "mmap failed: %s %d",
 			strerror(errno), (int)(pf->total_rec*FH_SIZE));
 		close(fd);
 		return WEB_ERROR;
 	}
 	close(fd);
-	
+
 	while(pf->num > 0)
 	{
 		if(!strcmp((fileinfo+pf->num-1)->filename, pf->fh.filename))
@@ -184,16 +184,16 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		}
 		pf->num--;
 	}
-	
+
 	if(pf->num < 1)
 	{
 		munmap((void *)fileinfo, pf->total_rec*FH_SIZE);
 		return WEB_FILE_NOT_FOUND;
 	}
 	memcpy(&(pf->fh), fileinfo+pf->num-1, FH_SIZE);
-	
+
 #else
-	
+
 	if(lseek(fd, (FH_SIZE*(pf->total_rec-1)), SEEK_SET) == -1)
 		return WEB_FILE_NOT_FOUND;
 
@@ -210,7 +210,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 				}
 				break;
 			}
-			
+
 			pf->num--;
 			lseek(fd, -(FH_SIZE*2), SEEK_CUR);
 		}
@@ -220,11 +220,11 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 			return WEB_FILE_NOT_FOUND;
 		}
 	}
-	
+
 #if 0
 	/* search from head */
 	pf->num = 0;
-	while (read(fd, &fileinfo, FH_SIZE) == FH_SIZE)		
+	while (read(fd, &fileinfo, FH_SIZE) == FH_SIZE)
 	{
 		pf->num++;
 		if (!strcmp(fileinfo.filename, pf->fh.filename))
@@ -240,12 +240,12 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 #endif
 
 	memcpy(&(pf->fh), &(fileinfo), FH_SIZE);
-	
+
 #endif	/* USE_MMAP */
-	
+
 	date = atol((pf->fh.filename) + 2);	/* get date from filename */
 	xstrncpy(pf->date, ctime(&date), STRLEN);
-	
+
 	if(request_rec->HttpRequestType != GET)
 	{
 		/* skip find last & next post info if not HTTP_GET */
@@ -256,17 +256,17 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 #endif
 		return WEB_OK;
 	}
-	
-	if(request_rec->URLParaType == MailRead 
+
+	if(request_rec->URLParaType == MailRead
 	&& (pf->fh.accessed & FILE_READ) == FALSE)
 	{
 		int maxkeepmail;
-		
-		if (curuser.userlevel == PERM_BM) 
+
+		if (curuser.userlevel == PERM_BM)
 			maxkeepmail = SPEC_MAX_KEEP_MAIL;
 		else
 			maxkeepmail = MAX_KEEP_MAIL;
-		
+
 		if(curuser.userlevel != PERM_SYSOP
 		&& pf->num > maxkeepmail )	/* lthuang */
 		{
@@ -275,7 +275,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 #else
 			close(fd);
 #endif
-			sprintf(WEBBBS_ERROR_MESSAGE, "%s 信箱已滿 ( %d 封), 請刪除舊信後再看新信...", 
+			sprintf(WEBBBS_ERROR_MESSAGE, "%s 信箱已滿 ( %d 封), 請刪除舊信後再看新信...",
 				curuser.userid, pf->total_rec);
 			return WEB_ERROR;
 		}
@@ -283,20 +283,20 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		/* set fileinfo as readed */
 #ifdef USE_MMAP
 		(fileinfo+pf->num-1)->accessed |= FILE_READ;
-		
+
 #else
 		if (lseek(fd, -FH_SIZE, SEEK_CUR) == -1)
 		{
 			close(fd);
 			return WEB_FILE_NOT_FOUND;
 		}
-		
+
 		fileinfo.accessed |= FILE_READ;
 		write(fd, &fileinfo, FH_SIZE);
 #endif
 
 	}
-	
+
 #ifdef TORNADO_OPTIMIZE
 #if defined(NSYSUBBS1) || defined(NSYSUBBS3)
 	if(isTORNADO && request_rec->URLParaType == PostRead)
@@ -321,7 +321,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 	for(i=pf->num-1; i>0; i--)
 	{
 		if(*((fileinfo+i-1)->filename) != 0x00
-		&& !((fileinfo+i-1)->accessed & FILE_DELE) 
+		&& !((fileinfo+i-1)->accessed & FILE_DELE)
 		&& !((fileinfo+i-1)->accessed & FILE_TREA))
 		{
 			xstrncpy(pf->lfname, (fileinfo+i-1)->filename, STRLEN-8);
@@ -342,7 +342,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		if(read(fd, &fileinfo, FH_SIZE)==FH_SIZE)
 		{
 			if( *fileinfo.filename != 0x00
-			&& !(fileinfo.accessed & FILE_DELE) 
+			&& !(fileinfo.accessed & FILE_DELE)
 			&& !(fileinfo.accessed & FILE_TREA))
 			{
             	xstrncpy(pf->lfname, fileinfo.filename, STRLEN-8);
@@ -351,7 +351,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		}
 	}
 #endif	/* USE_MMAP */
-	
+
 
 	if(strcmp(pf->lfname, "-1"))
 #ifdef USE_MMAP
@@ -360,7 +360,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		if(fileinfo.accessed & FILE_HTML)
 #endif
 			pf->type |= LAST_POST_IS_HTML;
-		
+
 #if 0
 	fprintf(fp_out, "[file_num=%d, last_filename=%s]", pf->num, pf->lfname);
 	fflush(fp_out);
@@ -371,19 +371,19 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 	for(i=pf->num+1; i<=pf->total_rec; i++)
 	{
 		if(*((fileinfo+i-1)->filename) != 0x00
-		&& !((fileinfo+i-1)->accessed & FILE_DELE) 
+		&& !((fileinfo+i-1)->accessed & FILE_DELE)
 		&& !((fileinfo+i-1)->accessed & FILE_TREA))
 		{
 			xstrncpy(pf->nfname, (fileinfo+i-1)->filename, STRLEN-8);
 			break;
 		}
 	}
-	
+
 	if(i >= pf->total_rec+1)
 		strcpy(pf->nfname, "-1");
 
 #else
-	
+
 	if (lseek(fd, (long) (FH_SIZE * (pf->num)), SEEK_SET) == -1)
     {
 		close(fd);
@@ -395,7 +395,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		if(read(fd, &fileinfo, FH_SIZE)==FH_SIZE)
        	{
 			if( *fileinfo.filename != 0x00
-			&& !(fileinfo.accessed & FILE_DELE) 
+			&& !(fileinfo.accessed & FILE_DELE)
 			&& !(fileinfo.accessed & FILE_TREA))
 			{
 				xstrncpy(pf->nfname, fileinfo.filename, STRLEN-8);
@@ -418,7 +418,7 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 		if(fileinfo.accessed & FILE_HTML)
 #endif
 			pf->type |= NEXT_POST_IS_HTML;
-	
+
 #if 0
 	fprintf(fp_out, "[next_filename=%s]", pf->nfname);
 	fflush(fp_out);
@@ -434,9 +434,9 @@ int GetPostInfo(BOARDHEADER *board, POST_FILE *pf)
 
 /*******************************************************************
  *	Get (skin) file info
- *	
+ *
  *	get file size, modify time
- *	determine MIME type & file exipre 
+ *	determine MIME type & file exipre
  *
  *	return: none
  *******************************************************************/
@@ -448,7 +448,7 @@ BOOL GetFileInfo(SKIN_FILE *sf)
 	fprintf(fp_out, "[fname=%s]", sf->filename);
 	fflush(fp_out);
 #endif
-	
+
 	if(stat(sf->filename, &fstat)==0)
 	{
 		sf->mime_type = GetFileMimeType(sf->filename);
@@ -457,32 +457,32 @@ BOOL GetFileInfo(SKIN_FILE *sf)
 	}
 	else
 		return FALSE;
-	
+
 	SetExpire(sf);
 	return TRUE;
 }
 
 /*******************************************************************
  *	Get file mime type
- *	
+ *
  *******************************************************************/
 int GetFileMimeType(char *filename)
 {
 	char *p;
-	
+
 	if((p = strrchr(filename, '.')) != NULL)
 		p = p+1;
 	else
 		p = filename;
-		
+
 	return GetMimeType(p);
-	
+
 }
 
 
 /*******************************************************************
- *	Set file expire 
- *	
+ *	Set file expire
+ *
  *	call after mime_type set
  *******************************************************************/
 void SetExpire(SKIN_FILE *sf)

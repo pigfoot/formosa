@@ -1,7 +1,7 @@
 /**
- **  Misc Library 
+ **  Misc Library
  **  Last updated: 05/24/98, lthuang@cc.nsysu.edu.tw
- **/    
+ **/
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -40,19 +40,19 @@ int flock(int fd, int op)
 
 /*
  * copy file, first remove the dest file
- */ 
+ */
 int mycp(const char *from, const char *to)
 {
 	char cpbuf[8192];	/* copy buffer: 8192 optimize for 4096bytes/block */
 	int fdr, fdw, cc;
-#if 0	
+#if 0
 	struct stat st;
 
 	if (stat(from, &st) == -1 || S_ISDIR(st.st_mode))	/* lthuang */
 		return -1;
 	if (stat(to, &st) == 0 && S_ISDIR(st.st_mode))	/* lthuang */
 		return -1;
-#endif		
+#endif
 	if ((fdr = open(from, O_RDONLY)) > 0)
 	{
 		if ((fdw = open(to, O_WRONLY | O_CREAT | O_TRUNC, 0644)) > 0)
@@ -70,9 +70,9 @@ int mycp(const char *from, const char *to)
 
 
 /*
- * unlink(), remove file or directory, 
+ * unlink(), remove file or directory,
  * but if directory, sub-dir will also be removed
- */ 
+ */
 int myunlink(char name[])
 {
 	struct stat st;
@@ -98,7 +98,7 @@ int myunlink(char name[])
 		while ((dirlist = readdir(dirp)) != NULL)
 		{
 			dname = dirlist->d_name;
-			if (dname[0])			
+			if (dname[0])
 			{
 				if (!strcmp(dname, ".") || !strcmp(dname, ".."))
 					continue;
@@ -110,7 +110,7 @@ int myunlink(char name[])
 		*(--s) = '\0';
 		if (rmdir(path) == -1)
 			return -1;
-	}		
+	}
 	return 0;
 }
 
@@ -135,7 +135,7 @@ int isfile(const char *fname)
 {
 	struct stat st;
 
-	return (stat(fname, &st) == 0 && (S_ISREG(st.st_mode) 
+	return (stat(fname, &st) == 0 && (S_ISREG(st.st_mode)
 	                                  || S_ISLNK(st.st_mode)));
 }
 
@@ -192,37 +192,37 @@ char *xstrncpy(register char *dst, const char *src, size_t n)
 }
 
 /*
-	asuka: 
+	asuka:
     xstrcat() - similar to strcat() but assign the maxlen in dst
     to prevert buffer overflow...
-      
+
     ps: not similar to strncat()
 */
-         
+
 char *xstrcat(register char *dst, const char *src, size_t maxlen)
 {
 	char *p = dst;
 	int n = maxlen - strlen(dst);
-                
+
 	if (n == 0)
-		return dst; 
+		return dst;
 	if (src == NULL)
 		return dst;
 	while(*p)
-		p++; 
+		p++;
 	while (--n > 0 && *src != '\0')
 		*p++ = *src++;
 	*p = '\0';
-                       
+
 	return dst;
-}                                             
+}
 
 
 static void strlwr(char *q)
 {
 	char *s = q;
-    
-	while (*s) 
+
+	while (*s)
 	{
 		*s = tolower((unsigned char) *s);
 		s++;
@@ -251,8 +251,8 @@ char * xgrep(char *pattern, char *filename)
 
 			if ((ptr = strtok(buf, ": \n\r\t")) != NULL)
 			{
-				strlwr(lower_pattern);							
-				if (strstr(lower_pattern, ptr))	
+				strlwr(lower_pattern);
+				if (strstr(lower_pattern, ptr))
 				{
 					fclose(fp);
 					return ptr;
@@ -270,7 +270,7 @@ int append_file(char *afile, char *rfile)
 	int cc;
 	char buf[8192];
 	int fdr, fdw;
-	
+
 	if ((fdr = open(rfile, O_RDONLY)) > 0)
 	{
 		if ((fdw = open(afile, O_WRONLY | O_APPEND | O_CREAT, 0600)) > 0)
@@ -338,7 +338,7 @@ char *Ctime(register time_t *clock)
 		*pj++ = t;				\
         } while (--i > 0);				\
 }
-	
+
 
 #define SWAPINIT(a, es) \
 	swaptype = (((char *)a - (char *)0) % sizeof(long) || \
@@ -380,7 +380,7 @@ void xsort(void *a, size_t n, size_t es, int (*cmp) ())
 	int d, r, swaptype, swap_cnt;
 
 	SWAPINIT(a, es); //in FreeBSD src, this line is in loop
-	
+
 loop:
 
 	swap_cnt = 0;

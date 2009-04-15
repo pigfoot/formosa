@@ -5,7 +5,7 @@
 /*
  * visio.h
  * piaip's new implementation of visio
- * 
+ *
  * see visio.c for license, usage, and introduction.
  */
 
@@ -80,7 +80,7 @@ typedef struct VCOL {
 } VCOL;
 
 #define VGETCB_NONE	(0) // do nothing
-#define VGETCB_NEXT	(1) // skip to next event loop 
+#define VGETCB_NEXT	(1) // skip to next event loop
 #define VGETCB_END	(2) // finish input
 #define VGETCB_ABORT	(3) // clear buffer and finish
 

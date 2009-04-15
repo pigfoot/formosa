@@ -18,7 +18,7 @@ void weblog(char *msg, char *logfile, char *fromhost)
 
 	time(&now);
 	strftime(timestr, sizeof(timestr), "%x %X", localtime(&now));
-	
+
 	if (msg && (fp = fopen(logfile, "a")) != NULL)
 	{
 		fprintf(fp, "%s %s %s\n", timestr, fromhost, msg);
@@ -28,14 +28,14 @@ void weblog(char *msg, char *logfile, char *fromhost)
 
 /*******************************************************************
  *	WEB-BBS generic LOG function
- *	use with opened file 
+ *	use with opened file
  *******************************************************************/
 void weblog_line(const char *msg, FILE *fp, char *fromhost, time_t when)
 {
 	char timestr[18];
-	
+
 	mk_timestr2(timestr, when);
-	fprintf(fp, "%s %s %s (%d) %d\n", 
+	fprintf(fp, "%s %s %s (%d) %d\n",
 		timestr, fromhost, msg, (int)mypid, request_rec->num_request);
 }
 
@@ -43,7 +43,7 @@ void OpenLogFile(SERVER_REC *server)
 {
 
 	/* call after init_bbsenv() */
-	
+
 #if defined(WEB_ACCESS_LOG) || defined(WEB_EVENT_LOG)
 	if ((server->access_log = fopen(WEB_ACCESS_LOG, "a")) == NULL)
 	{

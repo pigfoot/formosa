@@ -108,7 +108,7 @@ prune_mail (fpath)
 		pq->fname[FNLN - 1] = 0;
 		pq->fsize = fsize;
 		pq++;
-		
+
 		if (++i >= FMAX)
 		{
 			while (dp = readdir (dirp))
@@ -155,7 +155,7 @@ prune_mail (fpath)
 		if ((fdw = open (fntmp, O_WRONLY | O_CREAT | O_TRUNC, 0644)) > 0)
 #endif
 		{
-			key = &(head.filename[2]);		
+			key = &(head.filename[2]);
 			while (read (fdr, &head, sizeof head) == sizeof head)
 			{
 				/* binary search : check consistency */
@@ -233,9 +233,9 @@ prune_mail (fpath)
 				key = pq->fname;
 				if (key[FNLN - 1] != 'z')
 				{
-#if 1				
+#if 1
 					xstrncpy (fname + 2, key, sizeof(fname) - 2);
-#endif					
+#endif
 #if 1
 					fprintf (stderr, "/bin/rm -f %s/%s ## lost mail\n", fpath, fname);
 #endif

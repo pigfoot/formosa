@@ -50,7 +50,7 @@ extern char log[HTTP_REQUEST_LINE_BUF];		/* buffer for weblog() */
 
 
 #ifdef KEEP_ALIVE
-void 
+void
 lingering_close(int sock)
 {
 	char dummybuf[512];
@@ -77,7 +77,7 @@ lingering_close(int sock)
 #endif
 
 
-void 
+void
 write_pidfile(pid_t pid, int port)
 {
 	FILE *fp;
@@ -93,7 +93,7 @@ write_pidfile(pid_t pid, int port)
 	}
 }
 
-int 
+int
 unlink_pidfile(int port)
 {
 	char pidfile[PATHLEN];
@@ -102,7 +102,7 @@ unlink_pidfile(int port)
 	return unlink(pidfile);
 }
 
-void 
+void
 usage(char *prog)
 {
 	fprintf(stderr, "== Formosa WEB-BBS Server %s ==\n\
@@ -119,7 +119,7 @@ usage(char *prog)
 /*******************************************************************
  *	semaphore locking & unlocking
  *******************************************************************/
-int 
+int
 sem_lock1(int semid, int op)
 {
 	struct sembuf sops;
@@ -134,7 +134,7 @@ sem_lock1(int semid, int op)
 /*******************************************************************
  *	Child Main Loop
  *******************************************************************/
-void 
+void
 ChildMain(int num, int sock)
 {
 	struct sockaddr_in from;
@@ -267,7 +267,7 @@ ChildMain(int num, int sock)
 /*******************************************************************
  *	fork child process
  *******************************************************************/
-int 
+int
 MakeChild(int i, int sock)
 {
 	int cpid;
@@ -294,7 +294,7 @@ MakeChild(int i, int sock)
 /*******************************************************************
  * Main
  *******************************************************************/
-int 
+int
 main(int argc, char *argv[])
 {
 	int aha, on, s;
@@ -566,10 +566,10 @@ main(int argc, char *argv[])
 				ready++;
 		}
 
-		/* 
+		/*
 		   if not enough ready child for task,
 		   tell waiting child to abort persistent connection
-		   to become ready 
+		   to become ready
 		 */
 		if (ready <= 2)
 		{
@@ -679,7 +679,7 @@ main(int argc, char *argv[])
 
 #ifdef PRE_FORK
 /*
-   send SIGTERM to child process 
+   send SIGTERM to child process
  */
 	{
 		int i;
@@ -690,7 +690,7 @@ main(int argc, char *argv[])
 				kill((server->childs)[i].pid, SIGTERM);
 		}
 	}
-	
+
 	while (wait3(&aha, WNOHANG, (struct rusage *) 0) > 0)
 		/* NULL STATEMENT */;
 

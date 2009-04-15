@@ -1,15 +1,15 @@
 #ifndef LANG_H
 #define LANG_H
 
-extern char *FromTxt        ; 
-extern char *BoardTxt       ; 
+extern char *FromTxt        ;
+extern char *BoardTxt       ;
 extern char *SubjectTxt     ;
 extern char *OrganizationTxt;
 extern char *PathTxt        ;
 extern char *NCTUCSIETxt    ;
 extern char *ModerationTxt  ;
 extern char *bbslinkUsage1  ;
-extern char *bbslinkUsage2  ; 
+extern char *bbslinkUsage2  ;
 extern char *bbslinkUsage3  ;
 extern char *bbslinkUsage4  ;
 

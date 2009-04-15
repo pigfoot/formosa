@@ -32,7 +32,7 @@ delthread (bhr, target, dokill, kind, all, who)
 	char fname[PATHLEN];
 	char *takestr;
 	int count = 0;
-	
+
 	setboardfile(fname, bhr->filename, DIR_REC);
 	size = r_total = get_num_records(fname, FH_SIZE);
 	if(r_total <= 0)
@@ -47,7 +47,7 @@ delthread (bhr, target, dokill, kind, all, who)
 #endif
 	if(!all)
 		size = MIN (r_total, LASTP_MAX);
-	
+
 #if 0
 	printf("size=%d\n", size);
 #endif
@@ -57,15 +57,15 @@ delthread (bhr, target, dokill, kind, all, who)
 		if (dokill)
 			flock(fd, LOCK_EX);
 
-		fh_data = (FILEHEADER *) mmap((caddr_t) 0, 
-			(size_t)(r_total*FH_SIZE), 
-			(PROT_READ | PROT_WRITE), 
+		fh_data = (FILEHEADER *) mmap((caddr_t) 0,
+			(size_t)(r_total*FH_SIZE),
+			(PROT_READ | PROT_WRITE),
 			MAP_SHARED, fd, (off_t) 0);
 
 		if(fh_data == MAP_FAILED)
 		{
 			close(fd);
-			return 0;	
+			return 0;
 		}
 		fh = fh_data;
 
@@ -79,7 +79,7 @@ delthread (bhr, target, dokill, kind, all, who)
 			printf("[%s] %s %s\n", bhr->filename, fh->owner, fh->title);
 			getchar();
 #endif
-			if(fh->accessed & FILE_RESV 
+			if(fh->accessed & FILE_RESV
 			|| fh->accessed & FILE_DELE)	/* lasehu */
 			{
 				fh++;
@@ -98,7 +98,7 @@ delthread (bhr, target, dokill, kind, all, who)
 				if (dokill)
 				{
 #ifdef DEBUG
-					printf("\nexpire: %s/%s/%s", 
+					printf("\nexpire: %s/%s/%s",
 						BBSPATH_BOARDS, bhr->filename, fh->filename);
 #else
 					fh->accessed |= FILE_DELE;
@@ -110,8 +110,8 @@ delthread (bhr, target, dokill, kind, all, who)
 				getchar();
 #endif
 				count++;
-				
-			}			
+
+			}
 
 #if 0
 			printf("3....");
@@ -125,7 +125,7 @@ delthread (bhr, target, dokill, kind, all, who)
 			flock(fd, LOCK_UN);
 		close(fd);
 	}
-	
+
 	return count;
 }
 
@@ -234,7 +234,7 @@ main (argc, argv)
 		case 'r':
 			all = 1;
 			break;
-			
+
 		case 't':
 			strncpy (target, optarg, sizeof (target) - 1);
 			target[sizeof (target) - 1] = '\0';

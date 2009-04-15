@@ -25,7 +25,7 @@ main ()
 			{
 				if (max_brdh.filename[0] == '\0')
 					continue;
-#if 1					
+#if 1
 				if (max_brdh.ctime < 900000000 || max_brdh.ctime > 999999999)
 				{
 					max_brdh.ctime = 0;
@@ -43,7 +43,7 @@ main ()
 					if (write (fd, &max_brdh, BH_SIZE) != BH_SIZE)
 						break;
 				}
-#endif				
+#endif
 			}
 		}
 		flock (fd, LOCK_UN);

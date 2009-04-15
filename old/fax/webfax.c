@@ -70,7 +70,7 @@ char *tag;
     sprintf(maildirect, "mail/%c/%-s/%-s", tolower(curuser.userid[0]),
                     curuser.userid, DIR_REC);
                 /* 列出寄件者姓名 */
-    if ((strstr (tag, "BBS_FaxList_Sender") != NULL) || 
+    if ((strstr (tag, "BBS_FaxList_Sender") != NULL) ||
 		(strstr (tag, "BBS_VoiceList_Sender") != NULL))
         request = fh.owner;
 
@@ -301,7 +301,7 @@ ShowFax (tag)
 			}
 		}
 		fclose(fp);
-		
+
 		sprintf(para1, "metamail");
 		sprintf(para2, "%s", MailName);
 		sprintf(para3, "-t");

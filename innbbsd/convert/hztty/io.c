@@ -121,7 +121,7 @@ int out_stream_setup (odef)
 
 	strcpy (defstr, (odef ? odef : ""));
 	return (stream_init (defstr, &out_stream));
-} 
+}
 
 /*
  * Conversion buffer.  One for both directions.  They are in different

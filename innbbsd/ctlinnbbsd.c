@@ -41,7 +41,7 @@ char **argv;
 {
 	fgets(INNBBSbuffer, sizeof INNBBSbuffer, innbbsin);
 	printf("%s",INNBBSbuffer);
-	if (strcasecmp(argv[0], "shutdown")==0   || 
+	if (strcasecmp(argv[0], "shutdown")==0   ||
 	    strcasecmp(argv[0], "reload")==0     ||
 	    strcasecmp(argv[0], "hismaint")==0   ||
 #ifdef GETRUSAGE
@@ -52,9 +52,9 @@ char **argv;
 #endif
 	    strcasecmp(argv[0], "mode")==0       ||
 	    strcasecmp(argv[0], "listnodelist")==0   ||
-	    strcasecmp(argv[0], "listnewsfeeds")==0  ||    
-	    strcasecmp(argv[0], "pause")==0  ||    
-	    strcasecmp(argv[0], "go")==0      
+	    strcasecmp(argv[0], "listnewsfeeds")==0  ||
+	    strcasecmp(argv[0], "pause")==0  ||
+	    strcasecmp(argv[0], "go")==0
 	    ) {
 	    fprintf( innbbsout, "%s\r\n", argv[0]);
 	    fflush( innbbsout);
@@ -63,14 +63,14 @@ char **argv;
 	    if (strcasecmp(argv[0], "mode") ==0
 #ifdef GETRUSAGE
 		||
-	        strcasecmp(argv[0], "getrusage") ==0  
+	        strcasecmp(argv[0], "getrusage") ==0
 		||
-	        strcasecmp(argv[0], "mallocmap") ==0  
+	        strcasecmp(argv[0], "mallocmap") ==0
 #endif
 		||
-	        strcasecmp(argv[0], "listnodelist")==0   
+	        strcasecmp(argv[0], "listnodelist")==0
 		||
-	        strcasecmp(argv[0], "listnewsfeeds")==0     
+	        strcasecmp(argv[0], "listnewsfeeds")==0
 	       ) {
 		while (fgets(INNBBSbuffer, sizeof INNBBSbuffer, innbbsin) != NULL) {
 		       if (strcmp(INNBBSbuffer,".\r\n")==0) {

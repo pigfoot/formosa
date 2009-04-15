@@ -150,7 +150,7 @@ char *path;	/*If MID found, path will be put here, NULL for just test mid*/
 	  return(FALSE);
   }
   else
-    return(FALSE); 
+    return(FALSE);
 
 }
 /*end of query_mid*/
@@ -160,7 +160,7 @@ char *path;	/*If MID found, path will be put here, NULL for just test mid*/
 /*
 	open UNIX DOMAIN socket
 */
-int unixclient(path) 
+int unixclient(path)
 char *path;	/*unix domin socket path*/
 /*
 	return:
@@ -302,5 +302,5 @@ char **argv;
 	printf("query no_such_item not found\n");
 
     close_dbz_channel();
-} 
+}
 

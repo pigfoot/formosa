@@ -43,17 +43,17 @@ main ()
 {
 	int fd;
 	BOARDHEADER bh;
-#if 0	
+#if 0
 	char buf[256];
-#endif	
+#endif
 	int i;
-#if 0	
+#if 0
 	USEREC urc;
-#endif	
+#endif
 
 
 	init_bbsenv();
-	
+
 	if ((fd = open (BOARDS, O_RDONLY)) < 0)
 	{
 		fprintf (stderr, "cannot open file: %s", BOARDS);
@@ -62,34 +62,34 @@ main ()
 
 	time (&now);
 	printf ("\n《本週熱門看板》\t%s", ctime (&now));
-#if 0	
+#if 0
 	printf ("\n%-16.16s  %-16.16s  %-12.12s  %-6s  %s"
 		,"看板名稱", "看板說明", "板主", "佈告量", "最近張貼情形");
 	printf ("\n----------------  ----------------  ------------  ------  ------------");
-#endif	
+#endif
 	while (read (fd, &bh, BH_SIZE) == BH_SIZE)
 	{
 		if (bh.filename[0] == '\0')
 			continue;
-#ifdef NSYSUBBS			
+#ifdef NSYSUBBS
 		if (bh.level >= 100)
 			continue;
-#endif			
+#endif
 		if ((bh.brdtype & BRD_PRIVATE) || (bh.brdtype & BRD_NEWS))
 			continue;
-#if 0			
+#if 0
 		printf ("\n%-16.16s # %-16.16s # %-12.12s #",
 			bh.filename, bh.title, bh.owner);
-#endif			
+#endif
 
 		lastpost (&bh);
-		
-#if 0		
+
+#if 0
 		if (bh.owner[0] != '\0' && get_passwd (&urc, bh.owner) <= 0)
 			printf (" 已消失");
 		else if (urc.lastlogin < now - 20 * 86400)
 			printf (" %d天未上站", (now - urc.lastlogin) / 86400);
-#endif			
+#endif
 	}
 	close (fd);
 
@@ -103,14 +103,14 @@ main ()
 		strftime (buf, 9, "%m/%d/%y", localtime ((time_t *) & (topnum[i].time)));
 		printf ("%-2d. %-16.16s %s\n", i + 1, toptime[i].filename, buf);
 	}
-#endif	
+#endif
 
 #if 0
 	printf ("\n\n※佈告數量 TOP%d※\n\n", TOPN);
 	for (i = 0; i < TOPN; i++)
 	{
-		printf ("%-2d. %-16.16s %4d (%s)\n", i + 1, 
-			topnum[i].filename, 
+		printf ("%-2d. %-16.16s %4d (%s)\n", i + 1,
+			topnum[i].filename,
 			topnum[i].num, Ctime(&(topnum[i].time)));
 	}
 #endif
@@ -137,18 +137,18 @@ main ()
         <td><A HREF=\"boards/%s\"\n\
 target=\"_blank\"><font %s size=\"2\">%s</font></A></td>\n\
         <td align=\"center\">%d</td>\n\
-      </tr>%s\n\n", 
+      </tr>%s\n\n",
       	(i % 2) == 1 ? " bgcolor=\"#5A94D6\"" : "",
-      	i+1, topnum[i].filename, 
+      	i+1, topnum[i].filename,
       	(i % 2) == 1 ? "color=\"#FFFFFF\"" : "",
       	topnum[i].title, topnum[i].newposts,
-#if 0      	
+#if 0
       	, topnum[i].num
-#endif      	
+#endif
 		(i % 2) == 1 ? "</font>" : ""
       	);
 	}
-	
+
 	printf("\
 </table>\n\
     </td>\n\
@@ -156,14 +156,14 @@ target=\"_blank\"><font %s size=\"2\">%s</font></A></td>\n\
 <tr><td><hr color=\"#DFDFDF\"></td>\n\
 </tr>\n\
 </table>\n\n");
-	
+
 #if 0
 	printf ("\n\n※最近佈告張貼情形 TOP%d※\n\n", TOPN);
 	for (i = 0; i < TOPN; i++)
 	{
 		printf ("%-2d. %-16.16s %4d\n", i + 1, toppercent[i].filename, toppercent[i].num);
 	}
-#endif	
+#endif
 }
 
 
@@ -177,10 +177,10 @@ lastpost (bh)
 	struct stat st;
 	int num;
 	FILEHEADER fh;
-#if 0	
+#if 0
 	int i;
 	char buf[256];
-#endif	
+#endif
 	int newposts = 0;
 
 
@@ -190,7 +190,7 @@ lastpost (bh)
 	if ((fd = open (fname, O_RDONLY)) > 0)
 	{
 		num = st.st_size / FH_SIZE;
-#if 0		
+#if 0
 		if (num > 100)
 			i -= 100;
 		else
@@ -201,7 +201,7 @@ lastpost (bh)
 			close (fd);
 			return -1;
 		}
-#endif		
+#endif
 		while (read (fd, &fh, FH_SIZE) == FH_SIZE)
 		{
 			time = atoi (fh.filename + 2);
@@ -210,19 +210,19 @@ lastpost (bh)
 		}
 		lastdate = time;
 	}
-	close (fd);	
+	close (fd);
 
 #if 0
 	strftime (buf, 11, "%m/%d/%Y", localtime (&lastdate));
 	printf ("%5d # %s # %-3d ", num, buf, newpostnum);
-#endif	
+#endif
 
 
 	topnum[cnt].time = lastdate;
 	topnum[cnt].num = num;
 	topnum[cnt].newposts = newposts;
 	xstrncpy (topnum[cnt].filename, bh->filename, sizeof(topnum[cnt].filename));
-	xstrncpy (topnum[cnt].title, bh->title, sizeof(topnum[cnt].title));	
+	xstrncpy (topnum[cnt].title, bh->title, sizeof(topnum[cnt].title));
 
 	cnt++;
 

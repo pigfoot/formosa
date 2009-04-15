@@ -13,7 +13,7 @@ extern SKIN_FILE *skin_file;
  *
  *	destructive to FORM DATA
  *******************************************************************/
-void 
+void
 write_article_line(FILE * fp, char *data, int type)
 {
 	char *p;
@@ -51,11 +51,11 @@ write_article_line(FILE * fp, char *data, int type)
  *		POST_SKIN	html file
  *		POST_NORMAL	normal text file
  *
- *	Attention: 
+ *	Attention:
  *		fp must open in advance
  *		destructive to data in pbuf
  *******************************************************************/
-void 
+void
 write_article_body(FILE * fp, char *data, int type)
 {
 	char *p, *pp, buffer[1024];
@@ -95,7 +95,7 @@ write_article_body(FILE * fp, char *data, int type)
  *
  *	return:	WebRespondType
  *******************************************************************/
-int 
+int
 PostArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	BOOL tonews = FALSE;
@@ -292,7 +292,7 @@ PostArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
  *
  *	return:	WebRespondType
  *******************************************************************/
-int 
+int
 EditArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	char *p;
@@ -424,7 +424,7 @@ EditArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
  *	input:	FORM body
  *	return:	TRUE on success
  ************************************************************/
-int 
+int
 DeleteArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	char fname[PATHLEN];
@@ -535,12 +535,12 @@ HYPER_LINK;
  *	body_only:	只輸出文章內容，不包含檔頭 (發信人,標題,發信站..等)
  *	process: 	要不要處理 ansi code 和 hyperlink
  *
- *	return 
+ *	return
  *******************************************************************/
 
 #define HyperLinkType	5	/* num of hyper link type to parse */
 
-int 
+int
 ShowArticle(char *filename, BOOL body_only, BOOL process)
 {				/* body only .. */
 #ifdef USE_FP
@@ -564,9 +564,9 @@ ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 	HYPER_LINK hlink[] =
 	{
-	/* 
+	/*
 	   format:
-	   hyperlink keyword, keyword length, hyperlink legal character , open target 
+	   hyperlink keyword, keyword length, hyperlink legal character , open target
 	 */
 
 		{"http", 4, "./:~?'=-_!&%#%\\", " TARGET=\"new\""},
@@ -684,7 +684,7 @@ ShowArticle(char *filename, BOOL body_only, BOOL process)
 				continue;
 
 #if 1
-			/* 
+			/*
 			   break if find "--\r\n" when PostRead (signature below --)
 			   TreaRead and MailRead should continue
 			 */
@@ -839,14 +839,14 @@ ShowArticle(char *filename, BOOL body_only, BOOL process)
 			{
 				p -= hlink[type].len;
 
-				/* 
-				   ignore '<a href' HTML Tag 
+				/*
+				   ignore '<a href' HTML Tag
 				   ie: <a href="http://www.nsysu.edu.tw"> www homepage</a>
 				   ie: <a href=http://www.nsysu.edu.tw> www homepage</a>
-				   ignore '<img src' HTML Tag 
+				   ignore '<img src' HTML Tag
 				   ie: <img src="http://www.nsysu.edu.tw/title.jpg">
 				   ie: <img src=http://www.nsysu.edu.tw/title.jpg>
-				   ignore '<body background' HTML Tag 
+				   ignore '<body background' HTML Tag
 				   ie: <body background="http://www.wow.org.tw/show/m-9.jpg"
 				   ignore 'URL' HTML Tag
 				 */

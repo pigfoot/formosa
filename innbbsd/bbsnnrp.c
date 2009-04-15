@@ -1,13 +1,13 @@
 /*
    Usage: bbsnnrp [options] nntpserver activefile
-   -h|? (help) 
+   -h|? (help)
    -v (verbose protocol transactions)
    -c (reset active files only; don't receive articles)
    -r remotehost(send articles to remotehost, default=local)
    -p port|(send articles to remotehost at port, default=7777)
    path(send articles to local at path, default=~bbs/innd/.innbbsd)
    -n (don't ask innbbsd server and stat articles)
-   -w seconds (wait for seconds and run infinitely, default=once)  
+   -w seconds (wait for seconds and run infinitely, default=once)
    -a max_art (maximum number of articles received for a group each time)
    -s max_stat(maximum number of articles stated for a group each time)
    -t stdin|nntp (default=nntp)
@@ -861,7 +861,7 @@ ULONG value;
 	}
 }
 
-/* 
+/*
    if old file is empty, don't need to update
    prevent from disk full
  */

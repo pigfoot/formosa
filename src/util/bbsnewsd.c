@@ -95,7 +95,7 @@ idle_net_gets (buf)
      char buf[];
 {
 	char *p;
-/*      
+/*
    char *end;
  */
 
@@ -115,7 +115,7 @@ idle_net_gets (buf)
    *(++p) = '\0';
    break;
    }
-   else 
+   else
    if (*p == '\0')
    break;
    p++;
@@ -936,24 +936,24 @@ Add_User ()
 
 
 /*
-   void Del_User() 
-   { 
+   void Del_User()
+   {
    FILE *f; signal(SIGUSR1,SIG_IGN);
 
-   signal(SIGCLD,SIG_IGN); 
-   totaluser--; 
-   if((f=fopen(USERNUM,"w"))==NULL) 
+   signal(SIGCLD,SIG_IGN);
+   totaluser--;
+   if((f=fopen(USERNUM,"w"))==NULL)
    {
-   signal(SIGUSR1,Add_User); 
-   signal(SIGCLD,Del_User); 
-   return; 
+   signal(SIGUSR1,Add_User);
+   signal(SIGCLD,Del_User);
+   return;
    }
-   flock(fileno(f),LOCK_EX); 
+   flock(fileno(f),LOCK_EX);
    fprintf(f,"%d\n",totaluser);
-   flock(fileno(f),LOCK_UN); 
+   flock(fileno(f),LOCK_UN);
    fclose(f);
    signal(SIGCLD,Del_User);
-   signal(SIGUSR1,Add_User); 
+   signal(SIGUSR1,Add_User);
    }
  */
 
@@ -982,7 +982,7 @@ main (argc, argv)
 
 /* del by lasehu
    (void) signal(SIGUSR1, Add_User);
-   (void) signal(SIGCLD,Del_User); 
+   (void) signal(SIGCLD,Del_User);
  */
 	(void) signal (SIGCHLD, reaper);
 

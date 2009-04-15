@@ -1,6 +1,6 @@
 
 /* ##### CAUTION: THIS VERSION IS MODIFIED FOR CURRENT LEVEL SETTING ##### */
-/* 
+/*
    RULES:
 	帳號自動清除原則
 	1.等級0-30 級：保留30天  (30天未上線者即清除)
@@ -38,7 +38,7 @@
 #define IMPOSSIBLE_TIME (400*24*60*60)
 
 time_t  now, duser0, duser31, duser50, duser100;
-/* sarek:05/13/2002:說明一下,這是我新配的,本來的是duser0跟duser3相反 -_- 
+/* sarek:05/13/2002:說明一下,這是我新配的,本來的是duser0跟duser3相反 -_-
 	duser0是指0-30級
 	duser31是指31-49級
 	duser50是指50級
@@ -78,9 +78,9 @@ The accounts not expired never
 	m??????????
 	me??????????
 	d??????????
---lasehu	
+--lasehu
 */
-int 
+int
 IsExpire(u)
 USEREC *u;
 {
@@ -96,22 +96,22 @@ USEREC *u;
 	{
 		return 0;
 	}
-/*	
+/*
 	else if (u->lastlogin <= 0 || (u->lastlogin < (now - IMPOSSIBLE_TIME)))
 		return 0;
-*/	
+*/
 #if 1
 /* lasehu */
 	if (u->lastlogin <= 0 || (u->lastlogin < (now - IMPOSSIBLE_TIME)))
 	{
 		char buf[PATHLEN];
 		struct stat st;
-		
+
 		sethomefile(buf, u->userid, UFNAME_PASSWDS);
 		if (stat(buf, &st) == 0 && st.st_mtime > 0)
 			u->lastlogin = st.st_mtime;
 	}
-#endif	
+#endif
 	if (u->userlevel >= 100)
 	{
 		if (u->lastlogin < duser100)
@@ -137,7 +137,7 @@ USEREC *u;
 
 
 
-int 
+int
 DelUser()
 {
 	char    aha[] = "0abcdefghijklmnopqrstuvwxyz";
@@ -176,15 +176,15 @@ DelUser()
 	}
 	if ((fpbm = fopen(RPT_BM, "w")) == NULL)
 	{
-		fprintf(stderr, "cannot create: %s\n", RPT_BM);	
+		fprintf(stderr, "cannot create: %s\n", RPT_BM);
 		exit(1);
 	}
 	if ((fpsys = fopen(RPT_SYSOP, "w")) == NULL)
 	{
-		fprintf(stderr, "cannot create: %s\n", RPT_SYSOP);	
+		fprintf(stderr, "cannot create: %s\n", RPT_SYSOP);
 		exit(1);
-	}		
-	
+	}
+
 	fprintf(fpr, "         Current Date: %s", ctime(&now));
 	fprintf(fpr, " Lv. 0-30 Expire Date: %s", ctime(&duser0));
 	fprintf(fpr, "Lv. 31-49 Expire Date: %s", ctime(&duser31));
@@ -255,7 +255,7 @@ DelUser()
 						 	localtime(&(user.lastlogin)));
 						fprintf(fpr, "[%12s] level:[%3d] %s\n", id,
 							user.userlevel, tibuf);
-/*                                                      
+/*
    fprintf(fpr, "[%12s] level:[%3d]  %s", id,
    user.userlevel, ctime(&(user.lastlogin)));
  */
@@ -294,7 +294,7 @@ DelUser()
 		fprintf(fpt, "# 站長人數: %d\n", total_sysop);
 		fclose(fpt);
 	}
-	
+
 	fclose(fpr);
 	fclose(fpbm);
 	fclose(fpsys);
@@ -308,7 +308,7 @@ DelUser()
 }
 
 
-int 
+int
 PostRpt()
 {
 	char    today[40], buf[4096], fname[PATHLEN], title[STRLEN];
@@ -327,7 +327,7 @@ PostRpt()
 
 	write_article_header(fpw, "SYSOP", "系統管理員", RPT_BOARD, today,
 			     title, NULL);
-	fprintf(fpw, "\n");			    
+	fprintf(fpw, "\n");
 
 	if ((fdr = open(RPT_TOTAL, O_RDONLY)) > 0)
 	{
@@ -369,7 +369,7 @@ PostRpt()
 			             "localhost", FALSE, NULL, 0);
 #endif
 	unlink(fname);
-	return retval;			            
+	return retval;
 }
 
 
@@ -391,13 +391,13 @@ char   *argv[];
 	duser3 = DEL_USER3;
 	duser0 = DEL_USER0;
 	duser50 = DEL_USER50;
-	duser100 = DEL_USER100;		
+	duser100 = DEL_USER100;
 */
 	duser0 = atoi(argv[1]);		/* sarek:05/13/2002: duser0是指0級到31級之間的 */
 	duser31 = atoi(argv[2]);	/* sarek:05/13/2002: 本來是argv[1],我想是之前弄錯了吧... */
 	duser50 = atoi(argv[3]);
 	duser100 = atoi(argv[4]);
-	
+
 	now = time(0);
 	if ((duser0 = now - (duser0 * 24 * 60 * 60)) <= 0)
 		exit(-1);

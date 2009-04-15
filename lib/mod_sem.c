@@ -56,7 +56,7 @@ void sem_cleanup(int sem_id)
 	ick.val = 0;
 	semctl(sem_id, 0, IPC_RMID, ick);
 #endif
-	semctl(sem_id, 0, IPC_RMID);	
+	semctl(sem_id, 0, IPC_RMID);
 }
 
 void sem_lock(int semid, int op)

@@ -136,12 +136,12 @@ main (argc, argv)
 			fprintf (fp, "FORMOSA BBS ½u¤W¤H¼Æ [[1m%d[m] , SOUTH BBS ½u¤W¤H¼Æ [[1m%d[m] , WEST BBS ½u¤W¤H¼Æ [[1m%d[m]\n", act[0], act[1], act[2]);
 #endif
 			break;
-#if 0			
+#if 0
 		case 2:
 			fprintf (fp, "SOUTH BBS: [1;33m140.117.11.4[m , WEST BBS: [1;33m140.117.11.6[m , FORMOSA BBS: [1;33m140.117.11.2[m\n");
 			fprintf (fp, "SOUTH BBS ½u¤W¤H¼Æ [[1m%d[m] , WEST BBS ½u¤W¤H¼Æ [[1m%d[m] , FORMOSA BBS ½u¤W¤H¼Æ [[1m%d[m]\n", act[1], act[2], act[0]);
 			break;
-#endif			
+#endif
 		case 3:
 			fprintf (fp, "WEST BBS: [1;33m140.117.11.6[m , FORMOSA BBS: [1;33m140.117.11.2[m\n");
 			fprintf (fp, "WEST BBS ½u¤W¤H¼Æ [[1m%d[m] , FORMOSA BBS ½u¤W¤H¼Æ [[1m%d[m]\n", act[1], act[0]);

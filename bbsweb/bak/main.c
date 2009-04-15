@@ -60,12 +60,12 @@ void lingering_close(int sock)
 	{
 		FD_ZERO(&lfds);
 		FD_SET(sock, &lfds);
-	
+
 		do {
 			tv.tv_sec = 2;
 			tv.tv_usec = 0;
 			select_rv = select(sock + 1, &lfds, NULL, NULL, &tv);
-		} while((select_rv > 0) 
+		} while((select_rv > 0)
 		&& (fgets(dummybuf, sizeof(dummybuf), fp_in) != NULL));
 	}
 	close(sock);
@@ -77,9 +77,9 @@ void write_pidfile(pid_t pid, int port)
 {
 	FILE *fp;
 	char pidfile[PATHLEN];
-	
+
 	sprintf(pidfile, "%s.%d", PID_FILE, port);
-	
+
 	if ((fp = fopen(pidfile, "w")) != NULL)
 	{
 		fprintf(fp, "%-d", (int)pid);
@@ -91,7 +91,7 @@ void write_pidfile(pid_t pid, int port)
 int unlink_pidfile(int port)
 {
 	char pidfile[PATHLEN];
-	
+
 	sprintf(pidfile, "%s.%d", PID_FILE, port);
 	return unlink(pidfile);
 }
@@ -103,7 +103,7 @@ void usage(char *prog)
 		-b Specify server ip for binding\n\
 		-p Specify server port for binding\n\
 		-h This help message\n\
-		-c Enable allow/deny mode\n", 
+		-c Enable allow/deny mode\n",
 			WEB_SERVER_VERSION, prog);
 	fflush(stderr);
 }
@@ -145,17 +145,17 @@ void ChildMain(int num, int sock)
 	fp_in = stdin;
 	fp_out = stdout;
 	mypid = (server->childs)[my_num].pid;
-	
+
 	setvbuf(fp_in, NULL, _IOFBF, (size_t) 8192);
 	setvbuf(fp_out, NULL, _IOFBF, (size_t) 8192);
 
 	sigsetjmp(env, 1);
-	
+
 	signal(SIGCHLD, SIG_IGN);
 	signal(SIGALRM, timeout_check);
 	signal(SIGTERM, shutdown_server);
 	signal(SIGSEGV, sig_segv);
-	
+
 	while(RUNNING == 777)
 	{
 #ifndef NO_ALARM
@@ -175,9 +175,9 @@ void ChildMain(int num, int sock)
 				sleep(1);
 			continue;
 		}
-		
+
 		(server->childs)[my_num].status = S_ACCEPT;
-		
+
 		FD_ZERO(&ibits);
 		FD_SET(sock, &ibits);
 
@@ -194,18 +194,18 @@ void ChildMain(int num, int sock)
 				continue;
 			}
 		}
-		
+
 		if (!FD_ISSET(sock, &ibits))
 		{
 			sem_lock1(sem_id, SEM_EXIT);
 			continue;
 		}
-		
+
 		ns = accept(sock, (struct sockaddr *) &from, &aha);
 		if (ns < 0 && errno == EINTR)
 		{
 			sem_lock1(sem_id, SEM_EXIT);
-			continue;	
+			continue;
 		}
 		else
 		{
@@ -214,10 +214,10 @@ void ChildMain(int num, int sock)
 			(server->childs)[my_num].accept++;
 			(server->childs)[my_num].status = S_WAIT;
 			(server->childs)[my_num].socket = ns;
-			
+
 			host = inet_ntoa(from.sin_addr);
 #ifdef ULTRABBS
-			if(strcmp(host, TORNADO_HOST_IP)!=0 
+			if(strcmp(host, TORNADO_HOST_IP)!=0
 			&& strstr(host, "140.117.12.")==NULL
 			&& strstr(host, "140.117.99.")==NULL)
 			{
@@ -226,10 +226,10 @@ void ChildMain(int num, int sock)
 			}
 #endif
 			mysocket = ns;
-			
+
 			dup2(ns, STDIN_FILENO);
 			dup2(ns, STDOUT_FILENO);
-			
+
 			bzero(request_rec, sizeof(REQUEST_REC));
 			xstrncpy(request_rec->fromhost, host, HOSTLEN);
 			WebMain(num);
@@ -246,13 +246,13 @@ void ChildMain(int num, int sock)
 			mysocket = -1;
 		}
 	}
-	
+
 	(server->childs)[my_num].pid = 0x00;
 	(server->childs)[my_num].status = S_SIGTERM;
 	close(sock);
 	CloseLogFile(server);
 	_exit(0);
-	
+
 }
 
 /*******************************************************************
@@ -261,14 +261,14 @@ void ChildMain(int num, int sock)
 int MakeChild(int i, int sock)
 {
 	int cpid;
-	
+
 	if((cpid = fork()) == -1)
 	{
 		fprintf(stderr, "webbbs: can't fork child...");
 		fflush(stderr);
 		return -1;
 	}
-	
+
 	if(!cpid)
 	{
 		server->fork++;
@@ -308,8 +308,8 @@ int main(int argc, char *argv[])
 
 	request_rec = &c_request_rec;
 	bzero(request_rec, sizeof(REQUEST_REC));
-	
-#ifdef PRE_FORK	
+
+#ifdef PRE_FORK
 	while ((s = getopt(argc, argv, "f:p:b:ch")) != -1)
 #else
 	while ((s = getopt(argc, argv, "p:b:ch")) != -1)
@@ -324,7 +324,7 @@ int main(int argc, char *argv[])
 			case 'p':	/* assign bind port */
 				port = atoi(optarg);
 				break;
-#ifdef PRE_FORK	
+#ifdef PRE_FORK
 			case 'f':	/* # of child to fork */
 				max_child = atoi(optarg);
 				break;
@@ -338,12 +338,12 @@ int main(int argc, char *argv[])
 				return 0;
 		}
 	}
-	
+
 	if(spec_bind)
 	{
 		printf("bind ip = %s\n", myhostip);
 	}
-	
+
 	if (fork() != 0)	/* 複製出一隻一樣的 父程式 */
 		exit(0);
 
@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
      * be reopened moments later.
      */
 #endif
-	
+
 	init_signals();
 
 	umask(0);
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
 			exit(-1);
 		}
 	}
-	
+
 	if(find_fqdn(myhostname, hbuf) == NULL)
 	{
 		fprintf(stderr, "cannot determine local host name!\n");
@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
 		perror("socket");
 		exit(1);
 	}
-	
+
 	on = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
 	setsockopt(s, SOL_SOCKET, SO_KEEPALIVE,	(char *) &on, sizeof(on));
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
 	/* only consider about myhostip, for running with other http server */
 	if(spec_bind)
 		sin.sin_addr.s_addr = inet_addr(myhostip);
-	
+
 	sin.sin_port = htons((u_short) port);
 
 	if (bind(s, (struct sockaddr *) &sin, sizeof sin) < 0)
@@ -450,11 +450,11 @@ int main(int argc, char *argv[])
 		perror("listen");
 		exit(1);
 	}
-	
+
 #if 0
 	fprintf(stderr, "myhostname=%s\nmyhostip=%s\n", myhostname, myhostip);
 	fflush(stderr);
-#endif	
+#endif
 
     if (freopen(PATH_DEVNULL, "w", stderr) == NULL) {
 		fprintf(stderr, "bbsweb: unable to replace stderr with /dev/null: %s\n",
@@ -486,25 +486,25 @@ int main(int argc, char *argv[])
 #endif
 	server->client_index = 0;
 	bzero(server->client_record, sizeof(REQUEST_REC)*MAX_NUM_CLIENT);
-	
+
 	if (check)
 		host_deny((char *) NULL);
-	
+
 	tzset();
 	gmtime(&now);
 	localtime(&now);
 	time(&now);
-	
+
 	sysconf(_SC_PAGESIZE);
 	server->start_time = now;
-	
+
 	init_cache();
 	resolve_brdshm();
 	resolve_utmp();
-	
+
 	write_pidfile(mypid, port);
 	OpenLogFile(server);
-	
+
 #ifdef WEB_EVENT_LOG
 	sprintf(log, "START %s/%s PID=\"%d\" PORT=\"%d\"", WEB_SERVER_NAME, WEB_SERVER_VERSION, (int)server->pid, server->port);
 	weblog_line(log, server->access_log, "127.0.0.1", server->start_time);
@@ -512,33 +512,33 @@ int main(int argc, char *argv[])
 #endif
 	/* ================================================================== */
 
-	
+
 #ifdef PRE_FORK
 	{
 		int i;
-		
+
 		for(i=0; i<server->max_child; i++)
 		{
 			MakeChild(i, s);
-			
+
 		}
 	}
 
 	alarm(0);
 	signal(SIGALRM, SIG_IGN);
 	sleep(2);	/* wait for child to initial */
-	
+
 #endif
 
 	aha = sizeof(from);
 	fp_in = stdin;
 	fp_out = stdout;
-	
+
 	while (RUNNING == 777)
 	{
 #ifdef PRE_FORK
 		int i, ready=0;
-		
+
 		for(i=0; i<server->max_child; i++)
 		{
 			if(server->childs[i].pid == 0)
@@ -546,11 +546,11 @@ int main(int argc, char *argv[])
 			else if(server->childs[i].status == S_READY)
 				ready++;
 		}
-		
-		/* 
+
+		/*
 			if not enough ready child for task,
 			tell waiting child to abort persistent connection
-			to become ready 
+			to become ready
 		*/
 		if(ready <= 2)
 		{
@@ -563,17 +563,17 @@ int main(int argc, char *argv[])
 					kill((server->childs)[i].pid, SIGALRM);
 			}
 		}
-		
+
 		sleep(5);
 
 #else	/* non PRE_FORK loop */
 
 		FD_ZERO(&ibits);
 		FD_SET(s, &ibits);
-		
+
 		wait.tv_sec = 5;
 		wait.tv_usec = 0;
-		
+
 		if ((on = select(s+1, &ibits, 0, 0, &wait)) < 1)
 		{
 			if ((on < 0 && errno == EINTR) || on == 0)
@@ -584,7 +584,7 @@ int main(int argc, char *argv[])
 				continue;
 			}
 		}
-		
+
 		if (!FD_ISSET(s, &ibits))
 			continue;
 
@@ -596,7 +596,7 @@ int main(int argc, char *argv[])
 			char *hs;
 			hs = inet_ntoa(from.sin_addr);
 
-			if(strcmp(hs, TORNADO_HOST_IP)!=0 
+			if(strcmp(hs, TORNADO_HOST_IP)!=0
 			&& strstr(hs, "140.117.12.")==NULL
 			&& strstr(hs, "140.117.99.")==NULL)
 			{
@@ -623,11 +623,11 @@ int main(int argc, char *argv[])
 						dup2(ns, STDERR_FILENO);
 						close(ns);
 					#endif
-						
+
 						mysocket = ns;
-						
+
 						host = inet_ntoa(from.sin_addr);
-						
+
 						if (check && host_deny(host))
 						{
 							shutdown(0, 2);
@@ -637,7 +637,7 @@ int main(int argc, char *argv[])
 						bzero(request_rec, sizeof(REQUEST_REC));
 						xstrncpy(request_rec->fromhost, host, HOSTLEN);
 						WebMain(0);
-						
+
 #ifdef KEEP_ALIVE
 						lingering_close(ns);
 #else
@@ -646,7 +646,7 @@ int main(int argc, char *argv[])
 #endif
 
 						_exit(0);	/* child exited normally */
-						
+
 					}
 				default:		/* parent */
 					close(ns);
@@ -654,18 +654,18 @@ int main(int argc, char *argv[])
 		}
 #endif
 	}
-	
+
 /*
 	now main server terminate....
 */
-	
+
 #ifdef PRE_FORK
 /*
-	send SIGTERM to child process 
+	send SIGTERM to child process
 */
 	{
 		int i;
-		
+
 		for(i=0; i<server->max_child; i++)
 		{
 			if((server->childs)[i].pid >0)
@@ -678,15 +678,15 @@ int main(int argc, char *argv[])
 	sem_cleanup(sem_id);
 
 #endif
-	
+
 	close(s);
 	unlink_pidfile(server->port);
-	
+
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "SHUTDOWN %s/%s PID=\"%d\" PORT=\"%d\" ACCESS=\"%d, %d, %d\" ERROR=\"%d\" TIMEOUT=\"%d\" SIGSEGV=\"%d\"", 
-		WEB_SERVER_NAME, 
-		WEB_SERVER_VERSION, 
-		(int)server->pid, 
+	sprintf(log, "SHUTDOWN %s/%s PID=\"%d\" PORT=\"%d\" ACCESS=\"%d, %d, %d\" ERROR=\"%d\" TIMEOUT=\"%d\" SIGSEGV=\"%d\"",
+		WEB_SERVER_NAME,
+		WEB_SERVER_VERSION,
+		(int)server->pid,
 		server->port,
 		server->M_GET,
 		server->M_HEAD,
@@ -695,11 +695,11 @@ int main(int argc, char *argv[])
 		server->timeout,
 		server->sigsegv
 	);
-	
+
 	weblog_line(log, server->access_log, "127.0.0.1", time(0));
 #endif
 	CloseLogFile(server);
-	
+
 	return 0;
-	
+
 }

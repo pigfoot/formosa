@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 		case 'i':
 #ifdef USE_IDENT
 			urec.ident = atoi(optarg);
-#endif			
+#endif
 			break;
 		case '?':
 		default:

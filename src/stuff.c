@@ -80,10 +80,10 @@ static int do_exec(char *com)
 	pid_t pid;
 	void (*isig) (), (*qsig) ();
 	int status, w;
-#if 0	
+#if 0
 	struct passwd *passid;
 	char *bbsenv[MAXENVS];
-#endif	
+#endif
 
 	xstrncpy(pcom, com, sizeof(pcom));
 	while (argptr + 1 < MAXARGS)
@@ -111,18 +111,18 @@ static int do_exec(char *com)
 	arglist[argptr] = NULL;
 	if (argptr == 0)
 		return -1;
-#if 0		
+#if 0
 	if (*arglist[0] == '/')
 		xstrncpy(path, arglist[0], sizeof(path));
 	else
-#endif	
+#endif
 	{
 		strcpy(path, BINDIR);
 		strncat(path, arglist[0], sizeof(path) - strlen(BINDIR) - 1);
 	}
-#if 0	
+#if 0
 	if ((pid = vfork()) == 0)
-#endif	
+#endif
 	if ((pid = fork()) == 0)
 	{
 #if 0
@@ -141,7 +141,7 @@ static int do_exec(char *com)
 		execve(path, arglist, bbsenv);
 #endif
 		signal(SIGCHLD, SIG_IGN);	/* lthuang */
-		execv(path, arglist);		
+		execv(path, arglist);
 		fprintf(stderr, "EXECV FAILED... path = '%s'\n", path);
 		exit(-1);
 	}
@@ -160,8 +160,8 @@ static int do_exec(char *com)
 }
 
 
-/* 
- * execute oudoor program 
+/*
+ * execute oudoor program
  */
 int outdoor(char *cmd)
 {
@@ -182,19 +182,19 @@ void show_byebye(BOOL idle)
 
 	move(4, 15);
 	outs(_msg_stuff_1);
-	move(5, 15);	
+	move(5, 15);
 	prints(_msg_stuff_2, curuser.numposts);
-	move(6, 15);	
+	move(6, 15);
 	prints(_msg_stuff_3, curuser.numlogins);
-	move(7, 15);	
+	move(7, 15);
 	prints(_msg_stuff_4, Ctime(&curuser.lastlogin));
-	move(8, 15);	
+	move(8, 15);
 	prints(_msg_stuff_5, curuser.lasthost);
-	move(9, 15);	
+	move(9, 15);
 	prints(_msg_stuff_6, Ctime(&uinfo.login_time));
-	move(10, 15);	
+	move(10, 15);
 	prints(_msg_stuff_7, uinfo.from);
-	move(11, 15);	
+	move(11, 15);
 	prints(_msg_stuff_8, Ctime(&now));
 	move(12, 26);
 	outs(idle ? _msg_stuff_9 : _msg_stuff_10);
@@ -208,13 +208,13 @@ void show_byebye(BOOL idle)
 		)
 		{
 			char fname[PATHLEN];
-	
-	
+
+
 			//if (mailbox_is_full(0))	/* lthuang */
 			if (check_mail_num(0))	/* lthuang */
 				return;
-		
-			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);		
+
+			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
 			if (get_message_file(fname, "[³Æ¥÷] °T®§°O¿ý") == 0)
 			{
 				SendMail(-1, fname, curuser.userid, curuser.userid,
@@ -260,7 +260,7 @@ void bbsd_log_write(char *mode, char *fmt, ...)
 	va_list args;
 	time_t now;
 	char msgbuf[80], timestr[20];
-	
+
 
 	if (bbsd_log_fp == NULL)
 		return;
@@ -273,9 +273,9 @@ void bbsd_log_write(char *mode, char *fmt, ...)
 	strftime(timestr, sizeof(timestr), "%m/%d/%Y %X", localtime(&now));
 	fprintf(bbsd_log_fp, "%s %-12.12s %-8.8s %s\n",
 		timestr, curuser.userid, mode, msgbuf);
-#if 0		
+#if 0
 	fflush(bbsd_log_fp);
-#endif	
+#endif
 }
 
 
@@ -326,14 +326,14 @@ static void left_note()			/* Seraph */
                 strcpy(mynote.userid, strcasecmp(curuser.userid, curuser.fakeuserid)?
       curuser.userid: curuser.fakeuserid);
 #endif
-/*		
+/*
 		strcpy(mynote.username, curuser.username);
-*/		
+*/
 		strcpy(mynote.username, uinfo.username);
 		time(&(mynote.date));
 		sprintf(mynote.buf[3], _msg_stuff_18, mynote.userid, mynote.username, 80 - 24 - strlen(mynote.userid) - strlen(mynote.username) - 19, "                                    ", Ctime(&mynote.date));
 		write(fdt, &mynote, sizeof(mynote));
-	
+
 		if ((fdd = open(fdat, O_RDONLY)) > 0)
 		{
 			flock(fdd, LOCK_EX);
@@ -392,13 +392,13 @@ int Goodbye()			/* quit bbs */
 		if (igetkey() != 'n')   /* sarek:06/09/2002:default to backup,Á×§Kuser¤â·Æº|¦s­«­n°T®§... */
 		{
 			char fname[PATHLEN];
-	
-	
+
+
 			//if (mailbox_is_full(0))	/* lthuang */
 			if (check_mail_num(0))	/* lthuang */
 				return C_FOOT;
-		
-			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);		
+
+			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
 			if (get_message_file(fname, "[³Æ¥÷] °T®§°O¿ý") == 0)
 			{
 				SendMail(-1, fname, curuser.userid, curuser.userid,
@@ -504,8 +504,8 @@ int cmp_wlist(struct word *wtop, char *str, int (*cmpfunc) (const char *, const 
  * ¶Ç¦^§ä¨ìªº©Î¥Ø«e©Ò¦bªº link pointer
  * §ä¤£¨ì«h¶Ç¦^ NULL
  *******************************************************************/
-struct word *cmpd_wlist(struct word **pwtop, char *str, 
-						int (*cmpfunc) (const char *, const char *), 
+struct word *cmpd_wlist(struct word **pwtop, char *str,
+						int (*cmpfunc) (const char *, const char *),
 						void (*freefunc) (void *))
 {
 /* lasehu
@@ -791,7 +791,7 @@ dumb_prints(inbuf)
 char *inbuf;
 {
 	char *ptr, *esc_other;
-	extern int show_ansi;	
+	extern int show_ansi;
 
 	if ((ptr = strstr(inbuf, "[")) != NULL)
 	{
@@ -826,7 +826,7 @@ char *inbuf;
 
 
 /*
- * update the mode of online user_info 
+ * update the mode of online user_info
  */
 void update_umode(int mode)
 {
@@ -872,8 +872,8 @@ int (*cmpfunc) (const char *, const char *);
 		register char *s;
 
 		num = atop->number;
-	
-#if 0		
+
+#if 0
 		for (left = 0, rigth = num - 1; left < right; )
 		{
 			mid = (left + right) / 2;
@@ -887,11 +887,11 @@ int (*cmpfunc) (const char *, const char *);
 				return 1;
 			else if (val < 0)
 				right = mid - 1;
-			else 
+			else
 				left = mid + 1;
 		}
-#endif					
-		
+#endif
+
 		for (i = 0; i < num; i++)
 		{
 			s = atop->datap[i];
@@ -926,7 +926,7 @@ struct array **atop;
 			}
 		}
 		free(*atop);
-		*atop = (struct array *)NULL;		
+		*atop = (struct array *)NULL;
 	}
 }
 #endif
@@ -995,12 +995,12 @@ int numpointer;
 
 
 	if (!numpointer)
-		return (struct array *) NULL;	
-		
+		return (struct array *) NULL;
+
 	top = (struct array *) malloc(sizeof(struct array));
 	if (!top)
 		return (struct array *) NULL;
-		
+
 	top->datap = (char **) malloc(sizeof(char *) * numpointer);
 
 	if (!top->datap)
@@ -1008,7 +1008,7 @@ int numpointer;
 		free(top);
 		return (struct array *) NULL;
 	}
-	
+
 	for (i = 0; i < numpointer; i++)
 		top->datap[i] = (char *) NULL;
 	top->number = numpointer;

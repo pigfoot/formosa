@@ -34,7 +34,7 @@ char *cmd;
 #ifdef DEBUGCMD
 		printf("searching name %s for cmd %s\n",p->name,cmd);
 #endif
-		if (!strncasecmp(p->name,cmd,1024)) 
+		if (!strncasecmp(p->name,cmd,1024))
 			return p;
 	}
 	return NULL;
@@ -47,8 +47,8 @@ int dfd;
 	/*hash_init();*/
 	if (dfd > 0) {
 	  DIO = fdopen(dfd,"rw");
-	  DIN = fdopen(dfd,"r");			
-	  DOUT = fdopen(dfd,"w");			
+	  DIN = fdopen(dfd,"r");
+	  DOUT = fdopen(dfd,"w");
 	  if (DIO == NULL || DIN == NULL || DOUT == NULL) {
 		perror("fdopen");
 		return -1;
@@ -80,10 +80,10 @@ int dfd;
 #endif
 		Argv.argc = argify(BUF,&Argv.argv);
 #ifdef DEBUGSERVER
-		fprintf(stdout,"argc %d argv ",Argv.argc);   
+		fprintf(stdout,"argc %d argv ",Argv.argc);
 		for (i=0;i<Argv.argc;++i)
 		 fprintf(stdout,"%s ",Argv.argv[i]);
-		fprintf(stdout,"\n");   
+		fprintf(stdout,"\n");
 #endif
 		dp = searchcmd(Argv.argv[0]);
 		Argv.dc = dp;
@@ -121,7 +121,7 @@ cont:
 #define MAX_ARG_SIZE 16384
 
 int argify(line, argvp)
-char *line, ***argvp; 
+char *line, ***argvp;
 {
 	   static char *argvbuffer[MAX_ARG+2];
 	   char **argv = argvbuffer;

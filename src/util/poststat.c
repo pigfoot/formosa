@@ -26,11 +26,11 @@ POST_TITLE;
 POST_TITLE post_title[MAX_POSTS];
 POST_TITLE total_title[MAXBOARD * NUM_TITLE_SELECT];
 
-#if 1	
+#if 1
 static int cnt = 0;
-#endif	
+#endif
 
-int 
+int
 cmp_count (a, b)
      POST_TITLE **a, **b;
 {
@@ -38,7 +38,7 @@ cmp_count (a, b)
 		- ((*a)->count + (*a)->pcount);
 }
 
-int 
+int
 cmp_count2 (a, b)
      POST_TITLE *a, *b;
 {
@@ -46,7 +46,7 @@ cmp_count2 (a, b)
 		- ((a)->count + (a)->pcount);
 }
 
-int 
+int
 add_post_title(char *boardname, char *title, int pushcnt, time_t stamp, char *filename)
 {
 	int i;
@@ -65,7 +65,7 @@ add_post_title(char *boardname, char *title, int pushcnt, time_t stamp, char *fi
 #if 1
 	if (strlen(title) <= 2 || !strcmp(title, "請問"))
 		return -1;
-#endif		
+#endif
 
 	for (i = 0; i<MAX_POSTS && *(post_title[i].title); i++)
 		if (!strncmp (post_title[i].title, title, strlen(post_title[i].title)))
@@ -76,11 +76,11 @@ add_post_title(char *boardname, char *title, int pushcnt, time_t stamp, char *fi
 			return i;
 		}
 #if 1
-	cnt++;		
+	cnt++;
 	if (i == MAX_POSTS)	/* bug fixed */
 		return -1;
-#endif	
-	
+#endif
+
 	xstrncpy (post_title[i].title, title, sizeof(post_title[i].title));
 	post_title[i].stamp = stamp;
 	xstrncpy (post_title[i].filename, filename, sizeof(post_title[i].filename));
@@ -91,7 +91,7 @@ add_post_title(char *boardname, char *title, int pushcnt, time_t stamp, char *fi
 	return -1;
 }
 
-int 
+int
 get_article_of_day (char *boardname, int num_days)
 {
 	char fname[PATHLEN];
@@ -110,14 +110,14 @@ get_article_of_day (char *boardname, int num_days)
 
 	setboardfile (fname, boardname, DIR_REC);
 	total_rec = get_num_records(fname, FH_SIZE);
-	
+
 	if(total_rec > 0
 	&&(fd = open (fname, O_RDONLY)) > 0)
 	{
 #ifdef USE_MMAP
 
-		fileinfo = (FILEHEADER *) mmap((caddr_t) 0, 
-			(size_t)(total_rec*FH_SIZE), 
+		fileinfo = (FILEHEADER *) mmap((caddr_t) 0,
+			(size_t)(total_rec*FH_SIZE),
 			(PROT_READ), MAP_PRIVATE, fd, (off_t) 0);
 
 		if(fileinfo == MAP_FAILED)
@@ -172,12 +172,12 @@ get_article_of_day (char *boardname, int num_days)
 #endif
 		close(fd);
 	}
-	
+
 	return 0;
 }
 
 
-void 
+void
 select_top (int *total_title_num, int num_select)
 {
 	int i, j;
@@ -217,26 +217,26 @@ BOARDHEADER *bhentp;
 	if (bhentp->filename[0] == '\0')
 		return -1;
 	#endif
-	
+
 	if (!can_see_board (bhentp, 0))
 		return -1;
 	if (!checkNews && (bhentp->brdtype & BRD_NEWS))
 		return -1;
 
 #ifdef NSYSUBBS1
-	if (!strncmp(bhentp->filename, "cna-", 4) 
+	if (!strncmp(bhentp->filename, "cna-", 4)
 	    || !strcmp(bhentp->filename, "test")
 	    || !strcmp(bhentp->filename, "keepmessage"))
-	{		    
+	{
 		return -1;
 	}
 #endif
 	memset(post_title, 0, sizeof(post_title));
 	get_article_of_day (bhentp->filename, checknum_days);
 	select_top (checktotal_title_num, checknum_posts);
-		
+
 	return 0;
-}		
+}
 
 
 int
@@ -244,13 +244,13 @@ poststat(int num_days, int num_posts, BOOL bNews, POST_TITLE **toplist, int *tot
 {
 	resolve_brdshm();
 	*total_title_num = 0;
-	
+
 	checkNews = bNews;
 	checknum_days = num_days;
 	checknum_posts = num_posts;
 	checktotal_title_num = total_title_num;
 	apply_brdshm(fptr);
-	
+
 	qsort (total_title, *total_title_num, sizeof (POST_TITLE), cmp_count2);
 
 	*toplist = &(total_title[0]);
@@ -275,10 +275,10 @@ POST_TITLE *toplist;
 	int i;
 	BOARDHEADER bh;
 #if 0
-	printf("%-4s %-40.40s %-7s %-20s\n", 
+	printf("%-4s %-40.40s %-7s %-20s\n",
 	       "排名", "佈告討論標題", "篇數", "看板名稱");
-	printf("%-4s %-40.40s %-7s %-20s\n", 
-	       "====", "========================================", 
+	printf("%-4s %-40.40s %-7s %-20s\n",
+	       "====", "========================================",
 	       "=======", "====================");
 #endif
 
@@ -287,20 +287,20 @@ POST_TITLE *toplist;
 		if (get_board(&bh, toplist[i].boardname) > 0)
 		{
 			printf("%d) %s %d %s %s\n",
-				i+1, 
-				toplist[i].title, 
-				toplist[i].count, 
-				toplist[i].boardname, 
+				i+1,
+				toplist[i].title,
+				toplist[i].count,
+				toplist[i].boardname,
 				toplist[i].filename);
-				
+
 	#if 0
 	        printf("%3d. %-40.40s [%3d篇] %s (%s板)\n",
-			       i+1, toplist[i].title, toplist[i].count, 
+			       i+1, toplist[i].title, toplist[i].count,
 			       (bh.brdtype & BRD_NEWS) ? "[轉]" : "    ",
 			       toplist[i].boardname);
 	#endif
-	
-		}       
+
+		}
 	}
 }
 
@@ -317,7 +317,7 @@ main (int argc, char *argv[])
 
 	init_bbsenv ();
 
-	if (argc != 4)	
+	if (argc != 4)
 	{
 		fprintf(stderr, "usage: %s num_days num_posts [-y/-n]\n", argv[0]);
 		fprintf(stderr, "-y/-n: including news or not\n");
@@ -326,7 +326,7 @@ main (int argc, char *argv[])
 
 	num_days = atoi(argv[1]);
 	num_posts = atoi(argv[2]);
-	
+
 	if (!strcmp(argv[3], "-y"))
 		bNews = TRUE;
 	else
@@ -335,8 +335,8 @@ main (int argc, char *argv[])
 	poststat(num_days, num_posts, bNews, &toplist, &total_title_num);
 
 	do_showfile(num_posts, total_title_num, toplist);
-	
+
 	return 0;
-	
+
 }
 #endif	/* !BBSWEB */

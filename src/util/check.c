@@ -2,7 +2,7 @@
 /*
 check.c                 check from "identlog" to cancel the identificaton of
                         people who identified used anonymous email account
-*/                        
+*/
 /************************************************************
  *  取消過去使用"匿名電子信箱帳號"認證之使用者的認證資格    *
  *  比對 conf/identlog 用來通過認證的 E-mail		        *

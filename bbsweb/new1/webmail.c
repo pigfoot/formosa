@@ -11,9 +11,9 @@
 
 /*******************************************************************
  *	check if user mail-box full
- *	
+ *
  *******************************************************************/
-int 
+int
 isExceedMailLimit(USEREC * user)
 {
 	int num_mail;
@@ -34,7 +34,7 @@ isExceedMailLimit(USEREC * user)
 }
 
 
-void 
+void
 ShowMail(char *tag)
 {
 	char *p, *para = NULL;
@@ -60,10 +60,10 @@ ShowMail(char *tag)
 			  	|| !CheckNewmail(username, TRUE))
 			{
 				GetPara3(value, "VALUE2", para, sizeof(value), MSG_MailBox);
-				fprintf(fp_out, "<A HREF=\"/%smail/\">%s</A>", 
+				fprintf(fp_out, "<A HREF=\"/%smail/\">%s</A>",
 					BBS_SUBDIR, value);
 			}
-			else			
+			else
 			{
 				GetPara3(value, "VALUE1", para, sizeof(value), MSG_MailNew);
 				fprintf(fp_out, "<A HREF=\"/%smail/\"><FONT COLOR=\"RED\"><BLINK>%s</BLINK></FONT></A>",
@@ -83,7 +83,7 @@ ShowMail(char *tag)
  *	check user has permission to send mail
  *
  ************************************************************/
-int 
+int
 MailCheck(char *address)
 {
 
@@ -113,10 +113,10 @@ MailCheck(char *address)
 
 /***********************************************************
  *	轉寄文章檔案
- *	
+ *
  *	一般區、精華區、信件區通用
  ************************************************************/
-int 
+int
 ForwardArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 {
 	int result;
@@ -160,7 +160,7 @@ ForwardArticle(char *pbuf, BOARDHEADER * board, POST_FILE * pf)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+	sprintf(log, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			(request_rec->URLParaType == MailForward) ? POST_MailForward : POST_PostForward,
 			username, address, pf->fh.title, request_rec->user_agent);
 #endif

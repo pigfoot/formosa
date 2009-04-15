@@ -10,7 +10,7 @@ extern pid_t mypid;
 /*******************************************************************
  *	WEB-BBS generic LOG function
  *******************************************************************/
-void 
+void
 weblog(char *msg, char *logfile)
 {
 	time_t now;
@@ -29,7 +29,7 @@ weblog(char *msg, char *logfile)
 
 /*******************************************************************
  *	WEB-BBS generic LOG function
- *	use with opened file 
+ *	use with opened file
  *******************************************************************/
 void
 weblog_line(FILE * fp, char *fmt,...)
@@ -48,7 +48,7 @@ weblog_line(FILE * fp, char *fmt,...)
 		timestr, request_rec->fromhost, msg, (int) mypid, request_rec->num_request);
 }
 
-void 
+void
 OpenLogFile(SERVER_REC * server)
 {
 
@@ -93,7 +93,7 @@ OpenLogFile(SERVER_REC * server)
 }
 
 
-void 
+void
 CloseLogFile(SERVER_REC * server)
 {
 
@@ -115,7 +115,7 @@ CloseLogFile(SERVER_REC * server)
 
 }
 
-void 
+void
 FlushLogFile(SERVER_REC * server)
 {
 

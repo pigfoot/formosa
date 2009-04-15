@@ -10,18 +10,18 @@
  *
  *******************************************************************/
 /*
-   BBS <--> News Server Mail Exchange Gateway 
-   
+   BBS <--> News Server Mail Exchange Gateway
+
    Features:
-   
+
        1. One BBS Board <--> More than one Newsgroup
        2. One Newsgroup <--> More than one BBS Board
-   
+
    Author: 梁明章 lmj@cc.nsysu.edu.tw     (wind.bbs@bbs.nsysu.edu.tw)
            黃立德 lthuang@cc.nsysu.edu.tw (lthuang.bbs@bbs.nsysu.edu.tw)
-*/    
+*/
 
-/* 
+/*
    02/28/97 lasehu
    	- Remove the region option in the configuration file
 	- Support the protocol of NNTP 'XHDR NNTP-POSTING-HOST' in replacement of
@@ -30,7 +30,7 @@
 
    by asuka
     ANTI_SPAM
-    
+
 	nntp respond
 
 	200 server ready - posting allowed
@@ -45,7 +45,7 @@
 	231 list of new newsgroups follows
 	235 article transferred ok
 	240 article posted ok
-	
+
 	335 send article to be transferred.  End with <CR-LF>.<CR-LF>
 	340 send article to be posted. End with <CR-LF>.<CR-LF>
 
@@ -62,14 +62,14 @@
 	437 article rejected - do not try again.
 	440 posting not allowed
 	441 posting failed
-	
+
 	500 command not recognized
 	501 command syntax error
 	502 access restriction or permission denied
 	503 program fault - command not performed
 
-                                                                                                   
-*/    
+
+*/
 
 #undef DEBUG
 
@@ -87,7 +87,7 @@ char debug[4096];
 #endif
 
 #ifdef NSYSUBBS1
-#define CNA_FILTER	
+#define CNA_FILTER
 #endif
 
 #include "bbs.h"
@@ -114,19 +114,19 @@ struct	Config	{
 	int		retry_sec;
 	int		rest_sec;
 	short	esc_filter;
-#if 0	
+#if 0
 	short	update_board;
-#endif	
+#endif
 /*
 	char	myip[16];
 	char	myhostname[80];
-*/	
+*/
 	char	mynickname[80];
 	char	server[16];
 	char	organ[80];
-#if 0	
+#if 0
 	char	deltime[80];	/* when to expire posts */
-#endif	
+#endif
 };
 
 struct	BNLink	{
@@ -157,7 +157,7 @@ time_t srv_start, srv_end;
 int num_of_bnlink;
 int mystatus = 0x00;	/* debug */
 
-enum{ S_READY, S_POST, S_GET, S_CONNECT, S_WORK, 
+enum{ S_READY, S_POST, S_GET, S_CONNECT, S_WORK,
 S_BBS2NEWS, S_BBS2NEWS_1, S_BBS2NEWS_2, S_BBS2NEWS_3, S_BBS2NEWS_4,
 S_NEWS2BBS, S_NEWS2BBS_1, S_NEWS2BBS_2, S_NEWS2BBS_3, S_NEWS2BBS_4};
 
@@ -183,7 +183,7 @@ news_log_open()
 		fprintf(stderr, "open log %s error\n", PATH_NEWSLOG);
 		exit(-1);
 	}
-	
+
 	chmod(PATH_NEWSLOG, 0600);
 }
 
@@ -242,9 +242,9 @@ news_log_write (const char *fmt, ...)
 }
 
 
-/* 
+/*
    Like fgets(), but strip '\r' in the buffer readed.
-*/   
+*/
 char *
 xfgets (buf, bsize, fp)
 char *buf;
@@ -268,7 +268,7 @@ FILE *fp;
 
 /*
    Initialize all of the configuration
-*/    
+*/
 void
 init_conf ()
 {
@@ -284,7 +284,7 @@ init_conf ()
 
 /*
    Reset and clean the configuration
-*/   
+*/
 void
 clean_conf ()
 {
@@ -324,12 +324,12 @@ char *sep;
 			break;
 		end++;
 	}
-/*	
+/*
 	if (begin == end)
 		return (char *) NULL;
 */
 	if (begin == end)
-		return begin;		
+		return begin;
 	if (!buf)
 	{
 		buf = (char *) malloc (end - begin + 1);
@@ -349,7 +349,7 @@ char *sep;
 
 /*
    Get a value from a string.
-*/    
+*/
 long
 get_vul (begin)
 char *begin;
@@ -407,24 +407,24 @@ char line[];
 		new->expire = TRUE;
 	else
 		new->expire = FALSE;
-/*		
+/*
 	p = get_str (p, buffer, 10, " ");
-*/	
+*/
 	get_str (p, buffer, 10, " ");
 	if (!strcmp (buffer, "yes"))
 		new->cancel = TRUE;
 	else
 		new->cancel = FALSE;
-/*		
+/*
 	new->num = get_vul (p);
-*/	
+*/
 	new->num = ++num_of_bnlink;
 	new->next = bncur->next;
 
-	/* link new bnlink */	
+	/* link new bnlink */
 	bncur->next = new;
 	bncur = new;
-	
+
 	return new;
 }
 
@@ -502,19 +502,19 @@ read_conf ()
 		return -1;
 	clean_conf ();
 	init_conf ();
-	
+
 	get_hostname_hostip();
-	
+
 	while (xfgets (genbuf, sizeof (genbuf), fp))
 	{
 		if (genbuf[0] == '#' || genbuf[0] == '\n')
 			continue;
-/*			
+/*
 		if (conf.myip[0] == '\0' && !strncmp (genbuf, "myip", 4))
 			get_str (genbuf + 4, conf.myip, sizeof (conf.myip), " ");
 		else if (conf.myhostname[0] == '\0' && !strncmp (genbuf, "myhostname", 10))
 			get_str (genbuf + 10, conf.myhostname, sizeof (conf.myhostname), " ");
-*/			
+*/
 		else if (conf.mynickname[0] == '\0' && !strncmp (genbuf, "mynickname", 10))
 			get_str (genbuf + 10, conf.mynickname, sizeof (conf.mynickname), " ");
 		else if (conf.server[0] == '\0' && !strncmp (genbuf, "server", 6))
@@ -535,7 +535,7 @@ read_conf ()
 			if (!strcmp (yesno, "yes"))
 				conf.esc_filter = 1;
 		}
-#if 0		
+#if 0
 		else if (!strncmp (genbuf, "update_board", 12))
 		{
 			get_str (genbuf + 12, yesno, 8, " ");
@@ -544,10 +544,10 @@ read_conf ()
 		}
 		else if (conf.deltime[0] == '\0' && !strncmp (genbuf, "deltime", 7))
 			get_str (genbuf + 7, conf.deltime, sizeof (conf.deltime));
-#endif			
+#endif
 		else if (!strncmp (genbuf, "[bnlink]", 8))
 			break;
-#if 0			
+#if 0
 		if (!strncmp (genbuf, "boot_run", 8))
 		{
 			get_str (genbuf + 8, yesno, 8, " ");
@@ -555,7 +555,7 @@ read_conf ()
 			if (strcmp (yesno, "yes") && booting)
 				exit (0);
 		}
-#endif		
+#endif
 	}
 	while (xfgets (genbuf, sizeof (genbuf), fp))
 	{
@@ -564,10 +564,10 @@ read_conf ()
 		make_bnlink (genbuf);
 	}
 	fclose (fp);
-#if 0	
+#if 0
 	if (conf.update_board)
 		update_board ();
-#endif		
+#endif
 	return 0;
 }
 
@@ -592,7 +592,7 @@ char *filename;
 		return -1;
 	}
 	close (fd);
-	
+
 	fname[cc] = '\0';
 	sprintf (genbuf, "boards/%-s/%s", bncur->board, DIR_REC);
 	if ((fd = open (genbuf, O_RDWR)) < 0)
@@ -625,33 +625,33 @@ do_post (fr)
 FILE *fr;
 {
 	FILE *fw;
-#if 0	
+#if 0
 	FILE *fr;
 	int fb;
-#endif	
+#endif
 	FILEHEADER fhead;
 	char pathname[PATHLEN], fn_tmp[PATHLEN];
 	char stamp[14];
-	char author[STRLEN];	
-	char *p, from[STRLEN], name[STRLEN], group[STRLEN], 
-	         title[STRLEN],	date[STRLEN], organ[STRLEN], 
+	char author[STRLEN];
+	char *p, from[STRLEN], name[STRLEN], group[STRLEN],
+	         title[STRLEN],	date[STRLEN], organ[STRLEN],
 	         msgid[STRLEN], board[STRLEN], nntphost[STRLEN], xref_no[11];
 
 	memset (&fhead, 0, sizeof (fhead));
-	from[0] = name[0] = group[0] = title[0] = date[0] = organ[0] 
+	from[0] = name[0] = group[0] = title[0] = date[0] = organ[0]
 	        = msgid[0] = board[0] = nntphost[0] = xref_no[0] = '\0';
-	        
-#if 0	        
+
+#if 0
 	fr = fopen (FN_TMPFILE, "r")
-#endif	
+#endif
 	if (fr == NULL)
 		return -1;
 #if 1
 	rewind(fr);
-#endif			
+#endif
 	while (xfgets (genbuf, sizeof (genbuf), fr))
 	{
-		/* 
+		/*
 		   "nick nick" <xxx@email>
 		   "nick" <xxx@email>
 		   nick <xxx@email>
@@ -674,7 +674,7 @@ FILE *fr;
 					p = get_str(p, name, 40, "<");
 					if (*name != '\0')
 						name[strlen(name) - 1] = '\0';
-				}	
+				}
 				while (isspace((int)*p))
 					p++;
 				if (*p == '<')
@@ -694,7 +694,7 @@ FILE *fr;
 		else if (group[0] == '\0' && !strncmp (genbuf, "Newsgroups: ", 12))
 			get_str (genbuf + 12, group, STRLEN, "");
 		else if (title[0] == '\0' && !strncmp (genbuf, "Subject: ", 9))
-			get_str (genbuf + 9, title, STRLEN, "");	
+			get_str (genbuf + 9, title, STRLEN, "");
 		else if (date[0] == '\0' && !strncmp (genbuf, "Date: ", 6))
 			get_str (genbuf + 6, date, STRLEN, "");
 		else if (organ[0] == '\0' && !strncmp (genbuf, "Organization: ", 14))
@@ -702,7 +702,7 @@ FILE *fr;
 		else if (msgid[0] == '\0' && !strncmp (genbuf, "Message-ID: ", 12))
 			get_str (genbuf + 12, msgid, STRLEN, "");
 		else if (nntphost[0] == '\0' && !strncmp (genbuf, "NNTP-Posting-Host: ", 19))
-			get_str (genbuf + 19, nntphost, STRLEN, "");			
+			get_str (genbuf + 19, nntphost, STRLEN, "");
 		else if (board[0] == '\0' && !strncmp (genbuf, "X-Filename: ", 12))
 		{
 			if ((p = strstr (genbuf + 12, "/M.")) != NULL)
@@ -724,17 +724,17 @@ FILE *fr;
 		return -2;
 	}
 
-	sprintf(fn_tmp, "tmp/bbsnews.%s.%d", bncur->board, (int)time(0));	
+	sprintf(fn_tmp, "tmp/bbsnews.%s.%d", bncur->board, (int)time(0));
 	if ((fw = fopen (fn_tmp, "w")) == NULL)
 	{
 		fclose (fr);
 		/* TODO: retry do post again or skip this posting ? */
 		return -3;
 	}
-	
+
 #ifndef OPTIMIZE
 	chmod (fn_tmp, 0644);
-#endif	
+#endif
 	fprintf (fw, "發信人: %s (%s)\n", from, name);	/* lasehu */
 	fprintf (fw, "日期: %s\n", date);
 #ifdef QP_BASE64_DECODE
@@ -752,7 +752,7 @@ FILE *fr;
 		fprintf (fw, "%s", genbuf);
 	fclose (fw);
 	fclose (fr);
-	
+
 	if ((p = strchr (from, '@')))
 		p++;
 	else
@@ -769,9 +769,9 @@ FILE *fr;
 		return -4;
 	}
 	unlink(fn_tmp);
-		
-#if 0		
-	/* TODO: we have not yet good idea to 
+
+#if 0
+	/* TODO: we have not yet good idea to
 	   implement nntp cancel control mechanism
 	*/
 	sprintf(pathname, "news/record/%s.%-s", bncur->board, bncur->newsgroup);
@@ -783,7 +783,7 @@ FILE *fr;
 		write (fb, stamp, strlen (fhead.filename));
 		close (fb);
 	}
-#endif	
+#endif
 	return 0;
 }
 
@@ -799,7 +799,7 @@ char *msgid;
 {
 	FILE *fp;
 	char buf[PATHLEN];
-	
+
 
 	sprintf (buf, "news/input/%s.%s", bname, newsgroup);
 	if ((fp = fopen (buf, "w")) != NULL)
@@ -809,8 +809,8 @@ char *msgid;
 			fprintf (fp, "\n%s\n", msgid);
 		fclose (fp);
 #ifndef OPTIMIZE
-		chmod (buf, 0644);		
-#endif		
+		chmod (buf, 0644);
+#endif
 		return 0;
 	}
 	return -1;
@@ -832,7 +832,7 @@ char *board, *newsgroup;
 	{
 		if (xfgets (genbuf, sizeof (genbuf), fn))
 			d = atol(genbuf);
-		fclose(fn);		
+		fclose(fn);
 	}
 	return d;
 }
@@ -857,7 +857,7 @@ unsigned long range[MAX_RANGE], range_cnt;
 #if 0
 /*
    處理 expire, cancel post
-*/   
+*/
 void
 check_expire_cancel(first)
 unsigned long first;
@@ -870,7 +870,7 @@ unsigned long first;
 #else
 	struct dirent *dirlist;
 #endif
-		
+
 	sprintf (fnRecord, "news/record/%s.%-s/", bncur->board, bncur->newsgroup);
 	foo = fnRecord + strlen(fnRecord);
 	if ((dirp = opendir (fnRecord)) != NULL)
@@ -891,7 +891,7 @@ unsigned long first;
 		}
 		closedir (dirp);
 	}
-}	
+}
 #endif
 
 
@@ -906,11 +906,11 @@ int fuzzy_match_subject(char *new, char *old)
 }
 
 /* o Get the articles from news server, and direct them into bbs
-     post. 
+     post.
    o Expire absent articles according news server.
-   o Send news cancel control message to kill the article from 
-     our site 
-*/   
+   o Send news cancel control message to kill the article from
+     our site
+*/
 int
 news2bbs ()
 {
@@ -922,9 +922,9 @@ news2bbs ()
 	int rc;
 	char *c_bname = bncur->board;
 	char *c_newsgroup = bncur->newsgroup;
-	
+
 	mystatus = S_NEWS2BBS;	/* debug */
-	
+
 	fprintf (nntpout, "GROUP %s\n", c_newsgroup);
 	fflush(nntpout);
 	xfgets (genbuf, sizeof (genbuf), nntpin);	/* NOTE!! */
@@ -933,28 +933,28 @@ news2bbs ()
 		news_log_write ("ERR: get group [%s]: %s", c_newsgroup, genbuf);
 		return -1;
 	}
-	
+
 	mystatus = S_NEWS2BBS_1;	/* debug */
-	
+
 	sscanf(genbuf + 4, "%u %lu %lu ", &total, &first, &last);
-	
+
 	if (total == 0)
 	{
 #ifdef NEWS_LOG
 		news_log_write("DEBUG: %s is empty\n", c_newsgroup);
-#endif		
+#endif
 		update_lastnews (c_bname, c_newsgroup, (unsigned long) 0, NULL);
 		return 0;
 	}
-	
+
 	cur = get_lastnews (c_bname, c_newsgroup);
 	if (cur < first || cur > last)
 	{
-#if 0	
-		cur = first;	
-#endif		
-#ifdef NEWS_LOG	
-		news_log_write("DEBUG: get_lastnews: %s first:[%u], cur:[%u]\n", 
+#if 0
+		cur = first;
+#endif
+#ifdef NEWS_LOG
+		news_log_write("DEBUG: get_lastnews: %s first:[%u], cur:[%u]\n",
 			c_newsgroup, first, cur);
 #endif
 		/* TODO: get the new article acoording to MSG-ID of our lastest old article */
@@ -981,11 +981,11 @@ news2bbs ()
 			news_log_write ("ERR: xhdr header error: %s", genbuf);
 			return -1;
 		}
-	
+
 		memset(range, 0, sizeof(range));
 		range_cnt = 0;
-	
-		while (range_cnt < MAX_RANGE 
+
+		while (range_cnt < MAX_RANGE
 			&& xfgets(genbuf, sizeof(genbuf), nntpin))	/* NOTE!! */
 		{
 			if (!strncmp(genbuf, ".\n", 2))	/* debug */
@@ -999,39 +999,39 @@ news2bbs ()
 #endif
 	}
 	if (bncur->expire || bncur->cancel)
-		check_expire_cancel (first);	
-#endif	
+		check_expire_cancel (first);
+#endif
 
 	if (bncur->get)
 	{
 		char cur_sender[STRLEN*2];
 		char cur_header[STRLEN*2], last_header[STRLEN*2];
 		int cur_size = 0, last_size = 0;
-		
+
 		mystatus = S_NEWS2BBS_2;	/* debug */
-	
+
 		if (opt)	/* lthuang */
 		{
 			if (last_cnt == 0)
 			{
-				update_lastnews (c_bname, c_newsgroup, last, NULL);			
+				update_lastnews (c_bname, c_newsgroup, last, NULL);
 				news_log_write("RESET: %s-%s\n", c_bname, c_newsgroup);
 				mystatus = S_NEWS2BBS_4;	/* debug */
 				return 0;
-			}	
-			
+			}
+
 			if (last-last_cnt+1 > cur && last-last_cnt+1 <= last)	/* lthuang */
 				cur = last-last_cnt+1;
 		}
-		
-		/* 
-			asuka: 
+
+		/*
+			asuka:
 			get only MAX_RANGE post whenever it exceed the range...
 			get remaining on next cycle to prevent spend long time on one board!
 		*/
 		if(last-cur > MAX_RANGE-5)
 			last = cur+MAX_RANGE;
-		
+
 		fprintf(nntpout, "XHDR NNTP-POSTING-HOST %ld-%ld\n", cur, last);
 		fflush(nntpout);
 		xfgets(genbuf, sizeof(genbuf), nntpin);	/* NOTE!! */
@@ -1046,10 +1046,10 @@ news2bbs ()
 		range_cnt = 0;
 		while (xfgets(genbuf, sizeof(genbuf), nntpin))	/* NOTE!! */
 		{
-/*		
+/*
 			if (range_cnt >= MAX_RANGE)
 			{
-				news_log_write("ERR: increse the value 'MAX_RANGE'\n");			
+				news_log_write("ERR: increse the value 'MAX_RANGE'\n");
 				break;
 			}
 		*/
@@ -1062,22 +1062,22 @@ news2bbs ()
 
 		bzero(last_header, sizeof(last_header));
 		last_size = 0;
-		
+
 		/* transmit all the available articles to local */
 		for (i = 0; i < range_cnt; i++)
 		{
 			mystatus = S_NEWS2BBS_3;	/* debug */
-			
+
 			if ((fpw = fopen (FN_TMPFILE, "w+")) == NULL)
 			{
 				news_log_write("ERR: write tmpfile\n");
 				return -2;
 			}
-				
-#ifndef OPTIMIZE				
+
+#ifndef OPTIMIZE
 			chmod (FN_TMPFILE, 0644);
-#endif			
-	
+#endif
+
 			fprintf (nntpout, "ARTICLE %ld\n", range[i]);
 			fflush(nntpout);
 			xfgets (genbuf, sizeof (genbuf), nntpin);	/* NOTE!! */
@@ -1090,7 +1090,7 @@ news2bbs ()
 
 			cur_header[0] = cur_sender[0] = 0x00;
 			cur_size = 0;
-			
+
 			while (xfgets (genbuf, sizeof (genbuf), nntpin))	/* NOTE!! */
 			{
 				if (!strncmp(genbuf, ".\n", 2))	/* debug */
@@ -1111,7 +1111,7 @@ news2bbs ()
 */
 #if 1
 					xstrncpy(debug, genbuf, sizeof(debug));
-#endif					
+#endif
 					if(genbuf[strlen(genbuf)-2] == '>'
 						&& (p = strchr(genbuf, '<')) != NULL)
 					{
@@ -1121,16 +1121,16 @@ news2bbs ()
 					{
 						xstrncpy(cur_sender, genbuf+6, sizeof(cur_sender));
 					}
-					
+
 					strtok(cur_sender, " (>\r\n");
 				}
 #endif
 				fprintf (fpw, "%s", genbuf);
 				cur_size += strlen(genbuf);
 			}
-#if 0			
+#if 0
 			fclose (fpw);
-#endif			
+#endif
 
 			getpostnum++;
 #ifdef DEBUG
@@ -1140,38 +1140,38 @@ news2bbs ()
 #ifdef ANTI_SPAM
 			if(InvalidEmailAddr(cur_sender))
 			{
-#if 1			
+#if 1
 				news_log_write ("DEBUG: From: [%s]\n", debug);
-#endif				
+#endif
 				news_log_write ("MALFORMED-FROM: From=[%s] To=[%s] Subject=[%s] Size=[%d]\n",
 					cur_sender, c_bname, cur_header, cur_size);
 				update_lastnews (c_bname, c_newsgroup, range[i], NULL);
 				fclose(fpw);
 				continue;
 			}
-/* 
-	discard article if from address is in SPAM_LIST 
+/*
+	discard article if from address is in SPAM_LIST
 */
 			if(strstr(spam_list, cur_sender))
 			{
 				news_log_write ("SPAM: From=[%s] Group=[%s:%d] Subject=[%s]\n",
 					cur_sender, c_newsgroup, range[i], cur_header);
 				update_lastnews (c_bname, c_newsgroup, range[i], NULL);
-				fclose(fpw);				
+				fclose(fpw);
 				continue;
 			}
 #endif
 #ifdef CNA_FILTER
-/* 
-	discard article not from CNA-News@news.CNA.com.tw in cna-* boards 
-*/			
-			if(!strncmp(c_bname, "cna-", 4) 
+/*
+	discard article not from CNA-News@news.CNA.com.tw in cna-* boards
+*/
+			if(!strncmp(c_bname, "cna-", 4)
 				&& strcmp(cur_sender, "CNA-News@news.CNA.com.tw"))
 			{
 				news_log_write ("CNA-FILTER: From=[%s] Group=[%s:%d] Subject=[%s]\n",
 					cur_sender, c_newsgroup, range[i], cur_header);
 				update_lastnews (c_bname, c_newsgroup, range[i], NULL);
-				fclose(fpw);				
+				fclose(fpw);
 				continue;
 			}
 #endif
@@ -1185,7 +1185,7 @@ news2bbs ()
 			{
 				news_log_write ("DUP: %s:%d -> %s:%s (%d bytes ~ %d)\n",
 					c_newsgroup, range[i], c_bname, cur_header, cur_size, last_size);
-				fclose(fpw);					
+				fclose(fpw);
 			}
 			else
 			{
@@ -1193,19 +1193,19 @@ news2bbs ()
 				if (rc < 0)
 					news_log_write("ERR: do_post: %d %d\n", range[i], rc);
 			}
-			
+
 			last_size = cur_size;
 			xstrncpy(last_header, cur_header, sizeof(last_header));
-			
+
 #else
 			rc = do_post (fpw);
 			if (rc < 0)
 				news_log_write("ERR: do_post: %d\n", rc);
 #endif
-		
+
 			update_lastnews (c_bname, c_newsgroup, range[i], NULL);
 		}
-		
+
 		if (range_cnt != 0)
 		{
 			news_log_write ("log: ARTICLE %s-%s %d\n",
@@ -1215,7 +1215,7 @@ news2bbs ()
 	else
 		news_log_write ("log: only update last: %d\n", last);
 
-	update_lastnews (c_bname, c_newsgroup, last, NULL);			
+	update_lastnews (c_bname, c_newsgroup, last, NULL);
 
 	mystatus = S_NEWS2BBS_4;	/* debug */
 
@@ -1280,7 +1280,7 @@ int esc_filter;
 
 /*
  *  Connect to news server
- */     
+ */
 int
 connect_news_server ()
 {
@@ -1295,27 +1295,27 @@ connect_news_server ()
 		sleep (conf.retry_sec);
 	}
 	if ((nntpin = fdopen(sd, "r")) == NULL)
-	{ 
-		news_log_write("ERR: fdopen\n");	
+	{
+		news_log_write("ERR: fdopen\n");
 		exit(1);
 	}
 	if ((nntpout = fdopen(sd, "w")) == NULL)
 	{
 		fclose(nntpin);
 		news_log_write("ERR: fdopen\n");
-		exit(1);		
+		exit(1);
 	}
-/*	
-	alarm(io_timeout_sec);	
-*/	
-	
+/*
+	alarm(io_timeout_sec);
+*/
+
 	xfgets (genbuf, sizeof (genbuf), nntpin);	/* NOTE!! */
 	if (!strncmp (genbuf, "200 ", 4))
 		can_post = 1;
 	else if (!strncmp (genbuf, "201 ", 4))
 		can_post = 0;
 	news_log_write ("connect server: %s", genbuf);
-	time (&srv_start);	
+	time (&srv_start);
 	return sd;
 }
 
@@ -1327,17 +1327,17 @@ int
 close_news_server ()
 {
 	char start[20], end[20];
-	
+
 	fprintf (nntpout, "QUIT\n");
 	fflush(nntpout);
 	close (sd);
-/*	
-	alarm(0);		
-*/	
+/*
+	alarm(0);
+*/
 	time (&srv_end);
 	strftime(start, sizeof(start), "%m/%d/%Y %X",localtime(&srv_start));
 	strftime(end, sizeof(end), "%m/%d/%Y %X",localtime(&srv_end));
-	news_log_write ("log: close_news_server %s ~ %s\n", start, end);		
+	news_log_write ("log: close_news_server %s ~ %s\n", start, end);
 
 	return 0;
 }
@@ -1376,22 +1376,22 @@ bbs2news ()
 
 
 	mystatus = S_BBS2NEWS;	/* debug */
-	
+
 	if ((fi = fopen (FN_INDEX, "r")) == NULL)
 	{
 #ifdef DEBUG
 		news_log_write("DEBUG: nothing for outgoin: %s\n", bncur->board);
-#endif				
+#endif
 		return -1;	/* nothing for outgoing */
 	}
-		
+
 	if (fscanf (fi, "%s\n", currfile) != 1)
 	{
 		fclose (fi);
 		news_log_write("ERR: %s for %s is empty\n", FN_INDEX, bncur->board);
 		return -1;
 	}
-	
+
 	if ((ff = fopen (FN_FILENAME, "r+")) != NULL)
 	{
 		if (xfgets (genbuf, sizeof(genbuf), ff))
@@ -1413,7 +1413,7 @@ bbs2news ()
 	do
 	{
 		mystatus = S_BBS2NEWS_1;	/* debug */
-		
+
 		update_currfile (currfile);
 		if (currfile[0] == '-')
 			c_flag = TRUE;
@@ -1425,9 +1425,9 @@ bbs2news ()
 			sprintf (genbuf, "boards/%s/%s", bncur->board, currfile);
 		if ((ff = fopen (genbuf, "r")) == NULL)
 		{
-#if 1		
+#if 1
 			news_log_write("ERR: cannot open %s for output\n", genbuf);
-#endif			
+#endif
 			continue;
 		}
 
@@ -1437,7 +1437,7 @@ bbs2news ()
 			fclose (ff);
 			continue;
 		}
-		
+
 		fprintf (nntpout, "POST\n");
 		fflush(nntpout);
 		xfgets (genbuf, sizeof (genbuf), nntpin);	/* NOTE!! */
@@ -1450,13 +1450,13 @@ bbs2news ()
 			fclose (ff);
 			continue;
 		}
-		
+
 		name[0] = uname[0] = title[0] = date[0] = '\0';
-		
+
 		while (myfgets (genbuf, sizeof (genbuf), ff, conf.esc_filter))
 		{
 			mystatus = S_BBS2NEWS_2;	/* debug */
-			if (name[0] == '\0' && (!strncmp (genbuf, "發信人: ", 8) 
+			if (name[0] == '\0' && (!strncmp (genbuf, "發信人: ", 8)
 			    ||!strncmp (genbuf, "發信人：", 8)))
 			{
 				p = get_str (genbuf + 8, name, STRLEN, " ");
@@ -1481,9 +1481,9 @@ bbs2news ()
 				if (genbuf[i] == '\n')
 					break;
 			}
-#endif			
+#endif
 		}
-		
+
 		mystatus = S_BBS2NEWS_3;	/* debug */
 
 		fprintf (nntpout, "Newsgroups: %-s\n", bncur->newsgroup);
@@ -1493,11 +1493,11 @@ bbs2news ()
 		fflush(nntpout);	/* debug */
 		if (c_flag)
 		{
-			fprintf (nntpout, "Subject: cmsg cancel <%-s.%-d@%-s>\n", 
+			fprintf (nntpout, "Subject: cmsg cancel <%-s.%-d@%-s>\n",
 			            currfile + 1, bncur->num, myhostname);
 			fflush(nntpout);	/* debug */
 			/* ? */
-			fprintf (nntpout, "Message-ID: <del.%-s.%-d@%-s>\n", 
+			fprintf (nntpout, "Message-ID: <del.%-s.%-d@%-s>\n",
 			            currfile + 1, bncur->num, myhostname);
 			fflush(nntpout);	/* debug */
 		}
@@ -1511,16 +1511,16 @@ bbs2news ()
    printf("Date: %-s\n",date);
    #endif
  */
-			fprintf (nntpout, "Message-ID: <%-s.%-d@%-s>\n", 
+			fprintf (nntpout, "Message-ID: <%-s.%-d@%-s>\n",
 			            currfile, bncur->num, myhostname);
 		}
 		fprintf (nntpout, "Organization: %-s\n", conf.organ);
 		if (c_flag)
 		{
-			fprintf (nntpout, "X-Filename: %-s/%-s\n", 
+			fprintf (nntpout, "X-Filename: %-s/%-s\n",
 			            bncur->board, currfile + 1);
 			/* ? */
-			fprintf (nntpout, "Control: cancel <%-s.%-d@%-s>\n\n", 
+			fprintf (nntpout, "Control: cancel <%-s.%-d@%-s>\n\n",
 			            currfile + 1, bncur->num, myhostname);
 			fprintf (nntpout, "Article be deleted by <%-s.bbs@%-s> %-s\n",
 			            name, myhostname, uname);
@@ -1528,14 +1528,14 @@ bbs2news ()
 		}
 		else
 		{
-			fprintf (nntpout, "X-Filename: %-s/%-s\n\n", 
+			fprintf (nntpout, "X-Filename: %-s/%-s\n\n",
 			            bncur->board, currfile);
 			while (myfgets (genbuf, sizeof (genbuf), ff, conf.esc_filter))
 				fprintf (nntpout, "%s", genbuf);
-			fflush(nntpout);	/* debug */			
+			fflush(nntpout);	/* debug */
 		}
-		
-		fclose (ff);		
+
+		fclose (ff);
 		fprintf (nntpout, "\n.\n");
 		fflush(nntpout);
 
@@ -1561,7 +1561,7 @@ bbs2news ()
 	}
 	while (fscanf (fi, "%s\n", currfile) == 1);
 	fclose (fi);
-	
+
 	if (postnum > 0)
 		news_log_write("log: POST %s %d\n", bncur->newsgroup, postnum);
 	if (cancelnum > 0)
@@ -1589,9 +1589,9 @@ match_mailex_pair()
 	memset(bnames, 0, sizeof(bnames));
 
 	apply_brdshm(copy_bname);
-	
+
 	qsort(bnames, cnt, BNAMELEN+1, (void *)strcmp);
-	
+
 	for (bncur = bntop->next; bncur != bnend; bncur = bncur->next)
 	{
 		if (bsearch(bncur->board, bnames, cnt, BNAMELEN+1, (void *)strcmp))
@@ -1604,7 +1604,7 @@ match_mailex_pair()
 			bncur->enable = FALSE;
 	}
 	return (first_enable_node) ? first_enable_node : bnend;
-}		
+}
 
 
 bnlink_t *
@@ -1617,10 +1617,10 @@ bnlink_t *bn1;
 	for (cur = bn1; cur != bnend; cur = cur->next)
 	{
 		if (cur->enable)
-			break;	
+			break;
 	}
 	return cur;
-}	
+}
 
 
 int
@@ -1629,8 +1629,8 @@ char *bname, *newsgroup;
 bnlink_t **bnlink;
 {
 	bnlink_t *bnTmp;
-	
-	
+
+
 	for (bnTmp = bntop->next; bnTmp != bnend; bnTmp = bnTmp->next)
 	{
 		if (!strcmp (bnTmp->board, bname)
@@ -1661,22 +1661,22 @@ access_bnlink ()
 	/* restore and continue the unfinished mail exchange last time */
 	if ((fpl = fopen (FN_LINE, "r")) != NULL)
 	{
-		if (xfgets (bname, sizeof (bname), fpl) 
+		if (xfgets (bname, sizeof (bname), fpl)
 		    && (newsgroup = strchr (bname, '#')) != NULL
 		    && *(newsgroup + 1) != '\n' && *(newsgroup + 1) != '\0')
 		{
 			*newsgroup++ = '\0';
-			
+
 			/* find the match node with boardname and newsgroup */
 			if (find_match_node(bname, newsgroup, &bncur))
 			{
-#ifdef NEWS_LOG			
+#ifdef NEWS_LOG
 				news_log_write("restore: %s#%s\n", bncur->board, bncur->newsgroup);
-#endif				
+#endif
 				restore = TRUE;
 			}
 		}
-		fclose (fpl);		
+		fclose (fpl);
 	}
 
 	if (!restore)
@@ -1686,31 +1686,31 @@ access_bnlink ()
 		unlink (FN_INDEX);
 		unlink (FN_FILENAME);
 		sprintf (genbuf, "news/output/%s", bncur->board);
-#if 1		
+#if 1
 		if (*(bncur->board) == '\0')
 		{
 			news_log_write("ERR: fatal error in myrename to %s\n", FN_INDEX);
 			exit(0);
 		}
-#endif		
+#endif
 		myrename (genbuf, FN_INDEX);
 
 		if ((fpl = fopen (FN_LINE, "w")) != NULL)
 		{
 			fprintf (fpl, "%s#%s", bncur->board, bncur->newsgroup);
 			fclose (fpl);
-			chmod (FN_LINE, 0644);		
+			chmod (FN_LINE, 0644);
 		}
 	}
-	
+
 	mystatus = S_CONNECT;	/* debug */
-	
+
 	connect_news_server ();
 
 	while (1)
 	{
 		mystatus = S_WORK;	/* debug */
-		
+
 		if (bncur->type == 'B' || bncur->type == 'I')
 		{
 #ifdef NEWS_LOG
@@ -1725,11 +1725,11 @@ access_bnlink ()
 //				return -1;
 //			}
 //		#else
-		
+
 			news2bbs();
-			
+
 //		#endif
-			
+
 		}
 		if (bncur->type == 'B' || bncur->type == 'O')
 		{
@@ -1748,22 +1748,22 @@ access_bnlink ()
 
 		unlink (FN_LINE);
 		unlink (FN_FILENAME);
-		
+
 		/* prepare outgoing articles */
-		unlink (FN_INDEX);		
-#if 1		
+		unlink (FN_INDEX);
+#if 1
 		if (*(bncur->board) == '\0')
 		{
 			news_log_write("ERR: fatal error in myrename to %s\n", FN_INDEX);
 			exit(0);
 		}
-#endif		
+#endif
 		sprintf (genbuf, "news/output/%-s", bncur->board);
 		myrename (genbuf, FN_INDEX);
 	}
-	
+
 	return 0;
-	
+
 }
 
 /*
@@ -1778,7 +1778,7 @@ close_all_ftable()
 */
 
 
-/* 
+/*
 當網路 read or write 太久時, 視同斷線, 重新連接 server
 void
 io_timeout ()
@@ -1798,22 +1798,22 @@ void sig_handler(int sig)
 	time_t now;
 	char logstr[20];
 	FILE *fp;
-	
+
 	news_log_close();
 
 	if((fp = fopen(PATH_NEWSLOG, "a")) != NULL)
 	{
 		time (&now);
 		strftime(logstr, sizeof(logstr), "%m/%d/%Y %X", localtime(&now));
-		fprintf(fp, "%s Caught SIGNAL=%d, mystatus=%d\n", 
+		fprintf(fp, "%s Caught SIGNAL=%d, mystatus=%d\n",
 			logstr, sig, mystatus);
 #if 0
-		fprintf(fp, "%s Caught SIGNAL=%s, mystatus=%d\n", 
+		fprintf(fp, "%s Caught SIGNAL=%s, mystatus=%d\n",
 			logstr, strsignal(sig), mystatus);
 #endif
 		fclose(fp);
 	}
-	
+
 	exit(sig);
 }
 
@@ -1841,20 +1841,20 @@ char *argv[];
 	}
 	else
 		opt = 0;
-#endif		
+#endif
 
 	if (fork ())
 		exit (0);
-		
-/*		
+
+/*
 	signal (SIGALRM, io_timeout);
-*/	
+*/
 	signal (SIGTERM, shutdown_server);
 	signal (SIGSEGV, sig_handler);
 	signal (SIGPIPE, sig_handler);
 	signal (SIGBUS, sig_handler);
 	signal (SIGALRM, sig_handler);
-	
+
 	init_bbsenv();
 
 	/* pid file */
@@ -1869,7 +1869,7 @@ char *argv[];
 	{
 		if (kill (pid, 0) == 0)
 		{
-			close(fd);		
+			close(fd);
 			fprintf(stderr, "another process exist, pid: %d\n", pid);
 			fflush(stderr);
 			exit (3);
@@ -1881,27 +1881,27 @@ char *argv[];
 	close (fd);
 /*
 	close_all_ftable ();
-*/	
-	
+*/
+
 	news_log_open();
 	news_log_write ("log: starting work\n");
-	
+
 	while(RUNNING)
 	{
 		mystatus = S_READY;	/* debug */
-		
+
 		if (read_conf () < 0)
 		{
 			fprintf (stderr, "config file error\n");
 			fflush(stderr);
 			exit (4);
 		}
-		
+
 #ifdef ANTI_SPAM
 		{
 			FILE *sf;
 			struct stat fstat;
-			
+
 			bzero(spam_list, sizeof(spam_list));
 			if((sf = fopen(SPAM_LIST, "r")) != NULL)
 			{
@@ -1913,27 +1913,27 @@ char *argv[];
 #endif
 		result = access_bnlink ();
 		fflush(news_log_fp);
-		
+
 		if(result == -1)
 		{
 			/* last work failed, try again after a short time */
 			sleep(120);
 			continue;
 		}
-		
+
 #if 1
 		if (opt == 1)	/* only updating last read record */
 			break;
-#endif			
+#endif
 
 		if (conf.rest_sec < 60)
 			conf.rest_sec = 60;
 		sleep (conf.rest_sec);
 	}
-	
+
 	unlink(B_N_PID_FILE);
 
 	news_log_close();
-	
+
 	return 0;
 }

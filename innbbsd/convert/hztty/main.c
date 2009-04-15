@@ -7,19 +7,19 @@
  * facilitates you to read/write Chinese characters in different
  * encoding or different representation, such as the zW/HZ standard.
  * It turns the current cxterm session into the "new encoding aware"
- * cxterm and creates a new shell session for you.  
+ * cxterm and creates a new shell session for you.
  *
  * This program must be run on top of cxterm.  (It's possible to run
  * in a terminal that supports Chinese, like kermit on CCDOS, ET, KC,
- * or Chinese Windows, etc.) 
+ * or Chinese Windows, etc.)
  *
  * The conversion is implemented in a configurable I/O stream style.
  * Conversion modules are specified in command line options "-O" (for
  * output) and "-I" (for input).  In each direction, conversion modules
  * can be piped one to one using connection character ':'.  For example,
  * specifying "hz2gb:gb2big" in output stream translate the cxterm screen
- * output from zW/HZ to GB, then from GB to Big5.  
- * 
+ * output from zW/HZ to GB, then from GB to Big5.
+ *
  *	Yongguang ZHANG 		(ygz@cs.purdue.edu)
  *	Purdue University		August 04, 1993
  */

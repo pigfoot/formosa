@@ -10,7 +10,7 @@ void *ptr;
 	BOARDHEADER *bhr = (BOARDHEADER *)ptr;
 
 	bhr->rewind_time = big_endian_to_little_endian(bhr->rewind_time);
-	bhr->bid = big_endian_to_little_endian(bhr->bid);	
+	bhr->bid = big_endian_to_little_endian(bhr->bid);
 	bhr->level = big_endian_to_little_endian(bhr->level);
 }
 

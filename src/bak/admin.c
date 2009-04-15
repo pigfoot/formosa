@@ -27,7 +27,7 @@ const struct conf conf_files[] =
 	{BBS_NEWS_CONF, "轉信設定"}	,
 #if 1
 	{"conf/class.cf.old", "看板分類設定" },
-#endif	
+#endif
 #if 0
 	{ "conf/clang.cf", "中文訊息檔" },
 	{ "conf/elang.cf", "英文訊息檔" },
@@ -42,7 +42,7 @@ const struct conf conf_files[] =
 	{ IDENT_DOC, "認證說明信函"},
 	{ IDENTED, "通過認證通知"},
 	{ BADIDENT, "拒絕認證 E-Mail 位址"},
-#ifndef NSYSUBBS	
+#ifndef NSYSUBBS
 	{ BOARD_HELP, "看板選單求助"},
 	{ READ_HELP, "佈告選單求助"},
 	{ MAIL_HELP, "信件選單求助"},
@@ -50,7 +50,7 @@ const struct conf conf_files[] =
 
 	{ BBSSRV_WELCOME, "進站畫面 1"},
 	{ WELCOME0, "進站畫面 2" },
-#endif	
+#endif
 	{ NULL, NULL }
 };
 
@@ -90,7 +90,7 @@ const BOARDHEADER *brdhr;
 #if 1
 	brdtype[6] = "WEB SKIN";
 	brdtype[7] = "WEB ONLY";
-#endif	
+#endif
 
 	move(2, 0);
 	clrtobot();
@@ -105,7 +105,7 @@ const BOARDHEADER *brdhr;
 	for (i = 0, j = 1; i < MAX_NR_BRDTYPE; i++)
 	{
 		move(3 + i, 53);
-		prints("(%c) %-10.10s : %s", 'A' + i, 
+		prints("(%c) %-10.10s : %s", 'A' + i,
 		       (brdtype[i]) ? brdtype[i] : "保留屬性",
 		       (*pbits & j) ? "Yes" : "No ");
 		j <<= 1;
@@ -248,7 +248,7 @@ BOARDHEADER *brdhr;
 	{
 		BOARDHEADER *board = brdhr;
 		char buffer[PATHLEN], skin[PATHLEN];
-		char *custom_files[] = 
+		char *custom_files[] =
 		{
 			"BmWelcome.html",
 			"PostList.html",
@@ -262,9 +262,9 @@ BOARDHEADER *brdhr;
 			"TreaPost.html",
 			NULL
 		};
-	
+
 		setskinfile(buffer, board->filename, NULL);
-		
+
 		if(!isdir(buffer))
 		{
 			/* create webskin dir */
@@ -273,7 +273,7 @@ BOARDHEADER *brdhr;
 				showmsg("Can't create skin dir");
 				return -1;
 			}
-		
+
 			for(i = 0; custom_files[i]; i++)
 			{
 				sprintf(buffer, "%s%s%s", "HTML/", "txtVersion/", custom_files[i]);
@@ -353,13 +353,13 @@ adminMaintainBoard()
 
 	if (namecomplete_board(&bh_mod, bname, FALSE) <= 0)
 	{
-		showmsg(_msg_err_boardname);	
+		showmsg(_msg_err_boardname);
 		return C_FULL;
 	}
-	
+
 #if 1
 	ent = bh_mod.bid;
-#endif		
+#endif
 
 	/* pack the board, prune the articles marked deleted */
 	if (ans[0] == 'p')
@@ -371,7 +371,7 @@ adminMaintainBoard()
 		showmsg(_msg_finish);
 		return C_FULL;
 	}
-/* -ToDo- combine to .lib */	
+/* -ToDo- combine to .lib */
 	else if (ans[0] == 'd')
 	{
 		show_board(&bh_mod);
@@ -402,7 +402,7 @@ adminMaintainBoard()
  */
 		bbsd_log_write("DELBOARD", "%s", bname);
 	}
-/* -ToDo- combine to .lib */		
+/* -ToDo- combine to .lib */
 	else if (ans[0] == 'e')
 	{
 		if (set_board(&bh_mod) == -1)
@@ -482,7 +482,7 @@ adminEditConf()
 	for (i = 0; conf_files[i].fname; i++)
 		prints("%2d) %s\n", i + 1, conf_files[i].desc);
 	max_conf_files = i;
-	
+
 	if (getdata(b_line, 0, "編輯檔案編號 ? [0]: ", genbuf, 3, DOECHO, NULL)
 	&& (i = atoi(genbuf)) >= 1 && i <= max_conf_files)
 	{
@@ -498,10 +498,10 @@ adminEditConf()
 #endif
 		pressreturn();
 	}
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -516,9 +516,9 @@ USER_INFO *upent;	/* not const for purge_ulist() */
 			kill(upent->pid, SIGKILL);
 		/* not to write user data back */
 		purge_ulist(upent);
-#if 0		
+#if 0
 		kick_cnt++;
-#endif		
+#endif
 		return 0;
 	}
 	return -1;
@@ -595,10 +595,10 @@ adminMailBm()
 		outdoor(genbuf);
 	}
 	unlink(bm_fname);
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -704,26 +704,26 @@ adminCancelUser()
 	USEREC urcCancel;
 	char *iemail;
 	char userid[IDLEN];
-	
+
 
 	move(2, 0);
 	clrtobot();
 	outs("取消帳號使用權 (請小心使用)");
-	if (!getdata(3, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP, 
+	if (!getdata(3, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP,
 	             NULL))
-	{	             
+	{
 		return C_FULL;
 	}
-		
+
 	if (get_passwd(&urcCancel, userid) > 0)
 	{
 		urcCancel.userlevel = 0;
 		sprintf(genbuf, "%d", (pid_t)getpid());
 		xstrncpy(urcCancel.passwd, genbuf, PASSLEN);
-		
+
 		xstrncpy(kiuserid, userid, sizeof(kiuserid));
 		apply_ulist(kickuserFptr);
-		
+
 		if (update_passwd(&urcCancel) > 0)
 		{
 			char *reason[MAX_CANCEL_REASON] =
@@ -736,12 +736,12 @@ adminCancelUser()
 			int j, retval;
 			char fnori[PATHLEN];
 			FILE *fpw;
-			
-			
+
+
 			if ((iemail = get_ident(&urcCancel)) != NULL)
 			{
 				char *p;
-				
+
 				prints("\n永久取消下列電子郵件信箱的認證權利:\n%s\n", iemail);
 				if ((p = strchr(iemail, ' ')) != NULL)
 					*p = '\0';
@@ -755,7 +755,7 @@ adminCancelUser()
 			{
 				char title[78];
 
-				sprintf(title, "[停用帳號] %s ", userid);							
+				sprintf(title, "[停用帳號] %s ", userid);
 				outs("\n帳號停用原因 :\n");
 				for (j = 0; j < MAX_CANCEL_REASON; j++)
 					prints("(%d) %s\n", j+1, reason[j]);
@@ -774,7 +774,7 @@ adminCancelUser()
 				fclose(fpw);
 
 				/*  post on board, postpath is NULL */
-				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop", 
+				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop",
 						title, curuser.ident, uinfo.from, FALSE, NULL, 0);
 				unlink(fnori);
 			}

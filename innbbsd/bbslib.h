@@ -32,8 +32,8 @@ typedef struct newsfeeds_t {
 } newsfeeds_t;
 
 typedef struct overview_t {
-  char *board, *filename, *group; 
-  time_t mtime; 
+  char *board, *filename, *group;
+  time_t mtime;
   char *from, *subject;
 } overview_t;
 
@@ -57,9 +57,9 @@ extern int Maxclient;
 
 # ifndef ARG
 #  ifdef __STDC__
-#   define ARG(x) x 
+#   define ARG(x) x
 #  else
-#   define ARG(x) () 
+#   define ARG(x) ()
 #  endif
 # endif
 

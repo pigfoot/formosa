@@ -32,7 +32,7 @@ int FILTERCOUNT;
 #endif
 
 static char *NODELIST_BUF, *NEWSFEEDS_BUF;
-int NFCOUNT, NLCOUNT; 
+int NFCOUNT, NLCOUNT;
 int LOCALNODELIST=0, NONENEWSFEEDS=0;
 
 #ifndef _PATH_BBSHOME
@@ -42,7 +42,7 @@ int LOCALNODELIST=0, NONENEWSFEEDS=0;
 char BBSHOME[]= _PATH_BBSHOME;
 static FILE *bbslogfp;
 
-static int 
+static int
 verboseFlag=0;
 
 static char*
@@ -57,8 +57,8 @@ char *filename;
     if (strchr(filename,'/') == NULL) {
        sprintf(verbosename,"%s/innd/%s",BBSHOME,filename);
        filename = verbosename;
-    } 
-  } 
+    }
+  }
   verboseFilename = filename;
 }
 verboseoff()
@@ -148,7 +148,7 @@ char *outgoing;
    FILE* FN;
    struct stat st;
    int fd, i;
-   char *bbsnameptr=NULL; 
+   char *bbsnameptr=NULL;
 
 /* reopen bbslog */
    if (bbslogfp != NULL) {
@@ -224,17 +224,17 @@ char *outgoing;
 		      His_Maint_Min = HIS_MAINT_MIN;
 		}
 	 } else if ( strcasecmp(front,"newsfeeds") == 0) {
-	   if (strcmp(value,"none")==0) 
+	   if (strcmp(value,"none")==0)
 	      NONENEWSFEEDS = 1;
 	 } else if ( strcasecmp(front,"nodelist") == 0) {
 	   if (strcmp(value,"local")==0)
 	      LOCALNODELIST = 1;
 	 } /*else if ( strcasecmp(front,"newsfeeds") == 0) {
-	       printf("newsfeeds %s\n", value); 
+	       printf("newsfeeds %s\n", value);
 	 } else if ( strcasecmp(front,"nodelist") == 0) {
-	       printf("nodelist %s\n", value); 
+	       printf("nodelist %s\n", value);
 	 } else if ( strcasecmp(front,"bbsname") == 0) {
-	       printf("bbsname %s\n", value); 
+	       printf("bbsname %s\n", value);
 	 } */
        }
        fclose(conf);
@@ -266,7 +266,7 @@ char *outgoing;
    return 1;
 }
 
-static int 
+static int
 nf_byboardcmp(a,b)
 newsfeeds_t **a, **b;
 {
@@ -277,7 +277,7 @@ newsfeeds_t **a, **b;
    return strcasecmp((*a)->board, (*b)->board);
 }
 
-static int 
+static int
 nfcmp(a,b)
 newsfeeds_t *a, *b;
 {
@@ -288,7 +288,7 @@ newsfeeds_t *a, *b;
    return strcasecmp(a->newsgroups, b->newsgroups);
 }
 
-static int 
+static int
 nlcmp(a,b)
 nodelist_t *a, *b;
 {
@@ -299,7 +299,7 @@ nodelist_t *a, *b;
    return strcasecmp(a->host, b->host);
 }
 
-static int 
+static int
 nl_bynodecmp(a,b)
 nodelist_t **a, **b;
 {
@@ -318,7 +318,7 @@ char *outgoing;
     FILE *fp;
     char buff[1024];
     struct stat st;
-    int i, count, j; 
+    int i, count, j;
     char *ptr, *nodelistptr;
     static lastcount=0;
 
@@ -427,11 +427,11 @@ char *outgoing;
 readfilterfile(inndhome)
 char *inndhome;
 {
-     
+
     FILE *fp;
     char buff[1024];
     struct stat st;
-    int i, count; 
+    int i, count;
     char *ptr, *filterptr;
 
     sprintf(buff,"%s/filter.ctl", inndhome);
@@ -464,7 +464,7 @@ char *inndhome;
     } else {
        FILTERLIST = (filter_t*) myrealloc(FILTERLIST, sizeof(filter_t) * (count+1));
     }
-    FILTERCOUNT = 0; 
+    FILTERCOUNT = 0;
     for (ptr = FILTER_BUF; (filterptr = (char*)strchr(ptr,'\n')) != NULL; ptr = filterptr +1, FILTERCOUNT++) {
 	char *nptr , *bptr, *pptr;
 	*filterptr = '\0';
@@ -506,7 +506,7 @@ char *inndhome;
     FILE *fp;
     char buff[1024];
     struct stat st;
-    int i, count; 
+    int i, count;
     char *ptr, *newsfeedsptr;
 
     sprintf(buff,"%s/newsfeeds.bbs", inndhome);
@@ -541,7 +541,7 @@ char *inndhome;
        NEWSFEEDS = (newsfeeds_t*) myrealloc(NEWSFEEDS, sizeof(newsfeeds_t) * (count+1));
        NEWSFEEDS_BYBOARD = (newsfeeds_t**) myrealloc(NEWSFEEDS_BYBOARD, sizeof(newsfeeds_t*) * (count+1));
     }
-    NFCOUNT = 0; 
+    NFCOUNT = 0;
     for (ptr = NEWSFEEDS_BUF; (newsfeedsptr = (char*)strchr(ptr,'\n')) != NULL; ptr = newsfeedsptr +1, NFCOUNT++) {
 	char *nptr , *bptr, *pptr;
 	*newsfeedsptr = '\0';
@@ -582,8 +582,8 @@ char *inndhome;
 	    if (ptr) *ptr = '\0';
 	    fptr = (filter_t *) search_filter(ngptr);
 	    if (fptr) {
-		  nfptr->rcmdfilter = fptr->rcmdfilter;	  
-		  nfptr->scmdfilter = fptr->scmdfilter;	  
+		  nfptr->rcmdfilter = fptr->rcmdfilter;
+		  nfptr->scmdfilter = fptr->scmdfilter;
 		  nfptr->rfilter = (FuncPtr)search_filtercmd(fptr->rcmdfilter);
 		  nfptr->sfilter = (FuncPtr)search_filtercmd(fptr->scmdfilter);
 		  found = 1;
@@ -723,10 +723,10 @@ char *dir;
                system(path);
         }
 }
-                                                
-static char splitbuf[2048]; 
-static char joinbuf[1024]; 
-#define MAXTOK 50 
+
+static char splitbuf[2048];
+static char joinbuf[1024];
+#define MAXTOK 50
 static char* Splitptr[MAXTOK];
 char **split(line,pat)
 char *line,*pat;
@@ -746,7 +746,7 @@ char *line,*pat;
 	return Splitptr;
 }
 
-char **BNGsplit(line) 
+char **BNGsplit(line)
 char *line;
 {
    char **ptr = split(line,",");
@@ -757,13 +757,13 @@ char *line;
       nf1 = (newsfeeds_t*)search_group(ptr[i]);
       for (j=i+1; ptr[j] != NULL; j++) {
 	 if (strcmp(ptr[i],ptr[j])==0) {
-	    *ptr[j] = '\0';    
+	    *ptr[j] = '\0';
 	    continue;
          }
 	 nf2 = (newsfeeds_t*)search_group(ptr[j]);
 	 if (nf1 && nf2) {
 	   if (strcmp(nf1->board,nf2->board)==0) {
-	      *ptr[j] = '\0';    
+	      *ptr[j] = '\0';
 	      continue;
 	   }
 	   for (n11 = nf1->board, n12 = (char*)strchr(n11,',');
@@ -778,13 +778,13 @@ char *line;
 		    if (n22) {
 		      *n22 = ',';
 		      n21 = n22 + 1;
-                    } else  
+                    } else
 		      break;
                 }
 		if (n12) {
 		      *n12 = ',';
 		      n11 = n12 +1;
-                } else  
+                } else
 		  break;
 	   }
 	 }
@@ -819,14 +819,14 @@ int num;
 		strncpy(joinbuf,lineptr[0],1024);
 	else  {
 		joinbuf[0]='\0';
-		return joinbuf; 
+		return joinbuf;
 	}
 	for (i=1;i<num;i++) {
 		strcat(joinbuf,pat);
 		if (lineptr[i] != NULL)
 		   strcat(joinbuf,lineptr[i]);
-		else 
-		   break; 
+		else
+		   break;
 	}
 	return joinbuf;
 }

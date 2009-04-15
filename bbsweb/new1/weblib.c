@@ -9,12 +9,12 @@
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為佈告&信件檔案 (不作額外判斷)
- *	
+ *
  *	ie: M.871062060.A		->yes
  *		M.871062060.A.html	->yes
  *		^^         ^  ->check point
  *******************************************************************/
-BOOL 
+BOOL
 isPost(const char *para)
 {
 	if ((para[0] == 'M' || para[0] == 'D')
@@ -26,7 +26,7 @@ isPost(const char *para)
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為篇號 (範圍)
- *	
+ *
  *	ie:	*			= 全部
  *		all.html	= 全部
  *		$			= 最後的 DEFAULT_PAGE_SIZE 篇
@@ -34,7 +34,7 @@ isPost(const char *para)
  *		a-			= a ~ (a+DEFAULT_PAGE_SIZE) 篇
  *		a-$			= a ~ 最後一篇
  *******************************************************************/
-BOOL 
+BOOL
 isList(const char *para, int *start, int *end)
 {
 	char *p, data[STRLEN];
@@ -70,9 +70,9 @@ isList(const char *para, int *start, int *end)
 			*end = atoi(p);
 	}
 
-	/* 
-	   we assume 100000 is a sufficient large number that 
-	   online user & post & mail number should not exceed it 
+	/*
+	   we assume 100000 is a sufficient large number that
+	   online user & post & mail number should not exceed it
 	 */
 	if (*start == ALL_RECORD || *start == LAST_RECORD)
 		return TRUE;
@@ -85,9 +85,9 @@ isList(const char *para, int *start, int *end)
 
 /*******************************************************************
  *	判斷 uri 是否合法
- *	
+ *
  *******************************************************************/
-BOOL 
+BOOL
 isBadURI(const char *uri)
 {
 	if (*uri != '/')	/* not start with '/' */
@@ -103,7 +103,7 @@ isBadURI(const char *uri)
  *	strip .hmtl from M.xxxxxxx.?.html
  *
  *******************************************************************/
-void 
+void
 strip_html(char *fname)
 {
 	char *p;
@@ -114,10 +114,10 @@ strip_html(char *fname)
 
 
 /*******************************************************************
- *	find record List range 
- *	
+ *	find record List range
+ *
  *******************************************************************/
-void 
+void
 find_list_range(int *start, int *end, int current, int page_size, int max_size)
 {
 	if (page_size <= 0)
@@ -151,9 +151,9 @@ S2H s2h[] =
 
 /*******************************************************************
  *	convert some special character to HTML code
- *	
+ *
  *******************************************************************/
-void 
+void
 souts(char *str, int maxlen)
 {
 /* do to - buggy here if maxlen > sizeof(buf) */
@@ -193,7 +193,7 @@ souts(char *str, int maxlen)
 
 /*******************************************************************
  *	find WEB-BBS Special Tags
- *	
+ *
  *	<!BBS_Type_Name OPTION=   !>
  *
  *	<!BBS_Post_FileName!>
@@ -307,11 +307,11 @@ GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
  *	'S' = !BBS_TAG
  *
  *	offset = type offset from data
- *	
- *	return: 
+ *
+ *	return:
  *		number of tag section
  *******************************************************************/
-int 
+int
 build_format_array(FORMAT_ARRAY * format_array, const char *data, char *head, char *tail, int max_tag_section)
 {
 	int i = 0, head_len, tail_len;
@@ -362,7 +362,7 @@ build_format_array(FORMAT_ARRAY * format_array, const char *data, char *head, ch
 /*******************************************************************
  *	轉換post送上來的資料為正確的格式
 ********************************************************************/
-void 
+void
 Convert(char *from, char *to)
 {
 	int index;
@@ -406,9 +406,9 @@ Convert(char *from, char *to)
 
 
 /*******************************************************************
- *	convert escaped Cookie 
+ *	convert escaped Cookie
 ********************************************************************/
-void 
+void
 Convert1(char *from, char *to)
 {
 	int index;
@@ -592,7 +592,7 @@ int len;
  *
  *	usually used in PostList, TreaList, MailList
  *******************************************************************/
-void 
+void
 mk_timestr1(char *str, time_t when)
 {
 	struct tm *tm;
@@ -607,7 +607,7 @@ mk_timestr1(char *str, time_t when)
  *
  *	usually used in display file time
  *******************************************************************/
-void 
+void
 mk_timestr2(char *str, time_t when)
 {
 	struct tm *tm;
@@ -619,7 +619,7 @@ mk_timestr2(char *str, time_t when)
 }
 
 
-int 
+int
 invalid_fileheader(FILEHEADER * fh)
 {
 
@@ -638,10 +638,10 @@ invalid_fileheader(FILEHEADER * fh)
 
 #if 0
 /*
- *    determine the number of records in file 
+ *    determine the number of records in file
  *      return -1 if file not exist!
  */
-long 
+long
 get_num_records1(const char *filename, int size)
 {
 	struct stat st;
@@ -737,6 +737,6 @@ friend_list_set(char *file, char *pbuf, char *file_desc)
 	}
 	fwrite(override, 1, strlen(override), fp);
 	fclose(fp);
-	
+
 	return WEB_OK_REDIRECT;
 }

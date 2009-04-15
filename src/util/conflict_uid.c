@@ -15,8 +15,8 @@ void main(int argc, char *argv[])
 	int total_conflict=0;
 
 	init_bbsenv();
-	/* assume the report file was already sorted */ 
-	
+	/* assume the report file was already sorted */
+
 	rptfile=fopen("entire_uid_list.sorted", "r");
 	outfile=fopen("entire_uid_list.analyzed", "w");
 
@@ -41,7 +41,7 @@ void main(int argc, char *argv[])
 	fprintf(outfile, "\nTotal confilcts: %d\n", total_conflict);
 
 	fclose(outfile);
-	fclose(rptfile);	
+	fclose(rptfile);
 }
 
-		
+
