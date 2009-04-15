@@ -237,7 +237,7 @@ static void menu_title()
  * j = 13;
  */
 			move(10, 69 - strlen(msshm->list[pict_no].owner));
-			prints("《提供》%s ", msshm->list[pict_no].owner);
+			prints("【提供】%s ", msshm->list[pict_no].owner);
 			j = 2;
 			move(j, 0);
 /*
