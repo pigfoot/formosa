@@ -46,13 +46,13 @@ rebuild(char *id)
 	struct userec user;
 	int fdi, fdp, fd_new, old_num = 0, new_num = 0;
 
-	if ((fdi = open(USERIDX, O_RDONLY | O_CREAT, 0644)) < 0)
+	if ((fdi = open(USERIDX, O_RDWR | O_CREAT, 0644)) < 0)
 		return -1;
 	if (myflock(fdi, LOCK_EX)) {
 		close(fdi);
 		return -1;
 	}
-	if ((fdp = open(PASSFILE, O_RDONLY | O_CREAT, 0644)) < 0)
+	if ((fdp = open(PASSFILE, O_RDWR | O_CREAT, 0644)) < 0)
 	{
 		flock(fdi, LOCK_UN);
 		close(fdi);

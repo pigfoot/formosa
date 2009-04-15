@@ -1,10 +1,16 @@
-print "#include \"bbs.h\"\n";
 while (<>) {
         $init = undef;
-        if (/^#/) {
+        if (/^#define/) {
+                next;
+        } elsif (/^#ifndef/) {
+                next;
+        } elsif (/^#endif/) {
+                next;
+        } elsif (/^#/) {
                 print;
                 next;
         }
+
         if (/^.\*/) {
                 print;
                 next;

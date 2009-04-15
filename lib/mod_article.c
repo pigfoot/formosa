@@ -22,7 +22,7 @@ int pack_article(char *direct)
    tempfile(fnnew);
    tempfile(fndel);
  */
-	if ((fdr = open(direct, O_RDONLY)) < 0)
+	if ((fdr = open(direct, O_RDWR)) < 0)
 		return -1;
 	if ((fdw = open(fn_new, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{
@@ -82,7 +82,7 @@ int clean_dirent(char *direct)
 	sprintf(fn_new, "%s.new", direct);
 	sprintf(fn_del, "%s.del", direct);
 
-	if ((fdr = open(direct, O_RDONLY)) < 0)
+	if ((fdr = open(direct, O_RDWR)) < 0)
 		return -1;
 	if ((fdw = open(fn_new, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
 	{

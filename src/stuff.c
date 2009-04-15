@@ -334,7 +334,7 @@ static void left_note()			/* Seraph */
 		sprintf(mynote.buf[3], _msg_stuff_18, mynote.userid, mynote.username, 80 - 24 - strlen(mynote.userid) - strlen(mynote.username) - 19, "                                    ", Ctime(&mynote.date));
 		write(fdt, &mynote, sizeof(mynote));
 
-		if ((fdd = open(fdat, O_RDONLY)) > 0)
+		if ((fdd = open(fdat, O_RDWR)) > 0)
 		{
 			if (myflock(fdd, LOCK_EX)) {
 				close(fdd);
