@@ -155,7 +155,7 @@ char *userid, *subject;
 	FILE *fpw;
 
 	sprintf(fname, "ID/%s", DIR_REC);
-	if ((fd = open(fname, O_RDONLY)) < 0 )
+	if ((fd = open(fname, O_RDWR)) < 0 )
 	{
 #ifdef DEBUG
 		printf("cannot open: ", fname);

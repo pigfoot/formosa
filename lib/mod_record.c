@@ -5,14 +5,6 @@
 #include <sys/stat.h>
 #include "libproto.h"
 
-#ifndef LOCK_EX
-#define LOCK_EX	F_LOCK	/* exclusive lock */
-#define LOCK_UN	F_ULOCK	/* unlock */
-#endif
-
-extern int flock(int fd, int operation);
-
-
 /**
  ** how many records are there in the file
  **/
