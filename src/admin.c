@@ -334,7 +334,10 @@ static int new_board(BOARDHEADER *bhp)
 
 	if ((fd = open(BOARDS, O_RDWR | O_CREAT, 0600)) > 0)
 	{
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return 0;
+		}
 		for (bid = 1; read(fd, &bhbuf, BH_SIZE) == BH_SIZE; bid++)
 		{
 			if (bhbuf.filename[0] == '\0' || bhbuf.bid == 0)
@@ -372,7 +375,7 @@ static int new_board(BOARDHEADER *bhp)
 				char pathname[PATHLEN];
 
 
-				flock(fd, LOCK_EX);
+				flock(fd, LOCK_UN);
 				close(fd);
 
 				setboardfile(pathname, bhp->filename, NULL);
@@ -385,7 +388,7 @@ static int new_board(BOARDHEADER *bhp)
 				return bid;
 			}
 		}
-		flock(fd, LOCK_EX);
+		flock(fd, LOCK_UN);
 		close(fd);
 	}
 	return 0;

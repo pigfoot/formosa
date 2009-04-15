@@ -60,7 +60,10 @@ int  append_record(const char filename[], void *record, size_t size)
 
 	if ((fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0600)) > 0)
 	{
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return -1;
+		}
 		if (write(fd, record, size) != -1)
 		{
 			flock(fd, LOCK_UN);
@@ -133,7 +136,12 @@ int delete_record(char *filename, size_t size, unsigned int id)
 		return -1;
 	}
 
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		close(fdr);
+		close(fdw);
+		return -1;
+	}
 	for (count = 1; read(fdr, delbuf, size) == size; count++)
 	{
 		if (count == id)

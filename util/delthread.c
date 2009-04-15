@@ -54,8 +54,10 @@ delthread (bhr, target, dokill, kind, all, who)
 
 	if ((fd = open(fname, O_RDWR)) > 0)
 	{
-		if (dokill)
-			flock(fd, LOCK_EX);
+		if (dokill && myflock(fd, LOCK_EX)) {
+			close(fd);
+			return 0;
+		}
 
 		fh_data = (FILEHEADER *) mmap((caddr_t) 0,
 			(size_t)(r_total*FH_SIZE),
@@ -150,8 +152,10 @@ delthread (bhr, target, dokill, kind, all, who)
 	size = get_num_records (fname, FH_SIZE);
 	if ((fd = open (fname, O_RDWR)) > 0)
 	{
-		if (dokill)
-			flock (fd, LOCK_EX);
+		if (dokill && flock (fd, LOCK_EX)) {
+			close(fd);
+			return 0;
+		}
 		if(!all)
 			size = MIN (size, LASTP_MAX);
 		if (lseek (fd, -((off_t) (size * FH_SIZE)), SEEK_END) != -1)

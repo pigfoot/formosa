@@ -133,7 +133,10 @@ unsigned int update_passwd(USEREC *urcp)
 	if ((fd = open(fn_passwd, O_RDWR)) > 0)
 	{
 		/* we do file lock preferably here */
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return 0;
+		}
 #ifdef NSYSUBBS
 		if (read(fd, &urcTmp, sizeof(USEREC)) != sizeof(USEREC)
 		    || strcmp(urcTmp.userid, urcp->userid))
@@ -144,8 +147,8 @@ unsigned int update_passwd(USEREC *urcp)
 			return 0;
 		}
 #endif
-	    if (lseek(fd, 0, SEEK_SET) != -1)
-	    {
+		if (lseek(fd, 0, SEEK_SET) != -1)
+		{
 			if (write(fd, urcp, sizeof(USEREC)) == sizeof(USEREC))
 			{
 				flock(fd, LOCK_UN);
@@ -176,7 +179,10 @@ unsigned int update_user_passfile(USEREC *urcp)
 	if ((fd = open(PASSFILE, O_WRONLY | O_CREAT, 0600)) > 0)
 	{
 		/* we do file lock here */
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return -1;
+		}
 		if (lseek(fd, (off_t) ((urcp->uid - 1) * sizeof(USEREC)),
 		          SEEK_SET) != -1)
 		{
@@ -254,7 +260,10 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 	if ((fd = open(USERIDX, O_RDWR | O_CREAT, 0600)) < 0)
 		return 0;
 
-	flock(fd, LOCK_EX);
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		return 0;
+	}
 	for (cnt = 1;read(fd, &uidx, sizeof(uidx)) == sizeof(uidx); cnt++)
 	{
 		if (uidx.userid[0] == '\0')

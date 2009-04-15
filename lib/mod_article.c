@@ -29,7 +29,11 @@ int pack_article(char *direct)
 		close(fdr);
 		return -1;
 	}
-	flock(fdr, LOCK_EX);
+	if (myflock(fdr, LOCK_EX)) {
+		close(fdr);
+		close(fdw);
+		return -1;
+	}
 	while (read(fdr, fhr, FH_SIZE) == FH_SIZE)
 	{
 		if ((fhr->accessed & FILE_DELE)/* && !(fhr->accessed & FILE_RESV)*/)
@@ -85,7 +89,11 @@ int clean_dirent(char *direct)
 		close(fdr);
 		return -1;
 	}
-	flock(fdr, LOCK_EX);
+	if (myflock(fdr, LOCK_EX)) {
+		close(fdr);
+		close(fdw);
+		return -1;
+	}
 	while (read(fdr, fhr, FH_SIZE) == FH_SIZE)
 	{
 		if (fhr->filename[0]) {
@@ -214,8 +222,11 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 		close( fd_thrhead );
 		return (-1);
 	}
-	flock( fd_thrhead, LOCK_EX );
-	flock( fd_thrpost, LOCK_EX );
+	if (myflock(fd_thrhead, LOCK_EX) || myflock(fd_thrpost, LOCK_EX)) {
+		close(fd_thrhead);
+		close(fd_thrpost);
+		return -1;
+	}
 
 
 	/* load up default template 'thrhead' and 'thrpost' for later use */

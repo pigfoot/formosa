@@ -21,6 +21,7 @@ struct BoardList *SearchBoardList(char bname[]);
 
 /* misc.c */
 int flock(int fd, int op);
+int myflock(int fd, int op);
 int mycp(const char *from, const char *to);
 int myunlink(char name[]);
 int myrename(const char *from, const char *to);

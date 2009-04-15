@@ -742,11 +742,12 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 		else
 			combin = TRUE;
 
-		if (ch == 'T')
-			flock(fd, LOCK_EX);
 
 		if (combin)
 			sprintf(fn_comb, "tmp/%s.comb", curuser.userid);
+
+		if (ch == 'T' && myflock(fd, LOCK_EX))
+			goto lock_err;
 
 		while (read(fd, fhr, FH_SIZE) == FH_SIZE)
 		{
@@ -819,10 +820,11 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 		}
 		if (ch == 'T')
 			flock(fd, LOCK_UN);
+lock_err:
 		close(fd);
 		if (combin)
 			unlink(fn_comb);
-		if (result < 0) {
+		if (result <= 0) {
 			msg(_msg_fail);
 		} else {
 			sprintf(msgbuf, "%s %d½g", _msg_finish, result);

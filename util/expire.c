@@ -73,7 +73,10 @@ int num;
 	sprintf(genbuf, "%s/%s/%s", BBSPATH_BOARDS, bname, DIR_REC);
 	if ((fd = open(genbuf, O_RDWR)) > 0)
 	{
-		flock(fd, LOCK_EX);
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return;
+		}
 #ifdef DEBUG
 		printf("\nShould_Del_Num: %d", num);
 #endif

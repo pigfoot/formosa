@@ -336,7 +336,11 @@ static void left_note()			/* Seraph */
 
 		if ((fdd = open(fdat, O_RDONLY)) > 0)
 		{
-			flock(fdd, LOCK_EX);
+			if (myflock(fdd, LOCK_EX)) {
+				close(fdd);
+				close(fdt);
+				return;
+			}
 			while (read(fdd, &notetmp, sizeof(notetmp)) == sizeof(notetmp))
 			{
 				if (mynote.date - notetmp.date < 14400)		/* 14400¬í */
