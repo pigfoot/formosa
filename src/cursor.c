@@ -3,7 +3,7 @@
  **
  ** Update: lthuang@cc.nsysu.edu.tw (99/10/11)
  **/
- 
+
 #include "bbs.h"
 #include "tsbbs.h"
 
@@ -20,7 +20,7 @@ FILEHEADER **all_thrs = NULL, *all_arts = NULL;
  ** Get records from DIR_REC, and store in buffer.
  **
  ** Return the number of records
- **/ 
+ **/
 int read_get(char *direct, void *s, int size, int top)
 {
 	int n = 0, fd;
@@ -158,7 +158,7 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 		} else {
 			outs("  ");
 		}
-#endif		
+#endif
 
 		/* if treausure sub-folder */
 		if (fhr->accessed & FILE_TREA)
@@ -201,16 +201,16 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 				outs(" ");
 #if USE_THREAD
 			len = 40;
-#else							
+#else
 			len = 42;
-#endif			
+#endif
 			str = fhr->title;
 			while (len-- > 0 && *str)
 				outc(*str++);
-/*				
+/*
 			if (len == -1 && *(str - 1) > 0x80)
 				outc(*str);
-*/				
+*/
 			outs("[0m");
 		}
 
@@ -268,10 +268,10 @@ const char srchauthor[] = "aA";
 /*
  * ·j´M¤å³¹
  */
-int search_article(register char *direct, 
-				   register int ent, 
-				   register char *string, 
-				   register char op, 
+int search_article(register char *direct,
+				   register int ent,
+				   register char *string,
+				   register char op,
 				   register struct word **srchwtop)
 {
 	FILEHEADER *fhr = &fhGol;
@@ -295,13 +295,13 @@ int search_article(register char *direct,
 	else if (strchr(srchassoc, op))
 		cmps_kind |= SCMP_ASSOC;
 
-#if USE_THREAD	
+#if USE_THREAD
 	if (thr_mode)
 		total = num_thrs;
 	else if (art_mode)
 		total = num_arts;
 	else
-#endif		
+#endif
 		total = get_num_records(direct, FH_SIZE);
 
 	if (cmps_kind & SCMP_BACKWARD)
@@ -322,22 +322,22 @@ int search_article(register char *direct,
 			strcpy(cmps_str, cmps_str + REPLY_LEN);
 	}
 
-#if USE_THREAD				
+#if USE_THREAD
 	if (!thr_mode && !art_mode)
 	{
-#endif					
+#endif
 
 	if ((fd = open(direct, O_RDONLY)) < 0)
 		return -1;
 
 	lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET);
-#if USE_THREAD		
+#if USE_THREAD
 	}
-#endif	
+#endif
 
 	for (;;)
 	{
-#if USE_THREAD	
+#if USE_THREAD
 		if (thr_mode || art_mode)
 		{
 			if (ent > total)
@@ -349,12 +349,12 @@ int search_article(register char *direct,
 		}
 		else
 		{
-#endif		
+#endif
 		if (read(fd, fhr, FH_SIZE) != FH_SIZE)
 			break;
 #if USE_THREAD
 		}
-#endif					
+#endif
 
 		if (cmps_kind & SCMP_AUTHOR)
 		{
@@ -376,9 +376,9 @@ int search_article(register char *direct,
 				}
 				else
 				{
-#if USE_THREAD				
+#if USE_THREAD
 					if (!thr_mode && !art_mode)
-#endif					
+#endif
 					close(fd);
 					return ent;
 				}
@@ -394,10 +394,10 @@ int search_article(register char *direct,
 			case '+':
 				if (fhr->accessed & FILE_RESV)
 				{
-#if USE_THREAD				
+#if USE_THREAD
 					if (!thr_mode && !art_mode)
-#endif					
-				
+#endif
+
 					close(fd);
 					return ent;
 				}
@@ -409,9 +409,9 @@ int search_article(register char *direct,
 			case '=':
 				if (!strcmp(takestr, cmps_str))
 				{
-#if USE_THREAD				
-					if (!thr_mode && !art_mode)				
-#endif					
+#if USE_THREAD
+					if (!thr_mode && !art_mode)
+#endif
 					close(fd);
 					return ent;
 				}
@@ -421,17 +421,17 @@ int search_article(register char *direct,
 				{
 					if (!strcmp(takestr, cmps_str))		/* compare */
 					{
-#if USE_THREAD				
+#if USE_THREAD
 						if (!thr_mode && !art_mode)
-#endif					
+#endif
 						close(fd);
 						return ent;	/* found it */
 					}
 				}
 				else
 				{
-					if (!strncmp(takestr, STR_REPLY, REPLY_LEN))				
-						takestr += REPLY_LEN;					
+					if (!strncmp(takestr, STR_REPLY, REPLY_LEN))
+						takestr += REPLY_LEN;
 					if (!strcmp(takestr, cmps_str))
 					{
 						add_wlist(srchwtop, fhr->filename, malloc_str);
@@ -445,9 +445,9 @@ int search_article(register char *direct,
 				{
 					if (!srchwtop)	/* found it */
 					{
-#if USE_THREAD				
+#if USE_THREAD
 						if (!thr_mode && !art_mode)
-#endif					
+#endif
 						close(fd);
 						return ent;
 					}
@@ -464,15 +464,15 @@ int search_article(register char *direct,
 		{
 			if (--ent < 1)	/* abort search */
 				break;
-#if USE_THREAD				
+#if USE_THREAD
 			if (!thr_mode && !art_mode)
-#endif					
+#endif
 			lseek(fd, -2 * ((off_t) FH_SIZE), SEEK_CUR);
 		}
 	}			/* while */
-#if USE_THREAD				
+#if USE_THREAD
 	if (!thr_mode && !art_mode)
-#endif					
+#endif
 	close(fd);
 	if (srchwtop)
 		return total_target;
@@ -760,15 +760,15 @@ static int delthread(int ent, FILEHEADER *finfo, char *direct)
 #ifdef NSYSUBBS
 	if (!strcmp(curuser.userid, "SYSOP"))
 		return C_NONE;
-#endif		
-	
+#endif
+
 	move(4, 0);
 	clrtobot();
 
 	getdata(5, 0, "§R°£ 1)¬ÛÃö¼ÐÃD 2)¬Û¦P§@ªÌ ¤å³¹ ? [1]: ", ans, 2, XECHO);
 
 	if (ans[0] == '2')
-		getdata_str(6, 0, _msg_read_20, pattern, sizeof(finfo->owner), 
+		getdata_str(6, 0, _msg_read_20, pattern, sizeof(finfo->owner),
 			XECHO, finfo->owner);
 	else
 		getdata_str(6, 0, _msg_title, pattern, sizeof(pattern), XECHO,
@@ -826,7 +826,7 @@ static int thr_get(char *direct, void *s, int size, int top)
 		s += size;
 		top += 1;
 	}
-	
+
 	return n;
 }
 
@@ -838,31 +838,31 @@ struct one_key art_comms[] =
 	{CTRL('P'), do_post},
 	{'h', read_help},
 	{'w', bm_manage_file},
-/*	
+/*
 	{'s', select_board},
-*/	
+*/
 	{'b', display_bmwel},
-/*	
+/*
 	{'\t', switch_boardtrea},
-*/	
+*/
 #ifdef USE_VOTE
 	{'v', v_board},
 #endif
 	{'r', read_article},
 	{'E', edit_article},
-/*	
+/*
 	{'i', title_article},
-*/	
+*/
 	{'x', cross_article},
 	{'m', mail_article},
-/*	
+/*
 	{'d', delete_article},
 	{'g', reserve_article},
-*/	
+*/
 	{'t', tag_article},
-/*	
+/*
 	{'T', range_tag_article},
-*/	
+*/
 	{CTRL('T'), tag_thread},
 	{'G', treasure_article},
 	{'K', visit_article},
@@ -874,7 +874,7 @@ struct one_key art_comms[] =
 	{'A', author_forward},
 	{'<', title_backward},
 	{'>', title_forward},
-	{'/', title_forward},	
+	{'/', title_forward},
 	{'[', thread_backward},
 	{']', thread_forward},
 	{'=', thread_original},
@@ -893,7 +893,7 @@ int art_max(char *direct, int size)
 }
 
 
-static int art_get(char *direct, void *s, int size, int top) 
+static int art_get(char *direct, void *s, int size, int top)
 {
 	int n = num_arts - top + 1;
 
@@ -908,8 +908,8 @@ static int art_read(int ent, FILEHEADER *finfo, char *direct)
 {
 	char tmpdir[PATHLEN];
 	int post_ccur = 0;
-	
-	
+
+
 	if (art_mode)
 		return C_NONE;
 
@@ -922,9 +922,9 @@ static int art_read(int ent, FILEHEADER *finfo, char *direct)
 	cursor_menu(4, 0, tmpdir, art_comms, FH_SIZE, &post_ccur,
 			      post_title, read_btitle, read_entry, art_get, art_max,
 				  NULL, 1, FALSE, SCREEN_SIZE-4);
-	art_mode = FALSE;				
+	art_mode = FALSE;
 	title_thr[0] = '\0';
-	
+
 	return C_LOAD;
 }
 
@@ -934,31 +934,31 @@ struct one_key thr_comms[] =
 	{CTRL('P'), do_post},
 	{'h', read_help},
 	{'w', bm_manage_file},
-/*	
+/*
 	{'s', select_board},
-*/	
+*/
 	{'b', display_bmwel},
-/*	
+/*
 	{'\t', switch_boardtrea},
-*/	
+*/
 #ifdef USE_VOTE
 	{'v', v_board},
 #endif
 	{'r', art_read},
 	{'E', edit_article},
-/*	
+/*
 	{'i', title_article},
-*/	
+*/
 	{'x', cross_article},
 	{'m', mail_article},
-/*	
+/*
 	{'d', delete_article},
 	{'g', reserve_article},
-*/	
+*/
 	{'t', tag_article},
-/*	
+/*
 	{'T', range_tag_article},
-*/	
+*/
 	{CTRL('T'), tag_thread},
 	{'G', treasure_article},
 	{'K', visit_article},
@@ -969,14 +969,14 @@ struct one_key thr_comms[] =
 	{'a', author_backward},
 	{'A', author_forward},
 	{'<', title_backward},
-	{'?', title_backward},	
+	{'?', title_backward},
 	{'>', title_forward},
-	{'/', title_forward},	
-/*	
+	{'/', title_forward},
+/*
 	{'[', thread_backward},
 	{']', thread_forward},
 	{'=', thread_original},
-*/	
+*/
 	{'-', resv_backward},
 	{'+', resv_forward},
 	{CTRL('X'), delthread},
@@ -992,7 +992,7 @@ int cmp_fhr_title(const void *a, const void *b)
 	char *as = ((FILEHEADER *)a)->title;
 	char *bs = ((FILEHEADER *)b)->title;
 	int i;
-	
+
 	if (!strncmp(as, STR_REPLY, REPLY_LEN))
 		as += REPLY_LEN;
 	if (!strncmp(bs, STR_REPLY, REPLY_LEN))
@@ -1022,15 +1022,15 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 	int fd;
 	int i, j, tmp;
 	char str[STRLEN];
-	
-	
+
+
 	if (!in_board)
 		return C_NONE;
-	
-#if 0	
+
+#if 0
 	if (!HAS_PERM(PERM_SYSOP))
 		return C_NONE;
-#endif		
+#endif
 
 	if (thr_mode)
 		return C_NONE;
@@ -1042,7 +1042,7 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 		close(fd);
 		return C_NONE;
 	}
-	
+
 	all_arts = (FILEHEADER *)malloc(st.st_size);
 	if (!all_arts)
 	{
@@ -1055,8 +1055,8 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 		free(all_arts);
 		return C_NONE;
 	}
-	close(fd);	
-	
+	close(fd);
+
 	total_arts = st.st_size / FH_SIZE;
 	qsort(all_arts, total_arts, FH_SIZE, cmp_fhr_title);
 
@@ -1065,9 +1065,9 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 	{
 		free(all_arts);
 		perror("all_thrs");
-		abort_bbs(0);	
+		abort_bbs(0);
 	}
-	
+
 	str[0] = '\0';
 	for (i = 0, j = 0, tmp = 0; i < total_arts; i++)
 	{
@@ -1084,25 +1084,25 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 			if (!strncmp(all_arts[i].title, STR_REPLY, REPLY_LEN))
 				strcpy(str, all_arts[i].title + REPLY_LEN);
 			else
-				strcpy(str, all_arts[i].title);			
+				strcpy(str, all_arts[i].title);
 		}
 	}
-	
+
 	if (j > 0)
-		(all_thrs[j-1])->unused_int2 = total_arts - tmp;		
+		(all_thrs[j-1])->unused_int2 = total_arts - tmp;
 	num_thrs = j;
 
 	qsort(all_thrs, num_thrs, sizeof(FILEHEADER *), cmp_fhrp_filename);
-	
+
 	thr_mode = TRUE;
 	strcpy(tmpdir, direct);
 	cursor_menu(4, 0, tmpdir, thr_comms, FH_SIZE, &thr_ccur,
 			      post_title, read_btitle, read_entry, thr_get, thr_max,
 				  NULL, 1, FALSE, SCREEN_SIZE-4);
-	thr_mode = FALSE;				
+	thr_mode = FALSE;
 	free(all_thrs);
 	free(all_arts);
-	
+
 	return C_LOAD;
 }
 #endif	/* USE_THREAD */
@@ -1111,7 +1111,7 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 struct one_key post_comms[] =
 {
 	{CTRL('P'), do_post},
-	{CTRL('G'), mkdir_treasure},	
+	{CTRL('G'), mkdir_treasure},
 	{'h', read_help},
 	{'w', bm_manage_file},
 	{'s', select_board},
@@ -1121,10 +1121,10 @@ struct one_key post_comms[] =
 	{'v', v_board},
 #endif
 	{'r', read_article},
-	{'E', edit_article},	
-	{'i', title_article},	
-	{'x', cross_article},	
-	{'%', push_article},	
+	{'E', edit_article},
+	{'i', title_article},
+	{'x', cross_article},
+	{'%', push_article},
 	{'m', mail_article},
 	{'d', delete_article},
 	{'g', reserve_article},	/* in_mail || in_board */
@@ -1141,9 +1141,9 @@ struct one_key post_comms[] =
 	{'a', author_backward},
 	{'A', author_forward},
 	{'<', title_backward},
-	{'?', title_backward},	
+	{'?', title_backward},
 	{'>', title_forward},
-	{'/', title_forward},	
+	{'/', title_forward},
 	{'[', thread_backward},
 	{']', thread_forward},
 	{'=', thread_original},
@@ -1152,7 +1152,7 @@ struct one_key post_comms[] =
 	{CTRL('X'), delthread},
 #if USE_THREAD
 	{'~', thr_read},	/* in_board */
-#endif	
+#endif
 #ifdef  WEB_BOARD
 /*        {'L', acl_edit},*/
 #endif
@@ -1249,7 +1249,7 @@ int acl_edit()
 
 
 /*
- * Select in Main Menu 
+ * Select in Main Menu
  */
 int Select()
 {
@@ -1266,7 +1266,7 @@ int MainRead()
 {
 	if (!CurBList)
 	{
-		clear();	
+		clear();
 		outs("½Ð¥ý¿ï¾Ü¬ÝªO!");
 		pressreturn();
 		return C_FULL;
@@ -1302,8 +1302,8 @@ int Read()
 			}
 		}
 #endif
-		comm = post_comms;		
-	
+		comm = post_comms;
+
 		if (in_board)	/* ¤@¯ë°Ï */
 		{
 			nowdepth = 1;
@@ -1356,7 +1356,7 @@ int Read()
 					hasBMPerm = TRUE;
 			}
 		}
-		
+
 		if (HAS_PERM(PERM_SYSOP))	/* lthuang */
 			hasBMPerm = TRUE;
 
@@ -1401,25 +1401,25 @@ char hdrs[ROWSIZE * MAX_HDRSIZE];	/* ROWSIZE * MAX_HDRSIZE */
 /*
  * Cursor Menu (treasure / mail / boards / post )
  * (overrides / ulist / vote / class )
- * 
- * parameters: opt 		- flag indicating treasure (0) or regular (1) area 
- *			   ccur	    - pointer of current post 
+ *
+ * parameters: opt 		- flag indicating treasure (0) or regular (1) area
+ *			   ccur	    - pointer of current post
  *
  *
  *
  *
- * 
+ *
  */
-int cursor_menu( int y, int x, 
-				 char *direct, 
-				 struct one_key *comm, 
-				 int hdrsize, 
-				 int *ccur, 
-				 void (*cm_title) (), 
-				 void (*cm_btitle) (), 
+int cursor_menu( int y, int x,
+				 char *direct,
+				 struct one_key *comm,
+				 int hdrsize,
+				 int *ccur,
+				 void (*cm_title) (),
+				 void (*cm_btitle) (),
 				 void (*cm_entry) (int, void *, int, int, int, int),
 				 int (*cm_get) (char *, void *, int, int),
-				 int (*cm_max) (char *, int), 
+				 int (*cm_max) (char *, int),
 				 int (*cm_findkey) (char *, void *, int, int ),
 				 int opt, int autowarp, int rows)
 {
@@ -1432,7 +1432,7 @@ int cursor_menu( int y, int x,
 /*
 	if (!hdrs)
 		hdrs = (char *) malloc(ROWSIZE * MAX_HDRSIZE);
-*/		
+*/
 
 	cret = keys;
 	keys[0] = '\0';
@@ -1522,8 +1522,8 @@ int cursor_menu( int y, int x,
 		case CX_GET:
 			if (clast > 0)
 				cm_get(direct, hdrs, hdrsize, ctop);
-			gol_ccur = ccur;								
-			
+			gol_ccur = ccur;
+
 		case C_FULL:
 			if (cmode != CX_GET)
 			{
@@ -1549,12 +1549,12 @@ int cursor_menu( int y, int x,
 			}
 
 		case C_FOOT:
-#if 1		
+#if 1
 			move(b_line - 1, 0);
 			clrtoeol();
 			if (clast - ctop >= ROWSIZE - 1)
 				cm_entry(x, hdrs, ctop, ctop + ROWSIZE - 1, ctop + ROWSIZE - 1, 1);
-#endif			
+#endif
 			if (cm_btitle)
 			{
 				move(b_line, 0);
@@ -1562,10 +1562,10 @@ int cursor_menu( int y, int x,
 				outs("[m");
 #if 0
 				outs(color);
-#endif			
+#endif
 				outs(MENU_TITLE_COLOR);
 				cm_btitle();
-				outs("[m");				
+				outs("[m");
 			}
 
 		case CX_CURS:
@@ -1577,16 +1577,16 @@ int cursor_menu( int y, int x,
 
 #if 1
 			if (*ccur != ocur)
-#endif			
+#endif
 			{
 				/* RMVCURS; */
 				move((ocur) - (otop) + y, x);
 				outs("  ");
 			}
-#if 1			
+#if 1
 			otop = ctop;
 			ocur = *ccur;
-#endif			
+#endif
 			/* PUTCURS; */
 			move((*ccur) - (ctop) + y, x);
 			outs("->");
@@ -1621,13 +1621,13 @@ int cursor_menu( int y, int x,
 		{
 			if (ch == CTRL('R'))
 			{
-#if 1			
+#if 1
 				if (rows == 1)
 				{
 					cmode = C_NONE;
 					continue;
 				}
-#endif				
+#endif
 				msq_reply();
 				continue;
 			}

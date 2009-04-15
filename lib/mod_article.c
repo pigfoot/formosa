@@ -6,8 +6,8 @@
 
 static FILEHEADER genfhbuf;
 
-/* 
- * immediately remove article which were mark deleted 
+/*
+ * immediately remove article which were mark deleted
  */
 int pack_article(char *direct)
 {
@@ -65,7 +65,7 @@ int pack_article(char *direct)
 	return -1;
 }
 
-/* 
+/*
  * Delete records pointed to missing article file
  */
 int clean_dirent(char *direct)
@@ -121,8 +121,8 @@ int clean_dirent(char *direct)
 
 /*
  * create a unique stamp filename (M.nnnnnnnnnn.??)
- * 	 dir - directory where the file-to-be is located, unmodified 
- *   fname - pre-allocated space for returning the filename 
+ * 	 dir - directory where the file-to-be is located, unmodified
+ *   fname - pre-allocated space for returning the filename
  */
 static void get_only_name(char *dir, char *fname)
 {
@@ -132,7 +132,7 @@ static void get_only_name(char *dir, char *fname)
 	sprintf(tmpbuf, "%s/M.%d.A", dir, (int)time(0));
 	t = tmpbuf + strlen(tmpbuf) - 1;
 
-	/* keep modifying the last letter until file can successfully create  */ 
+	/* keep modifying the last letter until file can successfully create  */
 	while ((fd = open(tmpbuf, O_WRONLY | O_CREAT | O_EXCL, 0644)) < 0)
 	{
 		if (*t == 'Z')
@@ -145,15 +145,15 @@ static void get_only_name(char *dir, char *fname)
 	}
 
 	/* store just the filename into 'fname' to be passed back */
-	s = strrchr(tmpbuf, '/') + 1;		
+	s = strrchr(tmpbuf, '/') + 1;
 	strcpy(fname, s);
 	close(fd);
 }
 
 
 /*
- * postno is for readrc mechanism 
- * it reads from .DIR file the latest post 'postno' & returns next valid no.  
+ * postno is for readrc mechanism
+ * it reads from .DIR file the latest post 'postno' & returns next valid no.
  */
 static int get_only_postno(char *dotdir)
 {
@@ -182,21 +182,21 @@ static int get_only_postno(char *dotdir)
 }
 
 /*
- * update the .THREADHEAD .THREADPOST files accordingly 
+ * update the .THREADHEAD .THREADPOST files accordingly
  *
- * thrheadpos - index pos. in .THREADHEAD file (count from beginning of file)  
+ * thrheadpos - index pos. in .THREADHEAD file (count from beginning of file)
  * thrpostidx - index pos. of current post (count from the pos. of its
- *											thread head in .THREADPOST 
+ *											thread head in .THREADPOST
  */
 #ifdef	USE_THREADING	/* syhu */
-int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrpostidx )		/* syhu */ 
+int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrpostidx )		/* syhu */
 {
 
 	THRHEADHEADER thrhead;
 	THRPOSTHEADER thrpost, thrpost_tmp;
 	char dotdir[PATHLEN];					/* full-pathname for .xxxx file */
  	int fd_thrhead;							/* file descriptor for headfile */
-	int fd_thrpost;							/* file descriptor for postfile */  
+	int fd_thrpost;							/* file descriptor for postfile */
  	int fd_thrpost2;						/* 2nd fd, used for copying */
  	int i;									/* general counter */
  	int index;								/* temp. index */
@@ -205,7 +205,7 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 
 
 	/* file opening & locking stuff */
-	sprintf( dotdir, "%s/%s", path, THREAD_HEAD_REC );	
+	sprintf( dotdir, "%s/%s", path, THREAD_HEAD_REC );
 	if( (fd_thrhead = open( dotdir, O_RDWR | O_CREAT, 0644 )) <= 0)
  		return (-1);
  	sprintf( dotdir, "%s/%s", path, THREAD_REC );
@@ -215,7 +215,7 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 		return (-1);
 	}
 	flock( fd_thrhead, LOCK_EX );
-	flock( fd_thrpost, LOCK_EX );	
+	flock( fd_thrpost, LOCK_EX );
 
 
 	/* load up default template 'thrhead' and 'thrpost' for later use */
@@ -226,10 +226,10 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
         thrhead.numfollow = 0;
  		thrhead.thrpostidx = 0;
 
- 		if( (index=get_num_records_byfd( fd_thrhead, THRHEADHDR_SIZE )) == -1 ) 
+ 		if( (index=get_num_records_byfd( fd_thrhead, THRHEADHDR_SIZE )) == -1 )
  			goto end;
  		thrhead.thrheadpos = index;
- 
+
  		if( (index=get_num_records_byfd( fd_thrpost, THRPOSTHDR_SIZE )) == -1 )
  			goto end;
         thrhead.thrpostpos = index;
@@ -237,12 +237,12 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 	else
 	{
  		/* load this entry from .THREADHEAD file */
-        if( lseek( fd_thrhead, thrheadpos*THRHEADHDR_SIZE, SEEK_SET ) == -1 || 
-            read( fd_thrhead, &thrhead, THRHEADHDR_SIZE) != THRHEADHDR_SIZE ) 
+        if( lseek( fd_thrhead, thrheadpos*THRHEADHDR_SIZE, SEEK_SET ) == -1 ||
+            read( fd_thrhead, &thrhead, THRHEADHDR_SIZE) != THRHEADHDR_SIZE )
 			goto end;
  		thrhead.numfollow++;				/* update the # of follow-ups */
 	}
- 
+
 	/* 'thrpost' */
     memcpy( &thrpost, fhdr, FH_SIZE );
  	thrpost.lastfollowidx = 0;
@@ -251,31 +251,31 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
     thrpost.thrheadpos = thrheadpos;
     thrpost.thrpostidx = thrhead.numfollow;
 
- 	 
+
 	/* check if the thread-space in .THREADPOST overflows,
-	   if so then move all the entries in this thread to EOF */ 
-	if( thrheadpos != (-1) ) 				 /* if it's a follow-up */ 
+	   if so then move all the entries in this thread to EOF */
+	if( thrheadpos != (-1) ) 				 /* if it's a follow-up */
 	{
-		/* first check if this thread needs to be moved to EOF in .THREADPOST 
+		/* first check if this thread needs to be moved to EOF in .THREADPOST
   		   note that numfollow has been +1 for follow-up posts,
-		   NOTE: some optimization can be done here for already-last entry */ 	
+		   NOTE: some optimization can be done here for already-last entry */
 		if( (thrhead.numfollow % THREADUNIT_SIZE) == 0 )
  		{
  			/* update the threadhead link position to .THREADPOST's EOF */
  			if( (index=get_num_records_byfd(fd_thrpost,THRPOSTHDR_SIZE)) == -1 )
  				goto end;
-			
-			/* move all headers for this thread to EOF, alloc buffer for it */  
+
+			/* move all headers for this thread to EOF, alloc buffer for it */
  			if( (fd_thrpost2 = open( dotdir, O_RDONLY )) > 0 &&
-				lseek( fd_thrpost2, thrhead.thrpostpos*THRPOSTHDR_SIZE, 
+				lseek( fd_thrpost2, thrhead.thrpostpos*THRPOSTHDR_SIZE,
 					   SEEK_SET ) != -1 &&
 				lseek( fd_thrpost, 0, SEEK_END ) != -1 )
  			{
- 				i = thrhead.numfollow*THRPOSTHDR_SIZE;	
+ 				i = thrhead.numfollow*THRPOSTHDR_SIZE;
  				if( (buff=(char *)malloc( i )) != NULL  &&
 					read( fd_thrpost2, buff, i ) == i )
  				{
-					write( fd_thrpost, (void *)buff, i );	
+					write( fd_thrpost, (void *)buff, i );
  					free( buff );
 	 				close( fd_thrpost2 );
  					thrhead.thrpostpos = index;
@@ -283,12 +283,12 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
  				}
 			}
 		} /* end checking if space isn't enough */
-	} 
- 
+	}
+
  	/* update linkage info in .THREADPOST */
  	/* first update the 'lastfollowidx' of the post being followed */
  	i = (thrhead.thrpostpos + thrpostidx)*THRPOSTHDR_SIZE;
-	if( lseek( fd_thrpost, i, SEEK_SET ) == -1 || 
+	if( lseek( fd_thrpost, i, SEEK_SET ) == -1 ||
 		read( fd_thrpost, &thrpost_tmp, THRPOSTHDR_SIZE ) != THRPOSTHDR_SIZE )
 		goto end;
 
@@ -298,26 +298,26 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 		thrpost_tmp.nextfollowidx = thrpost.thrpostidx;
 
 	if( lseek( fd_thrpost, -(THRPOSTHDR_SIZE), SEEK_CUR ) == -1  ||
-		write( fd_thrpost,&thrpost_tmp,THRPOSTHDR_SIZE ) != THRPOSTHDR_SIZE )   
+		write( fd_thrpost,&thrpost_tmp,THRPOSTHDR_SIZE ) != THRPOSTHDR_SIZE )
  		goto end;
 
- 	/* then update the 'nextpostidx' in the last followup hdr, IF it's not the 
-		same as the first. Since for the first there's only 'nextfollowidx'   
+ 	/* then update the 'nextpostidx' in the last followup hdr, IF it's not the
+		same as the first. Since for the first there's only 'nextfollowidx'
  		note that since this would be the last of all follow-ups,
 		its nextpostidx should be 0 */
  	if( thrpostidx != 0 )
 	{
- 		i = (thrhead.thrpostpos + i) * THRPOSTHDR_SIZE; 
+ 		i = (thrhead.thrpostpos + i) * THRPOSTHDR_SIZE;
  		if( lseek( fd_thrpost, i, SEEK_SET ) == -1  ||
 			read( fd_thrpost, &thrpost_tmp, THRPOSTHDR_SIZE ) !=
 				  THRPOSTHDR_SIZE )
 			goto end;
 
- 		thrpost_tmp.nextpostidx = thrpost.thrpostidx; 
+ 		thrpost_tmp.nextpostidx = thrpost.thrpostidx;
 
  		if( lseek( fd_thrpost, -(THRPOSTHDR_SIZE), SEEK_CUR ) == -1 ||
 			write( fd_thrpost, &thrpost_tmp, THRPOSTHDR_SIZE ) !=
-			 	   THRPOSTHDR_SIZE )		
+			 	   THRPOSTHDR_SIZE )
  			goto end;
  	}
 
@@ -332,14 +332,14 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 
 	/* save .THREADPOST & .THREADHEAD entry */
 	if( write(fd_thrpost, &thrpost, THRPOSTHDR_SIZE) != THRPOSTHDR_SIZE ||
-		write(fd_thrhead, &thrhead, THRHEADHDR_SIZE) != THRHEADHDR_SIZE ) 
+		write(fd_thrhead, &thrhead, THRHEADHDR_SIZE) != THRHEADHDR_SIZE )
 		goto end;
- 
+
 	/* write space-filling blocks in .THREADPOST, calculate how many dummy
-	   entries are needed first. this is only necessary when a new 
+	   entries are needed first. this is only necessary when a new
 	   thread unit is open, such as original post or unit overflow.
 	   note that what's written is space-filling only, it's rather random */
- 	if( thrheadpos == (-1) || overflow ) 
+ 	if( thrheadpos == (-1) || overflow )
  	{
  		i = THREADUNIT_SIZE - thrhead.numfollow%THREADUNIT_SIZE - 1;
 		write( fd_thrpost, (void *)0, i*THRPOSTHDR_SIZE );
@@ -348,7 +348,7 @@ int update_threadinfo(FILEHEADER *fhdr, char *path, int thrheadpos, int thrposti
 	/* adjust file header accordingly */
 	fhdr->thrheadpos = thrpost.thrheadpos;
 	fhdr->thrpostidx = thrpost.thrpostidx;
-	
+
 
 	/* closing stuff */
 end:
@@ -363,18 +363,18 @@ end:
 #endif
 
 
-/* 
+/*
  * append record to article index file,
  *   stamp:  M.0987654321.A
  *   format: M.xxxxxxxxxx.xx
- * return postno 
+ * return postno
  */
-#ifdef	USE_THREADING	/* syhu */		
+#ifdef	USE_THREADING	/* syhu */
 int append_article(char *fname, char *path, char *author, char *title,
 					char ident, char *stamp, BOOL artmode, unsigned char flag,
 					char *fromhost, int thrheadpos, int thrpostidx)	 /*syhu*/
-//thrheadpos;				/* position of thread head in .THREADHEAD */ 
-//thrpostidx;				/* index of previous post in .THREADPOST */	
+//thrheadpos;				/* position of thread head in .THREADHEAD */
+//thrpostidx;				/* index of previous post in .THREADPOST */
 
 #else
 int append_article(char *fname, char *path, char *author, char *title,
@@ -390,18 +390,18 @@ int append_article(char *fname, char *path, char *author, char *title,
  	/* check if directory exists for 'path' */
 	if (stat(path, &st) == -1 || !S_ISDIR(st.st_mode))
 		return -1;
- 
+
  	/* create unique filename from time & store in stampbuf,'path' unmodified */
-	get_only_name(path, stampbuf);					
+	get_only_name(path, stampbuf);
 	sprintf(fn_stamp, "%s/%s", path, stampbuf);
- 
- 	/* actually copy the file into where the post finally resides */ 
+
+ 	/* actually copy the file into where the post finally resides */
 	if (mycp(fname, fn_stamp) == -1)
 	{
 		unlink(fn_stamp);	/* debug */
 		return -1;
 	}
- 	/* append 'Origin:' line at the end of post if 'fromhost' was specified */ 
+ 	/* append 'Origin:' line at the end of post if 'fromhost' was specified */
 	if (fromhost)
 	{
 #ifdef USE_IDENT
@@ -414,7 +414,7 @@ int append_article(char *fname, char *path, char *author, char *title,
 	}
 
 	chmod(fn_stamp, 0600);	/* lthuang */
-	
+
  	/* now adding index to .DIR file */
 	memset(fhr, 0, FH_SIZE);
 	xstrncpy(fhr->filename, stampbuf, sizeof(fhr->filename));
@@ -426,8 +426,8 @@ int append_article(char *fname, char *path, char *author, char *title,
 	fhr->accessed |= flag;
 
 	sprintf(dotdir, "%s/%s", path, DIR_REC);
- 
-	/* get next valid postno from .DIR file if in the article mode */ 
+
+	/* get next valid postno from .DIR file if in the article mode */
 	if (artmode)
 		fhr->postno = get_only_postno(dotdir);
 	if (stamp)
@@ -444,14 +444,14 @@ int append_article(char *fname, char *path, char *author, char *title,
  		unlink(fn_stamp);	/* lthuang */
  		return -1;
  	}
- 		
+
 	if (artmode)
-		return fhr->postno;			
+		return fhr->postno;
 	return 0;
 }
 
 /*
-   ¤Þ¤J­ì¤å 
+   ¤Þ¤J­ì¤å
 */
 void include_ori(char *rfile, char *wfile, char reply_mode)
 {
@@ -459,7 +459,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 	char *author = NULL, *name = NULL;
 	char *foo, *hptr;
 	char inbuf[256];
-	
+
 
 	if (wfile)
 	{
@@ -480,7 +480,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 	if ((foo = strchr(inbuf, '\n')))
 		*foo = '\0';
 	if ((!strncmp(inbuf, "µo«H¤H: ", 8) && (hptr = inbuf + 8))
-/*	
+/*
 	    || (!strncmp(inbuf, "µo«H¤H:", 7) && (hptr = inbuf + 7))
 	    || (!strncmp(inbuf, "By:", 3) && (hptr = inbuf + 3))
 	    || (!strncmp(inbuf, "From:", 5) && (hptr = inbuf + 5))
@@ -488,7 +488,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 	{
 		char **token, delim;
 		short i;
-		
+
 		for (i = 0; i < 2 && *hptr; i++)
 		{
 			while (isspace((int)(*hptr)))
@@ -499,7 +499,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 				hptr++;
 				delim = '"';
 			}
-			else if (*hptr == '(')			
+			else if (*hptr == '(')
 			{
 				token = &name;
 				hptr++;
@@ -535,17 +535,17 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 	}
 
 	/* skip header line */
-	while (fgets(inbuf, sizeof(inbuf), fpr)) 
+	while (fgets(inbuf, sizeof(inbuf), fpr))
 	{
 		if (inbuf[0] == '\n')
-			break;;	
+			break;;
 	}
 
 	while (fgets(inbuf, sizeof(inbuf), fpr))
 	{
 		if (reply_mode != 'r') {
 			/* skip blank line */
-			if (inbuf[0] == '\n') 
+			if (inbuf[0] == '\n')
 				continue;
 			if ((inbuf[0] == '>' && inbuf[INCLUDE_DEPTH - 1] == '>')
 					|| (inbuf[0] == ':' && inbuf[INCLUDE_DEPTH - 1] == ':'))
@@ -554,7 +554,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 			}
 		}
 		/* skip signature */
-		if (!strcmp(inbuf, "--\n"))	
+		if (!strcmp(inbuf, "--\n"))
 			break;
 		/* add quote character */
 		/* kmwang:20000815:±N quote ¦r¤¸´«¦¨ : ´î¤Ö¹ï tag ªº»~§P */
@@ -562,7 +562,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 			fprintf(fpw, "%s", inbuf);
 		else {
 #ifndef USE_HTML
-			fprintf(fpw, "> %s", inbuf);	
+			fprintf(fpw, "> %s", inbuf);
 #else
 			fprintf(fpw, ": %s", inbuf);
 #endif
@@ -571,7 +571,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 	if (wfile)
 	{
 		fclose(fpw);
-		chmod(wfile, 0600);		
+		chmod(wfile, 0600);
 	}
 	fclose(fpr);
 }
@@ -605,16 +605,16 @@ int include_sig(char *name, const char *wfile, int num)
 		fclose(fpr);
 		return -1;
 	}
-	
+
 	chmod(wfile, 0644);
-	
+
 	fputs("\n--\n", fpw);
-	
+
 	for(i = 0; i < MAX_SIG_LINES * (num - 1); i++)
 		fgets(sigbuf, sizeof(sigbuf), fpr);
 
 	ptr = sigbuf;
-	for(i = 0; i < MAX_SIG_LINES 
+	for(i = 0; i < MAX_SIG_LINES
 		&& fgets(ptr, sizeof(sigbuf) - (ptr - sigbuf), fpr); i++)
 	{
 		/* ­YÃ±¦WÀÉ¥½§À´X¦æ¬Ò¬OªÅ¦æ«h©¿²¤ */
@@ -626,10 +626,10 @@ int include_sig(char *name, const char *wfile, int num)
 			ptr = sigbuf;
 		}
 	}
-/*	
+/*
 	fputs("[m\n", fpw);
 */
-	fputs("[m", fpw);	
+	fputs("[m", fpw);
 	fclose(fpr);
 	fclose(fpw);
 	return 0;
@@ -638,7 +638,7 @@ int include_sig(char *name, const char *wfile, int num)
 
 /*
    ¼Ð¥Ü«O¯d¤å³¹
-*/   
+*/
 int reserve_one_article(int ent, char *direct)
 {
 	int fd;
@@ -667,7 +667,7 @@ int reserve_one_article(int ent, char *direct)
 
 /*
    ¨ú±o±À¤å¤À¼Æ
-*/   
+*/
 int get_pushcnt(const FILEHEADER *fhr)
 {
 	int rt;
@@ -683,7 +683,7 @@ int get_pushcnt(const FILEHEADER *fhr)
 
 /*
    Åª¨ú±À¤å¤À¼Æ
-*/   
+*/
 int read_pushcnt(int ent, char *direct, int fd)
 {
 	FILEHEADER *fhr = &genfhbuf;
@@ -699,7 +699,7 @@ int read_pushcnt(int ent, char *direct, int fd)
 
 /*
    Âà´«¦s¤J±À¤å¤À¼Æ
-*/   
+*/
 void save_pushcnt(FILEHEADER *fhr, int score)
 {
 	fhr->flags |= FHF_PUSHED;
@@ -714,7 +714,7 @@ void save_pushcnt(FILEHEADER *fhr, int score)
 
 /*
    ¦s¤J±À¤å¤À¼Æ
-*/   
+*/
 int push_one_article(int ent, char *direct, int fd, int score)
 {
 	FILEHEADER *fhr = &genfhbuf;
@@ -809,31 +809,31 @@ int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, in
 #ifdef	USE_THREADING	/* syhu */
 /*
  * sync_threadfiles
- * if a .DIR entry has been updated, this function will make all changes   
+ * if a .DIR entry has been updated, this function will make all changes
  * in respective thread files, updating fields that are common to both
- * .DIR & .THREADxxxx files 
+ * .DIR & .THREADxxxx files
  * fhr - file header of the entry just modified
- * ent - which entry in .DIR is this file header 
+ * ent - which entry in .DIR is this file header
  *
- * return: 0 - success, 
+ * return: 0 - success,
  *		  -1 - fail
- */ 
+ */
 int sync_threadfiles(FILEHEADER *fhr, char *direct)
 {
  	FILEHEADER filehdr;
 	THRHEADHEADER thrhead, *p_thrhead=(THRHEADHEADER *)&filehdr;
-	THRPOSTHEADER thrpost, *p_thrpost=(THRPOSTHEADER *)&filehdr; 
+	THRPOSTHEADER thrpost, *p_thrpost=(THRPOSTHEADER *)&filehdr;
  	char path[STRLEN];
  	int index;
 
-	/* make working copy of header structure */	
+	/* make working copy of header structure */
 	memcpy( &filehdr, fhr, FH_SIZE );
 
  	/* update .THREADHEAD */
 	strcpy( path, direct );
 	*( strrchr(path,'/')+1 ) = '\0';
  	strcat( path, THREAD_HEAD_REC );
- 	index = fhr->thrheadpos + 1; 
+ 	index = fhr->thrheadpos + 1;
  	if( get_record( path, &thrhead, THRHEADHDR_SIZE, index ) == -1 )
 		return (-1);
 
@@ -842,15 +842,15 @@ int sync_threadfiles(FILEHEADER *fhr, char *direct)
 	p_thrhead->thrheadpos = thrhead.thrheadpos;
 	p_thrhead->thrpostidx = thrhead.thrpostidx;
 
- 	if( substitute_record( path, p_thrhead, THRHEADHDR_SIZE, index ) == -1 ) 
-		return (-1); 
- 
+ 	if( substitute_record( path, p_thrhead, THRHEADHDR_SIZE, index ) == -1 )
+		return (-1);
+
  	/* update .THREADPOST */
 	*( strrchr(path,'/')+1 ) = '\0';
 	strcpy( path, THREAD_REC );
- 	index = thrhead.thrpostpos + fhr->thrpostidx + 1; 
+ 	index = thrhead.thrpostpos + fhr->thrpostidx + 1;
 	if( get_record( path, &thrpost, THRPOSTHDR_SIZE, index ) == -1 )
-		return (-1); 
+		return (-1);
 
 	p_thrpost->lastfollowidx = thrpost.lastfollowidx;
 	p_thrpost->nextfollowidx = thrpost.nextfollowidx;
@@ -859,7 +859,7 @@ int sync_threadfiles(FILEHEADER *fhr, char *direct)
 	p_thrpost->thrpostidx	 = thrpost.thrpostidx;
 
  	if( substitute_record( path, p_thrpost, THRPOSTHDR_SIZE, index ) == -1 )
-		return (-1); 
+		return (-1);
 
 	return 0;
 }

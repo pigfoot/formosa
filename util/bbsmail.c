@@ -45,10 +45,10 @@ void bbsmail_log_write(char *mode, char *fmt, ...)
 
 	va_start(args, fmt);
 #if !VSNPRINTF
-	vsprintf(msgbuf, fmt, args);	
-#else	
+	vsprintf(msgbuf, fmt, args);
+#else
 	vsnprintf(msgbuf, sizeof(msgbuf), fmt, args);
-#endif	
+#endif
 	va_end(args);
 
 	time(&now);
@@ -366,11 +366,11 @@ int do_post(const char *r_file)
 		postpath = NULL;
 
 #ifdef USE_THREADING	/* syhu */
-	if (PublishPost(fname, minfo.sender, user.username, minfo.board, 
-	                subject, user.ident, NULL, TRUE, postpath, 0, -1, -1) == -1)
+	if (PublishPost(fname, minfo.sender, user.username, minfo.board,
+	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0, -1, -1) == -1)
 #else
-	if (PublishPost(fname, minfo.sender, user.username, minfo.board, 
-	                subject, user.ident, NULL, TRUE, postpath, 0) == -1)	/* Âà«H¥X¥h */
+	if (PublishPost(fname, minfo.sender, user.username, minfo.board,
+	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0) == -1)	/* Âà«H¥X¥h */
 #endif
 	{
 		unlink(fname);
@@ -412,7 +412,7 @@ int do_mail(const char *r_file)
 
 	if ((fpw = fopen(fn_new, "w")) == NULL)
 	{
-		bbsmail_log_write("ERROR: cannot create %s", fn_new);	
+		bbsmail_log_write("ERROR: cannot create %s", fn_new);
 		fclose(fpr);
 		return -1;
 	}
@@ -426,12 +426,12 @@ int do_mail(const char *r_file)
 	*(timestr + strlen(timestr) - 1) = '\0';
 
 	write_article_header(fpw, minfo.from, "", NULL, timestr, subject, NULL);
-	
+
 	fputs("\n", fpw);
 	while (mygets(genbuf, sizeof(genbuf), fpr))
 		fputs(genbuf, fpw);
 
-	fputs("[m\n", fpw);	
+	fputs("[m\n", fpw);
 	fclose(fpr);
 	fclose(fpw);
 	chmod(fn_new, 0600);
@@ -453,11 +453,11 @@ int do_mail(const char *r_file)
 static void access_mail(const char *r_file)
 {
 	int tsize;
-	
+
 	memset(&user, 0, sizeof(user));
 	if (get_passwd(&user, minfo.sender) <= 0)
 	{
-		bbsmail_log_write("ENOENT", "from=<%s>, to=<%s>, subject=<%s>", 
+		bbsmail_log_write("ENOENT", "from=<%s>, to=<%s>, subject=<%s>",
 				minfo.from, minfo.sender, minfo.subject);
 #ifdef ANTISPAM
 		/*
@@ -470,16 +470,16 @@ static void access_mail(const char *r_file)
 
 	if (verbose)
 	{
-		printf("Mtype: %c Mfrom: %s Mto: %s\n", 
+		printf("Mtype: %c Mfrom: %s Mto: %s\n",
 		       minfo.type, minfo.from, minfo.to);
 		printf("Msubject: %s\n", minfo.subject);
-		printf("Msender: %s Mboard: %s Mpasswd: %s\n", 
+		printf("Msender: %s Mboard: %s Mpasswd: %s\n",
 		       minfo.sender, minfo.board, minfo.passwd);
 	}
 
 	if ((tsize = get_num_records(r_file, sizeof(char))) > MAX_MAIL_SIZE)
 	{
-		bbsmail_log_write("EFBIG", "from=<%s>, to=<%s>, subject=<%s>, size=%d", 
+		bbsmail_log_write("EFBIG", "from=<%s>, to=<%s>, subject=<%s>, size=%d",
 			minfo.from, minfo.sender, minfo.subject, tsize);
 	}
 
@@ -499,7 +499,7 @@ static void access_mail(const char *r_file)
 				return;
 			}
 		} else {
-			bbsmail_log_write("EPASS", "from=<%s>, sender=<%s>, subject=<%s>", 
+			bbsmail_log_write("EPASS", "from=<%s>, sender=<%s>, subject=<%s>",
 				minfo.from, minfo.sender, minfo.subject);
 			return;
 		}
@@ -520,21 +520,21 @@ static void classfy_mail(const char *const filename, const struct MailHeader *mh
 	if ((s = strstr(minfo.to, ".bbs")) != NULL || (s = strstr(minfo.to, ".BBS")) != NULL) {
 		*s = '\0';
 		if (minfo.to[0] == '\0') {
-			bbsmail_log_write("EINVALRCPT", "from=<%s>, subject=<%s>", 
+			bbsmail_log_write("EINVALRCPT", "from=<%s>, subject=<%s>",
 				minfo.from, minfo.subject);
 			return;
 		}
-		minfo.type = 'm';				
+		minfo.type = 'm';
 		strcpy(minfo.sender, minfo.to);
 	} else if (!strncmp(minfo.to, "bbs@", 4)) {
-		minfo.to[0] = '\0';		
+		minfo.to[0] = '\0';
 		minfo.type = 'p';
 	} else if (minfo.to[0] != '\0') {
-		bbsmail_log_write("EINVAL", "from=<%s>, to=<%s>", 
+		bbsmail_log_write("EINVAL", "from=<%s>, to=<%s>",
 			minfo.from, minfo.to);
 		return;
 	} else if (minfo.to[0] == '\0') {
-		bbsmail_log_write("ENORCPT", "from=<%s>, subject=<%s>", 
+		bbsmail_log_write("ENORCPT", "from=<%s>, subject=<%s>",
 			minfo.from, minfo.subject);
 		return;
 	}
@@ -551,7 +551,7 @@ static void classfy_mail(const char *const filename, const struct MailHeader *mh
 		    || (minfo.board[0] == '\0' && minfo.type == 'p'))
 		{
 			bbsmail_log_write("EMPOSTHD",
-				"from=<%s>, sender=<%s>, board=<%s>, subject=<%s>", 
+				"from=<%s>, sender=<%s>, board=<%s>, subject=<%s>",
 				minfo.from, minfo.sender, minfo.board, minfo.subject);
 			return;
 		}
@@ -630,14 +630,14 @@ int main(int argc, char *argv[])
 	strcpy(bbsmail_box, "/var/spool/mail/bbs");
 	if (get_num_records(bbsmail_box, sizeof(char)) == 0)
 	{
-		strcpy(bbsmail_box, "/var/mail/bbs");	
+		strcpy(bbsmail_box, "/var/mail/bbs");
 		if (get_num_records(bbsmail_box, sizeof(char)) == 0)
 		{
 			/* bbs mail spool is empty */
 			exit(0);
 		}
 	}
-	
+
 	if (chdir(HOMEBBS) == -1)
 	{
 		/* home not exist */
@@ -676,7 +676,7 @@ int main(int argc, char *argv[])
 			if (nextp) {
 				sprintf(w_file, "%s-%d", spool_tmp, ++n);
 				if ((fp = fopen(w_file, "w")) == NULL) {
-					bbsmail_log_write("OPFILE", "file=%s", 
+					bbsmail_log_write("OPFILE", "file=%s",
 						w_file);
 					break;
 				}
@@ -690,7 +690,7 @@ int main(int argc, char *argv[])
 				fclose(fp);
 				if (rt == -1)
 					bbsmail_log_write("PNTERR",
-						"%s: from=<%s>, subject=<%s>", 
+						"%s: from=<%s>, subject=<%s>",
 						msg, mh.xfrom, mh.subject);
 				else
 					classfy_mail(w_file, &mh);
@@ -710,7 +710,7 @@ int main(int argc, char *argv[])
 		close(fd);
 	}
 	unlink(spool_tmp);
-	bbsmail_log_close();	
+	bbsmail_log_close();
 
 	return 0;
 }

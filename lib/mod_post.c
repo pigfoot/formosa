@@ -4,7 +4,7 @@
 
 
 /*
- * update the rewind_time for some board, 
+ * update the rewind_time for some board,
  * user should update their readrc according this rewind_time
  */
 static int rewind_board(char *bname)
@@ -56,13 +56,13 @@ int append_news(char *bname, char *fname,
 		sprintf(nbuf, "news/out.bntp");
 	if ((fp = fopen(nbuf, "a+")) == NULL)
 		return -1;
-		
+
 	flock(fileno(fp), LOCK_EX);
-	fprintf(fp, "%s\t%s\t%s\t%s\t%s\n", 
+	fprintf(fp, "%s\t%s\t%s\t%s\t%s\n",
 	        bname, fname, userid, username, title);
-	fclose(fp);	       
+	fclose(fp);
 	return 0;
-*/	
+*/
 	sprintf(nbuf, "news/output/%s", bname);
 	if ((fp = fopen(nbuf, "a+")) == NULL)
 		return -1;
@@ -76,8 +76,8 @@ int append_news(char *bname, char *fname,
 	if (opt == 'D')
 	{
 		/* for sending cancel message to usenet */
-		char bbuf[PATHLEN];	
-		
+		char bbuf[PATHLEN];
+
 		setboardfile(bbuf, bname, fname);
 		sprintf(nbuf, "news/cancel/%s.%s", bname, fname);
 		mycp(bbuf, nbuf);
@@ -86,7 +86,7 @@ int append_news(char *bname, char *fname,
 }
 
 
-/* 
+/*
  * fname    欲張的的佈告檔名
  * ident    張貼者的認證等級
  * tonews   是否送上 news
@@ -99,9 +99,9 @@ int PublishPost(char *fname, char *userid, char *username,
 			short tonews, char *postpath, unsigned char flag,
 			int thrheadpos, int thrpostidx)
 /*
- * int thrheadpos; 							 position in .THREADHEAD file 
- * int thrpostidx;								index in .THREADPOST file 
- * */	
+ * int thrheadpos; 							 position in .THREADHEAD file
+ * int thrpostidx;								index in .THREADPOST file
+ * */
 
 #else
 int PublishPost(char *fname, char *userid, char *username,
@@ -111,14 +111,14 @@ int PublishPost(char *fname, char *userid, char *username,
 {
 	char timestamp[15], tempfile[PATHLEN], pathTmp[PATHLEN];
 	int artno;
-	
+
 
 	/* copy the post to a temp. location first, all the processing will
-	   be done on this temp file until it's finished */	
+	   be done on this temp file until it's finished */
 	sprintf(tempfile, "tmp/bbs%05d", (int)getpid());
 	if (mycp(fname, tempfile) < 0)
 		return -1;
-	
+
  	/* set up the correct destination path of this post */
 	if (postpath)
 		strcpy(pathTmp, postpath);
@@ -126,10 +126,10 @@ int PublishPost(char *fname, char *userid, char *username,
 		setboardfile(pathTmp, bname, NULL);
 
  	/* do the actual copying of the post in 'tempfile' to destination,
-	   and also update the .DIR file */ 
+	   and also update the .DIR file */
 #ifdef USE_THREADING	/* syhu */
-	if ((artno = append_article(tempfile, pathTmp, userid, title,ident,/*syhu*/ 
-	                            timestamp, (postpath) ? FALSE : TRUE, 
+	if ((artno = append_article(tempfile, pathTmp, userid, title,ident,/*syhu*/
+	                            timestamp, (postpath) ? FALSE : TRUE,
 	                            flag, fromhost, thrheadpos, thrpostidx)) != -1)
 #else
 	if ((artno = append_article(tempfile, pathTmp, userid, title, ident,
@@ -139,8 +139,8 @@ int PublishPost(char *fname, char *userid, char *username,
 	{
 		if (!postpath)
 		{
- 			/* if this is the first post, then record/update the rewind 
-			   time for this board */ 
+ 			/* if this is the first post, then record/update the rewind
+			   time for this board */
 			if (artno == 1)
 				rewind_board(bname);
 			if (tonews
@@ -149,12 +149,12 @@ int PublishPost(char *fname, char *userid, char *username,
 #endif
 				)
 				append_news(bname, timestamp, userid, username, title, 'S');
- 
+
 			/* update the share memory info of no. of posts in this board */
-			set_brdt_numposts(bname, FALSE);	/* lthuang: 99/08/20 */				
+			set_brdt_numposts(bname, FALSE);	/* lthuang: 99/08/20 */
 		}
 		unlink(tempfile);
-		
+
 		return artno;
 	}
 	unlink(tempfile);
@@ -177,7 +177,7 @@ int make_treasure_folder(char *direct, char *title, char *dirname)
 		sprintf(stamp, "M.%d.A", (int)time(0));	/* -ToDo- T.XXXXXXX.A */
 	}
 	while (mkdir(path, 0700) == -1);
-	
+
 	if (dirname)
 		strcpy(dirname, path);
 
@@ -191,7 +191,7 @@ int make_treasure_folder(char *direct, char *title, char *dirname)
 		rmdir(path);
 		return -1;
 	}
-	sprintf(new, "%s.new", direct);	
+	sprintf(new, "%s.new", direct);
 	if ((fdnew = open(new, O_WRONLY | O_CREAT | O_TRUNC, 0600)) < 0)
 	{
 		close(fd);
