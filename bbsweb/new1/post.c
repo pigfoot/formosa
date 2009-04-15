@@ -9,9 +9,9 @@ extern SKIN_FILE *skin_file;
 /*******************************************************************
  *	顯示佈告相關 TAG (一般區 & 精華區 & 信件 通用)
  *
- *	
+ *
  *******************************************************************/
-void 
+void
 ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 {
 	char *p, *para = NULL;
@@ -147,8 +147,8 @@ ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 #endif
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostReply);
 
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailReply : HTML_PostReply,
 			value);
 	}
@@ -185,8 +185,8 @@ ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostForward);
 
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailForward : HTML_PostForward,
 			value);
 	}
@@ -201,8 +201,8 @@ ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 
 		GetPara3(value, "VALUE", para, sizeof(value), MSG_PostDelete);
 
-		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>", 
-			pf->fh.filename, 
+		fprintf(fp_out, "<A HREF=\"%s/%s\">%s</A>",
+			pf->fh.filename,
 			(request_rec->URLParaType == MailRead) ? HTML_MailDelete : HTML_PostDelete,
 			value);
 	}
@@ -210,7 +210,7 @@ ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	{
 		if (request_rec->URLParaType == MailRead && PSCorrect != Correct)
 			return;
-			
+
 		if (request_rec->URLParaType == SkinModify)
 			ShowArticle(pf->POST_NAME, FALSE, FALSE);
 		else
@@ -234,7 +234,7 @@ ShowPost(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	{
 		if (request_rec->URLParaType == MailRead && PSCorrect != Correct)
 			return;
-			
+
 		include_ori(pf->POST_NAME, NULL);	/* lthuang */
 	}
 	else if (!strcasecmp(tag, "ReplyTitle") || !strcasecmp(tag, "ReplySubject"))
@@ -289,17 +289,17 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
 	FILEHEADER *fip;
 #endif
 	int recidx, fd;
-	FILEHEADER fileinfo;	
-	BOOL hasUpperDir = FALSE;	
+	FILEHEADER fileinfo;
+	BOOL hasUpperDir = FALSE;
 	char senderid[STRLEN], sender[STRLEN], date[STRLEN];
 	char title[STRLEN + PATHLEN + 1];
 	char UpperDir[PATHLEN];
-	char *p;	
+	char *p;
 	char *type;
 	char *tags[6] = {"Num", "Sender", "Date", "Title", "SenderID", "READ"};
 	char *strings[6];
 	char recidx_string[10];
-	
+
 
 	if (request_rec->URLParaType == MailList && PSCorrect != Correct)
 		return FALSE;
@@ -312,7 +312,7 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
 
 #if 11
 	fprintf(fp_out, "\r\ntest[%s]!!<br>\r\n", pf->POST_NAME);
-#endif	
+#endif
 
 	/* set pf->POST_NAME to current dir */
 	if ((p = strrchr(pf->POST_NAME, '/')) == NULL)
@@ -352,8 +352,8 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
 	{
 		close(fd);
 #if 11
-		fprintf(fp_out, "\r\ntest2!![%d]<br>\r\n", errno);		
-#endif		
+		fprintf(fp_out, "\r\ntest2!![%d]<br>\r\n", errno);
+#endif
 		return FALSE;
 	}
 	close(fd);
@@ -367,18 +367,18 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
 #endif
 
 #if 11
-	fprintf(fp_out, "\r\ntest3!!<br>\r\n");	
-#endif	
+	fprintf(fp_out, "\r\ntest3!!<br>\r\n");
+#endif
 	bzero(format_array, sizeof(format_array));
 	if (build_format_array(format_array, format, "%", "%", 32) == -1)
 	{
 #if 11
-	fprintf(fp_out, "\r\ntest4!!<br>\r\n");	
-#endif	
-	
+	fprintf(fp_out, "\r\ntest4!!<br>\r\n");
+#endif
+
 		return FALSE;
 	}
-		
+
 #if 11
 	{
 		int i;
@@ -527,14 +527,14 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
 		{
 			int offset1 = format_array[i].offset;
 			int offset2 = format_array[i+1].offset;
-		
+
 			if (format_array[i].type == 'S')	/* not BBS TAG */
 			{
-				fwrite(&(format[offset1]), sizeof(char), offset2 - offset1, 
+				fwrite(&(format[offset1]), sizeof(char), offset2 - offset1,
 					fp_out);
 			}
 			else
-			{	
+			{
 				int j;
 			/* BBS TAG */
 				for (j = 0; j < 6; j++)
@@ -563,7 +563,7 @@ ListPostRecord(char *tag, BOARDHEADER * board, POST_FILE * pf, char *format, int
  *
  *	used by HTML_PostList, HTML_TreaList, HTML_MailList
  *******************************************************************/
-int 
+int
 ShowPostList(char *tag, BOARDHEADER * board, POST_FILE * pf)
 {
 	int start, end, pagesize;
@@ -626,8 +626,8 @@ ShowPostList(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	}
 	else if (!strncasecmp(tag, "PageUp", 6))
 	{
-		char format[512];		
-		
+		char format[512];
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;
@@ -642,8 +642,8 @@ ShowPostList(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	}
 	else if (!strncasecmp(tag, "PageDown", 8))
 	{
-		char format[512];		
-		
+		char format[512];
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;
@@ -659,7 +659,7 @@ ShowPostList(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	else if (!strncasecmp(tag, "Send", 4))
 	{
 		char value[STRLEN];
-		
+
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
 			return TRUE;
@@ -673,8 +673,8 @@ ShowPostList(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	else
 		/* List Post record */
 	{
-		char format[512];	
-		
+		char format[512];
+
 		GetPara3(format, "FORMAT", tag, sizeof(format), "");
 		return ListPostRecord(tag, board, pf, format, start, end);
 	}

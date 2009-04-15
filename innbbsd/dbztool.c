@@ -52,7 +52,7 @@ char *paths;
 {
    char *key,*ptr;
    int rel;
-   ptr = DBfetch(mid); 
+   ptr = DBfetch(mid);
    if (ptr != NULL) {
      return 0;
    } else {
@@ -74,7 +74,7 @@ int mode;
 		    *ptr = '\0';
 		}
 	        if (stat(dir,&st) != 0) {
-		    if (mkdir(dir,mode) != 0 ) 
+		    if (mkdir(dir,mode) != 0 )
 			 return -1;
 		}
 		chdir(dir);

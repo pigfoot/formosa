@@ -23,7 +23,7 @@ extern void lingering_close(int sock);
 /*******************************************************************
  *	reaper - clean up zombie children
  *******************************************************************/
-static void 
+static void
 reaper(int sig)
 {
 	pid_t cpid;
@@ -39,7 +39,7 @@ reaper(int sig)
 #ifdef PRE_FORK
 		{
 			int i;
-			
+
 			for (i = 0; i < server->max_child; i++)
 			{
 				if ((server->childs)[i].pid == cpid)
@@ -67,7 +67,7 @@ reaper(int sig)
 }
 
 
-void 
+void
 init_signals(void)
 {
 
@@ -96,13 +96,13 @@ init_signals(void)
 }
 
 
-void 
+void
 shutdown_server(int sig)
 {
 	RUNNING = 0;
 }
 
-void 
+void
 sig_segv(int sig)
 {
 	server->error++;
@@ -137,7 +137,7 @@ sig_segv(int sig)
 }
 
 #if 0
-void 
+void
 sig_pipe(int sig)
 {
 	server->error++;
@@ -168,7 +168,7 @@ sig_pipe(int sig)
 /*******************************************************************
  * Idle Timeout
  *******************************************************************/
-void 
+void
 timeout_check(int s)
 {
 

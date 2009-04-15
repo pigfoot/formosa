@@ -1,9 +1,9 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw
  */
- 
+
 /*******************************************************************
- * .DIR 清理、維護	 			 	 
+ * .DIR 清理、維護
  *******************************************************************/
 
 #include "bbs.h"
@@ -78,10 +78,10 @@ struct TABLE *s1, *s2;
 {
 	/* sarek:03/17/2002:解決time stamp大於99999999的排序比對問題 */
 	int date1, date2;
-	
+
 	sscanf(s1->name, "M.%d.", &date1);
 	sscanf(s2->name, "M.%d.", &date2);
-	
+
 	return (date1 - date2);
 
 	//return strcmp(s1->name, s2->name);
@@ -129,14 +129,14 @@ clear_dir (dir)
 		{
 			DIRstartoffset=(size_t) dp;
 		}
-	}			
+	}
 	if ((dp = readdir(dirp)) != NULL)
 	{
 		if (!strcmp(dp->d_name, ".."))
 		{
 			DIRendoffset=(size_t) dp;
 		}
-	}	
+	}
 	sizeofDIR=DIRendoffset-DIRstartoffset;
 	//printf("%d--%d--%d\n", DIRstartoffset, DIRendoffset, sizeofDIR); //for debug
 
@@ -144,7 +144,7 @@ clear_dir (dir)
 	table = (struct TABLE *) calloc(st.st_size / sizeofDIR, sizeof(struct TABLE));
 	total = 0;
 
-	
+
 	while ((dp = readdir (dirp)) != NULL)
 	{
 		if (!strcmp (dp->d_name, ".") || !strcmp (dp->d_name, ".."))

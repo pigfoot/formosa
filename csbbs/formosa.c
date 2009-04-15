@@ -1,6 +1,6 @@
 /*
- *  林國卿 gcl@cc.nsysu.edu.tw                   
- *  林嵩慶 Cauchy@cc.nsysu.eud.tw            
+ *  林國卿 gcl@cc.nsysu.edu.tw
+ *  林嵩慶 Cauchy@cc.nsysu.eud.tw
  */
 
 #include "bbs.h"
@@ -43,23 +43,23 @@ extern int DoAnnounce(), DoGetMailNumber(), DoGetMailHead(), DoGetMail(), DoSend
   DoQuery(), DoPage(), DoTalk(), DoGetBoardWelcome(), DoPutBoardWelcome(),
   DoKillBoardWelcome(), DoTreasurePost(), DoTalkReply(), DoMailGroup(),
   DoListOnlineFriend(), DoGetFriend(), DoSendFriend(), DoUserCheck(), DoCheckNewMail(),
-#if 0  
-  DoChat(), 
-#endif  
+#if 0
+  DoChat(),
+#endif
   DoUnkillPost(), DoEditPostTitle(), DoEditPost(), DoUnkillMail(),
   DoSendPostToBoards(), DoMakeDirect(), DoVersionCheck(), DoSendMsg(),
-  DoAllMsg(), 
-#if 0  
+  DoAllMsg(),
+#if 0
   DoFilePut(), DoGetFileHead(), DoGetFileNumber(), DoGetFile(),
-  DoKillFile(), 
-#endif  
-  DoMultiLogin(), DoKill(), 
-#if 0  
-  DoTermOut(), 
-#endif  
+  DoKillFile(),
+#endif
+  DoMultiLogin(), DoKill(),
+#if 0
+  DoTermOut(),
+#endif
   DoForward(), DoChkAnnounce(),
   DoChkBoardWelcome(), DoPostImp();
-  
+
 
 struct ProtocolJob {
         int     KeyNo;
@@ -133,7 +133,7 @@ struct ProtocolJob job_table[] =
 
 #if 0
 	{CHAT, DoChat},
-#endif	
+#endif
 	{CHATSAY, NULL},
 	{CHATSTOP, NULL},
 
@@ -149,7 +149,7 @@ struct ProtocolJob job_table[] =
 	{MAKEDIR, DoMakeDirect},
 #if 0
 	{TERMOUT, DoTermOut}
-#endif	
+#endif
 };
 
 
@@ -220,7 +220,7 @@ DoBBSName()
 DoChkAnnounce()
 {
 	struct stat st;
-	
+
 	if (stat(WELCOME, &st) < 0)
 		RespondProtocol(NO_ANNOUNCE);
 	else
@@ -252,7 +252,7 @@ DoAskBBSInformation()
 
 	num_ulist(&t_user, &c_user, &w_user);
 	RespondProtocol(OK_CMD);
-	inet_printf("BBSNAME:\t%s\r\nT-USER:\t%d\r\nC-USER:\t%d\r\nW-USER:\t%d\r\n.\r\n", 
+	inet_printf("BBSNAME:\t%s\r\nT-USER:\t%d\r\nC-USER:\t%d\r\nW-USER:\t%d\r\n.\r\n",
 	            BBSNAME, t_user, c_user, w_user);
 }
 
@@ -279,25 +279,25 @@ FormosaExit()
 }
 
 
-void 
+void
 talk_request(int s)
 {
 	signal(SIGUSR1, talk_request);
-	
+
 	talkreply();
 }
 
 
-void 
+void
 msq_request(int s)
 {
 	signal(SIGUSR2, msq_request);
 
 	memset(&mymsq, 0, sizeof(mymsq));
 	msq_rcv(cutmp, &mymsq);
-	inet_printf("%d\t%s\t%s\t%s\t%s\r\n", 
-            MSG_REQUEST, mymsq.fromid, 
-               (mymsq.username[0] == '\0') ? "#" : mymsq.username,	            
+	inet_printf("%d\t%s\t%s\t%s\t%s\r\n",
+            MSG_REQUEST, mymsq.fromid,
+               (mymsq.username[0] == '\0') ? "#" : mymsq.username,
             mymsq.mtext, mymsq.stimestr);
 }
 
@@ -365,12 +365,12 @@ char *host;
 	signal(SIGTERM, AbortBBS);
 	signal(SIGUSR1, talk_request);
 	signal(SIGUSR2, msq_request);		/* 送訊息 */
-	signal(SIGCHLD, SIG_IGN);	
+	signal(SIGCHLD, SIG_IGN);
 
 	strcpy(myfromhost, host);
 
 	/* SayHello */
-	inet_printf("%d\t%s %s \r\n", OK_CMD, BBSNAME, 
+	inet_printf("%d\t%s %s \r\n", OK_CMD, BBSNAME,
 		"Formosa Client/Server BBS version 3.25 12/16");
 
 	for (;;)
@@ -390,7 +390,7 @@ char *host;
 		NextToken = GetToken(MyBuffer, keyword, MAX_KEYWORD_LEN);
 		if (keyword[0] == '\0')
 			continue;
-			
+
 		keyno = GetKeywordNo(keyword);
 		SetParameter(NextToken);	/* 設定參數至linklist */
 		switch (keyno)
@@ -431,7 +431,7 @@ char *host;
 				else
 				{
 					char *cert_name, *cert_passwd;
-					
+
 					cert_name = Get_para_string(1);
 					cert_passwd = Get_para_string(2);
 					if (!DoCertiLogin(cert_name, cert_passwd))

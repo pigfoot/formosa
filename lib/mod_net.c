@@ -40,7 +40,7 @@ int ConnectServer(char *host, int port)
 
 	if (!host || !(*host))
 		return -1;
-		
+
 	memset(&sin, 0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons((u_short) port);
@@ -82,15 +82,15 @@ int net_printf(int sd, char *fmt, ...)
 {
 	va_list args;
 	char str[NET_OUTBUF_SIZE];
-	int bytes_written;	
+	int bytes_written;
 
 
 	va_start(args, fmt);
-#if !HAVE_VSNPRINTF	
+#if !HAVE_VSNPRINTF
 	vsprintf(str, fmt, args);
 #else
 	vsnprintf(str, sizeof(str), fmt, args);
-#endif	
+#endif
 	va_end(args);
 
 	if ((bytes_written = write(sd, str, strlen(str))) == -1)
@@ -109,18 +109,18 @@ char *net_gets(int sd, char buf[], int buf_size)
 	struct timeval wait;
 	static fd_set ibits;
 	int times, cc, maxs = sd + 1;
-#ifdef DEBUG	
+#ifdef DEBUG
 	int imp;
-#endif	
+#endif
 	char *p;
-/* by lasehu	
+/* by lasehu
 	char *w = buf, *we = buf + buf_size;
-*/	
+*/
 	char *w = buf, *we = buf + buf_size - 1;
 	/* static char ibuf[4096]; */
 	static char ibuf[512];
-	static char *begin = ibuf, *to = ibuf; 
-	
+	static char *begin = ibuf, *to = ibuf;
+
 
 	if (begin != to)
 	{
@@ -151,9 +151,9 @@ char *net_gets(int sd, char buf[], int buf_size)
 		}
 	}
 	begin = to = ibuf;
-#ifdef DEBUG	
+#ifdef DEBUG
 	imp = 0;
-#endif	
+#endif
 	for (times = 0; times < 256; times++)
 	{
 		FD_ZERO(&ibits);
@@ -174,13 +174,13 @@ char *net_gets(int sd, char buf[], int buf_size)
 #endif
 		if (!FD_ISSET(sd, &ibits))
 			continue;
-/* lasehu			
+/* lasehu
 		memset(ibuf, '\0', sizeof(ibuf));
-*/		
+*/
 		ibuf[0] = '\0';
 /* lasehu
 		if ((cc = read(sd, ibuf, sizeof(ibuf))) < 1)
-*/		
+*/
 		if ((cc = read(sd, ibuf, sizeof(ibuf)-1)) < 1)
 		{
 			begin = to = ibuf;

@@ -31,7 +31,7 @@ header_t headertable[] = {
 "Date"      ,DATE_H,
 "Message-ID",MID_H,
 "Newsgroups",NEWSGROUPS_H,
-"NNTP-Posting-Host",NNTPPOSTINGHOST_H, 
+"NNTP-Posting-Host",NNTPPOSTINGHOST_H,
 "NNTP-Host", NNTPHOST_H,
 "Control",   CONTROL_H,
 "Path",      PATH_H,
@@ -46,7 +46,7 @@ header_t headertable[] = {
 
 char *HEADER[LASTHEADER];
 char *BODY;
-char *FROM, *SUBJECT, *SITE, *DATE, *POSTHOST, 
+char *FROM, *SUBJECT, *SITE, *DATE, *POSTHOST,
      *NNTPHOST, *PATH, *GROUPS, *MSGID, *CONTROL;
 
 #ifdef PalmBBS
@@ -66,7 +66,7 @@ nodelist_t *nl;
      if (strstr(path1, path2) != NULL) return 1;
      if (nl->exclusion && *nl->exclusion) {
         char *exclude, *ptr;
-	for (exclude = nl->exclusion, ptr = strchr(exclude,','); 
+	for (exclude = nl->exclusion, ptr = strchr(exclude,',');
 	     exclude && *exclude; ptr = strchr(exclude,',')) {
 	     if (ptr) *ptr = '\0';
 	     sprintf(path2, "!%.*s!",sizeof path2 - 3, exclude);
@@ -125,7 +125,7 @@ int type;
      {
 	char *slash = strrchr(filepath,'/');
 	if (slash != NULL) *slash = '\t';
-        fprintf(nl->feedfp,"%s\t%s\t\t%s\t%s\t%c\t%s\t%s!%s\n", 
+        fprintf(nl->feedfp,"%s\t%s\t\t%s\t%s\t%c\t%s\t%s!%s\n",
 	  filepath == NULL ? "": filepath,
 	  GROUPS, FROM, SUBJECT, type, MSGID, MYBBSID, HEADER[PATH_H]);
 	if (slash != NULL) *slash = '/';
@@ -133,7 +133,7 @@ int type;
      fflush(nl->feedfp);
      if (savech == '\0') break;
     }
-    free(path1); 
+    free(path1);
   }
 }
 
@@ -149,7 +149,7 @@ init_bbsfeedsfp()
    bbsfeedson = -1;
 }
 
-bbsfeedslog(filepath, type) 
+bbsfeedslog(filepath, type)
 char *filepath;
 int type;
 {
@@ -164,7 +164,7 @@ int type;
       return;
     }
     bbsfeedson = 1;
-   } 
+   }
 
    if (bbsfeedsfp == NULL) {
       bbsfeedsfp = fopen(BBSFEEDS,"a");
@@ -173,7 +173,7 @@ int type;
    strftime(datebuf, sizeof(datebuf), "%b %d %X ", localtime(&now));
 
    if( bbsfeedsfp != NULL ) {
-	fprintf(bbsfeedsfp,"%s %c %s %s %s %s!%s %s\n", datebuf, type, 
+	fprintf(bbsfeedsfp,"%s %c %s %s %s %s!%s %s\n", datebuf, type,
 	      REMOTEHOSTNAME, GROUPS, MSGID, MYBBSID, HEADER[PATH_H], filepath==NULL? "": filepath);
 	fflush(bbsfeedsfp);
    }
@@ -191,7 +191,7 @@ init_echomailfp()
    echomaillogon = -1;
 }
 
-echomaillog() 
+echomaillog()
 {
 
    if (echomaillogon ==0) return;
@@ -201,7 +201,7 @@ echomaillog()
       return;
     }
     echomaillogon = 1;
-   } 
+   }
 
    if (echomailfp == NULL) {
       echomailfp = fopen(ECHOMAIL,"a");
@@ -249,7 +249,7 @@ char *indata, **filterbuffer, *cmd;
    int len = strlen(indata);
    int size ;
    struct stat st;
-    
+
    fp = (FILE*)popen((char*)fileglue("%s > /tmp/.innbbsdfilter%d%d",cmd,getpid(), getuid()),"w");
    if (fp == NULL) {
       bbslog("Err: can't popen %s\n",cmd);
@@ -285,8 +285,8 @@ newsfeeds_t *arp;
 int direction;
 char *indata, **filterdata;
 {
-   char *outdata; 
-   FuncPtr fptr = NULL; 
+   char *outdata;
+   FuncPtr fptr = NULL;
    char *cmdptr = NULL;
    if (direction) {
       fptr = arp->sfilter;
@@ -324,7 +324,7 @@ int direction;
 	if (hptr != NULL && hptr[1] == ' ') {
 	  *hptr = '\0';
 	  if (strcmp(front,"Newsgroups")==0) {
-	     char *ngp, *ongp; 
+	     char *ngp, *ongp;
 	     newsfeeds_t *arp;
 	     char *tp;
 	     if ((tp = (char*)strchr(hptr+2,'\r'))!=NULL)
@@ -382,7 +382,7 @@ ClientType *client;
     char *front = in->data, *ptr, *hptr;
     int i;
 
-    for (i=0; i < LASTHEADER; i++ ) 
+    for (i=0; i < LASTHEADER; i++ )
       HEADER[i] = NULL;
 
 #ifdef FILTER
@@ -405,7 +405,7 @@ ClientType *client;
 	if (hptr != NULL && hptr[1] == ' ') {
 	   int value;
 	   *hptr = '\0';
-           value = headervalue(front); 
+           value = headervalue(front);
 	   if (value != -1) {
 	      char *tp;
 	      HEADER[value] = hptr + 2;
@@ -451,8 +451,8 @@ char *inputheader;
 
    key.name = inputheader;
    findkey = ( header_t *)bsearch (
-		   (char *) &key, (char *) headertable, 
-		   sizeof(headertable)/ sizeof(header_t), sizeof (key), 
+		   (char *) &key, (char *) headertable,
+		   sizeof(headertable)/ sizeof(header_t), sizeof (key),
 		   headercmp);
    if (findkey != NULL) return findkey->id;
    return -1;
@@ -468,7 +468,7 @@ article_init()
 
    qsort(headertable, sizeof(headertable)/ sizeof(header_t), sizeof(header_t),
 	 headercmp);
-   for (i=0; i < LASTHEADER; i++ ) 
+   for (i=0; i < LASTHEADER; i++ )
       HEADER[i] = NULL;
 }
 
@@ -476,7 +476,7 @@ article_init()
 main()
 {
     int i,j,k,l,m,n,o,p,q;
-    article_init(); 
+    article_init();
     i = headervalue("Subject");
     j = headervalue("From");
     k = headervalue("Date");

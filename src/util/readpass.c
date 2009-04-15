@@ -42,7 +42,7 @@ main (argc, argv)
 			printf ("● 暱稱 (username) : %s\n", curuser.username);
 			printf ("● 確認程度 : %d\n", curuser.ident);
 			printf ("● 電子郵箱 : %s\n", curuser.email);
-/*          
+/*
    printf("● 終端機型 : %s\n", curuser.termtype);
  */
 			printf ("● 上站總數 : %d 次\n", curuser.numlogins);

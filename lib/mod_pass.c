@@ -27,9 +27,9 @@ char *genpasswd(char *pw)
 			c += 6;
 		saltc[i] = c;
 	}
-/*	
+/*
 	strcpy(pwbuf, pw);
-*/	
+*/
 	xstrncpy(pwbuf, pw, sizeof(pwbuf));
 	return crypt(pwbuf, saltc);
 }
@@ -41,7 +41,7 @@ int checkpasswd(char *passwd, char *test)
 
 /*
 	strncpy(pwbuf, test, PASSLEN);
-*/	
+*/
 	xstrncpy(pwbuf, test, PASSLEN);
 	pw = crypt(pwbuf, passwd);
 	return (!strncmp(pw, passwd, PASSLEN));

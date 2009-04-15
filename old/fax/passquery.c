@@ -18,7 +18,7 @@
 void readResult();
 void chkpass();
 
-#define passwdlen 5 
+#define passwdlen 5
 #define myProtocol 10
 
 #define myidno "000310"   /* 這是BBS 使用者的電信代碼  */
@@ -36,14 +36,14 @@ void main()
 	char se1[8];
 	char oldpass[5],newpass1[5],newpass2[5];
 	struct sockaddr_in serv_addr;
-  
+
 	int on=1;
 
 	bzero((char *) &serv_addr,sizeof(serv_addr));
 	serv_addr.sin_family=AF_INET;
 	serv_addr.sin_addr.s_addr=inet_addr(SERV_HOST_ADDR);
 	serv_addr.sin_port=htons(SERV_TCP_PORT);
-  
+
 	if ((sockfd=socket(AF_INET,SOCK_STREAM,0))<0)
 	{
 		exit(1);
@@ -51,20 +51,20 @@ void main()
 	}
 
 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr))<0)
-	{  
+	{
 		exit(1);
 		perror("client:");
 	}
-  
+
 	if (write(sockfd,myidno,strlen(myidno)+1)<0)  /* send my id */
 	{
 		printf("更改密碼發生錯誤!!\n");
 		close(sockfd);
 		exit(1);
 	}
-    
+
 	printf("請輸入你的舊密碼（四碼）: ");
-	gets(oldpass);      
+	gets(oldpass);
 
 	if (write(sockfd,oldpass,strlen(oldpass)+1)<0)  /* send my id */
 	{
@@ -72,13 +72,13 @@ void main()
 		close(sockfd);
 		exit(1);
 	}
-    
-/* chkpass(sockfd); */ 
-/*檢查舊密碼是否正確用 ,但此處希望直接在BBS端比對就好, 所以不執行chkpass */ 
+
+/* chkpass(sockfd); */
+/*檢查舊密碼是否正確用 ,但此處希望直接在BBS端比對就好, 所以不執行chkpass */
 
 	printf("請輸入你的新密碼（四碼）: ");
 	gets(newpass1);
-    
+
 	while (strlen(newpass1)!=4)
 	{
 		printf("新密碼必須為四碼 !!\n");
@@ -87,7 +87,7 @@ void main()
 	}
 
 	printf("再確認一次新密碼（四碼）: ");
-	gets(newpass2);    
+	gets(newpass2);
 
 	if (ChangeNTPass(myidno,newpass1)!=1)
 	{
@@ -102,17 +102,17 @@ void main()
 		close(sockfd);
 		exit(1);
 	}
-    
-        
+
+
 	if (write(sockfd,newpass1,strlen(newpass1))<0)
 	{
 		printf("更改密碼發生錯誤(1)!! \n");
 		close(sockfd);
 		exit(1);
 	}
-    
-	readResult(sockfd); 
-	close(sockfd); 
+
+	readResult(sockfd);
+	close(sockfd);
 	exit(1);
 }
 
@@ -121,14 +121,14 @@ void chkpass(fd)
 int fd;
 {
 	char ifsame[10];
-     
+
 	if (read(fd,ifsame,sizeof(ifsame))<0)
 	{
 		printf("更改密碼發生錯誤!!\n");
 		close(fd);
 		exit(0);
 	}
-  
+
 	if (strcmp("NO",ifsame)==0)
 	{
 		printf("輸入密碼錯誤!!\n");
@@ -149,17 +149,17 @@ void readResult(fd)
 int fd;
 {
 	char Result[myProtocol];
-  
+
 	if ((read(fd,Result,sizeof(Result)))<0)
 	{
 		printf("更改密碼發生錯誤(2)!!\n");
 		exit(0);
 	}
-  
-	if (strcmp("error",Result)==0) 
-		printf("更改密碼發生錯誤(3)!!\n");     
+
+	if (strcmp("error",Result)==0)
+		printf("更改密碼發生錯誤(3)!!\n");
 	else if (strcmp("good",Result)==0)
-		printf("更改密碼完成!!\n");     
+		printf("更改密碼完成!!\n");
 }
 
 
@@ -171,39 +171,39 @@ char *idno,*newpass;
 	int NTsockfd;
 	struct sockaddr_in NTserv_addr;
 	char Message[50];
-  
+
 	int on=1;
 
 	bzero((char *) &NTserv_addr,sizeof(NTserv_addr));
 	NTserv_addr.sin_family=AF_INET;
 	NTserv_addr.sin_addr.s_addr=inet_addr(NTSE_HOST_ADDR);
 	NTserv_addr.sin_port=htons(NTSE_TCP_PORT);
-  
+
 	if ((NTsockfd=socket(AF_INET,SOCK_STREAM,0))<0)
-	{  
+	{
 		close(NTsockfd);
 		return 0;
 	}
 
 	if (connect(NTsockfd,(struct sockaddr *) &NTserv_addr,sizeof(NTserv_addr))<0)
-	{  
+	{
 		close(NTsockfd);
 		return 0;
 	}
-  
+
 	strcpy(Message,idno);
 	strcat(Message," " );
 	strcat(Message,newpass);
 
-  
+
 	if (write(NTsockfd,Message,strlen(Message)+1)<0)
 	{
 		close(NTsockfd);
-		return 0; 
+		return 0;
 	}
 	else
 	{
-		close(NTsockfd);  
+		close(NTsockfd);
 		return 1;
 	}
 }

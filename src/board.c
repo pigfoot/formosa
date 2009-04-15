@@ -15,9 +15,9 @@ static BOOL show_numposts = FALSE;
 int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple)
 {
 	struct word *bwtop = NULL;
-	int i;	
-	
-	
+	int i;
+
+
 	if (!num_brds)
 	{
 		CreateBoardList(&curuser);
@@ -52,15 +52,15 @@ int select_board()
 
 	if (namecomplete_board(NULL, bname, FALSE) == 0)
 	{
-		struct BoardList *be1;	
-		
+		struct BoardList *be1;
+
 		if ((be1 = SearchBoardList(bname)) != NULL)
 		{
 			curbe = be1;
 			CurBList = be1->bhr;
-#if 0			
+#if 0
 			board_ccur = be1 - all_brds + 1;		/* 讓使用者一進入 (0)Boards 就停在上次的看板 */
-#endif			
+#endif
 			return C_REDO;
 		}
 	}
@@ -142,7 +142,7 @@ static int board_findkey(char *nbuf, struct BoardList ent[], int start, int tota
 {
 	register int i, len = strlen(nbuf);
 	struct BoardList *s;
-	
+
 
 	if (depth_class >= 1)
 		s = all_cs;
@@ -269,7 +269,7 @@ static int bcmd_enter(int ent, struct BoardList *bent, char *direct)
 	if (depth_class >= 1)
 	{
 		struct BoardList *be1;
-		
+
 		if ((be1 = SearchBoardList(bent->bhr->filename)) == NULL)
 			return C_LOAD;
 		curbe = be1;
@@ -317,20 +317,20 @@ static struct one_key board_comms[] =
 	{'/', bcmd_jump},
 	{'\t', bcmd_treasure},
 	{'S', bcmd_sort_class},
-#if 1	
+#if 1
 	{'C', bcmd_show_posts},
-#endif	
+#endif
 	{0, NULL}
 };
 
 
 int Boards()
 {
-	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList), 
-			&board_ccur,board_title, board_btitle, board_entry, 
+	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
+			&board_ccur,board_title, board_btitle, board_entry,
 			board_get, board_max, board_findkey, 0, TRUE, SCREEN_SIZE-4);
 
-	/* reload previous menu */			
+	/* reload previous menu */
 	return C_LOAD;
 }
 
@@ -340,7 +340,7 @@ static struct BoardList *SearchBoardList_by_bid(unsigned bid)
 	if (bid >= 1 && bid <= MAXBOARD)
 	{
 		int i;
-		
+
 		for (i = 0; i < num_brds; i++)
 		{
 			if (all_brds[i].bhr->bid == bid)
@@ -354,8 +354,8 @@ static struct BoardList *SearchBoardList_by_bid(unsigned bid)
 static int cmp_class(const void *a, const void *b)
 {
 	struct BoardList *as = (struct BoardList *)a;
-	struct BoardList *bs = (struct BoardList *)b;	
-	
+	struct BoardList *bs = (struct BoardList *)b;
+
 	if (!as->bhr && !as->bhr)
 		return 0;
 	else if (as->bhr && !bs->bhr)
@@ -390,7 +390,7 @@ static int class_max(char *direct, int size)
 			all_cs[num_class].cid = csi->cid;
 			num_class++;
 		}
-		else		
+		else
 		{
 			if ((be1 = SearchBoardList_by_bid(csi->bid)) != NULL)
 				memcpy(&(all_cs[num_class++]), be1, sizeof(struct BoardList));
@@ -422,7 +422,7 @@ int Class()
 	for (;;)
 	{
 		if (cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
-				&class_ccur, board_title, board_btitle,	board_entry, 
+				&class_ccur, board_title, board_btitle,	board_entry,
 				class_get, class_max, board_findkey, 0, TRUE, SCREEN_SIZE-4) == 0)
 		{
 			if (--depth_class < 1)
@@ -433,6 +433,6 @@ int Class()
 	}
 	depth_class = 0;
 
-	/* reload previous menu */				
+	/* reload previous menu */
 	return C_LOAD;
 }

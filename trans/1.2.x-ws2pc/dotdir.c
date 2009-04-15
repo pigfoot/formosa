@@ -8,7 +8,7 @@ cnvt_dotdir(ptr)
 void *ptr;
 {
 	FILEHEADER *fhr = (FILEHEADER *)ptr;
-	
+
 	fhr->postno = big_endian_to_little_endian(fhr->postno);
 	fhr->level = big_endian_to_little_endian(fhr->level);
 }

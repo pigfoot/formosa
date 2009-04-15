@@ -56,7 +56,7 @@
 #else /* USE_TERMIOS */
 # ifdef SYSV
 #  define USE_SYSV_TERMIO
-# endif 
+# endif
 # ifdef USE_SYSV_TERMIO
 #  include <sys/termio.h>
 # else

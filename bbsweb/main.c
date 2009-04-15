@@ -45,7 +45,7 @@ extern char myhostname[], myhostip[];
 
 
 #ifdef KEEP_ALIVE
-void 
+void
 lingering_close(int sock)
 {
 	char dummybuf[512];
@@ -72,7 +72,7 @@ lingering_close(int sock)
 #endif
 
 
-static void 
+static void
 write_pidfile(pid_t pid, int port)
 {
 	FILE *fp;
@@ -88,7 +88,7 @@ write_pidfile(pid_t pid, int port)
 	}
 }
 
-static int 
+static int
 unlink_pidfile(int port)
 {
 	char pidfile[PATHLEN];
@@ -97,7 +97,7 @@ unlink_pidfile(int port)
 	return unlink(pidfile);
 }
 
-static void 
+static void
 usage(char *prog)
 {
 	fprintf(stderr, "== Formosa WEB-BBS Server %s ==\n\
@@ -114,7 +114,7 @@ usage(char *prog)
 /*******************************************************************
  *	semaphore locking & unlocking
  *******************************************************************/
-static int 
+static int
 sem_lock1(int semid, int op)
 {
 	struct sembuf sops;
@@ -129,7 +129,7 @@ sem_lock1(int semid, int op)
 /*******************************************************************
  *	Child Main Loop
  *******************************************************************/
-static void 
+static void
 ChildMain(int num, int sock)
 {
 	socklen_t aha;
@@ -264,7 +264,7 @@ ChildMain(int num, int sock)
 /*******************************************************************
  *	fork child process
  *******************************************************************/
-static int 
+static int
 MakeChild(int i, int sock)
 {
 	int cpid;
@@ -291,7 +291,7 @@ MakeChild(int i, int sock)
 /*******************************************************************
  * Main
  *******************************************************************/
-int 
+int
 main(int argc, char *argv[])
 {
 	socklen_t scklen;
@@ -513,7 +513,7 @@ main(int argc, char *argv[])
 
 #ifndef SUNOS
 	sysconf(_SC_PAGESIZE);
-#endif	
+#endif
 	server->start_time = now;
 
 	init_cache();
@@ -567,10 +567,10 @@ main(int argc, char *argv[])
 				ready++;
 		}
 
-		/* 
+		/*
 		   if not enough ready child for task,
 		   tell waiting child to abort persistent connection
-		   to become ready 
+		   to become ready
 		 */
 		if (ready <= 2)
 		{
@@ -619,7 +619,7 @@ main(int argc, char *argv[])
 			if (strcmp(hs, "140.117.11.210") != 0	/* TORNADO_HOST_IP */
 			    && strstr(hs, "140.117.12.") == NULL
 			    && strstr(hs, "140.117.99.") == NULL
-			    && strcmp(hs, "127.0.0.1"))			    
+			    && strcmp(hs, "127.0.0.1"))
 			{
 				close(ns);
 				continue;
@@ -681,7 +681,7 @@ main(int argc, char *argv[])
 
 #ifdef PRE_FORK
 /*
-   send SIGTERM to child process 
+   send SIGTERM to child process
  */
 	{
 		int i;
@@ -692,7 +692,7 @@ main(int argc, char *argv[])
 				kill((server->childs)[i].pid, SIGTERM);
 		}
 	}
-	
+
 	while (wait3(&aha, WNOHANG, (struct rusage *) 0) > 0)
 		/* NULL STATEMENT */;
 

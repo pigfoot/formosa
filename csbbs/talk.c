@@ -11,7 +11,7 @@
 extern int ifCert;
 extern int ifPass;
 
-extern USER_INFO *search_ulist();	
+extern USER_INFO *search_ulist();
 extern int cmp_userid();
 
 
@@ -32,13 +32,13 @@ MSQ mymsq;
 static int
 talkCheckPerm()
 {
-#ifdef GUEST		
+#ifdef GUEST
 	if (!strcmp(curuser.userid, GUEST))
 	{			/* 如果使用者為 guest 登陸 */
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 #if 0
 	/* 等級小於20的人不能talk */
 	if (curuser.userlevel < PERM_PAGE)
@@ -49,7 +49,7 @@ talkCheckPerm()
 #endif
 #ifdef NSYSUBBS1
 	if (curuser.ident != 7)
-	{	
+	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
@@ -59,25 +59,25 @@ talkCheckPerm()
 	{
 		if (check_user_info->pager & PAGER_QUIET)
 		{
-			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */		
+			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */
 			return -1;
 		}
 		if ((check_user_info->pager & PAGER_FRIEND)
 		    && !can_override(check_userid, curuser.userid))
 		{
-			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */		
+			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */
 			return -1;
 		}
 		if ((check_user_info->pager & PAGER_FIDENT)
 		    && !can_override(check_userid, curuser.userid)
 		    && curuser.ident != 7)
 		{
-			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */		
+			RespondProtocol(NOT_ALLOW_PAGE);	/* 對方正處於不准打擾的狀態 */
 			return -1;
 		}
 	}
 	return 0;
-}	
+}
 
 
 static char
@@ -88,8 +88,8 @@ int pager;
 #if 0	/* lthuang */
 	if (can_override(them, me))
 		return 'O';
-	else 
-#endif	
+	else
+#endif
 	if (!pager)
 		return 'N';	/* 修正過!! gcl */
 	else
@@ -119,28 +119,28 @@ DoQuery()
 		return;
 	}
 
-#if 0		
+#if 0
 	strcpy(EMail, lookupuser.email);
 	if ((EMail[0] == '\0') || (EMail[0] == ' '))
-		strcpy(EMail, "#");	
-#endif	
+		strcpy(EMail, "#");
+#endif
 
-	inet_printf("800\t%s\t%s\t%d\t%d\t%d", 
-	            lookupuser.userid, 
+	inet_printf("800\t%s\t%s\t%d\t%d\t%d",
+	            lookupuser.userid,
 	            (*lookupuser.username) ? lookupuser.username : "#",
-	            lookupuser.userlevel, 
-	            lookupuser.ident, 
+	            lookupuser.userlevel,
+	            lookupuser.ident,
 	            lookupuser.numlogins);
-	inet_printf("\t%d\t%s\t%s\t%s\t%c\n", 
-	            lookupuser.numposts, 
+	inet_printf("\t%d\t%s\t%s\t%s\t%c\n",
+	            lookupuser.numposts,
 	            Ctime(&(lookupuser.lastlogin)),
 	            (*lookupuser.lasthost) ? lookupuser.lasthost : "(unknown)",
-		        "#", 
+		        "#",
 	            (CheckNewmail(lookupuser.userid, TRUE)) ? '1' : '0');
 
 	sethomefile(fname, query_userid, UFNAME_PLANS);
 	if (get_num_records(fname, sizeof(char)) > 0)
-		SendArticle(fname, FALSE);	
+		SendArticle(fname, FALSE);
 	else
 		inet_printf("沒有名片檔.\r\n\r\n.\r\n");
 }
@@ -155,13 +155,13 @@ USER_INFO *uentp;
 	if (curuser.userlevel < PERM_CLOAK && uentp->invisible)
 		return -1;
 
-	inet_printf("%s\t%s\t%c\t%s\t%s\r\n", 
-	            uentp->userid, 
+	inet_printf("%s\t%s\t%c\t%s\t%s\r\n",
+	            uentp->userid,
 	            uentp->from,
 	            pagerchar(curuser.userid, uentp->userid, uentp->pager),
 			    modestring(uentp, 1),
 			    uentp->username);
-	return 0;			  
+	return 0;
 }
 
 
@@ -205,21 +205,21 @@ DoPage()
 DoAllMsg()	/* modified by lthuang */
 {
 	RespondProtocol(OK_CMD);
-/* 
-TODO	
+/*
+TODO
 	setuserfile(buf, curuser.userid, UFNAME_WRITE);
 	if ((fd = open(buf, O_RDONLY)) > 0)
 	{
 		while (read(fd, &mrec, sizeof(mrec)) == sizeof(mrec))
 		{
-			inet_printf("%s\t%s\t%s\t%s\r\n", 
-	                    mrec.fromid, 
+			inet_printf("%s\t%s\t%s\t%s\r\n",
+	                    mrec.fromid,
 	                    (mrec.username[0] == '\0') ? "#" : mrec.username,
 	                    mrec.mtext, mrec.stimestr);
 		}
 		close(fd);
 	}
-*/	
+*/
 	inet_printf(".\r\n");
 }
 
@@ -273,7 +273,7 @@ DoSendMsg()
 	xstrncpy(uinfo.destid, check_user_info->userid, IDLEN);	/* lthuang */
 	if (ifPass)	/* bug fixed */
 		update_ulist(cutmp, &uinfo);	/* lthuang */
-		
+
 	msq_set(&mymsq, curuser.userid, curuser.username, check_userid, message);
 	if (msq_snd(check_user_info, &mymsq) == -1)
 		RespondProtocol(WORK_ERROR);
@@ -303,7 +303,7 @@ int fd;
 	struct timeval timeout;
 
 	uinfo.mode = TALK;
-	if (ifPass)	
+	if (ifPass)
 		update_ulist(cutmp, &uinfo);
 
 	/* Add Multi-Process Talking */
@@ -359,12 +359,12 @@ int fd;
 			FD_SET(tsock, &readmask);
 			timeout.tv_sec = 20;
 			timeout.tv_usec = 0;
-			
+
 			if (select(tsock + 1, &readmask, NULL, NULL, &timeout) < 0)
 			{
 				if (errno == EINTR)	/* lthuang */
 					continue;
-				
+
 				close(0);
 				close(1);
 				close(fd);
@@ -379,12 +379,12 @@ int fd;
 					exit(0);
 /* big bug, do call this function when talking exist
 					FormosaExit();
-*/					
+*/
 				}
 				if (i > 0)
 				{
 					char *NextToken;
-					
+
 					NextToken = GetToken(buf, keyword, MAX_KEYWORD_LEN);
 					if (keyword[0] == '\0')
 						continue;
@@ -480,9 +480,9 @@ int fd;
 			}
 			if (FD_ISSET(fd, &readmask))
 			{
-/*			
+/*
 				if ((datac = read(fd, buf, sizeof(buf))) < 0)
-*/				
+*/
 				if ((datac = read(fd, buf, sizeof(buf))) <= 0)	/* lthuang */
 				{
 
@@ -653,7 +653,7 @@ DoTalk()
 		RespondProtocol(USERID_NOT_EXIST);
 		return;
 	}
-	
+
 	check_user_info = search_ulist(cmp_userid, check_userid);
 	if (!check_user_info)
 	{
@@ -670,7 +670,7 @@ DoTalk()
 		RespondProtocol(NOT_ALLOW_TALK);	/* 對方正處於不能接受談話的狀態 */
 		return;
 	}
-#endif	
+#endif
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
@@ -717,7 +717,7 @@ DoTalk()
 		FD_SET(0, &readmask);
 		timeout.tv_sec = 20;
 		timeout.tv_usec = 0;
-		
+
 		if (select(sock + 1, &readmask, NULL, NULL, &timeout) < 0)
 		{
 			close(sock);
@@ -769,9 +769,9 @@ DoTalk()
 			}
 			if (i > 0)
 			{
-/*			
+/*
 				keyno = GetKeywordNo(&buf);
-*/				
+*/
 				keyno = GetKeywordNo(buf);	/* lthuang: bug fixed */
 				if (keyno == TALKSTOP)
 				{	/* stop pageing */
@@ -806,11 +806,11 @@ DoTalk()
 	}
 
 	uinfo.sockactive = FALSE;
-/*      
+/*
    uinfo.destuid = 0;
  */
 	uinfo.mode = CLIENT;
-	if (ifPass)	
+	if (ifPass)
 		update_ulist(cutmp, &uinfo);
 }
 
@@ -856,7 +856,7 @@ setpagerequest()
 		return 1;
 
 	get_passwd(&au, check_user_info->userid);
-/*      
+/*
    uinfo.destuid = check_user_info->uid;
  */
 	xstrncpy(uinfo.destid, au.userid, IDLEN);
@@ -871,7 +871,7 @@ talkreply()
 		return;	/* no person */
 	strcpy(pager_id, au.userid);
 
-	inet_printf("%d\t%s\t%s\t%s\r\n", 
+	inet_printf("%d\t%s\t%s\t%s\r\n",
 	            TALK_REQUEST, au.userid,
 	            check_user_info->from, au.username);
 }
@@ -920,10 +920,10 @@ DoTalkReply()
 	}
 
 	bzero(&sin, sizeof sin);
-/*	
+/*
 	sin.sin_family = h->h_addrtype;
 */
-	sin.sin_family = AF_INET;	
+	sin.sin_family = AF_INET;
 	bcopy(h->h_addr, &sin.sin_addr, h->h_length);
 	sin.sin_port = check_user_info->sockaddr;
 	a = socket(sin.sin_family, SOCK_STREAM, 0);
@@ -932,7 +932,7 @@ DoTalkReply()
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
+
 	if ((tmp[0] == 'N') || (tmp[0] == 'n'))
 	{
 		tmp[0] = 'n';
@@ -954,7 +954,7 @@ DoTalkReply()
    uinfo.destuid = 0;
  */
 		uinfo.mode = CLIENT;
-		if (ifPass)		
+		if (ifPass)
 			update_ulist(cutmp, &uinfo);
 	}
 }
@@ -973,8 +973,8 @@ USER_INFO *uentp;
 
 	if (cmp_array(&friend_cache, uentp->userid) == 1)
 	{
-		inet_printf("%s\t%s\t%c\t%s\t%s\r\n", 
-		            uentp->userid, 
+		inet_printf("%s\t%s\t%c\t%s\t%s\r\n",
+		            uentp->userid,
 		            uentp->from,
 	                pagerchar(curuser.userid, uentp->userid, uentp->pager),
 		            modestring(uentp, 1),
@@ -1006,7 +1006,7 @@ DoGetFriend()
 	char *cbegin, *cend;
 
 	malloc_array(&friend_cache, ufile_overrides);
-	if (!friend_cache.size)	
+	if (!friend_cache.size)
 	{
 		RespondProtocol(NO_FRIEND);
 		return;
@@ -1014,8 +1014,8 @@ DoGetFriend()
 
 	RespondProtocol(OK_CMD);
 	net_cache_init();
-	
-	for (cbegin = friend_cache.ids; 
+
+	for (cbegin = friend_cache.ids;
 		cbegin - friend_cache.ids < friend_cache.size; cbegin = cend + 1)
 	{
 		for (cend = cbegin; *cend; cend++)
@@ -1044,7 +1044,7 @@ DoSendFriend()
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-#endif	
+#endif
 
 	if ((fp = fopen(ufile_overrides, "w")) == NULL)
 	{
@@ -1089,7 +1089,7 @@ t_pager()
 	{
 		uinfo.pager = FALSE;
 	}
-	if (ifPass)	
+	if (ifPass)
 		update_ulist(cutmp, &uinfo);
 }
 

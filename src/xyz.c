@@ -29,7 +29,7 @@ int show_bm(BOARDHEADER *bhentp)
 char *get_ident(USEREC *urcIdent)
 {
 	static char iemail[STRLEN];
-	FILE *fp;	
+	FILE *fp;
 
 
 	iemail[0] = '\0';
@@ -135,7 +135,7 @@ static void show_user_info(USEREC *urcPerson)
 	if (HAS_PERM(PERM_SYSOP) && urcPerson->ident == 7)
 	{
 		char *iemail;
-		
+
 		if ((iemail = get_ident(urcPerson)) != NULL)
 			prints("\n   認證資訊 : %s", iemail);
 	}
@@ -385,7 +385,7 @@ int x_plan()
 	{
 		move(13, 0);
 		outs("抱歉,目前此功\能只提供給已通過身份認證者.");
-		getkey();  
+		getkey();
 		return C_FULL;
 	}
 	else
@@ -404,7 +404,7 @@ static int show_array(struct array *a)
 	move(2, 0);
 	clrtobot();
 
-	for (cbegin = a->ids; 
+	for (cbegin = a->ids;
 		cbegin - a->ids < a->size; cbegin = cend + 1)
 	{
 		for (cend = cbegin; *cend; cend++)
@@ -576,7 +576,7 @@ XECHO, urcNew.fakeuserid);
                                 showmsg("更動的 ID 字母必須與原 ID 相同.");
                         break;
 #endif
-			move(13, 0);			
+			move(13, 0);
 			outs("應站務人員要求,本功\能目前關閉.");
 			getkey();
 			break;
@@ -604,16 +604,16 @@ XECHO, urcNew.fakeuserid);
 			}
 			break;
 		case '1':
-#if 1		
-#if defined(NSYSUBBS1) || defined(KHBBS)	//kmwang: 20000605: 高師資教要求		
+#if 1
+#if defined(NSYSUBBS1) || defined(KHBBS)	//kmwang: 20000605: 高師資教要求
 			if (urcNew.ident != 7)
 			{
-				move(13, 0);			
+				move(13, 0);
 				outs("抱歉,目前此功\能只提供給已通過身份認證者.");
 				getkey();
 				break;
 			}
-#endif			
+#endif
 #endif
 			/* set username */
 			if (getdata_str(y + buf[0], 21, "\0", buf, sizeof(urcNew.username),
@@ -657,7 +657,7 @@ XECHO, urcNew.fakeuserid);
 #endif
 			}
 			move(6, 0);
-			prints(_msg_xyz_27, 
+			prints(_msg_xyz_27,
 				(urcNew.flags[0] & FORWARD_FLAG) ? "啟動" : "關閉");
 			break;
 		default:
@@ -667,7 +667,7 @@ XECHO, urcNew.fakeuserid);
 				/* set userlevel */
 			{
 				int ulevel;
-				
+
 				sprintf(temp, "%d", urcNew.userlevel);
 				getdata_str(y + buf[0], 14, "\0", buf, 4, ECHONOSP, temp);
 				if ((ulevel = atoi(buf)) != 0)
@@ -714,9 +714,9 @@ XECHO, urcNew.fakeuserid);
 				if (strcmp(userid, curuser.userid))
 					bbsd_log_write("MODUSER", "%04X %s", bits, userid);
 /*
-				else 
+				else
 					bbsd_log_write("SETUSER", "%04X", bits);
-*/					
+*/
 #endif
 				showmsg(_msg_finish);
 				return 1;
@@ -745,7 +745,7 @@ int x_uflag()
 		"不用簽名檔",
 		"不看留言板",
 		"不看彩色代稱",
-		"不引入全部看板",		
+		"不引入全部看板",
 		"不用彩色"
 	};
 
@@ -814,7 +814,7 @@ int x_bakpro()	/* by kmwang */
 	if ( igetkey() == 'y' )
 	{
 		/* sarek:12/15/2001:insert article header for backup files in order to let fixdir rebuildable */
-		
+
 		//if (mailbox_is_full(0)) /* lthuang */
 		if (check_mail_num(0))
 		{
@@ -828,7 +828,7 @@ int x_bakpro()	/* by kmwang */
 			sprintf(fname, "tmp/_sigbackup.%s", curuser.userid);
 			if ((tmpfile = fopen(fname, "w")) == NULL)
 				return -1;
-			/*      
+			/*
 					write_article_header(tmpfile, curuser.userid, curuser.username, NULL,
 					NULL, title, NULL);
 			 */
@@ -860,7 +860,7 @@ int x_bakpro()	/* by kmwang */
 			sprintf(fname, "tmp/_planbackup.%s", curuser.userid);
 			if ((tmpfile = fopen(fname, "w")) == NULL)
 				return -1;
-			/*      
+			/*
 					write_article_header(tmpfile, curuser.userid, curuser.username, NULL,
 					NULL, title, NULL);
 			 */
@@ -892,7 +892,7 @@ int x_bakpro()	/* by kmwang */
 			sprintf(fname, "tmp/_friendsbackup.%s", curuser.userid);
 			if ((tmpfile = fopen(fname, "w")) == NULL)
 				return -1;
-			/*      
+			/*
 					write_article_header(tmpfile, curuser.userid, curuser.username, NULL,
 					NULL, title, NULL);
 			 */
@@ -985,7 +985,7 @@ int x_username()
 {
 	char *s, *t;
 	char *buf = malloc(strlen(curuser.username)+1);
-	
+
 
 	outs("\n\
 抱歉, 由於您的暱稱含有彩色控制碼, 且未加上還原碼, 為了使得出現在\n\
@@ -996,7 +996,7 @@ int x_username()
 		outs("\n系統發生錯誤! 請通知系統管理員!");
 		return C_FULL;
 	}
-	
+
 	strcpy(buf, curuser.username);
 	move(10, 0);
 	prints("\n您原本的暱稱為: %s", curuser.username);

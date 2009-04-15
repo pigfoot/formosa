@@ -1,6 +1,6 @@
 /*
  * Virtual TTY, Standalone BBS Daemon.
- * 本程式用來取代 Telnetd, 並成為 Server, 使ＢＢＳ不需要 TTY   
+ * 本程式用來取代 Telnetd, 並成為 Server, 使ＢＢＳ不需要 TTY
  * Ming-Jang Liang, lmj@cc.nsysu.edu.tw, 10/03/96
  */
 
@@ -100,7 +100,7 @@ char *argv[];
 		sleep(3);
 	}
 	else
-#endif	
+#endif
 		Formosa(host, telnet_init(), argc, argv);
 
 	shutdown(0, 2);
@@ -131,13 +131,13 @@ char *argv[];
 
 	port = 23;
 	inetd = 0;
-	
+
 	if (argc > 1)
 	{
 		if (!strcmp(argv[1], "-i"))
 			inetd = 1;
 		else
-		{	
+		{
 			if ((port = atoi(argv[1])) <= 0)
 			{
 				fprintf(stderr, "invalid port number\n");
@@ -152,7 +152,7 @@ char *argv[];
 #ifndef DEBUG
 	if (fork() != 0)
 		exit(0);
-#endif		
+#endif
 
 	setsid();
 
@@ -171,7 +171,7 @@ char *argv[];
 		ioctl(aha, TIOCNOTTY, (char *)0);
 		close(aha);
 	}
-#endif	
+#endif
 
 	for (aha = getdtablesize(); aha > 2; aha--)
 		close(aha);
@@ -189,7 +189,7 @@ char *argv[];
 #ifndef DEBUG
 		if (fork() != 0)
 			exit(0);
-#endif			
+#endif
 
 		if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			exit(1);
@@ -239,7 +239,7 @@ char *argv[];
 #if 1
 	if (check)
 		host_deny((char *) NULL);	/* init host deny table */
-#endif		
+#endif
 
 	utmp_semid = sem_init(UTMPSEM_KEY);
 

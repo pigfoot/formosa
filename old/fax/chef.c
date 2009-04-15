@@ -17,7 +17,7 @@ main()
   struct sockaddr_un clientUNIXAddress;
   struct sockaddr* serverSockAddrPtr;
   struct sockaddr* clientSockAddrPtr;
-  
+
   signal(SIGCHLD,SIG_IGN);
 
   serverSockAddrPtr=(struct sockaddr*) &serverUNIXAddress;
@@ -32,11 +32,11 @@ main()
   unlink("recipe");
   bind(serverFd,serverSockAddrPtr,serverLen);
   listen(serverFd,5);
-  
+
   while (1)
   {
     clientFd=accept(serverFd,clientSockAddrPtr,&clientLen);
-    
+
     if (fork()==0)
     {
       writeRecipe(clientFd);

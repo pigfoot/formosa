@@ -17,7 +17,7 @@ void main(int argc, char *argv[])
 
 	init_bbsenv();
 
-		
+
 	rptfile=fopen("entire_uidx_list", "w");
 
 	sprintf(path, "%s", USERIDX);
@@ -27,7 +27,7 @@ void main(int argc, char *argv[])
 		return 0;
 
 	for (uid = 1;read(fd, &uidx, sizeof(uidx)) == sizeof(uidx); uid++)
-	{   
+	{
 		if (uidx.userid[0] == '\0')
 		{
 			fprintf(rptfile, "%10d %s\n", uid, "(AVAILABLE)");
@@ -43,9 +43,9 @@ void main(int argc, char *argv[])
 
 	fprintf(rptfile, "\n########## ENTIRE USERS ##########\n");
 	fprintf(rptfile, "#          valid users:%d\n", valid);
-	
+
 	fclose(rptfile);
 
 	/* ----------------------------------- */
-	return;	
+	return;
 }

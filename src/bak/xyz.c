@@ -34,7 +34,7 @@ get_ident(urcIdent)
 USEREC *urcIdent;
 {
 	static char iemail[STRLEN];
-	FILE *fp;	
+	FILE *fp;
 
 
 	iemail[0] = '\0';
@@ -136,7 +136,7 @@ USEREC *urcPerson;
 	if (HAS_PERM(PERM_SYSOP) && urcPerson->ident == 7)
 	{
 		char *iemail;
-		
+
 		if ((iemail = get_ident(urcPerson)) != NULL)
 			prints("\n   認證資訊 : %s", iemail);
 	}
@@ -328,10 +328,10 @@ x_signature()
 		unlink(filename);
 
 	pressreturn();
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -365,10 +365,10 @@ int
 x_ircrc()
 {
 	set_ufile(UFNAME_IRCRC);
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -376,10 +376,10 @@ int
 x_plan()
 {
 	set_ufile(UFNAME_PLANS);
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -573,7 +573,7 @@ char *userid;
 				/* set userlevel */
 			{
 				int ulevel;
-				
+
 				sprintf(temp, "%d", urcNew.userlevel);
 				getdata(y + buf[0], 14, "\0", buf, 4, ECHONOSP, temp);
 				if ((ulevel = atoi(buf)) != 0)
@@ -620,10 +620,10 @@ char *userid;
 #ifdef NSYSUBBS
 				if (strcmp(userid, curuser.userid))
 					bbsd_log_write("MODUSER", "%04X %s", bits, userid);
-#if 0					
-				else 
+#if 0
+				else
 					bbsd_log_write("SETUSER", "%04X", bits);
-#endif					
+#endif
 #endif
 				showmsg(_msg_finish);
 				return 1;

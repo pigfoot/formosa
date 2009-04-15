@@ -50,7 +50,7 @@ void main(int argc, char *argv[])
 			i = id[0] - 'A' + 1;
 		else if ( id[0] >= '0')
 			i = 0;
-		
+
 		sprintf(path, "%s", USERIDX);
 		sprintf(path2, "%s.old", USERIDX);
 		if ((fdidx = open(path, O_RDONLY)) < 0)
@@ -85,26 +85,26 @@ void main(int argc, char *argv[])
 			else
 			{
 				uid=user.uid;
-				
+
 				sprintf(path, "home/%c/%s/passwds.new", aha[i], id);
 				if ((fdpwn = open(path, O_WRONLY | O_CREAT, 0600)) < 0)
 				{
 					printf("Error:[%s] new passwd file cannot be built!\n", id);
 				}
 				else
-				{	
+				{
 					flock(fdidxn, LOCK_EX);
 					/* first clean up old existing names */
 					for (cnt = 1; read(fdidxn, uidx, sizeof(struct useridx)) == sizeof(struct useridx); cnt++)
-					{   
+					{
 						if (!strcmp(uidx[0].userid, id))
 						{
 							memset(uidx, 0, sizeof(struct useridx));
 
 							if (lseek(fdidxn, ((off_t) ((cnt - 1) * sizeof(struct useridx))), SEEK_SET) != -1)
-							{   
+							{
 								if (write(fdidxn, uidx, sizeof(struct useridx)) == sizeof(struct useridx))
-								{ 
+								{
 									printf("user '%s' found in user index: %10d, cleaned.\n", id, cnt);
 								}
 								else
@@ -132,10 +132,10 @@ void main(int argc, char *argv[])
 						close(fdidxn);
 						return;
 					}
-						
+
 					/* find a empty slot in the user index file */
 					for (cnt = 1; read(fdidxn, uidx, sizeof(struct useridx)) == sizeof(struct useridx); cnt++)
-					{   	
+					{
 						if (uidx[0].userid[0] == '\0')
 						{
 							break;
@@ -143,12 +143,12 @@ void main(int argc, char *argv[])
 					}
 
 					if (lseek(fdidxn, ((off_t) ((cnt - 1) * sizeof(struct useridx))), SEEK_SET) != -1)
-					{   
+					{
 						memset(uidx, 0, sizeof(struct useridx));
 						strcpy(uidx[0].userid, id);
 
 						if (write(fdidxn, uidx, sizeof(struct useridx)) == sizeof(struct useridx))
-						{ 
+						{
 							flock(fdidxn, LOCK_UN);
 							close(fdidxn);
 
@@ -190,7 +190,7 @@ void main(int argc, char *argv[])
 		}
 		return;
 	}
-	
+
 
 	/* process of all users begin here */
 
@@ -212,7 +212,7 @@ void main(int argc, char *argv[])
 
 	sprintf(path, "home/backup");
 	if (mkdir(path, 0755) != 0)
-	{ 
+	{
 		if (errno!=EEXIST)
 		{
 			printf("%s: cannot create backup directory %s/home/backup", argv[0], HOMEBBS);
@@ -225,11 +225,11 @@ void main(int argc, char *argv[])
 		printf("%s: cannot create report file!\n", argv[0]);
 		return;
 	}
-	
+
 	strtime=time(NULL);
 	fprintf(rptfile, "Date: %s", ctime(&strtime));
 	fprintf(rptfile, "----------------------------------\n");
-	
+
 	for (i = 0; i < 27; i++)
 	{
 		sprintf(path, "home/%c", aha[i]);
@@ -318,9 +318,9 @@ void main(int argc, char *argv[])
 	fprintf(rptfile, "# passwd size mismatch: %d\n", total_mismatch);
 	fprintf(rptfile, "##################################\n");
 	fprintf(rptfile, "#        finished time: %s\n", ctime(&curtime));
-	fprintf(rptfile, "#         elapsed time: %d\n", curtime-strtime);           
-	
+	fprintf(rptfile, "#         elapsed time: %d\n", curtime-strtime);
+
 	fclose(rptfile);
 
-	return;	
+	return;
 }

@@ -90,7 +90,7 @@ typedef struct _msq
 #define MAX_MSQ 3
 
 
-typedef struct user_info {	
+typedef struct user_info {
 	int active;				/* When allocated this field is true */
 	unsigned int uid;		/* Used to find user name entry in passwd file */
 	pid_t pid;				/* kill() is used to notify user of talk request */
@@ -102,7 +102,7 @@ typedef struct user_info {
 	int ever_delete_mail;	/* Ever delete mail this time ? */
 	time_t login_time;		/* lthuang: time when entry was made */
 	time_t idle_time;		/* lthuang: idle time in minute */
-	char destid[IDLEN];		/* talk parner user's id name */	
+	char destid[IDLEN];		/* talk parner user's id name */
 	char userid[IDLEN];
 	char username[UNAMELEN];	/* user nickname */
 	char from[HOSTLEN];		/* machine name the user called in from */
@@ -112,13 +112,13 @@ typedef struct user_info {
 	int msq_last;
 	MSQ msqs[MAX_MSQ];
 #if 1
-	/* speed-up for online user query */	
+	/* speed-up for online user query */
 	unsigned int userlevel;
 	unsigned int numposts;
 	unsigned int numlogins;
 	time_t lastlogin;
-	char lasthost[HOSTLEN];	
-	char ident;	
+	char lasthost[HOSTLEN];
+	char ident;
 	char is_new_mail;
 	unsigned char flags[2];
 #endif
@@ -131,7 +131,7 @@ typedef struct user_info {
 } USER_INFO;
 
 
-/* 
+/*
  * semaphore
  */
 #define SEM_ENTR	-1	/* Enter semaphore, lock for exclusive use */
@@ -206,15 +206,15 @@ typedef struct {
 
 typedef struct {
     char            filename[STRLEN-8-12-4*5];
- 	int			 	lastfollowidx;			/* syhu: last follow-up to curr */ 
- 	int				nextfollowidx;			/* syhu: follow-up to current */ 
+ 	int			 	lastfollowidx;			/* syhu: last follow-up to curr */
+ 	int				nextfollowidx;			/* syhu: follow-up to current */
  	int				nextpostidx;			/* syhu: same level with current */
 	int				thrheadpos;				/* syhu: position in .THREADHEAD */
     int				thrpostidx;				/* syhu: index in .THREADPOSTS */
     char            date[12];               /* yy/mm/dd */
     int             postno;                 /* unique no. of post */
     char            ident;                  /* ident of owner */
-    char            unused_str1[3]; 
+    char            unused_str1[3];
     char            owner[STRLEN];
     char            title[STRLEN-IDLEN];
     char            delby[IDLEN];
@@ -225,7 +225,7 @@ typedef struct {
 #define THRHEADHDR_SIZE     sizeof(THRHEADHEADER)
 #define THRPOSTHDR_SIZE     sizeof(THRPOSTHEADER)
 
- 
+
 
 #define BNAMELEN   17
 #define CBNAMELEN  36
@@ -252,8 +252,8 @@ struct boardheader {
 	char owner[5*IDLEN+15];   /* TODO: max 5 bmas, each length is IDLEN */
 	char title[CBNAMELEN+4];  /* description of board */
 	int last_postno;
-	char unused2[STRLEN-CBNAMELEN-8] ; 
-	unsigned int level;	
+	char unused2[STRLEN-CBNAMELEN-8] ;
+	unsigned int level;
 };
 
 typedef struct boardheader BOARDHEADER;
@@ -292,38 +292,38 @@ typedef struct classheader {
 /*
  * record of whether board posts have been read or not
  */
-struct readrc {	
+struct readrc {
 	unsigned int  bid;
-	unsigned char rlist[BRC_MAXNUM]; 
+	unsigned char rlist[BRC_MAXNUM];
 	time_t	mtime;
 	time_t  unused;
 };	/* size: 512 bytes */
 
 
-/* 
- * record of user which ever visit our site 
+/*
+ * record of user which ever visit our site
  */
 struct visitor {
 	char userid[IDLEN];
-	char ctype; 
-	char logout;       
+	char ctype;
+	char logout;
 	time_t when;
 	char from[HOSTLEN];
 };
 
 
-/* 
- * Dynamic Advertisement - MenuShow 
+/*
+ * Dynamic Advertisement - MenuShow
  */
 #define MENUSHOW_KEY       0x1229	   /* share memory key */
 #define MENUSHOW_SIZE      128	   /* 要做幾篇 post 到 share memory */
 #define MENUSHOW_BODY      1024    /* 做多大的本文段落到 share memory */
 #define MENUSHOW_DEFAULT   "treasure/main-menu" /* if no MENUSHOW_FILE */
- 
+
 struct MSList {
 	char filename[PATHLEN];
 	char owner[STRLEN];
-	char title[STRLEN]; 
+	char title[STRLEN];
 	char body[MENUSHOW_BODY];
 };
 
@@ -333,11 +333,11 @@ struct MenuShowShm {
 };
 
 
-/* 
- * notepad 
+/*
+ * notepad
  */
 #define NOTE_SIZE   200 /* 留言版篇數限制 */
- 
+
 typedef struct notedata
 {
 	time_t date;                /* 格林威治秒 */
@@ -349,10 +349,10 @@ typedef struct notedata
 
 
 
-/* 
- * used in user_login() 
+/*
+ * used in user_login()
  */
-enum ULOGIN { 
+enum ULOGIN {
 	ULOGIN_OK       = 0,
     ULOGIN_NOSPC    = -1,
     ULOGIN_NOENT    = -2,
@@ -364,8 +364,8 @@ enum ULOGIN {
 #define REPLY_LEN        (4)
 
 
-/* 
- * keyword of personal files 
+/*
+ * keyword of personal files
  */
 #define UFNAME_IRCRC		"ircrc"
 #define UFNAME_OVERRIDES	"overrides"
@@ -384,8 +384,8 @@ enum ULOGIN {
 #define UFNAME_WRITE		"msq"
 
 
-/* 
- * 系統資料檔案子目錄 
+/*
+ * 系統資料檔案子目錄
  */
 #define BBSPATH_DELUSER  "deluser"   /*存放被刪除之帳號密碼檔目錄 */
 #define BBSPATH_BOARDS   "boards"    /* 板面目錄 */
@@ -408,7 +408,7 @@ enum ULOGIN {
 
 
 #define BM_WELCOME   ".bm_welcome"
-#define BM_ASSISTANT ".bm_assistant"    
+#define BM_ASSISTANT ".bm_assistant"
 
 #define BOARD_HELP   "doc/BOARD_HELP"
 #define READ_HELP    "doc/READ_HELP"

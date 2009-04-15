@@ -44,7 +44,7 @@ char *klist[] =
  "syscheck", (char *) NULL};
 
 
-int 
+int
 inlist (cmd)
      char *cmd;
 {

@@ -13,15 +13,15 @@
 
 /* TODO: friend struct, including type(good/bad) */
 /* kmwang:20000609:BadGuyList */
-/* 新增 arg: type, 以辨別好友(F)或是壞友(B) */ 
+/* 新增 arg: type, 以辨別好友(F)或是壞友(B) */
 void friendAdd(char *ident, char type)
 {
 /* kmwang:20000802:將 if 拿掉, 避免有人一進站就編輯好友或著是壞人名單, 造成交集 */
 //	if ( type == 'F' )
 		malloc_array(&friend_cache, ufile_overrides);
-//	else 
+//	else
 		malloc_array(&badguy_cache, ufile_blacklist);
-	
+
 	if ( !(cmp_array(&friend_cache, ident) || cmp_array(&badguy_cache, ident)) )
 	// 必須不存在於好友及壞友名單中..
 	{
@@ -30,12 +30,12 @@ void friendAdd(char *ident, char type)
 		{
 			append_record(ufile_overrides, genbuf, strlen(genbuf));
 			free_array(&friend_cache);
-		
+
 #ifdef USE_ALOHA
 			/* sarek:02/15/2001: append to aloha list */
 			aloha_edit(uinfo.userid, ident, TRUE);
 #endif
-			
+
 			/* TODO: sorting in function call */
 			sprintf(genbuf, "sort -o \"%s\" \"%s\"",
 			        ufile_overrides, ufile_overrides);
@@ -53,7 +53,7 @@ void friendAdd(char *ident, char type)
 	}
 }
 
-/* sarek:02/15/2001: file_delete_line moved to lib/mod_talk.c */ 
+/* sarek:02/15/2001: file_delete_line moved to lib/mod_talk.c */
 
 /* kmwang:20000609:BadGuyList */
 /* 新增 arg: type, 以辨別好友(F)或是壞友(B) */
@@ -62,19 +62,19 @@ void friendDelete(char *ident, char type)
 #if 1
 	if (ident == NULL || ident[0] == '\0')
 		return;
-#endif		
+#endif
 	if ( type == 'F' )
 	{
 #ifdef USE_ALOHA
 		/* sarek:02/15/2001: delete from aloha list */
 		aloha_edit(uinfo.userid, ident, FALSE);
 #endif
-		
+
 		if (file_delete_line(ufile_overrides, ident) == 0)
 			free_array(&friend_cache);
 	}
-	else   
-	{ 
+	else
+	{
 		if (file_delete_line(ufile_blacklist, ident) == 0)
 			free_array(&badguy_cache);
 	}
@@ -89,8 +89,8 @@ void toggle_pager()
 #ifdef GUEST
 	if (!strcmp(curuser.userid, GUEST))
 		return;
-#endif		
-	
+#endif
+
 	getdata(b_line, 0, _msg_talk_2, genbuf, 2, ECHONOSP);
 	i = genbuf[0] - '0';
 #if 0
@@ -123,13 +123,13 @@ void toggle_bpager()
 	if (!strcmp(curuser.userid, GUEST))
 		return;
 #endif
-	if (uinfo.pager & PAGER_DENYBROAD) 
+	if (uinfo.pager & PAGER_DENYBROAD)
 		strcpy(genbuf,"拒絕廣播");
 	else if (uinfo.pager & PAGER_FBROADC)
 			strcpy(genbuf,"接受好友的廣播");
 		else
 			strcpy(genbuf,"所有人");
-		
+
 	move(b_line-1, 0);
 	clrtoeol();
 	prints("廣播呼喚鈴現在是在 [%s] 的狀態", genbuf);
@@ -213,7 +213,7 @@ int QueryUser(char *userid, USER_INFO *upent)
         }
 	uinfo.destid[0] = '\0';	/* lthuang */
 	update_umode(save_umode);
-	
+
 	return 0;
 }
 
@@ -271,7 +271,7 @@ static int setpagerequest()
 BOOL servicepage(int arg)
 {
 	static time_t last_check;
-	
+
 
 	if (!searchuserlist(curuser.userid) || !ui.sockactive)
 		talkrequest = FALSE;
@@ -298,8 +298,8 @@ BOOL servicepage(int arg)
 	else
 	{
 		time_t now;
-		
-		
+
+
 		now = time(0);
 		if (now - last_check > P_INT)
 		{
@@ -434,14 +434,14 @@ static void do_talk(int fd, USER_INFO *tinf)
 {
 /*
 	USEREC user;
-*/	
+*/
 	int myln, mycol, myfirstln, mylastln;
 	int itsln, itscol, itsfirstln, itslastln;
 	char itswordbuf[80], mywordbuf[80];
 	int itswordbuflen, mywordbuflen;
 	int page_pending = FALSE;
 	int save_umode = uinfo.mode;
-	
+
 
 	itswordbuflen = 0;
 	mywordbuflen = 0;
@@ -452,15 +452,15 @@ static void do_talk(int fd, USER_INFO *tinf)
 
 /*
 	get_passwd(&user, uinfo.destid);
-*/	
+*/
 
 	clear();
 	myfirstln = 0;
 	mylastln = (b_line / 2) - 1;
 	move(mylastln + 1, 0);
-/*	
+/*
 	prints(_msg_talk_35, curuser.userid, user.userid, user.username);
-*/	
+*/
 	prints(_msg_talk_35, curuser.userid, tinf->userid, tinf->username);
 	itsfirstln = mylastln + 2;
 	itslastln = (t_lines - 1);
@@ -496,7 +496,7 @@ static void do_talk(int fd, USER_INFO *tinf)
 				break;
 
 			for (i = 0; i < datac; i++)
-				do_talk_char(itsfirstln, itslastln, &itsln, &itscol, 
+				do_talk_char(itsfirstln, itslastln, &itsln, &itscol,
 						itswordbuf, &itswordbuflen, data[i]);
 		}
 		else if (ch == CTRL('D') || ch == CTRL('C'))
@@ -509,20 +509,20 @@ static void do_talk(int fd, USER_INFO *tinf)
 			clrtoeol();
 			if (igetkey() == 'y')
 				break;
-				
+
 			move(mylastln + 1, 0);
-/*			
+/*
 			prints(_msg_talk_35, curuser.userid, user.userid, user.username);
-*/			
+*/
 			prints(_msg_talk_35, curuser.userid, tinf->userid, tinf->username);
 			move(y, x);
 		}
 		else if (isprint2(ch)
 				 || ch == CTRL('H') || ch == '\177' || ch == CTRL('G')
 			     || ch == '\n' || ch == '\r' || ch == CTRL('M')
-#if 0			     
-				 || ch == CTRL('X') || ch == CTRL('Y') || ch == CTRL('Z')			     
-#endif				 
+#if 0
+				 || ch == CTRL('X') || ch == CTRL('Y') || ch == CTRL('Z')
+#endif
 			     )
 		{
 			talkobuf[talkobuflen++] = ch;
@@ -551,7 +551,7 @@ static void do_talk(int fd, USER_INFO *tinf)
 	add_io(0, 0);
 	talkflush();
 	add_flush(NULL);
-	
+
 	update_umode(save_umode);	/* lthuang */
 }
 
@@ -630,7 +630,7 @@ static int talkCheckPerm(USER_INFO *tkuinf, BOOL opt)
 	{
 		if ((tkuinf->pager & PAGER_QUIET) ||
 		    (((tkuinf->pager & PAGER_FRIEND)
-		     || ((tkuinf->pager & PAGER_FIDENT) && curuser.ident != 7)) 
+		     || ((tkuinf->pager & PAGER_FIDENT) && curuser.ident != 7))
 		     && !can_override(tkuinf->userid, curuser.userid)))
 		{
 			if (opt)
@@ -716,7 +716,7 @@ int talk_user(USER_INFO *tkuinf)
 	kill(tkuinf->pid, SIGUSR1);
 	listen(sock, 1);
 	add_io(sock, 20);
-	
+
 	clear();
 	prints(_msg_talk_27, tkuinf->userid);
 
@@ -845,7 +845,7 @@ int talkreply()
 		write(a, "n", 1);
 	if (ch != 'y')
 	{
-#define MAX_REFUSAL 8	
+#define MAX_REFUSAL 8
 		char *talkrefuse[MAX_REFUSAL] =
 		{
 			_msg_talk_refusal_1,
@@ -922,20 +922,20 @@ int get_message_file(char *fname, char *title)
 
 	if ((fpw = fopen(fname, "w")) == NULL)
 		return -1;
-/*		
+/*
 	write_article_header(fpw, curuser.userid, curuser.username, NULL,
 			       NULL, title, NULL);
-*/			       
+*/
 	write_article_header(fpw, curuser.userid, uinfo.username, NULL,
 			       NULL, title, NULL);
 	fputs("\n", fpw);
 	/* 配合修改文章功能限制 */
-#if 0					
+#if 0
 	fprintf(fpw, "--\n");
 #endif
-	fprintf(fpw, "-- \n");					
+	fprintf(fpw, "-- \n");
 	fclose(fpw);
-	
+
 	append_file(fname, ufile_write);
 
 	return 0;
@@ -947,16 +947,16 @@ MSQ mymsq;
 int prepare_message(char *who, BOOL is_broadcast)
 {
 	char my_mtext[MTEXTLEN];
-	
-/*	
+
+/*
 	if (check_page_perm() < 0 || in_blacklist(who, curuser.userid) )
 		return -1;
 bug fixed		*/
 	if (check_page_perm() < 0 || (!is_broadcast && in_blacklist(who, curuser.userid)) )
 		return -1;
-		
-	
-	if (getdata(b_line - 1, 0, _msg_talk_37, my_mtext, 
+
+
+	if (getdata(b_line - 1, 0, _msg_talk_37, my_mtext,
 				(is_broadcast) ? MTEXTLEN - strlen(who) : MTEXTLEN,
 				XECHO))
 	{
@@ -966,19 +966,19 @@ bug fixed		*/
 			if (is_broadcast)
 			{
 				char buf[MTEXTLEN+6];
-				
-				/* 插入 (廣播) 字樣 */			
+
+				/* 插入 (廣播) 字樣 */
 				strcpy(buf, "(廣播)");
 				strcat(buf, my_mtext);
-/*				
-				msq_set(&mymsq, curuser.userid, curuser.username, "", buf);				
-*/			
-				msq_set(&mymsq, curuser.userid, uinfo.username, "", buf);					
+/*
+				msq_set(&mymsq, curuser.userid, curuser.username, "", buf);
+*/
+				msq_set(&mymsq, curuser.userid, uinfo.username, "", buf);
 			}
 			else
-/*			
+/*
 				msq_set(&mymsq, curuser.userid, curuser.username, who, my_mtext);
-*/				
+*/
 				msq_set(&mymsq, curuser.userid, uinfo.username, who, my_mtext);
 			return 0;
 		}
@@ -1005,20 +1005,20 @@ int SendMesgToSomeone(char *ident)
 
 	if (prepare_message(ident, FALSE) < 0)
 	{
-		xstrncpy(uinfo.destid, save_destid, IDLEN);	
+		xstrncpy(uinfo.destid, save_destid, IDLEN);
 		update_umode(save_umode);
 		return -1;
 	}
-	
+
 	if (!(quinf = search_ulist(cmp_userid, ident)))
 	{
 		msg(_msg_talk_24);
 		getkey();
-		xstrncpy(uinfo.destid, save_destid, IDLEN);		
+		xstrncpy(uinfo.destid, save_destid, IDLEN);
 		update_umode(save_umode);
 		return -1;
 	}
-		
+
 	if (talkCheckPerm(quinf, TRUE) == 0)
 	{
 		if (msq_snd(quinf, &mymsq) == 0)
@@ -1026,14 +1026,14 @@ int SendMesgToSomeone(char *ident)
 			msq_record(&mymsq, ufile_write, ident);
 			retval = 0;
 		}
-		
-		if (retval == 0)	
+
+		if (retval == 0)
 			msg(_msg_message_finish);
 		else
 			msg(_msg_message_fail);
 		getkey();
 	}
-			
+
 	xstrncpy(uinfo.destid, save_destid, IDLEN);
 	update_umode(save_umode);
 
@@ -1083,10 +1083,10 @@ int msq_reply()		/* lthuang */
 
 	move(b_line - 1, 0);
 	clrtoeol();
-	outs("(CTRL-R)(y)回訊息 (↑)(↓)選擇 (CTRL-D)全刪除 (Enter)離開");	
+	outs("(CTRL-R)(y)回訊息 (↑)(↓)選擇 (CTRL-D)全刪除 (Enter)離開");
 #if defined(NSYSUBBS1) || defined(KHBBS) /* sarek:01/05/2001:高市資教要求 */
 	outs(" (CTRL-X)採證");
-#endif		
+#endif
 
 	if (save_msq_first != msq_last)
 		save_msq_first = (save_msq_first + 1) % LOCAL_MAX_MSQ;
@@ -1139,12 +1139,12 @@ int msq_reply()		/* lthuang */
 		else if (ch == CTRL('X'))
 		{
 			int retcode = -1;
-			char fname[PATHLEN];			
+			char fname[PATHLEN];
 
 
 			move(b_line - 1, 0);
 			clrtoeol();
-			prints("<<訊息採證>>: 你確定且同意將訊息採證給站長嗎 (y/n)? [n]: ", 
+			prints("<<訊息採證>>: 你確定且同意將訊息採證給站長嗎 (y/n)? [n]: ",
 					CAPTURE_BOARD);
 			if (igetkey() != 'y')
 			{
@@ -1154,8 +1154,8 @@ int msq_reply()		/* lthuang */
 				getkey();
 				continue;
 			}
-	
-			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);		
+
+			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
 			/* TODO */
 			if (get_message_file(fname, "[訊息記錄]") == 0)
 			{
@@ -1163,36 +1163,36 @@ int msq_reply()		/* lthuang */
 #ifdef USE_THREADING	/* syhu */
 /*
 				retcode = PublishPost(fname, curuser.userid, curuser.username,
-				                      CAPTURE_BOARD, "[訊息記錄]", 
-				                      curuser.ident, uinfo.from, 
+				                      CAPTURE_BOARD, "[訊息記錄]",
+				                      curuser.ident, uinfo.from,
 				                      FALSE, NULL, 0, -1, -1);
-*/				                      
+*/
 				retcode = PublishPost(fname, curuser.userid, uinfo.username,
-				                      CAPTURE_BOARD, "[訊息記錄]", 
-				                      curuser.ident, uinfo.from, 
+				                      CAPTURE_BOARD, "[訊息記錄]",
+				                      curuser.ident, uinfo.from,
 				                      FALSE, NULL, 0, -1, -1);
 #else
 /*
 				retcode = PublishPost(fname, curuser.userid, curuser.username,
-				                      CAPTURE_BOARD, "[訊息記錄]", 
-				                      curuser.ident, uinfo.from, 
+				                      CAPTURE_BOARD, "[訊息記錄]",
+				                      curuser.ident, uinfo.from,
 				                      FALSE, NULL, 0);
-*/				                      
+*/
 				retcode = PublishPost(fname, curuser.userid, uinfo.username,
-				                      CAPTURE_BOARD, "[訊息記錄]", 
-				                      curuser.ident, uinfo.from, 
+				                      CAPTURE_BOARD, "[訊息記錄]",
+				                      curuser.ident, uinfo.from,
 				                      FALSE, NULL, 0);
 #endif
 				unlink(fname);
 			}
 			if (retcode == -1)
-				msg(_msg_fail);			
+				msg(_msg_fail);
 			else
-				msg(_msg_finish);												
+				msg(_msg_finish);
 			getkey();
 			break;
 		}
-#endif		
+#endif
 		else if (ch == KEY_UP)
 		{
 			if (msq_lessthan(msq_first, ccur))
@@ -1253,7 +1253,7 @@ static int fmsq(USER_INFO *upent)
 #if 0
 	USEREC tobroadcast;
 #endif
-	
+
 	/* no friend */
 	if ((retval = cmp_array(&friend_cache, upent->userid)) == -1)
 		return QUIT_LOOP;
@@ -1268,15 +1268,15 @@ static int fmsq(USER_INFO *upent)
 		/* 拒收廣播 */
 		if (upent->pager & PAGER_DENYBROAD)
 			return -1;
-		
+
 /*
 只有互設好友才能訊息廣播
 		if (!can_override(upent->userid, curuser.userid))
 			return -1;
-*/	
-#endif		
+*/
+#endif
 #if 1 /* first check to see if PAGER_DENYBROAD is set to avoid file open for
-		calling can_override() 'lasehu (I'm choosy) 2002/05/20 
+		calling can_override() 'lasehu (I'm choosy) 2002/05/20
 		*/
 		/* 拒收廣播 */
 		if (upent->pager & PAGER_DENYBROAD)
@@ -1296,7 +1296,7 @@ static int fmsq(USER_INFO *upent)
 			if (tobroadcast.flags[0] & BROADCAST_FLAG) return -1;
 #endif
 
-		/* FALSE means that not show error response if error occurs */	
+		/* FALSE means that not show error response if error occurs */
 		if (talkCheckPerm(upent, FALSE) == 0)
 		{
 			msq_snd(upent, &mymsq);

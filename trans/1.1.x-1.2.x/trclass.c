@@ -13,13 +13,13 @@ char *argv[];
 	CLASSHEADER chbuf;
 	char filename[PATHLEN];
 	int n = 0;
-	
+
 	if (argc != 2)
 	{
 		fprintf(stderr, "usage: %s class.cf\n", argv[0]);
 		exit(1);
 	}
-	
+
 	strcpy(filename, argv[1]);
 	if ((fp = fopen(filename, "r")) == NULL)
 	{
@@ -33,7 +33,7 @@ char *argv[];
 		fprintf(stderr, "cannot create: tmp/class.cf\n");
 		exit(3);
 	}
-	
+
 	while (fgets(buf, sizeof(buf), fp))
 	{
 		pt = buf;
@@ -41,14 +41,14 @@ char *argv[];
 			pt++;
 		if (*pt == '\n' || *pt == '\0')
 			continue;
-			
+
 		if ((s = strchr(pt, '.')) == NULL)
 			continue;
 		*s = '\0';
 		strcpy(cn, pt);
-		
+
 		pt = s + 1;
-		
+
 		if (cn[0] == '-')
 		{
 			if ((s = strchr(pt, ' ')) != NULL)
@@ -57,7 +57,7 @@ char *argv[];
 		if ((s = strchr(pt, '\n')) != NULL)
 			*s = '\0';
 		strcpy(bn, pt);
-		
+
 		strcpy(chbuf.cn, cn);
 		strcpy(chbuf.bn, bn);
 		chbuf.cid = ++n;
@@ -71,13 +71,13 @@ char *argv[];
 		}
 	}
 	fclose(fp);
-	close(fd);		
+	close(fd);
 
 	myrename("tmp/class.cf", filename);
-	
+
 	chown(CLASS_CONF, BBS_UID, BBS_GID);
 	chmod(CLASS_CONF, 0644);
-	
+
 	rebuild_classhm();
 
 }

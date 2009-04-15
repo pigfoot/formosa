@@ -60,7 +60,7 @@ int more(char *filename, BOOL promptend)
 
 	clear();
 
- 	/* read a line & process it until end of it */ 
+ 	/* read a line & process it until end of it */
 	while ((numbytes = readln(buf, sizeof(buf), fp)) != 0)
 	{
 		if (!dojump || (dojump && pageno < jumpto - 2))
@@ -101,7 +101,7 @@ int more(char *filename, BOOL promptend)
 /*
 		if (i == b_line)
 */
-		if (i >= b_line)		
+		if (i >= b_line)
 		{
 			if (dojump)
 			{
@@ -114,7 +114,7 @@ int more(char *filename, BOOL promptend)
 			prints(_msg_more_1, (viewed * 100) / st.st_size, pageno);
 			while ((chkey = igetkey()) != EOF)
 			{
-#if 1			
+#if 1
 				if (msqrequest)
 				{
 					msqrequest = FALSE;

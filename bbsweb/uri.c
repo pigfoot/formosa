@@ -16,7 +16,7 @@ setfile(char *file)
 
 /*******************************************************************
  *	拆解 URI 成為三段
- *	
+ *
  *	不作額外判斷
  *******************************************************************/
 static void
@@ -24,20 +24,20 @@ GetURIToken(char *boardname, char *post, char *skin, const char *uri)
 {
 	char *token;
 	int len;
-	
+
 #if 0
 	fprintf(fp_out, "[GetURIToken uri=\"%s\" len=\"%d\"]\r\n", uri, strlen(uri));
 	fflush(fp_out);
-#endif	
+#endif
 
 #if 0
 	sscanf(uri, "%[^/]/%s/%[^/]", boardname, post, skin);
 	return;
 #endif
-	
+
 	*boardname = '\0';	/* lthuang */
 	*post = '\0';	/* lthuang */
-	
+
 	if((token = strchr(uri, '/')) != NULL) /* get this as BOARDNAME */
 	{
 		len = (token-uri+1) < BNAMELEN ? (token-uri+1) : BNAMELEN;
@@ -73,12 +73,12 @@ GetURIToken(char *boardname, char *post, char *skin, const char *uri)
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為佈告&信件檔案 (不作額外判斷)
- *	
+ *
  *	ie: M.871062060.A		->yes
  *		M.871062060.A.html	->yes
  *		^^         ^  ->check point
  *******************************************************************/
-static BOOL 
+static BOOL
 isPost(const char *para)
 {
 	if (strlen(para) < 13)	/* lthuang */
@@ -92,7 +92,7 @@ isPost(const char *para)
 
 /*******************************************************************
  *	從"名稱"判斷 para 是否為篇號 (範圍)
- *	
+ *
  *	ie:	*			= 全部
  *		all.html	= 全部
  *		$			= 最後的 DEFAULT_PAGE_SIZE 篇
@@ -100,7 +100,7 @@ isPost(const char *para)
  *		a-			= a ~ (a+DEFAULT_PAGE_SIZE) 篇
  *		a-$			= a ~ 最後一篇
  *******************************************************************/
-static BOOL 
+static BOOL
 isList(const char *para, int *start, int *end)
 {
 	char *p, data[STRLEN];
@@ -136,9 +136,9 @@ isList(const char *para, int *start, int *end)
 			*end = atoi(p);
 	}
 
-	/* 
-	   we assume 100000 is a sufficient large number that 
-	   online user & post & mail number should not exceed it 
+	/*
+	   we assume 100000 is a sufficient large number that
+	   online user & post & mail number should not exceed it
 	 */
 	if (*start == ALL_RECORD || *start == LAST_RECORD)
 		return TRUE;
@@ -153,7 +153,7 @@ isList(const char *para, int *start, int *end)
  *	strip .hmtl from M.xxxxxxx.?.html
  *
  *******************************************************************/
-static void 
+static void
 strip_html(char *fname)
 {
 	char *p;
@@ -166,14 +166,14 @@ enum U_mode { isBoard, isTrea, isMail, isUsers, isPlans };
 
 
 static int
-ParsingURI(int umode, char *boardname, char *curi, 
+ParsingURI(int umode, char *boardname, char *curi,
 	REQUEST_REC *r, POST_FILE *pf)
-{		
+{
 	struct _PRT {
 		void (*xsetfile)();
 		char *html_listfile;
 		char *html_readfile;
-		int list_retval;		
+		int list_retval;
 		int read_retval;
 		int end_retval;
 	};
@@ -185,7 +185,7 @@ ParsingURI(int umode, char *boardname, char *curi,
 	};
 	char trea_fname[PATHLEN];
 	char skin[PATHLEN] = "", post[PATHLEN] = "";
-		
+
 	GetURIToken(boardname, post, skin, curi);
 
 	if (umode == isMail)
@@ -194,7 +194,7 @@ ParsingURI(int umode, char *boardname, char *curi,
 			strcpy(post, boardname);
 		strcpy(boardname, username);	/* lthuang */
 	}
-		
+
 	if(r->HttpRequestType == POST)
 	{
 		int j;
@@ -240,11 +240,11 @@ ParsingURI(int umode, char *boardname, char *curi,
 		if (umode == isTrea)
 		{
 			HRT = TreasureHRT;
-			xstrncpy(pf->POST_NAME, post, PATHLEN);			
+			xstrncpy(pf->POST_NAME, post, PATHLEN);
 		}
 		else if (umode == isMail)
 		{
-			xstrncpy(pf->POST_NAME, post, PATHLEN);		
+			xstrncpy(pf->POST_NAME, post, PATHLEN);
 			HRT = MailHRT;
 		}
 		else if (umode == isUsers)
@@ -253,13 +253,13 @@ ParsingURI(int umode, char *boardname, char *curi,
 			HRT = NULL;
 		else
 		{
-			xstrncpy(pf->POST_NAME, post, PATHLEN);		
+			xstrncpy(pf->POST_NAME, post, PATHLEN);
 			HRT = BoardsHRT;
 		}
-		
+
 		if (!HRT)
 			return WEB_ERROR;
-			
+
 		for (j = 0; HRT[j].filename; j++)
 			if (!strcmp(skin, HRT[j].filename))
 				return HRT[j].value;
@@ -273,7 +273,7 @@ ParsingURI(int umode, char *boardname, char *curi,
 			snprintf(skin_file->filename, PATHLEN-1, "/~%s/", curi);
 			return Redirect;
 		}
-		if (invalid_new_userid(boardname) 
+		if (invalid_new_userid(boardname)
 			|| strlen(skin) != 0 || strlen(post) != 0)
 		{
 			return WEB_ERROR;
@@ -286,24 +286,24 @@ ParsingURI(int umode, char *boardname, char *curi,
 	{
 		if (strlen(boardname) != 0)
 			return WEB_ERROR;
-	
-		if (strlen(skin) == 0 
+
+		if (strlen(skin) == 0
 			|| isList(skin, &(pf->list_start), &(pf->list_end)))
 		{
 			/* 1. 2. */
 			setfile(HTML_UserList);
-			return UserList;					
+			return UserList;
 		}
 		else if (strstr(skin, ".html"))
 		{
 			setfile(skin);
 			return UserData;
 		}
-		xstrncpy(username, skin, IDLEN);		
+		xstrncpy(username, skin, IDLEN);
 		setfile(HTML_UserQuery);
 		return UserQuery;
 	}
-	
+
 	if (strlen(boardname) == 0)
 	{
 		if (umode == isTrea)
@@ -316,29 +316,29 @@ ParsingURI(int umode, char *boardname, char *curi,
 			/* skin is boardname */
 			/* /treasure/skin => /treasure/skin/ */
 			sprintf(skin_file->filename, "/%streasure/%s/", BBS_SUBDIR, skin);
-			return Redirect;			
+			return Redirect;
 		}
 		else if (umode == isBoard)
 		{
 			/* case:
-				/boards/ 
+				/boards/
 				/boards/skin
-			*/	
+			*/
 			if(strlen(skin)==0)
 			{
 				setfile(HTML_BoardList);
 				return BoardList;
 			}
-		
+
 			/* skin is boardname */
 			/* /boards/skin => /boards/skin/ */
 			sprintf(skin_file->filename, "/%sboards/%s/", BBS_SUBDIR, skin);
 			return Redirect;
 		}
 	}
-	
+
 	if (umode == isTrea)
-	{	
+	{
 		settreafile(trea_fname, boardname, post);
 		strcat(trea_fname, "/");
 		strcat(trea_fname, skin);
@@ -347,7 +347,7 @@ ParsingURI(int umode, char *boardname, char *curi,
 
 	if (isPost(skin))
 	{
-		strip_html(skin);		
+		strip_html(skin);
 		/* /boards/boardname/skin */
 		if (umode == isTrea && isdir(trea_fname))
 		{
@@ -356,9 +356,9 @@ ParsingURI(int umode, char *boardname, char *curi,
 		}
 		setfile(PRT[umode].html_readfile);
 		if (umode == isTrea)
-			strcpy(pf->POST_NAME, trea_fname);	/* the post on sub-dir */		
+			strcpy(pf->POST_NAME, trea_fname);	/* the post on sub-dir */
 		else
-			PRT[umode].xsetfile(pf->POST_NAME, boardname, skin);		
+			PRT[umode].xsetfile(pf->POST_NAME, boardname, skin);
 		return PRT[umode].read_retval;
 	}
 	else if(strlen(skin)==0
@@ -368,8 +368,8 @@ ParsingURI(int umode, char *boardname, char *curi,
 		/* 1. /boards/boardname/ */
 		/* 2. /boards/boardname/start-end */
 		/* 3. /boards/boardname/[PostSend.html, BoardAccess.html, ...] */
-		
-		if (strlen(skin) == 0 
+
+		if (strlen(skin) == 0
 			|| isList(skin, &(pf->list_start), &(pf->list_end)))
 		{
 			/* 1. 2. */
@@ -377,7 +377,7 @@ ParsingURI(int umode, char *boardname, char *curi,
 		}
 		else
 		{
-			setfile(skin);				
+			setfile(skin);
 		}
 		if (umode == isTrea)
 			setdotfile(pf->POST_NAME, trea_fname, DIR_REC);	/* sub-dir */
@@ -391,9 +391,9 @@ ParsingURI(int umode, char *boardname, char *curi,
 
 		/* /boards/boardname/[SkinModify.html] */
 		/* /boards/boardname/post/[SkinModify.html] */
-		
+
 		setfile(skin);
-		sprintf(post_fname, "%s%s%s", HTML_PATH, BBS_SUBDIR, post);		
+		sprintf(post_fname, "%s%s%s", HTML_PATH, BBS_SUBDIR, post);
 		if (strlen(post) != 0 && isfile(post_fname))
 			strcpy(pf->POST_NAME, post_fname);
 		else if (strlen(post) != 0)
@@ -418,12 +418,12 @@ ParsingURI(int umode, char *boardname, char *curi,
  *
  *	return URLParaType
  *******************************************************************/
-int 
+int
 ParseURI(REQUEST_REC *r, BOARDHEADER *board, POST_FILE *pf)
 {
 	char *p;
 	char *curi = r->URI;
-	
+
 	*BBS_SUBDIR = 0x00;
 
 
@@ -432,46 +432,46 @@ ParseURI(REQUEST_REC *r, BOARDHEADER *board, POST_FILE *pf)
 		strncat(skin_file->filename, curi, strlen(curi)-1);
 		return Redirect;
 	}
-	
+
 	if((p = strstr(curi, "/treasure/")) != NULL)
 	{
 		xstrncpy(BBS_SUBDIR, curi+1, p-curi+1);
 		curi = p + 10;
-		
+
 		return ParsingURI(isTrea, board->filename, curi, r, pf);
 	}
 	else if((p = strstr(curi, "/boards/")) != NULL)
 	{
 		xstrncpy(BBS_SUBDIR, curi+1, p-curi+1);
 		curi = p + 8;
-		
+
 		return ParsingURI(isBoard, board->filename, curi, r, pf);
 	}
 	else if((p = strstr(curi, "/mail/")) != NULL)
 	{
 		xstrncpy(BBS_SUBDIR, curi+1, p-curi+1);
 		curi = p + 6;
-		
-		return ParsingURI(isMail, board->filename, curi, r, pf);		
+
+		return ParsingURI(isMail, board->filename, curi, r, pf);
 	}
 	else if((p = strstr(curi, "/users/")) != NULL)
 	{
 		xstrncpy(BBS_SUBDIR, curi+1, p-curi+1);
 		curi = p + 7;
-		
+
 		return ParsingURI(isUsers, board->filename, curi, r, pf);
 	}
 	else if(!strncmp(curi, "/~", 2))	/* want user planfile only */
 	{
 		curi+=2;
 
-		return ParsingURI(isPlans, board->filename, curi, r, pf);	
+		return ParsingURI(isPlans, board->filename, curi, r, pf);
 	}
 	else
 	{
 #ifdef NSYSUBBS
 		/* for compatiable with old URL parameter ================== */
-		if((p = strstr(curi, "BoardName=")) != NULL 
+		if((p = strstr(curi, "BoardName=")) != NULL
 		|| (p = strstr(curi, "boardname=")) != NULL)
 		{
 			p+=10;
@@ -482,13 +482,13 @@ ParseURI(REQUEST_REC *r, BOARDHEADER *board, POST_FILE *pf)
 		/* ========================================================= */
 #endif
 		xstrncpy(skin_file->filename, curi, PATHLEN);
-		
+
 		xstrncpy(BBS_SUBDIR, curi+1, PATHLEN);
 		if((p = strrchr(BBS_SUBDIR, '/')) != NULL)
 			*(p+1) = 0x00;
 		else
 			BBS_SUBDIR[0] = 0x00;
-	
-		return OtherFile;		
-	}	
+
+		return OtherFile;
+	}
 }

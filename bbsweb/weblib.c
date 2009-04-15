@@ -9,9 +9,9 @@ extern FILE *fp_in;
 
 /*******************************************************************
  *	判斷 uri 是否合法
- *	
+ *
  *******************************************************************/
-BOOL 
+BOOL
 isBadURI(const char *uri)
 {
 	if (*uri != '/')	/* not start with '/' */
@@ -24,10 +24,10 @@ isBadURI(const char *uri)
 
 
 /*******************************************************************
- *	find record List range 
- *	
+ *	find record List range
+ *
  *******************************************************************/
-void 
+void
 find_list_range(int *start, int *end, int current, int page_size, int max_size)
 {
 	if (page_size <= 0)
@@ -57,9 +57,9 @@ struct S2H
 
 /*******************************************************************
  *	convert some special character to HTML code
- *	
+ *
  *******************************************************************/
-void 
+void
 souts(char *str, int maxlen)
 {
 /* do to - buggy here if maxlen > sizeof(buf) */
@@ -176,11 +176,11 @@ GetFormBody(int content_length, char *WEBBBS_ERROR_MESSAGE)
  *	'S' = !BBS_TAG
  *
  *	offset = type offset from data
- *	
- *	return: 
+ *
+ *	return:
  *		number of tag section
  *******************************************************************/
-int 
+int
 build_format_array(FORMAT_ARRAY * format_array, const char *data, char *head, char *tail, int max_tag_section)
 {
 	int i = 0, head_len, tail_len;
@@ -231,7 +231,7 @@ build_format_array(FORMAT_ARRAY * format_array, const char *data, char *head, ch
 /*******************************************************************
  *	轉換post送上來的資料為正確的格式
 ********************************************************************/
-void 
+void
 Convert(char *from, int no_strip)
 {
 	int index;
@@ -261,7 +261,7 @@ Convert(char *from, int no_strip)
 		else if (*p == '+')
 		{
 			if (no_strip)
-				to[index] = *p;			
+				to[index] = *p;
 			else
 				to[index] = ' ';
 			p++;
@@ -348,7 +348,7 @@ int len;
 	if (Data && (cs = strstr(Data, Name)) != NULL)
 	{
 		int i;
-		
+
 		cs += strlen(Name) + 2;
 		for (i = 0; *cs && *cs != '"' && i < len - 1; i++)
 		{
@@ -371,7 +371,7 @@ int len;
  *
  *	usually used in PostList, TreaList, MailList
  *******************************************************************/
-void 
+void
 mk_timestr1(char *str, time_t when)
 {
 	struct tm *tm;
@@ -387,19 +387,19 @@ mk_timestr1(char *str, time_t when)
  *
  *	usually used in display file time
  *******************************************************************/
-void 
+void
 mk_timestr2(char *str, time_t when)
 {
 	struct tm *tm;
 
 	tm = localtime(&when);
-/*	
+/*
 by asuka
 y2k bug: 01/01/100
 	sprintf(str, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_mon + 1, tm->tm_mday, tm->tm_year,
 		tm->tm_hour, tm->tm_min, tm->tm_sec);
-*/		
+*/
 /* fixed by lthuang */
 	sprintf(str, "%02d/%02d/%04d %02d:%02d:%02d",
 		tm->tm_mon + 1, tm->tm_mday, tm->tm_year + 1900,
@@ -407,7 +407,7 @@ y2k bug: 01/01/100
 }
 
 
-int 
+int
 invalid_fileheader(FILEHEADER * fh)
 {
 
@@ -467,7 +467,7 @@ friend_list_set(char *file, char *pbuf, char *file_desc)
 #if 0
 	sprintf(WEBBBS_ERROR_MESSAGE, "%s", override);
 	return WEB_ERROR;
-#endif	
+#endif
 
 	if (strlen(override) == 0)
 	{
@@ -487,16 +487,16 @@ friend_list_set(char *file, char *pbuf, char *file_desc)
 	}
 	fwrite(override, 1, strlen(override), fp);
 	fclose(fp);
-	
+
 	return WEB_OK_REDIRECT;
 }
 
 
-/** 
+/**
  **	set web skin file string
- **	by asuka: 990714 
+ **	by asuka: 990714
  **/
-void 
+void
 setskinfile(char *fname, char *boardname, char *skin)
 {
 	if(skin)
@@ -513,7 +513,7 @@ int errnum;
 {
 	extern char *   sys_errlist[];
 	extern int  sys_nerr;
-        
+
 	return (errnum > 0 && errnum <= sys_nerr) ?
 		sys_errlist[errnum] : ("Unknown system error");
 }
@@ -527,26 +527,26 @@ difftime(time1, time0)
           time_t time0;
           {
             /* Algorithm courtesy Paul Eggert (eggert@twinsun.com).  */
-            
+
               time_t delta, hibit;
-              
+
                 if (sizeof (time_t) < sizeof (double))
                     return (double) time1 - (double) time0;
                       if (sizeof (time_t) < sizeof (long double))
                           return (long double) time1 - (long double) time0;
-                          
+
                             if (time1 < time0)
                                 return - difftime (time0, time1);
-                                
+
                                   /* As much as possible, avoid loss of precision by computing the
                                       difference before converting to double.  */
                                         delta = time1 - time0;
   if (delta >= 0)
       return delta;
-      
+
         /* Repair delta overflow.  */
           hibit = (~ (time_t) 0) << (sizeof(time_t) * 8 - 1);
-          
+
             /* The following expression rounds twice, which means the result may not
                  be the closest to the true answer.  For example, suppose time_t is
                       64-bit signed int, long_double is IEEE 754 double with default
@@ -564,4 +564,4 @@ difftime(time1, time0)
                                              double-rounding problem.  */
                                                return delta - 2 * (long double) hibit;
 }
-#endif                                                                                                                            
+#endif

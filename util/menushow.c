@@ -2,7 +2,7 @@
 #include "bbs.h"
 
 
-int 
+int
 menushow_parsefile (path, list)
      char *path;
      struct MSList *list;
@@ -10,27 +10,27 @@ menushow_parsefile (path, list)
 	FILE *fp;
 	char *p1, *p2, line[512];
 	char buf[MENUSHOW_BODY];
-#ifdef NSYSUBBS	
+#ifdef NSYSUBBS
 	BOOL is_cna_news;
-	
+
 	if (strstr(path, "cna-"))
 		is_cna_news = TRUE;
 	else
 		is_cna_news = FALSE;
-#endif	
+#endif
 
 	if ((fp = fopen (path, "r")) == (FILE *) NULL)
 		return -1;
 
 	memset (list, 0, sizeof (struct MSList));
-	strncpy (list->filename, path, sizeof (list->filename) - 1);	
+	strncpy (list->filename, path, sizeof (list->filename) - 1);
 
 	while (fgets (line, sizeof (line), fp))
 	{
 		if (line[0] == '\n' || line[0] == '\r')
 			break;
 		else if (list->owner[0] == '\0'
-		         && (!strncmp (line, "發信人: ", 8) 
+		         && (!strncmp (line, "發信人: ", 8)
 		             || !strncmp (line, "發信人：", 8)))
 		{
 			p1 = line + 8;
@@ -42,11 +42,11 @@ menushow_parsefile (path, list)
 				if (*p2 == '\r')
 					*p2 = '\0';
 			}
-			strncpy (list->owner, p1, sizeof (list->owner) - 1); 
+			strncpy (list->owner, p1, sizeof (list->owner) - 1);
 		}
 		else if (list->title[0] == '\0'
-		         && (!strncmp (line, "標題: ", 6) 
-		         || !strncmp (line, "標  題:", 7) 		        
+		         && (!strncmp (line, "標題: ", 6)
+		         || !strncmp (line, "標  題:", 7)
 		             || !strncmp (line, "標題：", 6)))
 		{
 			p1 = line + 6;
@@ -76,7 +76,7 @@ menushow_parsefile (path, list)
 			return -1;
 		}
 	}
-#endif	
+#endif
 
 	/* getting the content to show */
 	buf[0] = '\0';
@@ -98,28 +98,28 @@ menushow_parsefile (path, list)
 				continue;
 		}
 #endif
-#if 1		
-		if (!strncmp(line, "【文章修改：", 12))	
+#if 1
+		if (!strncmp(line, "【文章修改：", 12))
 		{
 			if (!fgets(line, sizeof(line), fp))
 				break;
 			continue;
 		}
-#endif			
+#endif
 		/* below double dash is not content */
-		if (!strcmp(line, "--\n"))	
+		if (!strcmp(line, "--\n"))
 			break;
 		if (p1 + strlen(line) >= buf + sizeof(buf))
 			break;
-		strcpy(p1, line);		
+		strcpy(p1, line);
 		p1 += strlen(line);
 	}
-/*	
+/*
 	fread (buf, sizeof(buf), 1, fp);
-*/	
+*/
 	for (p1 = buf + sizeof(buf) - 1; p1 > buf && *p1 != '\n'; p1--)
 		*p1 = '\0';
-	for (p1 = buf; p1 < buf + sizeof(buf) - 1 
+	for (p1 = buf; p1 < buf + sizeof(buf) - 1
 	                 && (*p1 == '\n' || *p1 == '\r'); p1++)
 		/* empty line */ ;
 	strncpy (list->body, p1, sizeof(list->body) - 1);
@@ -129,7 +129,7 @@ menushow_parsefile (path, list)
 }
 
 
-int 
+int
 menushow_dir (path, msshm, list)
      char *path;
      struct MenuShowShm *msshm;
@@ -200,7 +200,7 @@ menushow_dir (path, msshm, list)
 
 struct MenuShowShm *msshm = NULL;
 
-int 
+int
 menushow ()
 {
 	FILE *fp;
@@ -212,7 +212,7 @@ menushow ()
 
 	if ((fp = fopen (MENUSHOW_CONF, "r")) == NULL)
 		return menushow_dir (MENUSHOW_DEFAULT, msshm, &(msshm->list[0]));
-	
+
 	while (fgets (path, sizeof (path), fp))
 	{
 		if (*path == '#')
@@ -227,7 +227,7 @@ menushow ()
 }
 
 
-int 
+int
 main (argc, argv)
      int argc;
      char *argv[];
@@ -263,7 +263,7 @@ main (argc, argv)
 			dup2 (0, 2);
 		}
 	}
-	
+
 	init_bbsenv();
 
 	while (1)
@@ -275,6 +275,6 @@ main (argc, argv)
 		else
 			break;
 	}
-	
+
 	return 0;
 }

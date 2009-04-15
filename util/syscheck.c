@@ -1,6 +1,6 @@
 /*
  * ¤H¤u»{ÃÒ³B²zµ{¦¡ syscheck
- * 
+ *
  * ±iÂ²¼Ý¤¯   changiz@cc.nsysu.edu.tw
  * ¶À¥ß¼w     lthuang@cc.nsysu.edu.tw
  */
@@ -26,7 +26,7 @@
 #define H_CYLN   "[1;36m"
 #define H_WHITE  "[1;37m"
 
-/* 
+/*
  * ¥H¤U¬O³B²zµe­±Åã¥Ü, ¤Î¿ï³æ¥\¯à, ¨Ï¥Î curses
  */
 char A_UL = '+';
@@ -248,7 +248,7 @@ char *fname, *path, *owner, *title;
 	strcpy(Ifh.owner, owner);
 	strcpy(Ifh.title, title);
 	strcpy(p, DIR_REC);
-	
+
 	append_record(path, &Ifh, sizeof(Ifh));
 	strcpy(p, Ifh.filename);
 
@@ -271,7 +271,7 @@ char *file;
 		ident_user.ident = 7;	/* write check level */
 		update_passwd(&ident_user);
 	}
-	
+
 	sprintf(destfile, "%s/%s", BBSPATH_REALUSER, user);
 	sprintf(title, "¨­¥÷½T»{: %s", user);
 #if 0
@@ -281,11 +281,11 @@ char *file;
 	do_article(file, destfile, user, title);
 	sprintf(buf, "tmp/%sPGP", ident_user.userid);
 #if 0
-#ifdef NSYSUBBS      
+#ifdef NSYSUBBS
 	a_encode(file, buf, destfile);
 #else
 	mycp(file, destfile);
-#endif       
+#endif
 #endif
 	return 0;
 }
@@ -324,17 +324,17 @@ char *user;
 					outs(buf);
 					flag++;
 				}
-				fclose(f2);				
+				fclose(f2);
 				set_color(B_CYLN);
 				set_color(H_WHITE);
-				
+
 				move(3, 7);
 				outs("­nµn¿ý¦¹¤H¸ê®Æ¶Ü[N]: ");
 				clrtoeol();
 				if (igetkey() == 'y')
 				{
 					clear();
-					/* pgp_.. need to change */					
+					/* pgp_.. need to change */
 					if (pgp_encode(rec.owner, fname) != -1)
 					{
 						showmenu();
@@ -370,7 +370,7 @@ char *user;
                                 fclose(f2);
                                 set_color(B_CYLN);
                                 set_color(H_WHITE);
-			
+
                                 move(3, 7);
                                 outs("­nµn¿ý¦¹¤H¸ê®Æ¶Ü[N]: ");
                                 clrtoeol();
@@ -441,7 +441,7 @@ struct one_key {           /* Used to pass commands to the readmenu */
 #define	_msg_ident_5	"\n¶·­n¸ÑÄ¶©Ò¦³¸ê®Æ¶Ü?[N]"
 #define	_msg_ident_6	"\n¶·­n§ó§ï key ¶Ü?[N]"
 #define	_msg_ident_4	"¬dµL¦¹¤H¸ê®Æ."
-#define	_msg_read_7		" <<¥»½g¤w³Q %s §R°£>>"	
+#define	_msg_read_7		" <<¥»½g¤w³Q %s §R°£>>"
 #define	_msg_read_15	"­n¸õ¨ì²Ä´X¶µ : "
 
 int gol_ccur = 0;
@@ -499,7 +499,7 @@ char *com;
 	if ((pid = fork()) == 0)
 	{
 		signal(SIGCHLD, SIG_IGN);	/* lthuang */
-		execv(path, arglist);		
+		execv(path, arglist);
 		fprintf(stderr, "EXECV FAILED... path = '%s'\n", path);
 		exit(-1);
 	}
@@ -557,7 +557,7 @@ a_chgpgp()
 	if (igetkey() == 'y')
 	{
 		char genbuf[64];
-		
+
 		sprintf(genbuf, "pgp -kg");
 		do_exec(genbuf);
 		pressreturn();
@@ -923,7 +923,7 @@ int top, last, rows;
  ** Get records from DIR_REC, and store in buffer.
  **
  ** Return the number of records
- **/ 
+ **/
 int
 read_get(direct, s, size, top)
 char *direct;
@@ -960,7 +960,7 @@ int *ccur;
 	/* TODO: please note sizeof nbuf, sizeof keys */
 	char nbuf[20], keys[50], *cret, *coft;
 #define rows (ROWSIZE)
-#define hdrsize (FH_SIZE)	
+#define hdrsize (FH_SIZE)
 	int y = 4, x = 0;
 
 
@@ -1022,8 +1022,8 @@ int *ccur;
 		case CX_GET:
 			if (clast > 0)
 				read_get(direct, hdrs, hdrsize, ctop);
-			gol_ccur = *ccur;								
-			
+			gol_ccur = *ccur;
+
 		case C_FULL:
 			if (cmode != CX_GET)
 			{
@@ -1185,10 +1185,10 @@ int *ccur;
 /*
  * §å¦¸§R°£¤å³¹
  *
- * ent, finfo, direct - standard input-processing function parameters 
+ * ent, finfo, direct - standard input-processing function parameters
  * wtop - beginning of taged-articles linklist
- * option - 'd' for delete, 
- *			'u' for undelete, 
+ * option - 'd' for delete,
+ *			'u' for undelete,
  */
 int
 delete_articles(ent, finfo, direct, wtop, option)
@@ -1218,7 +1218,7 @@ int option;
 		}
 		n = ent - 1;
 	}
- 
+
  	/* begin checking each file entry to mark for delete  */
 	while (read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
@@ -1228,7 +1228,7 @@ int option;
 			if (n > ent)
 				break;
 		}
- 		/* if current post wasn't tagged for delete, then just skip */ 
+ 		/* if current post wasn't tagged for delete, then just skip */
 		else
 		{
 			if (!cmp_wlist(wtop, fhr->filename, strcmp))
@@ -1241,9 +1241,9 @@ int option;
 			if (!(fhr->accessed & FILE_DELE))
 			{
 /*
-TODO			
+TODO
 				xstrncpy(fhr->delby, curuser.userid, IDLEN);
-*/				
+*/
 				fhr->accessed |= FILE_DELE;
 			}
 		}
@@ -1264,7 +1264,7 @@ TODO
 			continue;	/* ?? */
 		/* note: the article was deleted by who */
 
- 		/* update the file info currently in memory */ 
+ 		/* update the file info currently in memory */
 		if (!wtop)
 			memcpy(finfo, fhr, FH_SIZE);
 
@@ -1340,7 +1340,7 @@ char *filename;
 {
 	FILE *fp;
 	char buf[128];
-	
+
 	clear();
 	if ((fp = fopen(filename, "r")) != NULL)
 	{
@@ -1360,7 +1360,7 @@ a_decode(pgpfile, srcfile, privatekey)
 char pgpfile[], srcfile[], privatekey[];
 {
 	char genbuf[512];
-	
+
 	if (privatekey[0])
 		sprintf(genbuf, "pgp \"%s\" \"%s\" \"%s\"", pgpfile, srcfile, privatekey);
 	else

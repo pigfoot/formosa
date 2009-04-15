@@ -6,7 +6,7 @@
  *******************************************************************/
 
 /*
- * 含括檔區 
+ * 含括檔區
  */
 
 #include "bbs.h"
@@ -50,9 +50,9 @@ extern int my_num;
 /*******************************************************************
  *	檢查首頁 HTML_Announce 登入密碼正確與否
  *
- *	
+ *
  *******************************************************************/
-static int 
+static int
 WebLoginCheck()
 {
 	if (strstr(skin_file->filename, HTML_Announce))
@@ -77,10 +77,10 @@ WebLoginCheck()
 /*******************************************************************
  *	根據 URLParaType 執行 GET 的要求
  *
- *	
+ *
  *	return WebRespondType
  *******************************************************************/
-static int 
+static int
 DoGetRequest(REQUEST_REC * rc, BOARDHEADER * board, POST_FILE * pf)
 {
 	int URLParaType = rc->URLParaType;
@@ -269,7 +269,7 @@ DoGetRequest(REQUEST_REC * rc, BOARDHEADER * board, POST_FILE * pf)
  *
  *	return HttpRespondType
  *******************************************************************/
-static int 
+static int
 DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 {
 	int result, URLParaType;
@@ -291,7 +291,7 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 	if (PSCorrect == nLogin && URLParaType == PostSend)
 	{
 		char pass[PASSLEN * 3];
-		
+
 		GetPara2(username, "Name", form_data, sizeof(username), "");	/* get userdata from form */
 		GetPara2(pass, "Password", form_data, sizeof(pass), "");
 		Convert(pass, FALSE);
@@ -313,7 +313,7 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 		)
 	{
 		int perm;
-		
+
 		/* board->filename should set in advance, now in ParseURI() */
 		if (get_board(board, board->filename) <= 0 || board->filename[0] == '\0')
 			return WEB_BOARD_NOT_FOUND;
@@ -332,13 +332,13 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 				if (URLParaType == TreaSend)
 				{
 					char post_path[PATHLEN];
-					
+
 					settreafile(post_path, board->filename, pf->POST_NAME);
 					result = PostArticle(form_data, board, post_path);
 				}
 				else
 					result = PostArticle(form_data, board, NULL);
-				
+
 				if (result)
 				{
 #if 1
@@ -386,9 +386,9 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 			case MailForward:
 				if ((result = ForwardArticle(form_data, board, pf)))
 				{
-					int start, end;				
-					char path[PATHLEN];					
-					
+					int start, end;
+					char path[PATHLEN];
+
 					find_list_range(&start, &end, pf->num, DEFAULT_PAGE_SIZE, pf->total_rec);
 					setdotfile(path, pf->POST_NAME, NULL);
 					sprintf(skin_file->filename, "/%s%s%d-%d",
@@ -402,8 +402,8 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 				result = DeleteArticle(form_data, board, pf);
 				if (URLParaType == PostDelete)
 				{
-					int start, end;					
-						
+					int start, end;
+
 					find_list_range(&start, &end, pf->num, DEFAULT_PAGE_SIZE, pf->total_rec);
 					sprintf(skin_file->filename, "/%sboards/%s/%d-%d",
 						BBS_SUBDIR, board->filename, start, end);
@@ -411,7 +411,7 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 				else if (URLParaType == TreaDelete)
 				{
 					char path[PATHLEN];
-						
+
 					setdotfile(path, pf->POST_NAME, NULL);
 					sprintf(skin_file->filename, "/%s%s",
 						BBS_SUBDIR, path);
@@ -433,7 +433,7 @@ DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 				if ((result = DoUserIdent(form_data, &curuser)))
 					setfile(HTML_UserIdentOK);
 				break;
-#endif				
+#endif
 
 			case UserData:
 				if ((result = UpdateUserData(form_data, &curuser)))
@@ -572,12 +572,12 @@ SetErrorMessage()
 
 		case WEB_BAD_REQUEST:
 #if !HAVE_SNPRINTF
-			sprintf(msg, "Bad Request: %s %s", 
+			sprintf(msg, "Bad Request: %s %s",
 				request_rec->request_method, request_rec->URI);
-#else		
-			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE), "Bad Request: %s %s", 
+#else
+			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE), "Bad Request: %s %s",
 				request_rec->request_method, request_rec->URI);
-#endif				
+#endif
 			break;
 
 		case WEB_UNAUTHORIZED:
@@ -594,24 +594,24 @@ SetErrorMessage()
 
 		case WEB_FILE_NOT_FOUND:
 #if !HAVE_SNPRINTF
-			sprintf(msg, "%s: %s", 
+			sprintf(msg, "%s: %s",
 				MSG_FILE_NOT_FOUND, request_rec->URI);
-#else		
-			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE), "%s: %s", 
+#else
+			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE), "%s: %s",
 				MSG_FILE_NOT_FOUND, request_rec->URI);
-#endif				
+#endif
 			break;
 
 		case WEB_NOT_IMPLEMENTED:
 #if !HAVE_SNPRINTF
-			sprintf(msg,  
-				"Method Not Implemented: %s %s", 
+			sprintf(msg,
+				"Method Not Implemented: %s %s",
 				request_rec->request_method, request_rec->URI);
-#else		
-			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE), 
-				"Method Not Implemented: %s %s", 
+#else
+			snprintf(msg, sizeof(WEBBBS_ERROR_MESSAGE),
+				"Method Not Implemented: %s %s",
 				request_rec->request_method, request_rec->URI);
-#endif				
+#endif
 			break;
 
 		case WEB_INVALID_PASSWORD:
@@ -665,11 +665,11 @@ struct _cmd
  *	2.=== parse HTTP Header info
  *	3.=== parse URI
  *	4.check password & set 'PSCorrect'
- *	5.do request 
+ *	5.do request
  *	6.print HTTP Respond header
  *	7.print request body (if any)
  *******************************************************************/
-static int 
+static int
 ParseCommand(char *inbuf)
 {
 	char *p;
@@ -725,9 +725,9 @@ ParseCommand(char *inbuf)
 	/* certification login (csbbs) */
 	if (request_rec->HttpRequestType == CERTILOG)
 	{
-		weblog_line(server->access_log, "%s %s", 
+		weblog_line(server->access_log, "%s %s",
 		request_rec->request_method, request_rec->URI);
-		
+
 		/* CERTILOG username password */
 		xstrncpy(username, request_rec->URI, IDLEN);
 		if ((p = strtok(NULL, " \t\n")) != NULL)
@@ -740,7 +740,7 @@ ParseCommand(char *inbuf)
 		#else
 			curuser.lastlogin = request_rec->atime;
 			curuser.lastctype = CTYPE_WEBBBS;
-			update_passwd(&curuser);			
+			update_passwd(&curuser);
 		#endif
 			fprintf(fp_out, "800  OK!!\r\n");
 		}
@@ -793,7 +793,7 @@ ParseCommand(char *inbuf)
 				/* redirect target must set in ParseURI() */
 				return WEB_REDIRECT;
 			}
-			
+
 			request_rec->WebRespondType = DoGetRequest(request_rec, &c_board, post_file);
 			break;
 
@@ -809,7 +809,7 @@ ParseCommand(char *inbuf)
 #if 0
 	sprintf(WEBBBS_ERROR_MESSAGE, "skn_file=[%s]\n", skin_file->filename);
 	return WEB_ERROR;
-#endif	
+#endif
 
 #if 0
 	fprintf(fp_out, "[WebRespondType=%d, skin_file=%s]<BR>\r\n",
@@ -888,7 +888,7 @@ ParseCommand(char *inbuf)
 
 	httpResponseHeader(request_rec, skin_file);
 
-/* 
+/*
    log after ParseHttpHeader() to get real fromhost if connect from proxy
  */
 #ifdef WEB_ACCESS_LOG
@@ -897,12 +897,12 @@ ParseCommand(char *inbuf)
 #endif
 	{
 		char *buffer = request_rec->referer;	/* lthuang */
-		
+
 
 		if (!strncasecmp(buffer + 7, server->host_name, strlen(server->host_name))
 		    || !strncasecmp(buffer + 7, server->host_ip, strlen(server->host_ip)))
 		{
-			*buffer = '\0';		
+			*buffer = '\0';
 		}
 #if	defined(ANIMEBBS)
 		else if (strstr(buffer+7, ".irradiance.net")
@@ -910,16 +910,16 @@ ParseCommand(char *inbuf)
 		{
 			*buffer = '\0';
 		}
-#elif	defined(NSYSUBBS)		
+#elif	defined(NSYSUBBS)
 		else if (!strncasecmp(buffer + 7, "bbs/", 4)
 		    || !strncasecmp(buffer + 7, "bbs3/", 5))
 		{
-			*buffer = '\0';		
+			*buffer = '\0';
 		}
 #endif
 #if 0
-		weblog_line(server->access_log, 
-			"- %s [%d] \"%s %s\" %s %d \"%s\" \"%s\"", 
+		weblog_line(server->access_log,
+			"- %s [%d] \"%s %s\" %s %d \"%s\" \"%s\"",
 			request_rec->auth_code[0] ? request_rec->auth_code : "-",
 			request_rec->atime,
 			request_rec->request_method, request_rec->URI,
@@ -940,7 +940,7 @@ ParseCommand(char *inbuf)
 	{
 		fileSend(skin_file->filename, skin_file->mime_type, skin_file->mtime, &c_board);
 	}
-	
+
 
 	return WEB_OK;
 }
@@ -948,7 +948,7 @@ ParseCommand(char *inbuf)
 /*******************************************************************
  *	webbbs Main Function
  *******************************************************************/
-void 
+void
 WebMain(int child_num)
 {
 	char inbuf[HTTP_REQUEST_LINE_BUF];
@@ -973,12 +973,12 @@ WebMain(int child_num)
 #ifdef KEEP_ALIVE
 	request_rec->num_request = 0;
 #endif
-	
+
 	do
 	{
 #ifdef KEEP_ALIVE
 		alarm(WEB_KEEP_ALIVE_TIMEOUT);
-#else	
+#else
 #ifndef NO_ALARM
 #ifdef TORNADO_OPTIMIZE
 		if (isTORNADO)
@@ -988,7 +988,7 @@ WebMain(int child_num)
 		alarm(WEB_TIMEOUT);
 #endif	/* NO_ALARM */
 #endif
-	
+
 #ifdef PRE_FORK
 		(server->childs)[child_num].status = S_WAIT;
 #endif
@@ -997,12 +997,12 @@ WebMain(int child_num)
 
 		if (*inbuf == '\r' || *inbuf == '\n')
 		{
-#ifdef KEEP_ALIVE		
+#ifdef KEEP_ALIVE
 			request_rec->connection = TRUE;
 			continue;
-#else			
+#else
 			break;
-#endif			
+#endif
 		}
 
 		server->access++;

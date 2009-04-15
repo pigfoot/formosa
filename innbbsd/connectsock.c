@@ -59,7 +59,7 @@ int s;
 {
    if (halt != NULL)
       (*halt)(s);
-   else 
+   else
       docompletehalt(s);
 }
 
@@ -68,7 +68,7 @@ initunixserver(path, protocol)
 char *path;
 char *protocol;
 {
-	struct sockaddr_un s_un;   
+	struct sockaddr_un s_un;
 	/* unix endpoint address */
 	struct protoent *pe;   /*protocol information entry*/
 	int s;
@@ -129,7 +129,7 @@ char *protocol;
 		sin.sin_addr.s_addr = INADDR_ANY;
 	}
 
-	if (service==NULL) 
+	if (service==NULL)
 	     service=DEFAULTPORT;
 	if (protocol==NULL)
 	     protocol="tcp";
@@ -137,12 +137,12 @@ char *protocol;
 	/* service ---> port */
 	se = getservbyname(service,protocol);
 	if (se==NULL) {
-	  port = htons((u_short)atoi(service)); 
+	  port = htons((u_short)atoi(service));
 	  if (port==0 && !randomport) {
 	   fprintf (stderr, "%s/%s: Unknown service.\n",service,protocol);
 	   return (-1);
 	  }
-        } else 
+        } else
 	        port=se->s_port;
 	sin.sin_port = port;
 
@@ -325,7 +325,7 @@ int (*serverfunc) ARG((int));
 	return 0;
 }
 
-int inetclient(server,service,protocol) 
+int inetclient(server,service,protocol)
 char *server;
 char *protocol;
 char *service;
@@ -339,7 +339,7 @@ char *service;
 	bzero((char*)&sin,sizeof(sin));
 	sin.sin_family= AF_INET;
 
-	if (service==NULL) 
+	if (service==NULL)
 	     service=DEFAULTPORT;
 	if (protocol==NULL)
 	     protocol="tcp";
@@ -349,12 +349,12 @@ char *service;
 	/* service ---> port */
 	se = getservbyname(service,protocol);
 	if (se==NULL) {
-	  port = htons((u_short)atoi(service)); 
+	  port = htons((u_short)atoi(service));
 	  if (port==0) {
 	   fprintf (stderr, "%s/%s: Unknown service.\n",service,protocol);
 	   return (-1);
 	  }
-        } else 
+        } else
 	        port=se->s_port;
 	sin.sin_port = port;
 
@@ -392,7 +392,7 @@ char *service;
 	return s;
 }
 
-int unixclient(path,protocol) 
+int unixclient(path,protocol)
 char *path;
 char *protocol;
 {
@@ -403,7 +403,7 @@ char *protocol;
 	bzero((char*)&s_un,sizeof(s_un));
 	s_un.sun_family= AF_UNIX;
 
-	if (path==NULL) 
+	if (path==NULL)
 	     path=DEFAULTPATH;
 	if (protocol==NULL)
 	     protocol="tcp";

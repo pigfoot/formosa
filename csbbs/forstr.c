@@ -5,7 +5,7 @@
 #define KEYWORD_DELIMITER	" \t\r\n"
 #define KEYWORD_SEPARATE	"\t\r\n"
 
-struct Paradata			
+struct Paradata
 {
 	char *parameter;
 	struct Paradata *next;
@@ -251,13 +251,13 @@ char *cs;
 	{
 		int i, j;
 		char *ct = cs;
-		
+
 		for (i = 0, j = 0; cs[i] != '\0'; i++)
 		{
 			if (cs[i] == 0x1b)	/* 0x1b is ESC */
 				continue;
 			ct[j++] = cs[i];
 		}
-		ct[j] = '\0';		
+		ct[j] = '\0';
 	}
 }

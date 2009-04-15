@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
- 
+
 /*=========================================================
- *	Quoted-Printable(QP)  Decode Series 
+ *	Quoted-Printable(QP)  Decode Series
  *  1)	encode/decode one string
  *  2)  encode/decode one file
  *=========================================================*/
@@ -15,7 +15,7 @@ combine_high_low_bits( char c)
 	else if( (c >= 'a') && (c <= 'f') )
 		return( (int)( (c - 'a')+10 ) );
 	else if( (c >= 'A') && ( c <= 'F' ) )
-		return( (int)((c- 'A') + 10));		
+		return( (int)((c- 'A') + 10));
 }
 
 /*****************************************************
@@ -35,7 +35,7 @@ qp_decode_str(char *string) /* wnlee */
 		{
 			c1 = *++src;
 			c2 = *++src;
-			*dst++ = combine_high_low_bits(c1) * 16 
+			*dst++ = combine_high_low_bits(c1) * 16
 			           + combine_high_low_bits(c2);
 		}
 		else
@@ -46,7 +46,7 @@ qp_decode_str(char *string) /* wnlee */
 }
 
 
-char 
+char
 high_low_bits( char ch)
 {
 	if( (ch >= 0) && (ch <= 9) )
@@ -55,7 +55,7 @@ high_low_bits( char ch)
 		return( (char) ('A' + ch - 10) );
 }
 
-/**************************************************** 
+/****************************************************
  *	將一個字串編碼，省略 soft link 或 換行的情況    *
  ****************************************************/
 void
@@ -63,7 +63,7 @@ qp_encode_str(char *out, const char *src)	/* wnlee */
 {
 	unsigned char c;
 	int i=0, j=0;
-	
+
 	out[0] = '\0';
 	for(i=0; i<strlen(src); i++)
 	{
@@ -79,7 +79,7 @@ qp_encode_str(char *out, const char *src)	/* wnlee */
 			out[j++] = high_low_bits( c/16 );
 			out[j++] = high_low_bits( c%16 );
 		}
-	}	
+	}
 	out[j] = '\0';
 }
 
@@ -136,7 +136,7 @@ int qp_decode_file(char *outfile_path, char *infile_path)	/* wnlee */
 	FILE *fpin, *fpout;
 	char *mark;
 	int len;
-	
+
 
 	if( (fpin = fopen(infile_path, "r")) == NULL)
 		return -1;
@@ -157,14 +157,14 @@ int qp_decode_file(char *outfile_path, char *infile_path)	/* wnlee */
 		}
 		qp_decode_str(mid);
 		fprintf(fpout, "%s", mid);
-	}	
+	}
 	fclose(fpin);
 	fclose(fpout);
 	return 0;
 }
 
 /*=========================================================
- *	Base64 Decode Series 
+ *	Base64 Decode Series
  *  1)	encode/decode  one string
  *	2)  encode/decode  one file
  *=========================================================*/
@@ -186,7 +186,7 @@ ascii_to_value(register int x)
 	if( x == '/')
 		return 63;
 	if(	x == '=')
-		return 0;					
+		return 0;
 }
 
 
@@ -205,19 +205,19 @@ base64_decode_str(char *src)  /* wnlee */
 	strcpy(buffer, src);
 	ptr = buffer;
 	dst = src;
-	
+
 	/* step1: combine four 6 bits as a unsigned long */
 	for(ptr = buffer; ptr + 4 <= end; ptr += 4)
 	{
-		*dst++ = (ascii_to_value(*ptr) << 2) 
+		*dst++ = (ascii_to_value(*ptr) << 2)
 		         | ((ascii_to_value(*(ptr+1)) & 0x30) >> 4);
-		*dst++ = ((ascii_to_value(*(ptr+1)) & 0x0F) << 4) 
+		*dst++ = ((ascii_to_value(*(ptr+1)) & 0x0F) << 4)
 		         | ((ascii_to_value(*(ptr+2)) & 0x3c) >> 2);
-		*dst++ = ((ascii_to_value(*(ptr+2)) & 0x03) << 6) 
+		*dst++ = ((ascii_to_value(*(ptr+2)) & 0x03) << 6)
 		         | ascii_to_value(*(ptr+3)) ;
 	}
 	*dst = '\0';
-} 
+}
 
 
 unsigned int
@@ -232,7 +232,7 @@ ch_ascii(unsigned int n)
 	if( n == 62)
 		return( (int)'+');
 	if( n == 63)
-		return( (int)'/');	
+		return( (int)'/');
 }
 
 /****************************************************
@@ -287,14 +287,14 @@ base64_encode_file( char *out_path, char *in_path)	/* wnlee */
 	if( (fpout = fopen(out_path, "w")) == NULL )
 		return -1;
 
-	/*	 	把讀入一行編成 base64 字串 
+	/*	 	把讀入一行編成 base64 字串
 	 *		 並整理成每行 為 72 個 characters
 	 */
 	len = 0;
 	while(fgets(buf, sizeof(buf), fpin))
 	{
 		base64_encode_str(buf);
-		
+
 		for (p = buf; *p; p++)
 		{
 			fputc(*p, fpout);
@@ -321,13 +321,13 @@ base64_decode_file(char *out_path, char *in_path)	/* wnlee */
 {
 	FILE *fpin, *fpout;
 	char src[1024], *ptr;
-	
+
 	if( (fpin = fopen(in_path, "r")) == NULL )
 		return -1;
 	if( (fpout = fopen(out_path, "w")) == NULL )
 	{
 		fclose(fpin);
-		return -1;			
+		return -1;
 	}
 	while( fgets(src, sizeof(src), fpin) != NULL)
 	{
@@ -342,7 +342,7 @@ base64_decode_file(char *out_path, char *in_path)	/* wnlee */
 
 
 /*=============================================================
- *		解碼一個字串 ( 自動判斷是為 QP or Base64 ) 
+ *		解碼一個字串 ( 自動判斷是為 QP or Base64 )
  *		如果都不是就不做動作。
  *		ex: 適用於 BBS 文章標題的解碼
  *=============================================================*/
@@ -366,7 +366,7 @@ int decode_line(char *dst, const char *source)
 	{
 		*front = '\0';
 
-		if((start = strstr(front+2, "?B?")) != NULL 
+		if((start = strstr(front+2, "?B?")) != NULL
 		&& (rear = strstr(start+3, "?=")) != NULL)
 		{
 			*rear = '\0';
@@ -374,7 +374,7 @@ int decode_line(char *dst, const char *source)
 		}
 		else if((start = strstr(front+2, "?Q?")) != NULL
 		&& (rear = strstr(start+3, "?=")) != NULL)
-		{	
+		{
 			*rear = '\0';
 			qp_decode_str(start+3);
 		}
@@ -390,7 +390,7 @@ int decode_line(char *dst, const char *source)
 end:
 	strcpy(dst, source);
 	return -1;
-} 
+}
 
 /* buggy!! */
 #if 0
@@ -426,7 +426,7 @@ int  decode_header(char *dst, const char *source)	/* wnlee */
 		return 0;
 	}
 	return 0;
-} 
+}
 #endif
 
 

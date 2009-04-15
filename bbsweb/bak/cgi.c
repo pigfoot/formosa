@@ -1,6 +1,6 @@
 
 #if 0
-typedef struct 
+typedef struct
 {
 /* == Client private data  == */
 	int URLParaType;
@@ -44,10 +44,10 @@ cgi_handler(REQUEST_REC *r)
 	/* todo:Åv­­ºÞ²z */
 	if (stat(argv0, &st) != 0 || !S_IEXEC(st.st_mode) || S_ISDIR(st.st_mode))
 		return -1;
-	
+
 	{
 		"Transfer-Encoding"
 		"Content-Length"
-		
+
 	}
 }

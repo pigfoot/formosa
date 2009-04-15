@@ -107,7 +107,7 @@ set_group()
 
 
 /**************************************************************
- * 檢查個人信箱 Mail 數量 
+ * 檢查個人信箱 Mail 數量
  **************************************************************/
 BOOL
 check_mail_num(opt)
@@ -115,7 +115,7 @@ int opt;
 {
 	static int num_mails = -1;
 	int num_delete = 0;
-	
+
 /* by lthuang
 	if (HAS_PERM(PERM_SYSOP))
 		return FALSE;
@@ -210,7 +210,7 @@ char *fname, *title;
 
 
 /*
- * grouply send mail, in cursor menu 
+ * grouply send mail, in cursor menu
  */
 int
 m_group()
@@ -233,9 +233,9 @@ m_group()
 	{
 		if (set_group() != -1 && set_article_title(strTitle) != -1)
 		{
-			char fnameTmp[PATHLEN];		
-			
-			
+			char fnameTmp[PATHLEN];
+
+
 			sprintf(fnameTmp, "tmp/groupmail%05d", (int) getpid());
 			unlink(fnameTmp);
 			update_umode(SMAIL);
@@ -249,10 +249,10 @@ m_group()
 		showmsg(_msg_fail);
 	else
 		showmsg(_msg_finish);
-/*		
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -271,10 +271,10 @@ char *direct;			/* unused */
 	/* fn_src: NULL, postpath: NULL */
 	PrepareMail(NULL, strTo, strTitle);
 	pressreturn();
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -296,7 +296,7 @@ m_new()
 		update_umode(RMAIL);
 		lseek(fd, 0, SEEK_SET);
 		ent = 0;
-	
+
 		while (read(fd, &fhn, sizeof(fhGol)) == sizeof(fhGol))
 		{
 			ent++;
@@ -317,7 +317,7 @@ m_new()
 				close(fd);
 				in_mail = FALSE;	/* lthuang */
 				return C_FULL;
-				
+
 			default:
 				break;
 			}
@@ -330,9 +330,9 @@ m_new()
 		pressreturn();
 	}
 	while (check_mail_num(1));
-	
-	close(fd);	
-	
+
+	close(fd);
+
 	in_mail = FALSE;	/* lthuang */
 
 	return C_FULL;
@@ -381,18 +381,18 @@ FILEHEADER *finfo;		/* unused */
 char *direct;			/* unused */
 {
 	char fnori[PATHLEN];
-	
-	msg("<<信件採證>: 你同意要將信件採證至 %s 板嗎 (y/n)? [n]: ", CAPTURE_BOARD);	
+
+	msg("<<信件採證>: 你同意要將信件採證至 %s 板嗎 (y/n)? [n]: ", CAPTURE_BOARD);
 	if (igetkey() != 'y')
 	{
 		msg(_msg_abort);
 		getkey();
 		return C_FOOT;
 	}
-	
+
 	setdotfile(fnori, direct, finfo->filename);
 	/*  post on board, postpath is NULL */
-	if (PublishPost(fnori, curuser.userid, curuser.username, CAPTURE_BOARD, 
+	if (PublishPost(fnori, curuser.userid, curuser.username, CAPTURE_BOARD,
 			"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0) == -1)
 		showmsg(_msg_fail);
 	else
@@ -426,7 +426,7 @@ struct one_key mail_comms[] =
 	{'+', resv_forward},
 #ifdef NSYSUBBS1
 	{CTRL('X'), capture_mail},
-#endif	
+#endif
 	{'\0', NULL}
 };
 

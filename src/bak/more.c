@@ -103,7 +103,7 @@ BOOL promptend;
 /*
 		if (i == b_line)
 */
-		if (i >= b_line)		
+		if (i >= b_line)
 		{
 			if (dojump)
 			{
@@ -116,7 +116,7 @@ BOOL promptend;
 			prints(_msg_more_1, (viewed * 100) / st.st_size, pageno);
 			while ((chkey = igetkey()) != EOF)
 			{
-#if 1			
+#if 1
 				if (writerequest)
 				{
 					writerequest = FALSE;

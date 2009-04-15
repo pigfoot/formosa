@@ -17,33 +17,33 @@ int main(int argc, char *argv[])
 	int fd;
 	USEREC ouruser;
 	struct stat fileinfo;
-	
+
 	if(argc < 2)
 	{
 		printf("usage: %s lost_dir\n", argv[0]);
 		exit(0);
 	}
-	
+
 	strncpy(lpath, argv[1], PATHLEN);
-	
+
 	p = lpath + strlen(lpath);
-	
+
 	if(*p == '/')
 		*p = 0x00;
-	
+
 	dirp = opendir(lpath);
 	ch = 'a';
 
 	while ((dp = readdir(dirp)) != NULL)
 	{
-		
-		if(!strcmp(dp->d_name, ".") 
+
+		if(!strcmp(dp->d_name, ".")
 		|| !strcmp(dp->d_name, "..")
 		|| !dp->d_name[0])
 		{
 			continue;
 		}
-		
+
 		i++;
 		printf("===================================================\n");
 		printf("(%d) find: %s, type=", i, dp->d_name);
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 			file_type = T_FILE;
 			printf("[FILE], size=%d\n", (int)fileinfo.st_size);
 		}
-		
+
 		if(file_type == T_FILE)
 		{
 			/* only handle UFNAME_PASSWDS file */
@@ -77,16 +77,16 @@ int main(int argc, char *argv[])
 		#endif
 				continue;
 			}
-		
+
 			read(fd, &ouruser, sizeof(USEREC));
 			close(fd);
-			
-			printf("find lost user record: %s\nlevel=%d, logins=%d, posts=%d, lastlogin=%s", 
+
+			printf("find lost user record: %s\nlevel=%d, logins=%d, posts=%d, lastlogin=%s",
 				ouruser.userid, ouruser.userlevel, ouruser.numlogins, ouruser.numposts, ctime(&(ouruser.lastlogin)));
-			
+
 			/* test if userdir exist */
 			sethomefile(userdir, ouruser.userid, NULL);
-			
+
 			if(stat(userdir, &fileinfo) == 0)
 			{
 				sethomefile(userdir, ouruser.userid, UFNAME_PASSWDS);
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 					chown(userdir, BBS_UID, BBS_GID);
 					printf("mkdir & rename %s OK!\n", ouruser.userid);
 					total_save++;
-					
+
 				}
 			}
 		}
@@ -119,21 +119,21 @@ int main(int argc, char *argv[])
 				printf(" not %s, skip...\n", UFNAME_PASSWDS);
 				continue;
 			}
-			
+
 			read(fd, &ouruser, sizeof(USEREC));
 			close(fd);
-	
+
 			printf("find lost user directory: %s\n", ouruser.userid);
 			sethomefile(userdir, ouruser.userid, UFNAME_PASSWDS);
-		
+
 	#if 0
 			printf("stat: %s...\n", userdir);
 	#endif
-	
+
 			if(stat(userdir, &fileinfo) == 0)
 			{
 				printf("already exist\n");
-				
+
 				sethomefile(userdir, ouruser.userid, NULL);
 				if(unlink(userdir) == -1)
 				{
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 			#if 0
 				printf("not exist...fix it? (y/n)");
 				ch = getchar();
-				
+
 				if(ch == 'y')
 			#endif
 				{
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			
+
 		#if 0
 			ch = getchar();
 		#endif

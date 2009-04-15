@@ -65,11 +65,11 @@ int num;
 	if (!strcmp(bname, "test"))
 	{
 		time_t now;
-		
+
 		time(&now);
-		
+
 	}
-#endif	
+#endif
 	sprintf(genbuf, "%s/%s/%s", BBSPATH_BOARDS, bname, DIR_REC);
 	if ((fd = open(genbuf, O_RDWR)) > 0)
 	{
@@ -134,7 +134,7 @@ char bname[];
 #ifdef NSYSUBBS1
 	if (!strncmp(bname, "cna-", 4))
 		post = 1000;
-#endif	
+#endif
 	if (total - post + range > 0)
 	{
 		Delete_Post(bname, total - post + range);

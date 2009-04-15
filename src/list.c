@@ -18,7 +18,7 @@ struct pickup
 #ifdef USE_OVERRIDE_IN_LIST
 	char override;
 //	char blacklist;
-#endif	
+#endif
 };
 
 struct pickup *pklist = NULL;
@@ -42,7 +42,7 @@ char *msg_pickup_way[PICKUP_WAYS] =	/* lang.h */
 	"英文代名",
 	"線上狀態",
 	"上站地點"
-/*      
+/*
  * _msg_pickup_way_1,
  * _msg_pickup_way_2,
  * _msg_pickup_way_3,
@@ -58,10 +58,10 @@ static int pickup_cmp(struct pickup *i, struct pickup *j)
 	{
 	case 1:
 	default:
-#ifdef USE_OVERRIDE_IN_LIST		
+#ifdef USE_OVERRIDE_IN_LIST
 		{
 			int k;
-			
+
 			k = (j->friend - i->friend);
 			if (k ==0 && j->friend == 0)
 				return (j->override - i->override);
@@ -69,7 +69,7 @@ static int pickup_cmp(struct pickup *i, struct pickup *j)
 		}
 #else
 		return (j->friend - i->friend);
-#endif				
+#endif
 	case 2:
 		return strcasecmp(i->ui->userid, j->ui->userid);
 	case 3:
@@ -81,13 +81,13 @@ static int pickup_cmp(struct pickup *i, struct pickup *j)
 
 
 static int malloc_ulist(USER_INFO *uentp)
-{	
+{
 	int tmp;
 
-	
+
 	if (num_users >= MAXACTIVE)		/* debug */
 		return -1;
-		
+
 	if (!HAS_PERM(PERM_CLOAK) && uentp->invisible)
 		return -1;
 
@@ -99,7 +99,7 @@ static int malloc_ulist(USER_INFO *uentp)
 
 	pklist[num_users].friend = tmp;
 	pklist[num_users].ui = uentp;
-#ifdef USE_OVERRIDE_IN_LIST	
+#ifdef USE_OVERRIDE_IN_LIST
 /* TODO */
 	if (uentp->pager)
 	{
@@ -108,7 +108,7 @@ static int malloc_ulist(USER_INFO *uentp)
 	else
 		pklist[num_users].override = 0;
 //	pklist[num_users].blacklist = in_blacklist(uentp->userid, curuser.userid);
-#endif	
+#endif
 	num_users++;
 
 	return 0;
@@ -126,7 +126,7 @@ static int ulist_max()
 	num_users = 0;
 	apply_ulist(malloc_ulist);
 	qsort(pklist, num_users, sizeof(struct pickup), pickup_cmp);
-	time(&pk_mtime);	
+	time(&pk_mtime);
 	return num_users;
 }
 
@@ -158,11 +158,11 @@ static char pagerchar(struct pickup *pkent, char ident)
 	}
 	else
 	{
-/*	
+/*
 		if (pkent->override)
 			return 'O';
-*/			
-		return ' ';	
+*/
+		return ' ';
 	}
 	return '*';
 }
@@ -206,22 +206,22 @@ static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, 
                                uentp->fakeuserid,
 #endif
 /* sarek:12/30/2000 濾除ANSI控制碼 */
-#ifndef KHBBS 
+#ifndef KHBBS
 			       (uentp->ident != 7) ? "中山遊客" : (strip_ansi ? esc_filter(uentp->username) : uentp->username),
 #else
 			       (uentp->ident != 7) ? "高資遊客" : (strip_ansi ? esc_filter(uentp->username) : uentp->username),
 #endif
 
-/* TODO 
+/* TODO
 			       uentp->home,
-*/			       
+*/
 			       uentp->from,
 			       (uentp->invisible ? 'C' : ' '),
-#ifdef USE_OVERRIDE_IN_LIST			       
+#ifdef USE_OVERRIDE_IN_LIST
 			       pagerchar(pkp, curuser.ident),
 #else
 			       (uentp->pager & 0x00FF) ? '*' : ' ',
-#endif			       
+#endif
 			       modestring(uentp, 1));
 			if (uentp->idle_time)
 				prints(" %2d", (uentp->idle_time > 100) ?
@@ -239,13 +239,13 @@ static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, 
 static void ulist_title()
 {
 	title_func((list_friend ? _msg_list_12 : _msg_list_13), BBSTITLE);
-	prints(_msg_list_5, _msg_list_4, msg_pickup_way[pickup_way], 
+	prints(_msg_list_5, _msg_list_4, msg_pickup_way[pickup_way],
 #ifndef IGNORE_CASE
         curuser.userid,
 #else
         curuser.fakeuserid,
 #endif
-	num_users, friends_number); 
+	num_users, friends_number);
 	prints(_msg_list_14,
        _msg_list_16, _msg_list_17, HAS_PERM(PERM_CLOAK) ? 'C' : ' ',
        _msg_list_18);
@@ -279,10 +279,10 @@ static int ucmd_sort()
 	if (cnt > 4)
 		time(&now);
 	if (cnt > 5)
-	{	
+	{
 		if (now - last_utime < 3)
 		{
-			msg("系統忙碌中, 請梢後...");		
+			msg("系統忙碌中, 請梢後...");
 			return C_NONE;
 		}
 		cnt = 0;
@@ -331,14 +331,14 @@ static int ucmd_help(int ent, struct pickup *pkent, char *direct)
 	if (curuser.userlevel > PERM_PAGE || curuser.ident == 7)
 		outs(_msg_list_7);
 	//outs("  [CTRL-D]         切換廣播呼喚鈴\n");	/* lang.h */
-#ifndef NSYSUBBS		
+#ifndef NSYSUBBS
 	if (HAS_PERM(PERM_SYSOP))
 		outs("\n 站長專用鍵\n\
    [i]          把壞蛋踢出去   [E]                  修改網友資料\n");	/* lang.h */
-#endif		
+#endif
 #ifdef USE_OVERRIDE_IN_LIST
 	outs("\n P欄位說明  *: 拒絕接受呼叫 O: 可接受強力呼叫");	/* lang.h */
-#endif	
+#endif
 	pressreturn();
 	return C_FULL;
 }
@@ -396,10 +396,10 @@ static int ucmd_refresh(int ent, struct pickup *pkent, char *direct)
 	if (cnt > 2)
 		time(&now);
 	if (cnt > 3)
-	{	
+	{
 		if (now - last_utime < 5)
 		{
-			msg("請稍後再試...");		
+			msg("請稍後再試...");
 			return C_NONE;
 		}
 		cnt = 0;
@@ -418,10 +418,10 @@ static int ucmd_addfriend(int ent, struct pickup* pkent, char *direct)
 		if (uentp->userid[0] && !pkent->friend)
 		{
 			char uident[IDLEN];
-			
+
 			xstrncpy(uident, uentp->userid, sizeof(uident));
 			friendAdd(uident, 'F');
-			/** 
+			/**
 			 ** friendAdd() will automatically call free_array() to
 			 ** to release friend cache
 			 **/
@@ -444,16 +444,16 @@ static int ucmd_delfriend(int ent, struct pickup *pkent, char *direct)
 		if (uentp->userid[0] && pkent->friend)
 		{
 			char uident[IDLEN];
-			
+
 			xstrncpy(uident, uentp->userid, sizeof(uident));
 			friendDelete(uident, 'F');
-			/** 
+			/**
 			 ** friendDelete() will automatically call free_array() to
 			 ** to release friend cache
 			 **/
 			friends_number--;
 /*			free_friend(&friend_cache);*/
-			malloc_array(&friend_cache, ufile_overrides);			
+			malloc_array(&friend_cache, ufile_overrides);
 			pkent->friend = 0;
 			return C_FULL;
 		}
@@ -504,7 +504,7 @@ static int ucmd_msq(int ent, struct pickup *pkent, char *direct)
 	if (uentp->userid[0])
 	{
 		char userid[IDLEN];
-		
+
 		xstrncpy(userid, uentp->userid, sizeof(userid));
 		SendMesgToSomeone(userid);
 		return C_FOOT;
@@ -560,8 +560,8 @@ static int ucmd_find(int ent, struct pickup *pkent, char *direct)
 {
 	if (getdata(b_line, 0, "尋找 : ", genbuf, 20, XECHO))	/* lang.h */
 	{
-		int j = ent % num_users;	
-		
+		int j = ent % num_users;
+
 		while (j != ent - 1)
 		{
 			if (strstr(pklist[j].ui->userid, genbuf)
@@ -590,10 +590,10 @@ struct one_key ulist_comms[] =
 	{CTRL('D'), ucmd_bpager}, /* sarek:03/20/2001:for preventing broadcast */
 	{'r', ucmd_query},
 	{'x', ucmd_mbox},
-#ifndef NSYSUBBS	
+#ifndef NSYSUBBS
 	{'E', ucmd_edituser},
 	{'i', ucmd_kick},
-#endif	
+#endif
 	{'u', ucmd_query},
 	{'a', ucmd_addfriend},
 	{'d', ucmd_delfriend},
@@ -609,8 +609,8 @@ struct one_key ulist_comms[] =
 
 static void pickup_user()
 {
-	malloc_array(&friend_cache, ufile_overrides);	
-	
+	malloc_array(&friend_cache, ufile_overrides);
+
 	cursor_menu(4, 0, NULL, ulist_comms, sizeof(struct pickup), &u_ccur,
 		    ulist_title, ulist_btitle, ulist_entry,
 		    ulist_get, ulist_max, NULL, 0, TRUE, SCREEN_SIZE-4);

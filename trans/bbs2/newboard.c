@@ -30,26 +30,26 @@ char *argv[];
 	}
 
 	strcpy(bh.title, argv[2]);
-#if 0	
+#if 0
 	if (get_passwd(NULL, argv[3]) <= 0)
 	{
 		fprintf(stderr, "bm is exist: %s\n", argv[3]);
 		exit(3);
 	}
 	strcpy(bh.owner, argv[3]);
-#endif	
+#endif
 #if 1
 	strcpy(bh.owner, "SYSOP");
-#endif	
+#endif
 	bh.level = atoi(argv[4]);
 	if (!strcmp(argv[5], "yes"))
 		bh.brdtype |= BRD_IDENT;
 	if (!strcmp(argv[6], "yes"))
 		bh.brdtype |= BRD_NEWS;
-		
+
 #if 1
 	bh.class = 's';
-#endif			
+#endif
 
 	if (new_board(&bh) <= 0)
 	{

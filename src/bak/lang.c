@@ -48,7 +48,7 @@ struct LANG *shm;
 			/* message text */
 			s = strchr(str+1, '"') + 1;
 			str = pool;
-re_read:			
+re_read:
 			while (*s != '\0' && *s != '"')
 			{
 				if (*s == '\n')
@@ -57,7 +57,7 @@ re_read:
 					s = buf;
 					goto re_read;
 				}
-				
+
 				if (*s == '\\')
 				{
 					s++;
@@ -141,7 +141,7 @@ char lang;
 		resolve_clangshm();
 		langshm = clangshm;
 		break;
-/* another language                     
+/* another language
  * case LANG_XXXX;
  * resolve_xlangshm();
  * langshm = xlangshm;

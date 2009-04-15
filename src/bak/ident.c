@@ -35,7 +35,7 @@ FILEHEADER *finfo;
 char *direct;
 {
 	char file1[PATHLEN];
-#ifdef NSYSUBBS	
+#ifdef NSYSUBBS
 	char file2[PATHLEN];
 #endif
 
@@ -343,7 +343,7 @@ x_idcheck()
 				if (*p == '\0')
 				{
 					static int i = 0;
-					
+
 					if (++i >= 3)
 					{
 						outs("\n");
@@ -374,7 +374,7 @@ x_idcheck()
 				else
 					break;
 				/*
-				 * not allow user use the e-mail address which 
+				 * not allow user use the e-mail address which
 				 * we do not trust in identification -- lthuang
 				 */
 				pressreturn();

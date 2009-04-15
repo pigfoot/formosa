@@ -18,8 +18,8 @@ void write_article_line(FILE *fp, char *data, int type)
 	char *p;
 	int line_length, size;
 
-	if(type != POST_NORMAL 
-	|| (line_length = strlen(data)) < WRAP_LEN)	
+	if(type != POST_NORMAL
+	|| (line_length = strlen(data)) < WRAP_LEN)
 	{
 		fprintf(fp, "%s\n", data);
 	}
@@ -27,7 +27,7 @@ void write_article_line(FILE *fp, char *data, int type)
 	{
 		size = WRAP_LEN;
 		p = data;
-	
+
 		do
 		{
 			fwrite(p, sizeof(char), size, fp);
@@ -49,15 +49,15 @@ void write_article_line(FILE *fp, char *data, int type)
  *		POST_SKIN	html file
  *		POST_NORMAL	normal text file
  *
- *	Attention: 
+ *	Attention:
  *		fp must open in advance
  *		destructive to data in pbuf
  *******************************************************************/
 void write_article_body(FILE *fp, char *data, int type)
 {
 	char *p, *pp, buffer[1024];
-	
-	while( (p = strstr(data, "%0D%0A")) != NULL 
+
+	while( (p = strstr(data, "%0D%0A")) != NULL
 		|| (p = strchr(data, '&')) != NULL
 		|| strlen(data)>0)
 	{
@@ -66,7 +66,7 @@ void write_article_body(FILE *fp, char *data, int type)
 
 		if(strlen(data) > sizeof(buffer))
 			data[sizeof(buffer)-1] = '\0';
-		
+
 		Convert(data, buffer);
 		/* convert </TEXT-AREA> to </TEXTAREA> */
 		if(type == POST_SKIN && (pp = strstr(buffer, "</TEXT-AREA>")) != NULL )
@@ -76,13 +76,13 @@ void write_article_body(FILE *fp, char *data, int type)
 		}
 		else
 			write_article_line(fp, buffer, type);
-		
+
 		if(p)
 			data = p+6;		/* strlen("%0D%0A") */
 		else
 			break;
 	}
-	
+
 }
 
 /*******************************************************************
@@ -101,7 +101,7 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	int sign_num, URLParaType = request_rec->URLParaType;
 	char fname[PATHLEN], post_path[PATHLEN], address[STRLEN], post_source[STRLEN], subject[STRLEN];
 	char buffer[STRLEN*3];
-	
+
 
 	if(URLParaType == PostSend
 	|| URLParaType == TreaSend)
@@ -113,32 +113,32 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			else
 				get_passwd(&curuser, username);
 		}
-	
+
 		if ((curuser.userlevel < board->level))
 		{
-			sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 一般區<BR>理由: 使用者等級 < %d", 
+			sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 一般區<BR>理由: 使用者等級 < %d",
 				username, board->filename, board->level);
 			return WEB_ERROR;
 		}
-		
+
 		if((board->brdtype & BRD_IDENT) && (curuser.ident != 7))
 		{
-			sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 一般區<BR>理由: 未通過身份認證", 
+			sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 一般區<BR>理由: 未通過身份認證",
 				username, board->filename);
 			return WEB_ERROR;
 		}
-		
-		
+
+
 	#if 0
 		make_treasure_folder(direct, title, NULL)
 	#endif
-	
+
 		/* treapost */
 		if(URLParaType == TreaSend)
 		{
 			if(!HAS_PERM(PERM_SYSOP) && strcmp(username, board->owner))
 			{
-				sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 精華區", 
+				sprintf(WEBBBS_ERROR_MESSAGE, "%s 無權張貼文章於 %s 精華區",
 					username, board->filename);
 				return WEB_ERROR;
 			}
@@ -148,12 +148,12 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	else	/* Send Mail */
 	{
 		int result;
-		
+
 		GetPara2(address, "ADDRESS", pbuf, STRLEN, "");
-		
+
 		if(!strcmp(address, "guest"))
 			return WEB_OK_REDIRECT;
-			
+
 		if((result = MailCheck(address)) != WEB_OK)
 			return result;
 	}
@@ -170,7 +170,7 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		if(!strcasecmp(buffer, "HTML"))
 			flag |= FILE_HTML;
 	}
-	
+
 	GetPara2(buffer, "SUBJECT", pbuf, STRLEN*3, "");
 	if (strlen(buffer) == 0)
 	{
@@ -186,7 +186,7 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		return WEB_ERROR;
 	}
 	pbuf = p+8;	/* point to content body */
-	
+
 	if(URLParaType == MailSend)
 		sprintf(fname, "tmp/webmail_%s.%-d", username, (int)request_rec->atime);
 	else
@@ -218,23 +218,23 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		sprintf(post_source, "%s WEB BBS", BBSTITLE);
 		write_article_header(fp, username, curuser.username, board->filename, NULL, subject, post_source);
 	}
-	
+
 	fputs("\n", fp);
 	write_article_body(fp, pbuf, flag & FILE_HTML ? POST_HTML : POST_NORMAL);
 	fclose(fp);
-	
+
 	if ((sign_num >= 1) && (sign_num <= MAX_SIG_NUM))
 		include_sig(username, fname, sign_num);
-	
+
 	if(URLParaType == PostSend)
 	{
 		if (!((board->brdtype & BRD_NEWS) && curuser.ident == 7))
 			tonews = FALSE;
 #ifdef USE_THREADING	/* syhu */
-		if (PublishPost(fname, username, curuser.username, board->filename, 
+		if (PublishPost(fname, username, curuser.username, board->filename,
 				subject, curuser.ident,	request_rec->fromhost, tonews, NULL, flag, -1, -1) == -1)
 #else
-		if (PublishPost(fname, username, curuser.username, board->filename, 
+		if (PublishPost(fname, username, curuser.username, board->filename,
 				subject, curuser.ident,	request_rec->fromhost, tonews, NULL, flag) == -1)
 #endif
 		{
@@ -244,12 +244,12 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		}
 	}
 	else if(URLParaType == TreaSend)
-	{ 
+	{
 #ifdef USE_THREADING	/* syhu */
-		if (PublishPost(fname, username, curuser.username, board->filename, 
+		if (PublishPost(fname, username, curuser.username, board->filename,
 				subject, curuser.ident,	request_rec->fromhost, FALSE, post_path, flag, -1, -1) == -1)
 #else
-		if (PublishPost(fname, username, curuser.username, board->filename, 
+		if (PublishPost(fname, username, curuser.username, board->filename,
 				subject, curuser.ident,	request_rec->fromhost, FALSE, post_path, flag) == -1)
 #endif
 		{
@@ -267,9 +267,9 @@ int PostArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			return WEB_ERROR;
 		}
 	}
-	
+
 	unlink(fname);
-	
+
 #ifdef WEB_EVENT_LOG
 	if(URLParaType == MailSend)
 		sprintf(log, "%s FROM=\"%s\" TO=\"%s\" SJT=\"%s\" UA=\"%s\"", POST_MailSend, username, address, subject, request_rec->user_agent);
@@ -294,7 +294,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	char fname[PATHLEN], subject[STRLEN];
 	char ori_header[STRLEN*6];	/* save original header */
 	char buffer[STRLEN*3];
-	
+
 	/*
 		to do: pf->POST_NAME pf->fh.filename
 	*/
@@ -305,7 +305,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		settreafile(pf->POST_NAME, board->filename, fname);
 	else
 		return WEB_ERROR;
-	
+
 	if(GetPostInfo(board, pf) != WEB_OK)
 	{
 		return WEB_FILE_NOT_FOUND;
@@ -327,7 +327,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 
 	GetPara2(buffer, "SIGN", pbuf, 3, "-1");		/* signature select */
 	sign_num = atoi(buffer);
-	
+
 	GetPara2(buffer, "SUBJECT", pbuf, STRLEN*3, "");
 	if (strlen(buffer) == 0)
 	{
@@ -350,7 +350,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	}
 	ori_header[0] = 0x00;
 	p = ori_header;
-	
+
 	while(fgets(buffer, sizeof(buffer), fp))
 	{
 		if(*buffer == '\n')
@@ -367,7 +367,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		p += strlen(p);
 	}
 	fclose(fp);
-	
+
 	if((fp = fopen(pf->POST_NAME, "w")) == NULL)
 	{
 		strcpy(WEBBBS_ERROR_MESSAGE, "無法開啟佈告檔案");
@@ -384,7 +384,7 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 #ifdef USE_IDENT
 	sprintf(buffer, "--\n* Origin: %s * From: %s [%s通過認證]\n",
 		BBSTITLE, request_rec->fromhost, (curuser.ident == 7) ? "已" : "未");
-#else	
+#else
 	sprintf(buffer, "--\n* Origin: %s * From: %s\n", BBSTITLE, request_rec->fromhost);
 #endif
 
@@ -401,13 +401,13 @@ int EditArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 	}
 
 #ifdef WEB_EVENT_LOG
-	sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+	sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
 		POST_PostEdit, username, board->filename, subject, request_rec->user_agent);
 #endif
 
 	return WEB_OK_REDIRECT;
 }
-	
+
 
 /***********************************************************
  *	標記刪除指定佈告檔案
@@ -423,12 +423,12 @@ int DeleteArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 
 	GetPara2(fname, "NUM", pbuf, 7, "-1");
 	pf->num = atoi(fname);
-	
+
 	/*
 		to do: pf->POST_NAME pf->fh.filename
 	*/
 	xstrncpy(fname, pf->POST_NAME, PATHLEN);
-	
+
 	if(request_rec->URLParaType == PostDelete)
 		setboardfile(pf->POST_NAME, board->filename, fname);
 	else if(request_rec->URLParaType == TreaDelete)
@@ -437,7 +437,7 @@ int DeleteArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 		setmailfile(pf->POST_NAME, username, fname);
 	else
 		return WEB_ERROR;
-	
+
 #if 0
 	sprintf(WEBBBS_ERROR_MESSAGE, "pf->POST_NANE=%s", pf->POST_NAME);
 	return WEB_ERROR;
@@ -459,15 +459,15 @@ int DeleteArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 			return WEB_ERROR;
 		}
 	}
-	
+
 	if(delete_one_article(pf->num, &(pf->fh), fname, username, 'd'))
 	{
 		strcpy(WEBBBS_ERROR_MESSAGE, "delete_one_article error");
 		return WEB_ERROR;
 	}
-	
-	if(request_rec->URLParaType == MailDelete 
-	|| request_rec->URLParaType == TreaDelete 
+
+	if(request_rec->URLParaType == MailDelete
+	|| request_rec->URLParaType == TreaDelete
 #ifdef NSYSUBBS
 	|| (!strcmp(username, "supertomcat") && strcmp(username, pf->fh.owner))
 #endif
@@ -476,10 +476,10 @@ int DeleteArticle(char *pbuf, BOARDHEADER *board, POST_FILE *pf)
 
 #ifdef WEB_EVENT_LOG
 	if(request_rec->URLParaType == MailDelete)
-		sprintf(log, "%s ID=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+		sprintf(log, "%s ID=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			POST_MailDelete, username, pf->fh.title, request_rec->user_agent);
 	else
-		sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"", 
+		sprintf(log, "%s ID=\"%s\" BRD=\"%s\" SJT=\"%s\" UA=\"%s\"",
 			POST_PostDelete, username, board->filename, pf->fh.title, request_rec->user_agent);
 #endif
 
@@ -493,13 +493,13 @@ static char *mp;
 char *mgets(char *s, int n, char *mem, int msize)
 {
 	char *p;
-	
+
 	if(mem == NULL
 	|| s == NULL)
 		return NULL;
-	
-	
-	
+
+
+
 }
 #endif
 
@@ -525,7 +525,7 @@ typedef struct
  *	body_only:	只輸出文章內容，不包含檔頭 (發信人,標題,發信站..等)
  *	process: 	要不要處理 ansi code 和 hyperlink
  *
- *	return 
+ *	return
  *******************************************************************/
 
 #define HyperLinkType	5	/* num of hyper link type to parse */
@@ -540,7 +540,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 #endif
 	char *p, *data;
 	BOOL inHeader = TRUE;
-	
+
 #if 0
 	char *AnsiColor[] =
 	{"30", "31", "32", "33", "34", "35", "36", "37"};
@@ -551,13 +551,13 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 	/* HiColor */
 	"8f8f8f", "ff0000", "00ff00", "ffff00", "0000ff", "ff00ff", "00ffff", "ffffff"};
 
-	HYPER_LINK hlink[] = 
+	HYPER_LINK hlink[] =
 	{
-	/* 
+	/*
 		format:
-		hyperlink keyword, keyword length, hyperlink legal character , open target 
+		hyperlink keyword, keyword length, hyperlink legal character , open target
 	*/
-		
+
 		{"http", 4, "./:~?'=-_!&%#%\\", " TARGET=\"new\""},
 		{"ftp", 3, "./:@-_&%", " TARGET=\"new\""},
 		{"news", 4, "./:", "\0"},
@@ -583,15 +583,15 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 	struct stat fstat;
 	stat(filename, &fstat);
 	fsize = fstat.st_size;
-	
-	fp = (char *) mmap((caddr_t) 0, 
-		(size_t)(fsize), 
-		(PROT_READ), 
+
+	fp = (char *) mmap((caddr_t) 0,
+		(size_t)(fsize),
+		(PROT_READ),
 		MAP_SHARED, fd, (off_t) 0);
 
 	if(fp == MAP_FAILED)
 	{
-		sprintf(WEBBBS_ERROR_MESSAGE, "mmap failed: %s %d", 
+		sprintf(WEBBBS_ERROR_MESSAGE, "mmap failed: %s %d",
 			strerror(errno), (int)fsize);
 		close(fd);
 		return FALSE;
@@ -613,9 +613,9 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				if((p = strchr(pbuf, '\n')) != NULL)
 					*p = '\0';
 				data = pbuf;
- 			
+
  				/* find </TEXTAREA> */
- 				if((p = strstr(data, "</"))!=NULL 
+ 				if((p = strstr(data, "</"))!=NULL
  				&& !strncasecmp(p+2, "TEXTAREA>", 9))
  				{
  					*p = '\0';
@@ -637,17 +637,17 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				fwrite(pbuf, 1, size, fp_out);
 		#endif
  		}
- 		
+
 		fclose(fp);
 		return TRUE;
 	}
-	
+
 	if(request_rec->URLParaType != PostRead
 	&& request_rec->URLParaType != TreaRead
 	&& request_rec->URLParaType != MailRead)
 		inHeader = FALSE;
 
-#ifdef USE_FP	
+#ifdef USE_FP
 	while (fgets(pbuf, sizeof(pbuf), fp))
 #else
 	while (mgets(pbuf, sizeof(pbuf), fp))
@@ -658,29 +658,29 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 		buffer[0] = '\0';
 		data = pbuf;
-		
+
 		if(inHeader && *data == '\0')
 		{
 			inHeader = FALSE;
 			fprintf(fp_out, "\r\n");
 			continue;
 		}
-		
+
 		if(body_only)		/* skip article header and footer */
 		{
-			
+
 			if(inHeader)
 				continue;
-			
+
 		#if 1
-			/* 
+			/*
 				break if find "--\r\n" when PostRead (signature below --)
 				TreaRead and MailRead should continue
 			*/
 			if(!strcmp(data, "--") && request_rec->URLParaType == PostRead)
 				break;
 		#endif
-		
+
 			if(!process)
 			{
 				if(!strcmp(data, "--"))
@@ -694,12 +694,12 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				}
 			}
 		}
-		
+
 		if(inHeader)
 		{
 			souts(data, sizeof(pbuf));
 		}
-		
+
 #ifdef QP_BASE64_DECODE
 		if((p = strstr(data, "=?")) != NULL) /* content maybe encoded */
 		{
@@ -719,7 +719,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 			int color;
 			int end = FALSE, skip=FALSE;
 			char *ansi_str = ansi_code;
-			
+
 #if 0
 			fprintf(fp_out, "<DATA=%s>\n", data);
 			fflush(fp_out);
@@ -727,49 +727,49 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 			*p = '\0';
 			p+=2;
-			
+
 			strcat(buffer, data);
-			
+
 			for(i=0;i<32;i++)
 				if(*(p+i) == 'm')
 					break;
-			
+
 			if(i>=32)
 			{
 				fprintf(fp_out, "\r\n<!--ANSI CODE FORMAT ERROR-->\r\n");
 				data += 2;
 				continue;
 			}
-			
+
 			xstrncpy(ansi_str, p, i+1);
 
 #if 0
 			fprintf(fp_out, "<ANSI=%s LEN=%d>", ansi_code, strlen(ansi_code));
 #endif
-			
+
 			data = p + i + 1;
-			
+
 			if(i == 0)	/* case: \033[m */
 			{
 				font_color = 7;
 				font_hilight = 0;
 			}
-			
+
 			/* parse ansi control code */
-				
+
 			while(*ansi_str)
 			{
 				if((p = strchr(ansi_str, ';')) != NULL)
 					*p = 0x00;
 				else
 					end = TRUE;
-				
+
 				color = atoi(ansi_str);
 #if 0
 				fprintf(fp_out, "<token=%d>",color);
 				fflush(fp_out);
 #endif
-				
+
 				/* 1: hi light, 5: blink, 7: reverse */
 				if(color == 0)			/* reset */
 				{
@@ -789,21 +789,21 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 					ansi_str = p + 1;
 				else
 					break;
-				
+
 			}
-			
+
 			if(skip == FALSE)
 			{
 				sprintf(FontStr, "<FONT COLOR=\"#%s\">", HTMLColor[font_color + (font_hilight == 1 ? 8 : 0)]);
 				strcat(buffer, FontStr);
 			}
 		}
-		
+
 		strcat(buffer, data);
 		xstrncpy(pbuf, buffer, sizeof(pbuf));
 		data = pbuf;
 		buffer[0]='\0';
-		
+
 #endif	/* PARSE_ANSI */
 
 
@@ -818,32 +818,32 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 		while((p = strstr(data, "://")) != NULL)
 		{
 			int type;
-			
+
 			for(type=0; type<HyperLinkType; type++)
 				if(!strncasecmp(p-(hlink[type].len), hlink[type].type, hlink[type].len))
 					break;
-			
+
 			/* exam article content for hyperlink */
 			if(type < HyperLinkType)
 	 		{
  				p -= hlink[type].len;
-			
-			/* 
-				ignore '<a href' HTML Tag 
+
+			/*
+				ignore '<a href' HTML Tag
 					ie: <a href="http://www.nsysu.edu.tw"> www homepage</a>
 					ie: <a href=http://www.nsysu.edu.tw> www homepage</a>
-				ignore '<img src' HTML Tag 
+				ignore '<img src' HTML Tag
 					ie: <img src="http://www.nsysu.edu.tw/title.jpg">
 					ie: <img src=http://www.nsysu.edu.tw/title.jpg>
-				ignore '<body background' HTML Tag 
+				ignore '<body background' HTML Tag
 					ie: <body background="http://www.wow.org.tw/show/m-9.jpg"
 				ignore 'URL' HTML Tag
 			*/
-				if(!strncasecmp((p-5), "href", 4) 
+				if(!strncasecmp((p-5), "href", 4)
 				|| !strncasecmp((p-6), "href", 4)
-				|| !strncasecmp((p-4), "src", 3) 
+				|| !strncasecmp((p-4), "src", 3)
 				|| !strncasecmp((p-5), "src", 3)
-				|| !strncasecmp((p-11), "background", 10) 
+				|| !strncasecmp((p-11), "background", 10)
 				|| !strncasecmp((p-12), "background", 10)
 				|| !strncasecmp((p-4), "URL=", 4))
 				{
@@ -855,8 +855,8 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 				{
 					char url[256];
 					int i = hlink[type].len + 3;
-					
-					while(((*(p+i) > 0x00) 
+
+					while(((*(p+i) > 0x00)
 					&& ((isalnum((int)*(p+i)) || (strchr(hlink[type].allow, (int)*(p+i)) != NULL)))))
 					{
 #if 0
@@ -864,7 +864,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 #endif
 						i++;
 					}
-					
+
 					if(i > hlink[type].len + 3)
 					{
 						xstrncpy(url, p, i+1);
@@ -874,12 +874,12 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 						*p = '\0';
 						fprintf(fp_out, "%s<A HREF=\"%s\"%s>%s</A>", data, url, hlink[type].target, url);
 					}
-					
+
 					data = p + i;
 #if 0
 					printf("[data5=%d, %d, %d, %d, %d, %d, %d]\n", *(data-4), *(data-3), *(data-2), *(data-1), *data, *(data+1), *(data+2));
 #endif
-					
+
 				}
 			}
 			else
@@ -894,7 +894,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 
 		fprintf(fp_out, "%s\n",data);
 	}
-	
+
 	fclose(fp);
 	return TRUE;
 }

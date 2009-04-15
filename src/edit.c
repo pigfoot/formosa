@@ -64,8 +64,8 @@ static struct textline *forward_line(register struct textline *pos, register int
 }
 
 
-/* 
- * get the number of this line in the current window 
+/*
+ * get the number of this line in the current window
  */
 static int getlineno()
 {
@@ -196,8 +196,8 @@ static void split(register struct textline *line, register int pos)
 /*
  * join connects 'line' and the next line.  It returns true if:
  *
- * 1) lines were joined and one was deleted 
- * 2) lines could not be joined 
+ * 1) lines were joined and one was deleted
+ * 2) lines could not be joined
  * 3) next line is empty
  *
  * returns false if:
@@ -473,7 +473,7 @@ static void vedit_exit()
 	}
 
 	currline = NULL;
-/*      
+/*
  * lastline = NULL;
  * firstline = NULL;
  */
@@ -514,7 +514,7 @@ static int write_file(char *filename, char *saveheader, char *bname)
 
 	if (saveheader)
 	{
-/*	
+/*
 		write_article_header(fpw, curuser.userid, curuser.username, bname,
 				     NULL, saveheader, NULL);
 */
@@ -522,7 +522,7 @@ static int write_file(char *filename, char *saveheader, char *bname)
                 write_article_header(fpw, strcasecmp(curuser.fakeuserid, curuser.userid)? curuser.userid:curuser.fakeuserid, uinfo.username, bname,
 #else
                 write_article_header(fpw, curuser.userid, uinfo.username, bname,
-#endif				     
+#endif
 				     NULL, saveheader, NULL);
 		fputs("\n", fpw);
 	}
@@ -617,8 +617,8 @@ static void vedit_help()
 }
 
 
-/* 
- * include signature: support multiple signatures 
+/*
+ * include signature: support multiple signatures
  */
 static void do_article_sig(const char *wfile)
 {
@@ -671,12 +671,12 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 
 
 	sethomefile(bakfile, curuser.userid, UFNAME_EDIT);
-	
-	if ((saveheader || uinfo.mode == EDITPLAN || uinfo.mode == EDITBMWEL) 
+
+	if ((saveheader || uinfo.mode == EDITPLAN || uinfo.mode == EDITBMWEL)
 	    && isfile(bakfile)	/* lthuang */
-#ifdef GUEST	
+#ifdef GUEST
 	 && strcmp(curuser.userid, GUEST)
-#endif	 
+#endif
 	 )
 	{
 		clear();

@@ -14,8 +14,8 @@
  *******************************************************************/
 
 /* Option to i_read() powerful readmenu function */
-#define IREAD_BOARD	  0x01 
-#define IREAD_MAIL    0x02    
+#define IREAD_BOARD	  0x01
+#define IREAD_MAIL    0x02
 #define IREAD_ICHECK  0x03
 #define IREAD_IFIND   0x04
 
@@ -32,17 +32,17 @@
 #define C_REDO 0x800
 
 /* Used for the getchar routine select call */
-#define I_TIMEOUT   (0x180)	
+#define I_TIMEOUT   (0x180)
 #define I_OTHERDATA (0x181)
 
-#define SCREEN_SIZE 	(23)    
+#define SCREEN_SIZE 	(23)
 
 #define TTLEN	60        /* -ToDo- Length of article title */
 
 /*******************************************************************
  *	structure define
  *******************************************************************/
-struct commands {		
+struct commands {
 	char key;
 	unsigned int level;
 	struct commands *comm;

@@ -22,22 +22,22 @@ malloc_board(binfr)
 struct board_t *binfr;
 {
 	int rank;
-	
+
 	if (!can_see_board(&(binfr->bhr), curuser.userlevel))
 		return -1;
 
 	if (num_brds >= num_alloc_brds)	/* lthuang: 99/08/20 debug */
 		return -1;
-	rank = binfr->rank;		
+	rank = binfr->rank;
 	if (rank < 1 || rank > num_alloc_brds)	/* debug */
 		return -1;
-		
+
 	if ((binfr->bhr.brdtype & BRD_UNZAP)
 	    || !(ZapRC_IsZapped(binfr->bhr.bid, binfr->bhr.ctime) && (curuser.flags[0] & YANK_FLAG)))
 	{
 		all_brds[rank - 1].enter_cnt = 0;
 #ifdef USE_VOTE
-		all_brds[rank - 1].voting = 
+		all_brds[rank - 1].voting =
 				is_new_vote(binfr->bhr.filename, curuser.lastlogin);
 #endif
 		all_brds[rank - 1].bcur = 0;	/* init */
@@ -47,7 +47,7 @@ struct board_t *binfr;
 		num_brds++;
 		return 0;
 	}
-	
+
 	return -1;
 }
 
@@ -69,7 +69,7 @@ CreateBoardList()
 		all_brds = NULL;
 	}
 	num_alloc_brds = resolve_brdshm();
-	num_brds = 0;						      	
+	num_brds = 0;
 	if (!all_brds)
 	{
 		if ((all_brds = (struct BoardList *) calloc(1, sizeof(struct BoardList) *
@@ -77,7 +77,7 @@ CreateBoardList()
 		{
 			return num_brds;
 		}
-	}						     
+	}
 
 	ZapRC_Init(curuser.userid);
 
@@ -85,7 +85,7 @@ CreateBoardList()
 #if 0
 	qsort(all_brds, num_brds, sizeof(struct BoardList), cmp_bname);
 #else
-	{ 
+	{
 	int i, j;
 	/*ARGUSED*/
 	for (i = 0; i < num_brds; i++)
@@ -105,12 +105,12 @@ CreateBoardList()
 	}
 	}
 #endif
-	
+
 #if 0
-	/* 為配合主選單的 (R)ead 功能 */	
+	/* 為配合主選單的 (R)ead 功能 */
 	curbe = &(all_brds[0]);
 	CurBList = all_brds[0].bhr;
-#endif	
+#endif
 
 	return num_brds;
 }
@@ -123,9 +123,9 @@ char *data;
 BOOL simple;
 {
 	struct word *bwtop = NULL;
-	int i;	
-	
-	
+	int i;
+
+
 	if (!num_brds)
 	{
 		CreateBoardList();
@@ -183,7 +183,7 @@ unsigned bid;
 	if (bid >= 1 && bid <= MAXBOARD)
 	{
 		int i;
-		
+
 		for (i = 0; i < num_brds; i++)
 		{
 			if (all_brds[i].bhr->bid == bid)
@@ -202,8 +202,8 @@ select_board()
 
 	if (namecomplete_board(NULL, bname, FALSE) == 0)
 	{
-		struct BoardList *be1;	
-		
+		struct BoardList *be1;
+
 		if ((be1 = SearchBoardList(bname)) != NULL)
 		{
 			curbe = be1;
@@ -309,7 +309,7 @@ int start, total;
 {
 	register int i, len = strlen(nbuf);
 	struct BoardList *s;
-	
+
 
 	if (depth_class >= 1)
 		s = all_cs;
@@ -460,7 +460,7 @@ char *direct;
 	if (depth_class >= 1)
 	{
 		struct BoardList *be1;
-		
+
 		if ((be1 = SearchBoardList(bent->bhr->filename)) == NULL)
 			return C_LOAD;
 		curbe = be1;
@@ -506,9 +506,9 @@ static struct one_key board_comms[] =
 	{'Z', bcmd_zap},
 	{'/', bcmd_jump},
 	{'\t', bcmd_treasure},
-#if 1	
+#if 1
 	{'C', bcmd_show_posts},
-#endif	
+#endif
 	{0, NULL}
 };
 
@@ -516,11 +516,11 @@ static struct one_key board_comms[] =
 int
 Boards()
 {
-	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList), 
-			&board_ccur,board_title, board_btitle, board_entry, 
+	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
+			&board_ccur,board_title, board_btitle, board_entry,
 			board_get, board_max, board_findkey, 0, TRUE, SCREEN_SIZE-4);
 
-	/* reload previous menu */			
+	/* reload previous menu */
 	return C_LOAD;
 }
 
@@ -552,7 +552,7 @@ int size;
 			all_cs[num_class].cid = csi->cid;
 			num_class++;
 		}
-		else		
+		else
 		{
 			if ((be1 = SearchBoardList_by_bid(csi->bid)) != NULL)
 				memcpy(&(all_cs[num_class++]), be1, sizeof(struct BoardList));
@@ -588,7 +588,7 @@ Class()
 	for (;;)
 	{
 		if (cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
-				&class_ccur, board_title, board_btitle,	board_entry, 
+				&class_ccur, board_title, board_btitle,	board_entry,
 				class_get, class_max, board_findkey, 0, TRUE, SCREEN_SIZE-4) == 0)
 		{
 			if (--depth_class < 1)
@@ -599,6 +599,6 @@ Class()
 	}
 	depth_class = 0;
 
-	/* reload previous menu */				
+	/* reload previous menu */
 	return C_LOAD;
 }

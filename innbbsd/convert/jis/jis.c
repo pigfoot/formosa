@@ -7,12 +7,12 @@ Author:  Ken R. Lunde, Adobe Systems Incorporated
   MAIL : 1585 Charleston Road, P.O. Box 7900, Mountain View, CA 94039-7900
 Type:    A utility for converting the kanji code of Japanese textfiles.
 Code:    ANSI C (portable)
- 
+
 PORTABILITY:
 This source code was written so that it would be portable on C compilers which
 conform to the ANSI C standard. It has been tested on the following compilers:
 THINK C (Macintosh), Vax C, Convex's C, Turbo C, and GNU C.
- 
+
 There are 4 lines which have been commented out. These lines of code are
 necessary to develop a program which handles command-line arguments on a
 Macintosh. I used THINK C as my development platform. I left these lines in
@@ -21,7 +21,7 @@ you who wish to use this program on the Macintosh, simply delete the comments
 from those 4 lines of code, add the ANSI library to the THINK C project, and
 then build the application. You then have a double-clickable application,
 which when launched, will greet you with a Macintosh-style interface.
- 
+
 DISTRIBUTION AND RESTRICTIONS ON USAGE:
  1) Please give this source code away to your friends at no charge.
  2) Please try to compile this source code on various platforms to check for
@@ -37,7 +37,7 @@ DISTRIBUTION AND RESTRICTIONS ON USAGE:
  6) The most current version can be obtained through FTP at ucdavis.edu
     (128.120.2.1) in the pub/JIS/C directory, or by requesting a copy
     directly from me.
- 
+
 DESCRIPTION:
  1) Supports Shift-JIS, EUC, New-JIS, Old-JIS, and NEC-JIS for both input and
     output.
@@ -53,24 +53,24 @@ DESCRIPTION:
  5) If the input file does not contain any Japanese, then the input file's
     contents are simply echoed to the output file. This adds reliability in
     case this program were used as a filter for incoming/outgoing mail.
- 
+
 OPERATION:
  1) The UNIX-style command-line is
- 
+
     jis [-kanji-code] [-half-to-full] [infile] [outfile]
- 
+
     The [-kanji-code] and [-half-to-full] flags can be in any order, but MUST
     come before the file names (if used). Note that [infile] and [outfile] can
     be replaced by redirecting stdin/stdout on UNIX systems.
  2) The [-kanji-code] flag, which determines the outfile's kanji code, can be
     1 of 5 possible values:
- 
+
     -j    =    New-JIS (.new)
     -o    =    Old-JIS (.old)
     -n    =    NEC-JIS (.nec)
     -e    =    EUC (.euc)
     -s    =    Shift-JIS (.sjs)
- 
+
     Upper- and lower-case are acceptable. The default kanji code flag (if the
     user doesn't select one) is -s (Shift-JIS).
  3) The [-half-to-full] flag, which determines whether to convert half-size
@@ -87,36 +87,36 @@ OPERATION:
     the string at that point, and tacks on one of 5 possible extensions (they
     are listed under (2 above). Here are some example command lines, and the
     resulting outfile names:
- 
+
     a) jis -e sig.jpn                     = sig.euc
     b) jis sig.jpn                        = sig.sjs (defaulted to Shift-JIS)
     c) jis -j sig.jpn.txt                 = sig.jpn.new
     d) jis -o sig                         = sig.old
- 
+
     This is very useful for MS-DOS users since a filename such as sig.jpn.new
     will not result in converting a file called sig.jpn.
- 
+
     Also note that if the outfile and infile have the same name, the program
     will not work, and data will be lost. I tried to build safe-guards against
     this. For example, note how my program will change the outfile name so
     that it does not overwrite the infile:
-    
+
     a) jis -f sig.sjs                     = sig-.sjs
     b) jis -f sig.sjs sig.sjs             = sig-.sjs
     c) jis sig-.sjs                       = sig--.sjs
-    
+
     If only the [infile] is given, a hyphen is inserted after the last period,
     and the extension is then reattached. If the outfile is specified by the
     user, then it will search for the last period (if any), attach a hyphen,
     and finally attach the proper extension). This sort of protection is NOT
     available from this program if stdin/stdout are used.
 */
- 
+
 /* #include <console.h>
 #include <stdlib.h> */
 #include <stdio.h>
 #include <string.h>
- 
+
 #define NOT_SET     0
 #define SET         1
 #define NEW         1
@@ -145,7 +145,7 @@ OPERATION:
 #define NOTEUC(A,B) (((A >= 129) && (A <= 159)) && ((B >= 64) && (B <= 160)))
 #define ISMARU(A)   ((A >= 202) && (A <= 206))
 #define ISNIGORI(A) (((A >= 182) && (A <= 196)) || ((A >= 202) && (A <= 206)))
- 
+
 void han2zen(FILE *in,int *ptr1,int *ptr2,int incode);
 void SkipESCSeq(FILE *in,int data,int *ptr);
 void sjis2jis(int *ptr1,int *ptr2);
@@ -164,15 +164,15 @@ void KanjiIn(FILE *out,int data);
 void KanjiOut(FILE *out,int data);
 /* int ccommand(char ***p); */
 int DetectCodeType(FILE *in);
- 
+
 main(int argc,char **argv)
 {
   FILE *in,*out;
   char infilename[100],outfilename[100],extension[5];
   int c,incode,tofullsize = FALSE,outcode = NOT_SET;
- 
+
 /*  argc = ccommand(&argv); */
- 
+
   while ((--argc > 0 ) && ((*++argv)[0] == '-')) {
     while (c = *++argv[0]) {
       switch (c) {
@@ -307,7 +307,7 @@ main(int argc,char **argv)
   }
   exit(0);
 }
- 
+
 void SkipESCSeq(FILE *in,int temp,int *shifted_in)
 {
   if ((temp == '$') || (temp == '('))
@@ -317,7 +317,7 @@ void SkipESCSeq(FILE *in,int temp,int *shifted_in)
   else
     *shifted_in = FALSE;
 }
- 
+
 void KanjiIn(FILE *out,int outcode)
 {
   switch (outcode) {
@@ -332,7 +332,7 @@ void KanjiIn(FILE *out,int outcode)
       break;
   }
 }
- 
+
 void KanjiOut(FILE *out,int outcode)
 {
   switch (outcode) {
@@ -347,7 +347,7 @@ void KanjiOut(FILE *out,int outcode)
       break;
   }
 }
- 
+
 void sjis2jis(int *p1, int *p2)
 {
 	register unsigned char c1 = *p1;
@@ -355,34 +355,34 @@ void sjis2jis(int *p1, int *p2)
 	register int adjust = c2 < 159;
 	register int rowOffset = c1 < 160 ? 112 : 176;
 	register int cellOffset = adjust ? (31 + (c2 > 127)) : 126;
- 
+
 	*p1 = ((c1 - rowOffset) << 1) - adjust;
 	*p2 -= cellOffset;
 }
- 
+
 void jis2sjis(int *p1, int *p2)
 {
 	register unsigned char c1 = *p1;
 	register unsigned char c2 = *p2;
 	register int rowOffset = c1 < 95 ? 112 : 176;
 	register int cellOffset = c1 % 2 ? 31 + (c2 > 95) : 126;
- 
+
 	*p1 = ((c1 + 1) >> 1) + rowOffset;
 	*p2 = c2 + cellOffset;
 }
- 
+
 void echo2file(FILE *in,FILE *out)
 {
   int p1;
- 
+
   while ((p1 = getc(in)) != EOF)
     fprintf(out,"%c",p1);
 }
- 
+
 void shift2seven(FILE *in,FILE *out,int outcode,int incode)
 {
   int shifted_in,p1,p2;
-  
+
   shifted_in = FALSE;
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
@@ -431,7 +431,7 @@ void shift2seven(FILE *in,FILE *out,int outcode,int incode)
   if (shifted_in)
     KanjiOut(out,outcode);
 }
- 
+
 void shift2euc(FILE *in,FILE *out,int incode,int tofullsize)
 {
   int p1,p2;
@@ -475,11 +475,11 @@ printf("%c",p1);
     }
   }
 }
- 
+
 void euc2seven(FILE *in,FILE *out,int outcode,int incode)
 {
   int shifted_in,p1,p2;
- 
+
   shifted_in = FALSE;
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
@@ -531,11 +531,11 @@ void euc2seven(FILE *in,FILE *out,int outcode,int incode)
   if (shifted_in)
     KanjiOut(out,outcode);
 }
- 
+
 void euc2shift(FILE *in,FILE *out,int incode,int tofullsize)
 {
   int p1,p2;
- 
+
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
       case FF :
@@ -572,11 +572,11 @@ void euc2shift(FILE *in,FILE *out,int incode,int tofullsize)
     }
   }
 }
- 
+
 void seven2shift(FILE *in,FILE *out)
 {
   int shifted_in,temp,p1,p2;
- 
+
   shifted_in = FALSE;
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
@@ -598,11 +598,11 @@ void seven2shift(FILE *in,FILE *out)
     }
   }
 }
-  
+
 void seven2euc(FILE *in,FILE *out)
 {
   int shifted_in,temp,p1,p2;
- 
+
   shifted_in = FALSE;
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
@@ -631,11 +631,11 @@ void seven2euc(FILE *in,FILE *out)
     }
   }
 }
- 
+
 void seven2seven(FILE *in,FILE *out,int outcode)
 {
   int shifted_in,temp,p1,p2;
- 
+
   shifted_in = FALSE;
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
@@ -669,11 +669,11 @@ void seven2seven(FILE *in,FILE *out,int outcode)
   if (shifted_in)
     KanjiOut(out,outcode);
 }
- 
+
 void euc2euc(FILE *in,FILE *out,int incode,int tofullsize)
 {
   int p1,p2;
- 
+
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
       case FF :
@@ -701,11 +701,11 @@ void euc2euc(FILE *in,FILE *out,int incode,int tofullsize)
     }
   }
 }
- 
+
 void shift2shift(FILE *in,FILE *out,int incode,int tofullsize)
 {
   int p1,p2;
-  
+
   while ((p1 = getc(in)) != EOF) {
     switch (p1) {
       case CR :
@@ -731,11 +731,11 @@ void shift2shift(FILE *in,FILE *out,int incode,int tofullsize)
     }
   }
 }
- 
+
 int DetectCodeType(FILE *in)
 {
   int p1,p2,p3,whatcode;
- 
+
   whatcode = NOT_SET;
   while (((p1 = getc(in)) != EOF) &&
   ((whatcode == NOT_SET) || (whatcode == EUC))) {
@@ -763,11 +763,11 @@ int DetectCodeType(FILE *in)
   }
   return whatcode;
 }
- 
+
 void han2zen(FILE *in,int *one,int *two,int incode)
 {
   int junk,maru,nigori;
- 
+
   maru = nigori = FALSE;
   if (incode == SJIS) {
     *two = getc(in);

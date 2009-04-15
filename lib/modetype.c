@@ -1,5 +1,5 @@
-/* 
-  see mode in struct user_info in struct.h 
+/*
+  see mode in struct user_info in struct.h
   enum mode declare in modes.h
 */
 
@@ -34,26 +34,26 @@ static char * ModeType[] = {
 
 	/* CHATROOM */ "聊天室",
 	/* CHATROOM2 for nsysubbs */ "知心茶室",
-#if 0	
+#if 0
 	/* IRCCHAT */ "國內聊天廣場",
 	/* LOCALIRC */ "跨站聊天廣場",
-#endif	
+#endif
 	/* SENDMSG */ "送訊息",
 /*
 	ULDL "傳檔",
-*/	
+*/
 	/* QUERY */ "查詢某人",
 	/* SELECT */ "選看板",
 	/* EDITSIG */ "編簽名檔",
 	/* EDITPLAN */ "編名片檔",
 	/* OVERRIDE */ "編好友名單",
-	/* BLACKLIST */ "編壞人名單", 
+	/* BLACKLIST */ "編壞人名單",
 	/* LOGIN */ "簽到中",
 
 	/* LAUSERS */ "查全部人",
 /*
 	MONITOR "監看中",
-*/	
+*/
 	/* CLIENT */ "主從式閱\覽器",
 	/* WEBBBS */ "Web-BBS",
 /*
@@ -76,26 +76,26 @@ int complete;
 #if 1
 	if (mode > 31)
 		return ModeType[31];
-#endif			
+#endif
 	if (complete)
 	{
 		/* user complain: SENDMESG 必須是隱私的 :) */
-		if ((mode == TALK || mode == PAGE || mode == QUERY 
+		if ((mode == TALK || mode == PAGE || mode == QUERY
 			/*|| mode == SENDMSG*/) && upent->destid[0])
 		{
 			sprintf(modestr, "%s '%s'", ModeType[mode], upent->destid);
 		}
-		else if (mode == CHATROOM 
-#ifdef NSYSUBBS1		
+		else if (mode == CHATROOM
+#ifdef NSYSUBBS1
 		          || mode == CHATROOM2
-#endif		          
+#endif
 		          )
 		{
-			sprintf(modestr, "%s '%s'", ModeType[mode], upent->chatid);	
+			sprintf(modestr, "%s '%s'", ModeType[mode], upent->chatid);
 		}
 		else
-			return (ModeType[mode]);		
-		return modestr;			
-	}			
+			return (ModeType[mode]);
+		return modestr;
+	}
 	return (ModeType[mode]);
 }

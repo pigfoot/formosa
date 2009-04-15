@@ -57,7 +57,7 @@ char *klist[] =
  "idcheck", (char *) NULL};
 
 
-int 
+int
 inlist (cmd)
      char *cmd;
 {

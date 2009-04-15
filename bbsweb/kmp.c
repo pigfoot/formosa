@@ -11,24 +11,24 @@ extern USER_REC *curuser;
 
 int ParseKMP(char *cmd, REQUEST_REC *r)
 {
-	
+
 	char kmp[STRLEN], proto[STRLEN], data[STRLEN], arg1[STRLEN], arg2[STRLEN], arg3[STRLEN], arg4[STRLEN];
 	int result;
 	*proto = *data = *arg1 = *arg2 = *arg3 = *arg4 = 0x00;
-		
-	sscanf(cmd, "%s\t%s\t%s\t%s\t%s\t%s", 
+
+	sscanf(cmd, "%s\t%s\t%s\t%s\t%s\t%s",
 		kmp, proto, arg1, arg2, arg3, arg4);
 
 #if 0
 	fprintf(fp_out, "[%s]\r\n", cmd);
-	fprintf(fp_out, "arg1=%s, arg2=%s, arg3=%s, arg4=%s\r\n", 
+	fprintf(fp_out, "arg1=%s, arg2=%s, arg3=%s, arg4=%s\r\n",
 		arg1, arg2, arg3, arg4);
 	fflush(fp_out);
 #endif
 
 	if(!strcmp(proto, "USERNEW"))
 	{
-		sprintf(data, "ID=%s&PASSWORD=%s&PASSWORD1=%s&NICKNAME=%s&EMAIL=%s", 
+		sprintf(data, "ID=%s&PASSWORD=%s&PASSWORD1=%s&NICKNAME=%s&EMAIL=%s",
 			arg1, arg2, arg2, arg3, arg4);
 
 		result = NewUser(data, &curuser);
@@ -54,20 +54,20 @@ int ParseKMP(char *cmd, REQUEST_REC *r)
 		{
 			USER_INFO *quinf;
 			char user_status[1024];
-			
+
 			if ((quinf = search_ulist(cmp_userid, curuser.userid)) && !(quinf->invisible))
 			{
 				sprintf(user_status, "線上狀態: %s, 呼喚鈴: %s.",
 					modestring(quinf, 1),
 					(quinf->pager != PAGER_QUIET) ? MSG_ON : MSG_OFF);
-			}				
+			}
 			else
 				sprintf(user_status, "目前不在線上");
-		
+
 			fprintf(fp_out, "800  OK!!\r\n");
-			fprintf(fp_out, "%s\t%s\t%d\t%d\t%d\t%d\t%d\t%s\t%s\r\n", 
-				curuser.userid, 
-				curuser.username, 
+			fprintf(fp_out, "%s\t%s\t%d\t%d\t%d\t%d\t%d\t%s\t%s\r\n",
+				curuser.userid,
+				curuser.username,
 				curuser.userlevel,
 				curuser.ident,
 				curuser.numlogins,
@@ -86,11 +86,11 @@ int ParseKMP(char *cmd, REQUEST_REC *r)
 		else
 		{
 			fprintf(fp_out, "800  OK!!\r\n");
-			fprintf(fp_out, "%d\t%s\t%s\t%d\t%d\t%d\t%s\t%d\t%s\r\n", 
-				curuser.uid, 
-				curuser.userid, 
-				curuser.username, 
-				curuser.userlevel, 
+			fprintf(fp_out, "%d\t%s\t%s\t%d\t%d\t%d\t%s\t%d\t%s\r\n",
+				curuser.uid,
+				curuser.userid,
+				curuser.username,
+				curuser.userlevel,
 				curuser.numlogins,
 				curuser.numposts,
 				curuser.lasthost,
@@ -124,7 +124,7 @@ int ParseKMP(char *cmd, REQUEST_REC *r)
 	else if(!strcmp(proto, "USERLIST"))
 	{
 		int start = 0, end = 0;
-		
+
 		if(arg1)
 			start = atoi(arg1);
 		if(arg2)
@@ -155,11 +155,11 @@ int ParseKMP(char *cmd, REQUEST_REC *r)
 			continue;
 		}
 		outs(_msg_formosa_44);
-		
-	
+
+
 	}
 #endif
-	
+
 	return WEB_OK;
 
 }

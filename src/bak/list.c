@@ -39,7 +39,7 @@ char *msg_pickup_way[PICKUP_WAYS] =
 	"英文代名",
 	"線上狀態",
 	"上站地點"
-/*      
+/*
  * _msg_pickup_way_1,
  * _msg_pickup_way_2,
  * _msg_pickup_way_3,
@@ -71,9 +71,9 @@ struct pickup *i, *j;
 static int
 malloc_ulist(uentp)
 USER_INFO *uentp;
-{	
+{
 	int tmp;
-		
+
 	if (!HAS_PERM(PERM_CLOAK) && uentp->invisible)
 		return -1;
 
@@ -111,7 +111,7 @@ ulist_max()
 	num_users = 0;
 	apply_ulist(malloc_ulist);
 	qsort(pklist, num_users, sizeof(struct pickup), pickup_cmp);
-	time(&pk_mtime);	
+	time(&pk_mtime);
 	return num_users;
 }
 
@@ -227,10 +227,10 @@ ucmd_sort()
 	if (cnt > 3)
 		time(&now);
 	if (cnt > 4)
-	{	
+	{
 		if (now - last_utime < 5)
 		{
-			msg("系統忙碌中, 請梢後...");		
+			msg("系統忙碌中, 請梢後...");
 			return C_NONE;
 		}
 		cnt = 0;
@@ -278,11 +278,11 @@ ucmd_help()
 	outs(_msg_list_6);
 	if (curuser.userlevel > PERM_PAGE || curuser.ident == 7)
 		outs(_msg_list_7);
-#if 0		
+#if 0
 	if (HAS_PERM(PERM_SYSOP))
 		outs("\n 站長專用鍵\n\
    [i]          把壞蛋踢出去   [E]                  修改網友資料");
-#endif		
+#endif
 	pressreturn();
 	return C_FULL;
 }
@@ -354,10 +354,10 @@ char *direct;
 			/* fn_src: NULL, postpath: NULL */
 			PrepareMail(NULL, to, title);
 			pressreturn();
-/*			
+/*
 			return C_FULL;
 */
-			return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */			
+			return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 		}
 	}
 	return C_NONE;
@@ -387,21 +387,21 @@ char *direct;
 #if 0
 	static time_t last_utime = 0;
 	static time_t now;
-#if 1	
+#if 1
 	static cnt = 0;
 
 	++cnt;
 	if (cnt > 2)
 		time(&now);
 	if (cnt > 3)
-#endif	
-	{	
+#endif
+	{
 		if (now - last_utime < 5)
 		{
-			msg("系統忙碌中, 請梢後...");		
+			msg("系統忙碌中, 請梢後...");
 			return C_NONE;
 		}
-#if 1		
+#if 1
 		cnt = 0;
 #endif
 	}
@@ -427,7 +427,7 @@ char *direct;
 		{
 			add_friend(uentp->userid);
 			friends_number++;
-/*			free_array(&friend_cache); */			
+/*			free_array(&friend_cache); */
 			have_friends = load_friend(&friend_cache, curuser.userid);
 			pkent->friend = 1;
 			return C_FULL;
@@ -617,10 +617,10 @@ struct one_key ulist_comms[] =
 	{CTRL('P'), ucmd_pager},
 	{'r', ucmd_query},
 	{'x', ucmd_mbox},
-#if 0	
+#if 0
 	{'E', ucmd_edituser},
 	{'i', ucmd_kick},
-#endif	
+#endif
 	{'u', ucmd_query},
 	{'a', ucmd_addfriend},
 	{'d', ucmd_delfriend},

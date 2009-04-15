@@ -14,7 +14,7 @@ char *keyword;
 		return -1;
 	SendArticle(buf, TRUE);
 	return 0;
-}		
+}
 
 
 void
@@ -60,7 +60,7 @@ char *keyword;
 	else
 		RespondProtocol(OK_CMD);
 
-}	
+}
 
 
 /***********************************************************
@@ -70,7 +70,7 @@ char *keyword;
 DoGetPlan()
 {
 	if (get_user_file(UFNAME_PLANS) < 0)
-		RespondProtocol(NO_PLAN);	
+		RespondProtocol(NO_PLAN);
 }
 
 
@@ -101,7 +101,7 @@ DoSendPlan()
 DoGetSign()
 {
 	if (get_user_file(UFNAME_SIGNATURES) < 0)
-		RespondProtocol(NO_SIGN);		
+		RespondProtocol(NO_SIGN);
 }
 
 
@@ -153,20 +153,20 @@ DoChangePassword()
 	}
 	passbuf[8] = '\0';
 	xstrncpy(npass, passbuf, sizeof(npass));
-	chk_str2(passbuf);		
+	chk_str2(passbuf);
 	if (strcmp(passbuf, npass))	/* if new password contains illeagel chars */
 	{
 		RespondProtocol(WORK_ERROR);
 		return;
 	}
-	
+
 	pass = genpasswd(passbuf);
 	strncpy(curuser.passwd, pass, PASSLEN);
 /*
 update_passwd only when logout
 	update_passwd(&curuser);
-*/	
-/*      
+*/
+/*
    update_user_passfile(&curuser);
  */
 	RespondProtocol(OK_CMD);
@@ -180,8 +180,8 @@ update_passwd only when logout
 DoGetUserData()
 {
 	RespondProtocol(OK_CMD);
-	
-	inet_printf("%s\t%s\t", 
+
+	inet_printf("%s\t%s\t",
 	        (curuser.username[0]) ? curuser.username : "#",
 	        (curuser.email[0]) ? curuser.email : "#");
 	inet_printf("%s\t%d\t%d\t%d\t%d\t",
@@ -220,11 +220,11 @@ DoChangeUserName()
 	else
 		curuser.username[0] = '\0';
 
-/* 
+/*
 update_passwd only when logout
 	update_passwd(&curuser);
-*/	
-/*      
+*/
+/*
    update_user_passfile(&curuser);
  */
 	RespondProtocol(OK_CMD);
@@ -254,13 +254,13 @@ DoChangeEMail()
 		return;
 	}
 	chk_str2(email);
-	
+
 	strcpy(curuser.email, email);
 /*
-update_passwd only when logout	
+update_passwd only when logout
 	update_passwd(&curuser);
-*/	
-/*      
+*/
+/*
    update_user_passfile(&curuser);
  */
 	RespondProtocol(OK_CMD);

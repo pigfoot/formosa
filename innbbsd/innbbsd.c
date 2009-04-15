@@ -99,10 +99,10 @@ char *dir;
                system(path);
         }
 }
-                                                
-static char splitbuf[2048]; 
-static char joinbuf[1024]; 
-#define MAXTOK 50 
+
+static char splitbuf[2048];
+static char joinbuf[1024];
+#define MAXTOK 50
 static char* Splitptr[MAXTOK];
 char **split(line,pat)
 char *line,*pat;
@@ -122,7 +122,7 @@ char *line,*pat;
 	return Splitptr;
 }
 
-char **BNGsplit(line) 
+char **BNGsplit(line)
 char *line;
 {
    char **ptr = split(line,",");
@@ -133,13 +133,13 @@ char *line;
       nf1 = (newsfeeds_t*)search_group(ptr[i]);
       for (j=i+1; ptr[j] != NULL; j++) {
 	 if (strcmp(ptr[i],ptr[j])==0) {
-	    *ptr[j] = '\0';    
+	    *ptr[j] = '\0';
 	    continue;
          }
 	 nf2 = (newsfeeds_t*)search_group(ptr[j]);
 	 if (nf1 && nf2) {
 	   if (strcmp(nf1->board,nf2->board)==0) {
-	      *ptr[j] = '\0';    
+	      *ptr[j] = '\0';
 	      continue;
 	   }
 	   for (n11 = nf1->board, n12 = (char*)strchr(n11,',');
@@ -154,13 +154,13 @@ char *line;
 		    if (n22) {
 		      *n22 = ',';
 		      n21 = n22 + 1;
-                    } else  
+                    } else
 		      break;
                 }
 		if (n12) {
 		      *n12 = ',';
 		      n11 = n12 +1;
-                } else  
+                } else
 		  break;
 	   }
 	 }
@@ -195,21 +195,21 @@ int num;
 		strncpy(joinbuf,lineptr[0],1024);
 	else  {
 		joinbuf[0]='\0';
-		return joinbuf; 
+		return joinbuf;
 	}
 	for (i=1;i<num;i++) {
 		strcat(joinbuf,pat);
 		if (lineptr[i] != NULL)
 		   strcat(joinbuf,lineptr[i]);
-		else 
-		   break; 
+		else
+		   break;
 	}
 	return joinbuf;
 }
 
 #endif
 
-static int CMDtnrpd(client) 
+static int CMDtnrpd(client)
 ClientType *client;
 {
         argv_t *argv = &client->Argv;
@@ -221,7 +221,7 @@ islocalconnect(client)
 ClientType *client;
 {
 	if (strcmp(client->username,"localuser") != 0 ||
-	    strcmp(client->hostname,"localhost") != 0) 
+	    strcmp(client->hostname,"localhost") != 0)
            return 0;
        return 1;
 }
@@ -244,13 +244,13 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d shutdown access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d shutdown access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Shutdown Put: %d shutdown access denied\n", p->errorcode);
 		return 1;
 	}
 	shutdownflag = 1;
-	fprintf(argv->out,"%d shutdown starting\r\n", p->normalcode); 
+	fprintf(argv->out,"%d shutdown starting\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Shutdown Put: %d shutdown starting\n", p->normalcode);
 	return 1;
@@ -268,14 +268,14 @@ ClientType *client;
 	int i,j;
 	time_t lasthist;
 	ClientType *client1 = &INNBBSD_STAT;
-        
+
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d mode access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d mode access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Mode Put: %d mode access denied\n", p->errorcode);
 		return 1;
 	}
-	fprintf(argv->out,"%d mode\r\n", p->normalcode); 
+	fprintf(argv->out,"%d mode\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Mode Put: %d mode\n", p->normalcode);
 	uptime = innbbsdstartup();
@@ -315,7 +315,7 @@ ClientType *client;
 	  if (Channel+i == client) continue;
 	  j++;
 	  fprintf(argv->out," %d) in->used %d, in->left %d %s@%s\r\n",i,
-		  Channel[i].in.used, Channel[i].in.left, 
+		  Channel[i].in.used, Channel[i].in.left,
 		  Channel[i].username,Channel[i].hostname);
 	}
 	fprintf(argv->out,"Total connections %d\r\n", j);
@@ -325,7 +325,7 @@ ClientType *client;
 	return 1;
 }
 
-static int 
+static int
 CMDlistnodelist(client)
 ClientType *client;
 {
@@ -334,15 +334,15 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d listnodelist access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d listnodelist access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Mallocmap Put: %d listnodelist access denied\n", p->errorcode);
 		return 1;
 	}
-	fprintf(argv->out,"%d listnodelist\r\n", p->normalcode); 
+	fprintf(argv->out,"%d listnodelist\r\n", p->normalcode);
 	for (nlcount =0; nlcount < NLCOUNT; nlcount++) {
 	  nodelist_t *nl = NODELIST+nlcount;
-	  fprintf(argv->out,"%2d %s /\\/\\ %s\r\n", nlcount+1, nl->node==NULL?"":nl->node, nl->exclusion==NULL?"":nl->exclusion); 
+	  fprintf(argv->out,"%2d %s /\\/\\ %s\r\n", nlcount+1, nl->node==NULL?"":nl->node, nl->exclusion==NULL?"":nl->exclusion);
 	  fprintf(argv->out,"   %s:%s:%s\r\n",nl->host==NULL?"":nl->host, nl->protocol==NULL?"":nl->protocol, nl->comments == NULL ? "": nl->comments);
 	}
 	fprintf(argv->out,".\r\n");
@@ -351,7 +351,7 @@ ClientType *client;
 	return 1;
 }
 
-static int 
+static int
 CMDlistnewsfeeds(client)
 ClientType *client;
 {
@@ -360,12 +360,12 @@ ClientType *client;
 	daemoncmd_t *p = argv->dc;
 	int nfcount;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d listnewsfeeds access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d listnewsfeeds access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Mallocmap Put: %d listnewsfeeds access denied\n", p->errorcode);
 		return 1;
 	}
-	fprintf(argv->out,"%d listnewsfeeds\r\n", p->normalcode); 
+	fprintf(argv->out,"%d listnewsfeeds\r\n", p->normalcode);
 	for (nfcount =0; nfcount < NFCOUNT; nfcount++) {
 	  newsfeeds_t *nf = NEWSFEEDS + nfcount;
 	  fprintf(argv->out,"%3d %s<=>%s\r\n",nfcount+1, nf->newsgroups, nf->board);
@@ -387,12 +387,12 @@ ClientType *client;
 	struct rusage ru;
 	int savefd ;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d mallocmap access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d mallocmap access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Mallocmap Put: %d mallocmap access denied\n", p->errorcode);
 		return 1;
 	}
-	fprintf(argv->out,"%d mallocmap\r\n", p->normalcode); 
+	fprintf(argv->out,"%d mallocmap\r\n", p->normalcode);
 	savefd = dup(1);
 	dup2(client->fd, 1);
 	mallocmap();
@@ -414,27 +414,27 @@ ClientType *client;
 	daemoncmd_t *p = argv->dc;
 	struct rusage ru;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d getrusage access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d getrusage access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Getrusage Put: %d getrusage access denied\n", p->errorcode);
 		return 1;
 	}
-	fprintf(argv->out,"%d getrusage\r\n", p->normalcode); 
+	fprintf(argv->out,"%d getrusage\r\n", p->normalcode);
 	if (getrusage(RUSAGE_SELF,&ru) == 0) {
-	  fprintf(argv->out,"user time used: %.6f\r\n",(double)ru.ru_utime.tv_sec + (double)ru.ru_utime.tv_usec/1000000.0); 
-	  fprintf(argv->out,"system time used: %.6f\r\n",(double)ru.ru_stime.tv_sec + (double)ru.ru_stime.tv_usec/1000000.0); 
-	  fprintf(argv->out,"maximum resident set size: %lu\r\n",ru.ru_maxrss * getpagesize()); 
-	  fprintf(argv->out,"integral resident set size: %lu\r\n",ru.ru_idrss * getpagesize()); 
-	  fprintf(argv->out,"page faults not requiring physical I/O: %d\r\n",ru.ru_minflt); 
-	  fprintf(argv->out,"page faults requiring physical I/O: %d\r\n",ru.ru_majflt); 
-	  fprintf(argv->out,"swaps: %d\r\n",ru.ru_nswap); 
-	  fprintf(argv->out,"block input operations: %d\r\n",ru.ru_inblock); 
-	  fprintf(argv->out,"block output operations: %d\r\n",ru.ru_oublock); 
-	  fprintf(argv->out,"messages sent: %d\r\n",ru.ru_msgsnd); 
-	  fprintf(argv->out,"messages received: %d\r\n",ru.ru_msgrcv); 
-	  fprintf(argv->out,"signals received: %d\r\n",ru.ru_nsignals); 
-	  fprintf(argv->out,"voluntary context switches: %d\r\n",ru.ru_nvcsw); 
-	  fprintf(argv->out,"involuntary context switches: %d\r\n",ru.ru_nivcsw); 
+	  fprintf(argv->out,"user time used: %.6f\r\n",(double)ru.ru_utime.tv_sec + (double)ru.ru_utime.tv_usec/1000000.0);
+	  fprintf(argv->out,"system time used: %.6f\r\n",(double)ru.ru_stime.tv_sec + (double)ru.ru_stime.tv_usec/1000000.0);
+	  fprintf(argv->out,"maximum resident set size: %lu\r\n",ru.ru_maxrss * getpagesize());
+	  fprintf(argv->out,"integral resident set size: %lu\r\n",ru.ru_idrss * getpagesize());
+	  fprintf(argv->out,"page faults not requiring physical I/O: %d\r\n",ru.ru_minflt);
+	  fprintf(argv->out,"page faults requiring physical I/O: %d\r\n",ru.ru_majflt);
+	  fprintf(argv->out,"swaps: %d\r\n",ru.ru_nswap);
+	  fprintf(argv->out,"block input operations: %d\r\n",ru.ru_inblock);
+	  fprintf(argv->out,"block output operations: %d\r\n",ru.ru_oublock);
+	  fprintf(argv->out,"messages sent: %d\r\n",ru.ru_msgsnd);
+	  fprintf(argv->out,"messages received: %d\r\n",ru.ru_msgrcv);
+	  fprintf(argv->out,"signals received: %d\r\n",ru.ru_nsignals);
+	  fprintf(argv->out,"voluntary context switches: %d\r\n",ru.ru_nvcsw);
+	  fprintf(argv->out,"involuntary context switches: %d\r\n",ru.ru_nivcsw);
 	}
 	fprintf(argv->out,".\r\n");
 	fflush(argv->out);
@@ -451,14 +451,14 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d hismaint access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d hismaint access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Hismaint Put: %d hismaint access denied\n", p->errorcode);
 		return 1;
 	}
 	verboselog("Hismaint Put: %d hismaint start\n", p->normalcode);
 	HISmaint();
-	fprintf(argv->out,"%d hismaint complete\r\n", p->normalcode); 
+	fprintf(argv->out,"%d hismaint complete\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Hismaint Put: %d hismaint complete\n", p->normalcode);
 	return 1;
@@ -473,7 +473,7 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d go access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d go access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Pause Put: %d go access denied\n", p->errorcode);
 		return 1;
@@ -481,7 +481,7 @@ ClientType *client;
 
 	INNBBSDpause = 0;
 
-	fprintf(argv->out,"%d go complete\r\n", p->normalcode); 
+	fprintf(argv->out,"%d go complete\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Pause Put: %d go complete\n", p->normalcode);
 	return 1;
@@ -502,7 +502,7 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d pause access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d pause access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Pause Put: %d pause access denied\n", p->errorcode);
 		return 1;
@@ -510,7 +510,7 @@ ClientType *client;
 
 	INNBBSDpause = 1;
 
-	fprintf(argv->out,"%d pause complete\r\n", p->normalcode); 
+	fprintf(argv->out,"%d pause complete\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Pause Put: %d pause complete\n", p->normalcode);
 	return 1;
@@ -523,13 +523,13 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d reload access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d reload access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Reload Put: %d reload access denied\n", p->errorcode);
 		return 1;
 	}
 	initial_bbs("feed");
-	fprintf(argv->out,"%d reload complete\r\n", p->normalcode); 
+	fprintf(argv->out,"%d reload complete\r\n", p->normalcode);
 	fflush(argv->out);
 	verboselog("Reload Put: %d reload complete\n", p->normalcode);
 	return 1;
@@ -542,7 +542,7 @@ ClientType *client;
 	buffer_t *in = &client->in;
 	daemoncmd_t *p = argv->dc;
 	if (!islocalconnect(client)) {
-		fprintf(argv->out,"%d verboselog access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d verboselog access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Reload Put: %d verboselog access denied\n", p->errorcode);
 		return 1;
@@ -554,12 +554,12 @@ ClientType *client;
 	     } else {
 		setverboseon();
 	     }
-	   } 
+	   }
 	}
-       fprintf(argv->out,"%d verboselog %s\r\n",p->normalcode, 
+       fprintf(argv->out,"%d verboselog %s\r\n",p->normalcode,
 	     isverboselog() ?"ON":"OFF");
        fflush(argv->out);
-       verboselog("%d verboselog %s\r\n",p->normalcode, 
+       verboselog("%d verboselog %s\r\n",p->normalcode,
 		 isverboselog()?"ON":"OFF");
 }
 
@@ -576,12 +576,12 @@ ClientType *client;
 	     } else {
 		client->midcheck = 1;
 	     }
-	   } 
+	   }
 	}
-       fprintf(argv->out,"%d mid check %s\r\n",p->normalcode, 
+       fprintf(argv->out,"%d mid check %s\r\n",p->normalcode,
 	     client->midcheck == 1?"ON":"OFF");
        fflush(argv->out);
-       verboselog("%d mid check %s\r\n",p->normalcode, 
+       verboselog("%d mid check %s\r\n",p->normalcode,
 		 client->midcheck == 1?"ON":"OFF");
 }
 
@@ -596,19 +596,19 @@ ClientType *client;
 	    char *ptr;
 	    ptr = (char*)DBfetch(argv->argv[1]);
 	    if (ptr != NULL) {
-		fprintf(argv->out,"%d %s OK\r\n", p->normalcode, ptr); 
+		fprintf(argv->out,"%d %s OK\r\n", p->normalcode, ptr);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d %s OK\n", p->normalcode, ptr);
 		return 0;
 	    } else {
-		fprintf(argv->out,"%d %s not found\r\n", p->errorcode,argv->argv[1]); 
+		fprintf(argv->out,"%d %s not found\r\n", p->errorcode,argv->argv[1]);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d %s not found\n", p->errorcode, argv->argv[1]);
 		return 1;
 	    }
           }
 	}
-        fprintf(argv->out,"%d grephist error\r\n", p->errorcode); 
+        fprintf(argv->out,"%d grephist error\r\n", p->errorcode);
 	fflush(argv->out);
 	verboselog("Addhist Put: %d grephist error\n", p->errorcode);
 	return 1;
@@ -624,7 +624,7 @@ ClientType *client;
 	/*
 	if (strcmp(client->username,"localuser") != 0 ||
 	    strcmp(client->hostname,"localhost") != 0) {
-		fprintf(argv->out,"%d add hist access denied\r\n", p->errorcode); 
+		fprintf(argv->out,"%d add hist access denied\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d add hist access denied\n", p->errorcode);
 		return 1;
@@ -636,25 +636,25 @@ ClientType *client;
 	    ptr = (char*)DBfetch(argv->argv[1]);
 	    if (ptr == NULL) {
 	       if (storeDB(argv->argv[1], argv->argv[2]) < 0) {
-		fprintf(argv->out,"%d add hist store DB error\r\n", p->errorcode); 
+		fprintf(argv->out,"%d add hist store DB error\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d add hist store DB error\n", p->errorcode);
 		return 1;
 	       } else {
-		fprintf(argv->out,"%d add hist OK\r\n", p->normalcode); 
+		fprintf(argv->out,"%d add hist OK\r\n", p->normalcode);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d add hist OK\n", p->normalcode);
 		return 0;
 	       }
 	    } else {
-		fprintf(argv->out,"%d add hist duplicate error\r\n", p->errorcode); 
+		fprintf(argv->out,"%d add hist duplicate error\r\n", p->errorcode);
 		fflush(argv->out);
 		verboselog("Addhist Put: %d add hist duplicate error\n", p->errorcode);
 		return 1;
 	    }
 	  }
-	} 
-        fprintf(argv->out,"%d add hist error\r\n", p->errorcode); 
+	}
+        fprintf(argv->out,"%d add hist error\r\n", p->errorcode);
 	fflush(argv->out);
 	verboselog("Addhist Put: %d add hist error\n", p->errorcode);
 	return 1;
@@ -692,7 +692,7 @@ ClientType *client;
 	    client->statfail++;
 	   }
           }
-	} 
+	}
 }
 
 #ifndef DBZSERVER
@@ -809,20 +809,20 @@ ClientType *client;
 			fprintf(argv->out,"  %s\r\n",p->usage);
 		}
 		fprintf(argv->out,"Report problems to %s\r\n",ADMINUSER);
-	} 
+	}
 	fputs(".\r\n",argv->out);
 	fflush(argv->out);
 	client->mode = 0;
 	return 0;
 }
 
-static int CMDquit(client) 
+static int CMDquit(client)
 ClientType *client;
 {
         argv_t *argv = &client->Argv;
-	fprintf(argv->out,"205 quit\r\n");	
+	fprintf(argv->out,"205 quit\r\n");
 	fflush(argv->out);
-	verboselog("Quit Put: 205 quit\n");	
+	verboselog("Quit Put: 205 quit\n");
 	clearfdset(client->fd);
 	fclose(client->Argv.in);
 	fclose(client->Argv.out);

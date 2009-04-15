@@ -17,10 +17,10 @@ extern struct BoardList *curbe;	/* NULL */
 extern BOARDHEADER *CurBList;	/* NULL */
 
 /* Used for exception condition like I/O error */
-extern jmp_buf byebye;				
+extern jmp_buf byebye;
 
 /* generally used global buffer */
-extern char genbuf[1024];			
+extern char genbuf[1024];
 
 extern BOOL in_board;	/* TRUE */
 extern BOOL in_mail;	/* FALSE */

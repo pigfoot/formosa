@@ -10,7 +10,7 @@
 void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm, HTML_SHM *html_shm)
 {
 	int i;
-	
+
 	if(!strcasecmp(tag, "Access"))
 		fprintf(fp_out, "%d", s->access);
 	else if(!strcasecmp(tag, "Error"))
@@ -59,7 +59,7 @@ void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm
 			s->M_HEAD,
 			s->M_POST
 		);
-		
+
 		fprintf(fp_out, "\r\nSite defines: ");
 
 #ifdef NSYSUBBS
@@ -79,7 +79,7 @@ void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm
 #endif
 
 		fprintf(fp_out, "\r\n<br>Function defines: ");
-		
+
 #ifdef DEBUG
 		fprintf(fp_out, "DEBUG ");
 #endif
@@ -108,21 +108,21 @@ void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm
 		fprintf(fp_out, "WEB_ADMIN ");
 #endif
 		fprintf(fp_out, "<br>\n");
-		
+
 #ifdef PRE_FORK
 		for(i=0; i<s->max_child; i++)
 		{
 			mk_timestr2(atime, (s->childs)[i].atime);
-			fprintf(fp_out, "child[%02i], pid=%d, accept=%d, access=%d, socket=%d, atime=%s, status=%s<br>\n", 
-				i, 
+			fprintf(fp_out, "child[%02i], pid=%d, accept=%d, access=%d, socket=%d, atime=%s, status=%s<br>\n",
+				i,
 				(s->childs)[i].pid,
 				(s->childs)[i].accept,
 				(s->childs)[i].access,
-				(s->childs)[i].socket, 
+				(s->childs)[i].socket,
 				atime,
 				ss[(s->childs)[i].status]);
 		}
-		
+
 #endif
 	}
 	else if(!strcasecmp(tag, "BBSCONF"))
@@ -137,18 +137,18 @@ void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm
 		MAX_FRIENDS = %d<br>\r\n\
 		_STR_BOARD_GUEST = %s",
 			MAXACTIVE,
-			MAX_SIG_LINES, 
+			MAX_SIG_LINES,
 			MAX_SIG_NUM,
-			MAX_KEEP_MAIL, 
-			SPEC_MAX_KEEP_MAIL, 
-			MAX_MAIL_SIZE, 
+			MAX_KEEP_MAIL,
+			SPEC_MAX_KEEP_MAIL,
+			MAX_MAIL_SIZE,
 			MAX_FRIENDS,
 			_STR_BOARD_GUEST);
 	}
 	else if(!strcasecmp(tag, "CACHEINFO"))
 	{
 		char mtime[30], ctime[30], atime[30];
-		
+
 		fprintf(fp_out, "\
 		FILE_SHM_KEY = 0x%x<br>\r\n\
 		NUM_CACHE_FILE = %d<br>\r\n\
@@ -168,42 +168,42 @@ void ShowServerInfo(char *tag, SERVER_REC *s, REQUEST_REC *r, FILE_SHM *file_shm
 			MAX_CACHE_HTML_SIZE,
 			REAL_CACHE_HTML_SIZE
 			);
-		
+
 		fprintf(fp_out, "\n<br>======= FILE CACHED =======<br>\n");
-		
+
 		for(i=0; i<NUM_CACHE_FILE && file_shm[i].key; i++)
 		{
 			mk_timestr2(mtime, file_shm[i].file.mtime);
 			mk_timestr2(ctime, file_shm[i].ctime);
 			mk_timestr2(atime, file_shm[i].atime);
-			
-			fprintf(fp_out, "[%02d] file=%s, key=%d, mime=%d, expire=%s, size=%d, hit=%d, <br>mtime=%s, ctime=%s, atime=%s<br>\n", 
-				i+1, 
-				file_shm[i].file.filename, 
-				file_shm[i].key, 
-				file_shm[i].file.mime_type, 
-				file_shm[i].file.expire == TRUE ? "Y" : "N", 
-				(int)file_shm[i].file.size, 
+
+			fprintf(fp_out, "[%02d] file=%s, key=%d, mime=%d, expire=%s, size=%d, hit=%d, <br>mtime=%s, ctime=%s, atime=%s<br>\n",
+				i+1,
+				file_shm[i].file.filename,
+				file_shm[i].key,
+				file_shm[i].file.mime_type,
+				file_shm[i].file.expire == TRUE ? "Y" : "N",
+				(int)file_shm[i].file.size,
 				file_shm[i].hit,
 				mtime, ctime, atime);
 		}
-		
+
 		fprintf(fp_out, "\n<br>======= HTML CACHED =======<br>\n");
-		
+
 		for(i=0; i<NUM_CACHE_HTML && html_shm[i].key; i++)
 		{
 			mk_timestr2(mtime, html_shm[i].file.mtime);
 			mk_timestr2(ctime, html_shm[i].ctime);
 			mk_timestr2(atime, html_shm[i].atime);
-			
-			fprintf(fp_out, "[%03d] file=%s, key=%d, mime=%d, expire=%s, size=%d, hit=%d, <br>mtime=%s, ctime=%s, atime=%s<br>\n", 
-				i+1, 
-				html_shm[i].file.filename, 
-				html_shm[i].key, 
-				html_shm[i].file.mime_type, 
-				html_shm[i].file.expire == TRUE ? "Y" : "N", 
-				(int)html_shm[i].file.size, 
-				html_shm[i].hit, 
+
+			fprintf(fp_out, "[%03d] file=%s, key=%d, mime=%d, expire=%s, size=%d, hit=%d, <br>mtime=%s, ctime=%s, atime=%s<br>\n",
+				i+1,
+				html_shm[i].file.filename,
+				html_shm[i].key,
+				html_shm[i].file.mime_type,
+				html_shm[i].file.expire == TRUE ? "Y" : "N",
+				(int)html_shm[i].file.size,
+				html_shm[i].hit,
 				mtime, ctime, atime);
 		}
 	}

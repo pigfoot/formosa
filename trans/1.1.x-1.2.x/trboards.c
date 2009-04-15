@@ -13,40 +13,40 @@ char *argv[];
 	struct stat st;
 	int num, new, i;
 	int seat[MAXBOARD];
-#if 0	
+#if 0
 	char bname[MAXBOARD][BNAMELEN];
-#endif	
-	
+#endif
+
 	if (argc != 2)
 	{
 		fprintf(stderr, "usage: %s [.BOARDS]\n", argv[0]);
 		exit(1);
 	}
-	
+
 	sprintf(orifile, "%s", argv[1]);
-	sprintf(newfile, "%s.new", orifile);	
-		
+	sprintf(newfile, "%s.new", orifile);
+
 	if ((fd = open(argv[1], O_RDONLY)) < 0)
 	{
 		fprintf(stderr, "cannot open file: %s\n", argv[1]);
 		exit(1);
 	}
-	
+
 	fstat(fd, &st);
 	num = 0;
 	memset(allbrds, 0, sizeof(allbrds));
 	memset(newbrds, 0, sizeof(newbrds));
 	memset(seat, 0, sizeof(seat));
 	new = 0;
-#if 0	
+#if 0
 	memset(bname, 0, sizeof(bname));
-#endif	
-	
-	while (read(fd, &bh, BH_SIZE) == BH_SIZE)	
+#endif
+
+	while (read(fd, &bh, BH_SIZE) == BH_SIZE)
 	{
 		if (bh.filename[0])
 		{
-#if 0		
+#if 0
 			for (i = 0; i < num; i++)
 			{
 				if (!strcmp(bh.filename, bname[i]))
@@ -55,21 +55,21 @@ char *argv[];
 			if (i != num)
 				continue;
 			strcpy(bname[num], bh.filename);
-#endif			
+#endif
 			num++;
 		}
 	}
 #if 1
-	printf("num: %d\n", num);	
-#endif	
+	printf("num: %d\n", num);
+#endif
 
 	if (lseek(fd, 0, SEEK_SET) < 0)
 	{
 		close(fd);
 		fprintf(stderr, "cannot lseek file: %s\n", orifile);
-		exit(5);	
+		exit(5);
 	}
-	
+
 	while (read(fd, &bh, BH_SIZE) == BH_SIZE)
 	{
 #if 0
@@ -83,8 +83,8 @@ char *argv[];
 		}
 		if (i == num)
 			continue;
-#endif		
-	
+#endif
+
 #if 0
 		printf("%d ", bh.bid);
 #endif
@@ -98,7 +98,7 @@ char *argv[];
 			memcpy(&(newbrds[new++]), &bh, BH_SIZE);
 #if 0
 			printf("%d> %s\n", new, newbrds[new - 1].filename);
-#endif			
+#endif
 		}
 	}
 	close(fd);
@@ -110,15 +110,15 @@ char *argv[];
 
 	new--;
 	i = 1;
-	while (new >= 0) 
-	{	
+	while (new >= 0)
+	{
 		while (i <= MAXBOARD)
 		{
 			if (*(allbrds[i - 1].filename) == '\0')
 				break;
 			i++;
 		}
-	
+
 		if (*(newbrds[new].filename) == '\0')
 			break;
 		newbrds[new].bid = i;
@@ -126,16 +126,16 @@ char *argv[];
 #if 0
 		printf("%d) %s\n", i, allbrds[i - 1].filename);
 #endif
-		
+
 		new--;
 	}
-	
+
 	if ((fd = open(newfile, O_WRONLY | O_CREAT | O_TRUNC, 0600)) < 0)
 	{
 		fprintf(stderr, "cannot create file: %s\n", newfile);
 		exit(3);
 	}
-	
+
 	for (i = 0; i < num; i++)
 	{
 		if (write(fd, &(allbrds[i]), BH_SIZE) != BH_SIZE)

@@ -57,13 +57,13 @@ int len;
 	end = buf + len - 1;
 	p = buf;
 	Plus = FALSE;
-/*  
-	fd = fopen("./Gopher.read", "w+"); 
+/*
+	fd = fopen("./Gopher.read", "w+");
 	*/
 	while (p < end && read(sd, p, 1) == 1)
 	{
-/* 
-        fprintf(fd,"%c", *p); 
+/*
+        fprintf(fd,"%c", *p);
         */
 		if (*p == '\r')
 			continue;
@@ -133,20 +133,20 @@ char    filename[];
 
 	return 0;
 }
-	
+
 
 int
 dir(path)
 char    path[];
 {
 	int i;
-	
-	
+
+
 	if (!strcmp(path, "/"))	/* 程糷 */
 	{
 		if (Plus)
 			fprintf(fout, "+-1\r\n+INFO: ");
-		fprintf(fout, "1BBS╰参跋ⅷ\t1/boards\t%s\t70\r\n", host); 
+		fprintf(fout, "1BBS╰参跋ⅷ\t1/boards\t%s\t70\r\n", host);
 		if (Plus)
 			fprintf(fout, "+INFO: ");
 		fprintf(fout, "1BBS╰参弘地跋ⅷ\t1/treasure\t%s\t70\r\n", host);
@@ -160,7 +160,7 @@ char    path[];
 			if (Plus)
 				fprintf(fout, "+INFO: ");
 			fprintf(fout, "1%sⅷ--%s\t1/boards/%s\t%s\t70\r\n",
-				   all_brds[i].bhr->title, all_brds[i].bhr->filename, 
+				   all_brds[i].bhr->title, all_brds[i].bhr->filename,
 				   all_brds[i].bhr->filename, host);
 		}
 	}
@@ -173,32 +173,32 @@ char    path[];
 			if (Plus)
 				fprintf(fout, "+INFO: ");
 			fprintf(fout, "1%sⅷ--%s\t1/treasure/%s\t%s\t70\r\n",
-				   all_brds[i].bhr->title, all_brds[i].bhr->filename, 
+				   all_brds[i].bhr->title, all_brds[i].bhr->filename,
 				   all_brds[i].bhr->filename, host);
 		}
 	}
 	else
 	{
 		int fd;
-		FILEHEADER fh;		
-		char   buf[240];		
+		FILEHEADER fh;
+		char   buf[240];
 
-		
+
 		sprintf(buf, "%s/%s", path, DIR_REC);
 		if ((fd = open(buf, O_RDONLY)) > 0)
 		{
-			if (Plus && 
+			if (Plus &&
 				(strstr(buf, "/boards/") || strstr(buf, "/treasure/")))
 			{
 				fprintf(fout, "+-1\r\n");
 			}
-		
+
 			while (read(fd, &fh, sizeof(fh)) == sizeof(fh))
 			{
-#if 0		
+#if 0
 				if ((fh.accessed & FILE_IN) || (fh.accessed & FILE_OUT))
 					continue;
-#endif				
+#endif
 				if (fh.accessed & FILE_TREA)
 				{
 					if (Plus)
@@ -245,7 +245,7 @@ bbs2g4()			/* main action */
 	len = strlen(buf);
 	if (buf[len - 1] == '\n')
 		buf[len - 1] = '\0';
-		
+
 	if ((ptr = strchr(buf, '\t')) != NULL)
 		*ptr = '\0';
 
@@ -310,7 +310,7 @@ usage()
 	fprintf(stderr, "Usage: bbs2g4 [-p port] [-t timeout_second]\n");
 	fprintf(stderr, "Ex: bbs2g4 -p 70 -t 60\n");
 	fflush(stderr);
-}	
+}
 
 
 
@@ -326,8 +326,8 @@ char   *argv[];
 	extern char *optarg;
 	ushort port = GOPHER_PORT;
 	int c;
-	struct hostent *hbuf;	
-	
+	struct hostent *hbuf;
+
 	while ((c = getopt (argc, argv, "p:t:")) != -1)
 	{
 		switch (c)
@@ -345,13 +345,13 @@ char   *argv[];
 
 		}
 	}
-	
+
 	if (!port || !time_out)
 	{
 		usage();
 		exit(2);
 	}
-	
+
 	if ((i = fork()) == -1)
 		exit(-1);
 	if (i)
@@ -380,10 +380,10 @@ char   *argv[];
 		close(i);
 	(void) signal(SIGCHLD, reaper);
 	flen = sizeof(client);
-	
-	create_server(&sock, &fd, &server, port);	
 
-	init_bbsenv();	
+	create_server(&sock, &fd, &server, port);
+
+	init_bbsenv();
 
 	CreateBoardList(NULL);	/* lthuang */
 
@@ -404,14 +404,14 @@ char   *argv[];
 				close(s);
 				dup2(0, 1);
 				dup2(0, 2);
-				
+
 				if ((fout = fdopen(0, "w")) == NULL)
 					exit(-3);
 				bbs2g4();
 				fclose(fout);
-/*				
-				close(s);	
-				*/ /* lthuang */				
+/*
+				close(s);
+				*/ /* lthuang */
 				autoexit(0);
 				break;
 			default:

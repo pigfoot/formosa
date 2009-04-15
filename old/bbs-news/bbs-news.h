@@ -30,10 +30,10 @@ struct BNLink {
 };
 
 struct BNConf {
-	char host[80]; 
-	char ip[16]; 
+	char host[80];
+	char ip[16];
 	char name[80];
-	char server[80]; 
+	char server[80];
 	time_t timer;
 };
 

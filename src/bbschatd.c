@@ -187,7 +187,7 @@ void time_out(int s)
 #if 1
 	/*
 		asuka:
-		forget reset user record ? 
+		forget reset user record ?
 	*/
 	Usrec[cur_seat].userid[0] = '\0';
 	Usrec[cur_seat].nick[0] = '\0';
@@ -314,7 +314,7 @@ unsigned char *s;
 					memmove(s, s + 2, strlen(s + 2) + 1);
 				else
 					memmove(s, s + 1, strlen(s + 2) + 1);
-/*                      
+/*
  * *s++ = '\r';
  * *s++ = '\n';
  * *s = '\0';
@@ -333,7 +333,7 @@ void send_to_user(int chatuid, char *fmt, ...)
 {
 	va_list args;
 	char msg[254];
-	
+
 
 	va_start(args, fmt);
 	vsprintf(msg, fmt, args);
@@ -345,15 +345,15 @@ void send_to_user(int chatuid, char *fmt, ...)
 
 	if (Usrec[chatuid].sock > 0)
 	{
-#if 1	
+#if 1
 		signal(SIGALRM, time_out);
-		cur_sock = Usrec[chatuid].sock;		
+		cur_sock = Usrec[chatuid].sock;
 		alarm(2);
-#endif		
+#endif
 		write(Usrec[chatuid].sock, msg, strlen(msg));
 #if 1
 		alarm(0);
-#endif		
+#endif
 	}
 }
 
@@ -381,7 +381,7 @@ int send_to_channel(int chid, char *fmt, ...)
 	va_list args;
 	char chbuf[254];
 	register int i;
-/*      
+/*
  * int    invis = (cuser->perm & PERM_CLOAK);
  */
 	int len;
@@ -406,7 +406,7 @@ int send_to_channel(int chid, char *fmt, ...)
 	len = strlen(chbuf);
 
 #if 1
-	/* 
+	/*
 		asuka:
 		wait only a short time for total socket to prevent jammed chatroom
 	*/
@@ -454,13 +454,13 @@ int send_to_channel(int chid, char *fmt, ...)
 			}
 #if 0
 			alarm(0);
-#endif		
+#endif
 		}
 	}
 
 #if 1
 	alarm(0);
-#endif		
+#endif
 
 	return 0;
 }
@@ -841,7 +841,7 @@ int chat_nickname(char *nick)
 
 	if (strlen(nick) >= IDLEN)
 		nick[IDLEN] = '\0';
-/*      
+/*
  * fixchatid(nick);
  */
 
@@ -1005,7 +1005,7 @@ int main(int argc, char *argv[])
 
 		}
 	}
-#endif	
+#endif
 
 	if (argc != 2)
 	{
@@ -1019,7 +1019,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s: invaild port %d\n", argv[0], port);
 		exit(2);
 	}
-	
+
 	signal(SIGHUP, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
@@ -1043,7 +1043,7 @@ int main(int argc, char *argv[])
 		exit(0);
 
 	setsid();
-	
+
 	/* close all files */
 	{
 		int s, ndescriptors = getdtablesize();
@@ -1174,9 +1174,9 @@ int main(int argc, char *argv[])
 			s = accept(sock, (struct sockaddr *) &client, &flen);
 			if (s == -1)	/* lthuang */
 				continue;
-		
-/* lmj */		
-			{	
+
+/* lmj */
+			{
 				int aha;
 
 				aha = 1;
@@ -1367,6 +1367,6 @@ int main(int argc, char *argv[])
 	for (i = 0; i < MAXPORTS; i++)
 		if(Usrec[i].sock >0)
 			close(Usrec[i].sock);
-	
+
 	return 0;
 }

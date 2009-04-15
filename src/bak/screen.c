@@ -405,8 +405,8 @@ int *y, *x;
 
 /*
  * Support ANSI control code, output a character onto screen buffer
- * 
- * by lmj       
+ *
+ * by lmj
  */
 int
 outc(c)

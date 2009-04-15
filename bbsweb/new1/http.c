@@ -35,7 +35,7 @@ MIME_TYPE mime_type[] =
 	{NULL, NULL}
 };
 
-int 
+int
 GetHttpRequestType(char *request)
 {
 	int type;
@@ -51,11 +51,11 @@ GetHttpRequestType(char *request)
 
 /*******************************************************************
  *	check if browser send reload command (Pragma: no-cache)
- *	
+ *
  *	......not work in IE 4........T_T
  *
  *******************************************************************/
-BOOL 
+BOOL
 client_reload(char *pragma)
 {
 	return strcasecmp(pragma, "no-cache") ? FALSE : TRUE;
@@ -65,7 +65,7 @@ client_reload(char *pragma)
  *	根據 副檔名 判斷 MIME type
  *
  *******************************************************************/
-int 
+int
 GetMimeType(char *ext)
 {
 	int typeindex;
@@ -94,8 +94,8 @@ HTTP_HEADER http_header[] =
 /*******************************************************************
  *	根據 HttpRespondType 及 檔案類型送出 HTTP Response Header
  *
- *	Response = Status-Line 
- *				*( general-header	
+ *	Response = Status-Line
+ *				*( general-header
  *				| response-header
  *				| entity-header )
  *				CRLF
@@ -106,7 +106,7 @@ HTTP_HEADER http_header[] =
  *	files should not be cached: almost all WEBBBS files
  *******************************************************************/
 
-void 
+void
 ShowHttpHeader(REQUEST_REC * r, SKIN_FILE * sf, POST_FILE * pf)
 {
 
@@ -123,8 +123,8 @@ ShowHttpHeader(REQUEST_REC * r, SKIN_FILE * sf, POST_FILE * pf)
    According to RFC 2068 HTTP/1.1 January 1997
    To mark a response as "already expired," an origin server should use
    an Expires date that is equal to the Date header value.
-   Note that HTTP/1.0 caches may not implement Cache-Control 
-   and may only implement Pragma: no-cache (see section 14.32). 
+   Note that HTTP/1.0 caches may not implement Cache-Control
+   and may only implement Pragma: no-cache (see section 14.32).
  */
 	if (http_header[r->HttpRespondType].Expires && sf->expire)
 	{
@@ -137,7 +137,7 @@ ShowHttpHeader(REQUEST_REC * r, SKIN_FILE * sf, POST_FILE * pf)
 		fprintf(fp_out, "Last-Modified: %s\r\n", timestr);
 	}
 
-/* 
+/*
    NetscapeS 3.x cache html if "Pragma: no-cache" is absent
    so ...........
  */
@@ -198,7 +198,7 @@ ShowHttpHeader(REQUEST_REC * r, SKIN_FILE * sf, POST_FILE * pf)
  *
  *	return: none
  *******************************************************************/
-int 
+int
 ParseHttpHeader(REQUEST_REC * r, SERVER_REC * s)
 {
 	char *buffer;

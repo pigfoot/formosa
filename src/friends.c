@@ -38,7 +38,7 @@ int malloc_array(struct array *a, char *filename)               /* -ToDo- uid co
 					if (*pt == '\n')
 						*pt = '\0';
 				}
-/* 
+/*
      TODO for binary search
      sort_array(a);
  */

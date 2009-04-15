@@ -71,8 +71,8 @@ register int num;
 }
 
 
-/* 
- * get the number of this line in the current window 
+/*
+ * get the number of this line in the current window
  */
 static int
 getlineno()
@@ -205,8 +205,8 @@ register int pos;
 /*
  * join connects 'line' and the next line.  It returns true if:
  *
- * 1) lines were joined and one was deleted 
- * 2) lines could not be joined 
+ * 1) lines were joined and one was deleted
+ * 2) lines could not be joined
  * 3) next line is empty
  *
  * returns false if:
@@ -494,7 +494,7 @@ vedit_exit()
 	}
 
 	currline = NULL;
-/*      
+/*
  * lastline = NULL;
  * firstline = NULL;
  */
@@ -639,8 +639,8 @@ vedit_help()
 }
 
 
-/* 
- * include signature: support multiple signatures 
+/*
+ * include signature: support multiple signatures
  */
 static void
 do_article_sig(userid, wfile)
@@ -699,11 +699,11 @@ char *bname;
 
 
 	setuserfile(bakfile, curuser.userid, UFNAME_EDIT);
-	if ((saveheader || uinfo.mode == EDITPLAN || uinfo.mode == EDITBMWEL) 
+	if ((saveheader || uinfo.mode == EDITPLAN || uinfo.mode == EDITBMWEL)
 	    && isfile(bakfile)	/* lthuang */
-#ifdef GUEST	
+#ifdef GUEST
 	 && strcmp(curuser.userid, GUEST)
-#endif	 
+#endif
 	 )
 	{
 		clear();

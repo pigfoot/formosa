@@ -1,4 +1,4 @@
- 
+
 #include "bbs.h"
 #include "webbbs.h"
 #include "bbswebproto.h"
@@ -6,7 +6,7 @@
 #include "log.h"
 
 
-HTTP_REQUEST http_request[] = 
+HTTP_REQUEST http_request[] =
 {
 	{"GET"},
 	{"POST"},
@@ -16,7 +16,7 @@ HTTP_REQUEST http_request[] =
 };
 
 
-MIME_TYPE mime_type[] = 
+MIME_TYPE mime_type[] =
 {
 	{"html", "text/html"},
 	{"htm", "text/html"},
@@ -37,7 +37,7 @@ MIME_TYPE mime_type[] =
 int GetHttpRequestType(char *request)
 {
 	int type;
-	
+
 	for(type=0; http_request[type].method; type++)
 		if(!strcmp(request, http_request[type].method))
 			break;
@@ -49,7 +49,7 @@ int GetHttpRequestType(char *request)
 
 /*******************************************************************
  *	check if browser send reload command (Pragma: no-cache)
- *	
+ *
  *	......not work in IE 4........T_T
  *
  *******************************************************************/
@@ -74,7 +74,7 @@ int GetMimeType(char *ext)
 }
 
 
-HTTP_HEADER http_header[] = 
+HTTP_HEADER http_header[] =
 {
 	{HTTP_OK, 					TRUE,	TRUE,	FALSE,	TRUE,	TRUE,	TRUE,	FALSE,	FALSE},
 	{HTTP_MOVED_PERMANENTLY, 	FALSE,	FALSE,	TRUE,	FALSE,	FALSE,	FALSE,	FALSE,	FALSE},
@@ -90,8 +90,8 @@ HTTP_HEADER http_header[] =
 /*******************************************************************
  *	根據 HttpRespondType 及 檔案類型送出 HTTP Response Header
  *
- *	Response = Status-Line 
- *				*( general-header	
+ *	Response = Status-Line
+ *				*( general-header
  *				| response-header
  *				| entity-header )
  *				CRLF
@@ -118,21 +118,21 @@ void ShowHttpHeader(REQUEST_REC *r, SKIN_FILE *sf, POST_FILE *pf)
 	According to RFC 2068 HTTP/1.1 January 1997
 	To mark a response as "already expired," an origin server should use
 	an Expires date that is equal to the Date header value.
-	Note that HTTP/1.0 caches may not implement Cache-Control 
-	and may only implement Pragma: no-cache (see section 14.32). 
+	Note that HTTP/1.0 caches may not implement Cache-Control
+	and may only implement Pragma: no-cache (see section 14.32).
 */
 	if(http_header[r->HttpRespondType].Expires && sf->expire)
 	{
 		fprintf(fp_out, "Expires: %s\r\n", timestr);
 	}
-	
+
 	if(http_header[r->HttpRespondType].Last_Modified && !sf->expire)
 	{
 		strftime(timestr, sizeof(timestr), "%a, %d %b %Y %H:%M:%S GMT", gmtime(&(sf->mtime)));
 		fprintf(fp_out, "Last-Modified: %s\r\n", timestr);
 	}
-	
-/* 
+
+/*
  	NetscapeS 3.x cache html if "Pragma: no-cache" is absent
  	so ...........
 */
@@ -153,14 +153,14 @@ void ShowHttpHeader(REQUEST_REC *r, SKIN_FILE *sf, POST_FILE *pf)
 
 	if(http_header[r->HttpRespondType].Allow)
 		fprintf(fp_out, "Allow: GET, HEAD, POST\r\n");
-	
+
 #ifdef KEEP_ALIVE
 	if( r->connection == TRUE
 	&& (r->HttpRespondType == OK || r->HttpRespondType == NOT_MODIFIED)
 	&& (MAX_HTTP_REQUEST_PER_CHILD - r->num_request >= 0)
 	&& sf->mime_type >1)
 	{
-		fprintf(fp_out, "Keep-Alive: timeout=%d, max=%d\r\n", 
+		fprintf(fp_out, "Keep-Alive: timeout=%d, max=%d\r\n",
 			WEB_KEEP_ALIVE_TIMEOUT,
 			MAX_HTTP_REQUEST_PER_CHILD - r->num_request);
 		fprintf(fp_out, "Connection: Keep-Alive\r\n");
@@ -197,10 +197,10 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 {
 	char *buffer;
 	int count=0;
-	
+
 	char req_buf[HTTP_REQUEST_LINE_BUF];
 	r->connection = FALSE;
-	
+
 	while(++count < MAX_HTTP_HEADER)	/* prevent repeated header attack */
 	{
 		buffer = req_buf;
@@ -208,7 +208,7 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 		{
 			return WEB_ERROR;
 		}
-		
+
 #if 0
 		fprintf(fp_out, "len=[%d], buffer=[%s]", strlen(buffer), buffer);
 		fflush(fp_out);
@@ -223,21 +223,21 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 		weblog_line(buffer, s->debug_log, r->fromhost, r->atime);
 		fflush(s->debug_log);
 #endif
-		
+
 		if (strlen(buffer) == 0)
 			return WEB_OK;
-		
+
 		else if(!strncasecmp(buffer, "Cookie:", 7))
 		{
 			char pass[PASSLEN*3];
-				
+
 			xstrncpy(r->cookie, buffer+8, STRLEN*2);
 			GetPara2(username, "Name", buffer, IDLEN, "");
 			GetPara2(pass, "Password", buffer, PASSLEN*3, "");
 			Convert1(pass, password);
 		}
 		else if(!strncasecmp(buffer, "X-Forwarded-For:", 16)
-			||  !strncasecmp(buffer, "X-SeederNet-For:", 16)) 
+			||  !strncasecmp(buffer, "X-SeederNet-For:", 16))
 		{
 			/* record client ip [squid proxy] */
 			int a1 = 0, a2 = 0, a3 = 0, a4 = 0;
@@ -259,23 +259,23 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 			}
 		}
 		else if(!strncasecmp(buffer, "If-Modified-Since:", 18))
-		{	
+		{
 			buffer+=19;
 			strtok(buffer, ";\r\n");
 
 			r->if_modified_since = parseHTTPdate(buffer);
 		}
 		else if(!strncasecmp(buffer, "Referer:", 8))
-		{	
+		{
 			/*
 				we log the client access from outside of this server
 				this can help us to know whose webpage has link to our webpage
-				
+
 				Referer: http://bbs.irradiance.net/txtVersion/
 			*/
-			
+
 			xstrncpy(r->referer, buffer+9, STRLEN*2);
-			
+
 #ifdef WEB_REFERER_LOG
 #if 0	/* test by lthuang */
 			{
@@ -286,8 +286,8 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 				d1 = strrchr(myhostip, '.');
 				d2 = strrchr(buffer+16, '.');
 				if (strcmp(p1, p2)) && stncmp(buffer+16, myhostip, d1 - myhostip + 1))
-					weblog_line(buffer+16, s->referer_log, r->fromhost, r->atime);			
-			}				
+					weblog_line(buffer+16, s->referer_log, r->fromhost, r->atime);
+			}
 #endif
 #ifdef ANIMEBBS
 			if(!strstr(buffer+16, ".irradiance.net")
@@ -302,46 +302,46 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 
 		}
 		else if(!strncasecmp(buffer, "Host:", 5))
-		{	
+		{
 			GetPara2(r->host, "Host: ", buffer, STRLEN, s->host_name);
 		}
 		else if(!strncasecmp(buffer, "Via:", 4))
-		{	
+		{
 			/*
 				Via: 1.0 tpproxy2.hinet.net:80 (Squid/1.1.22), 1.0 proxy-root1.hinet.net:3128 (Squid/1.1.22)
 			*/
 			xstrncpy(r->via, buffer+5, STRLEN*3);
-			
+
 		}
 		else if(!strncasecmp(buffer, "Connection:", 11)
 			|| !strncasecmp(buffer, "Xonnection:", 11))
-		{	
+		{
 			r->connection = !strcasecmp(buffer+12, "close") ? FALSE : TRUE;
-			
+
 		}
 		else if(!strncasecmp(buffer, "Content-length:", 15))
-		{	
+		{
 			r->content_length = atoi(buffer+16);
-			
+
 		}
 		else if(!strncasecmp(buffer, "Content-Type:", 13))
-		{	
+		{
 			xstrncpy(r->content_type, buffer+14, STRLEN);
 			/* application/x-www-form-urlencoded */
 		}
 		else if(!strncasecmp(buffer, "User-Agent:", 11))
-		{	
+		{
 			xstrncpy(r->user_agent, buffer+12, STRLEN*2);
 		}
 		else if(!strncasecmp(buffer, "Pragma:", 7))
-		{	
+		{
 			xstrncpy(r->pragma, buffer+8, STRLEN);
 		}
 		else if(!strncasecmp(buffer, "Cache-Control:", 14))
-		{	
+		{
 			xstrncpy(r->cache_control, buffer+15, STRLEN);
 		}
-		else if(!strncasecmp(buffer, "Client-ip:", 10)) 
+		else if(!strncasecmp(buffer, "Client-ip:", 10))
 		{
 			/* record client ip [?? proxy] */
 			xstrncpy(r->x_forward_for, buffer+11, STRLEN*2);
@@ -350,23 +350,23 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 			xstrncpy(r->fromhost, buffer, HOSTLEN);
 		}
 		else if(!strncasecmp(buffer, "Authorization:", 14))
-		{	
+		{
 		/*
 			Authorization: Basic xxxxxxxxxxxxxxxxxxxx
 		*/
 			xstrncpy(r->authorization, buffer+15, STRLEN);
-			
+
 			buffer += 21;
 			strtok(buffer, "\r\n");
-			
+
 			strcpy(auth_code, buffer);
 			base64_decode_str(auth_code);
-			
+
 		#if 0
 			fprintf(fp_out, "ori=[%s], decode=[%s]\r\n", buffer, auth_code);
 			fflush(fp_out);
 		#endif
-			
+
 		}
 #ifdef WEB_OTHERHEADER_LOG
 		else if(!strncasecmp(buffer, "Proxy-Connection:", 17)
@@ -378,22 +378,22 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 		{
 		}
 		else if(!strncasecmp(buffer, "Max-Forwards:", 13))
-		{	
+		{
 		}
 		else if(!strncasecmp(buffer, "Forwarded:", 10))
-		{	
+		{
 			/*
 				Forwarded: by http://isvr.interior.com.tw:8080 (Netscape-Proxy/3.5)
 			*/
 		}
 		else if(!strncasecmp(buffer, "Accept-Language:", 16))
-		{	
+		{
 		}
 		else if(!strncasecmp(buffer, "Accept-Charset:", 15))
-		{	
+		{
 		}
 		else if(!strncasecmp(buffer, "Accept:", 7))
-		{	
+		{
 		}
 		else if(!strncasecmp(buffer, "Accept-Encoding:", 16))
 		{
@@ -406,7 +406,7 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 		{
 		}
 		else if(!strncasecmp(buffer, "Cache-Info:", 11))
-		{	
+		{
 		}
 		else if(!strncasecmp(buffer, "UA-", 3))
 		{
@@ -424,7 +424,7 @@ int ParseHttpHeader(REQUEST_REC *r, SERVER_REC *s)
 #endif	/* WEB_OTHERHEADER_LOG */
 
 	}
-	
+
 	return WEB_ERROR;
-	
+
 }

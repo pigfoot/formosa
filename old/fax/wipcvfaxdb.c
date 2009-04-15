@@ -23,36 +23,36 @@ Change History:
 *************************************************************************/
 /*************************************************************
  This Program is the wipc server for faxnet billing system
- *************************************************************/ 
+ *************************************************************/
 #include "wipc.h"
-#include "wipcvfaxdb.h" 
+#include "wipcvfaxdb.h"
 
 /*************************************************************
  *  Add New customer                                         *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_cusadd(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char buf[15][80],passwd[5],chmodmsg[50];  
-  char *token ; 
-  FILE *fp,*sysfd; 
+  char buf[15][80],passwd[5],chmodmsg[50];
+  char *token ;
+  FILE *fp,*sysfd;
   struct keydesc ckey;
-  
+
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("vircusadd:Open errlog Failed !\n");
 
-  i=0; 
-  token = strtok(buffer,tokensep); 
+  i=0;
+  token = strtok(buffer,tokensep);
   while (token != NULL)
   {
     sprintf(buf[i],"%s",token);
     i++;
     token = strtok(NULL,tokensep);
-  } 
+  }
 
-  passwd[0]=buf[2][3] - 10;  
+  passwd[0]=buf[2][3] - 10;
   passwd[1]=buf[2][1] - 10;
   passwd[2]=buf[2][2] - 10;
   passwd[3]=buf[2][0] - 10;
@@ -61,7 +61,7 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
   fdcus=cc=isopen("/DB/vircust",ISMANULOCK+ISINOUT);
   if (cc < 0)
   {
-    if (iserrno == 2) 
+    if (iserrno == 2)
     {
         /* Set up Customer Key (accno) in vircust.dat file*/
        	ckey.k_flags = ISNODUPS;
@@ -84,16 +84,16 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     }
     else
     {
-    	fprintf(sysfd,"vircus_add:isopen error %d for vircust file\n",iserrno); 
-    	fclose(sysfd); 
-    	return FALSE; 
+    	fprintf(sysfd,"vircus_add:isopen error %d for vircust file\n",iserrno);
+    	fclose(sysfd);
+    	return FALSE;
     }
-  }  
-  
+  }
+
   /**************************
    * Putting data to record *
-   **************************/ 
-  stchar(buf[0],&cusrec[0],20);		/* account */  
+   **************************/
+  stchar(buf[0],&cusrec[0],20);		/* account */
   readit:
   cc = isread (fdcus,cusrec,ISEQUAL);
   stchar(buf[1],&cusrec[20],40);	/* company */
@@ -146,22 +146,22 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     goto readit;
   }
   isclose(fdcus);
-  fclose(sysfd); 
+  fclose(sysfd);
   return TRUE;
-} 
-  
+}
+
 /*************************************************************
  *  Delete the customer record                               *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_cusdel(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char *token,chmodmsg[50]; 
-  FILE *fp,*sysfd; 
+  char *token,chmodmsg[50];
+  FILE *fp,*sysfd;
   struct keydesc ckey;
-  
+
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("vircusdel:Open errlog Failed !\n");
 
@@ -196,10 +196,10 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
         fclose(sysfd);
         return FALSE;
     }
-  } 
-  /* Using faxno to find the record ,if this record was locked,try again */ 
+  }
+  /* Using faxno to find the record ,if this record was locked,try again */
   stchar(buffer,&cusrec[0],20);
-  readit: 
+  readit:
   cc = isread(fdcus,cusrec,ISEQUAL);
   if (cc == 0)
   {
@@ -208,61 +208,61 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     if (cc != 0)
     {
       fprintf(sysfd,"vircusdel:isdelete error %d for vircust file\n",iserrno);
-      isunlock(fdcus); 
-      isclose(fdcus); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-    isunlock(fdcus); 
-  } 
+      isunlock(fdcus);
+      isclose(fdcus);
+      fclose(sysfd);
+      return FALSE;
+    }
+    isunlock(fdcus);
+  }
   else
-  { 
+  {
     if (iserrno == ELOCKED || iserrno == EFLOCKED)
     {
       sleep(1);
       goto readit;
     }
-    else 
+    else
     {
       if (iserrno == ENOREC)
 	fprintf(sysfd,"vircusdel:NO This Record[%s] EXIST\n",buffer);
       else
         fprintf(sysfd,"vircusdel:isread error %d for vircust file\n",iserrno);
-      isclose(fdcus); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-  } 
-  isclose(fdcus); 
-  fclose(sysfd); 
+      isclose(fdcus);
+      fclose(sysfd);
+      return FALSE;
+    }
+  }
+  isclose(fdcus);
+  fclose(sysfd);
   return TRUE;
-} 
+}
 
 /*************************************************************
  *  Check if the customer exists or not                      *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_cusmod(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char passwd[6],buf[15][80],chmodmsg[50];  
-  char *token; 
-  FILE *fp,*sysfd; 
+  char passwd[6],buf[15][80],chmodmsg[50];
+  char *token;
+  FILE *fp,*sysfd;
   struct keydesc ckey;
 
 
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("vircusmod:Open errlog Failed !\n");
 
-  i=0; 
-  token = strtok(buffer,tokensep); 
+  i=0;
+  token = strtok(buffer,tokensep);
   while (token != NULL)
   {
     sprintf(buf[i],"%s",token);
     i++;
     token = strtok(NULL,tokensep);
-  } 
+  }
 
   passwd[0]=buf[2][3] - 10;
   passwd[1]=buf[2][1] - 10;
@@ -273,7 +273,7 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
   fdcus=cc=isopen("/DB/vircust",ISMANULOCK+ISINOUT);
   if (cc < 0)
   {
-    if (iserrno == 2) 
+    if (iserrno == 2)
     {
         /* Set up Customer Key (accno) in vircust.dat file*/
         ckey.k_flags = ISNODUPS;
@@ -302,16 +302,16 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     }
   }
 
-  /* Using faxno to find the record ,if this record was locked,try again */ 
+  /* Using faxno to find the record ,if this record was locked,try again */
   stchar(buf[0],&cusrec[0],20);
-  readit: 
+  readit:
   cc = isread(fdcus,cusrec,ISEQUAL);
-  /* Putting the modify data to record */ 
+  /* Putting the modify data to record */
   /**************************
    * Putting data to record *
-   **************************/ 
+   **************************/
   stchar(buf[1],&cusrec[20],40);        /* company */
-  stchar(passwd,&cusrec[60],4);         /* password */ 
+  stchar(passwd,&cusrec[60],4);         /* password */
   stchar(buf[3],&cusrec[64],10);        /* idno */
   stchar(buf[4],&cusrec[74],15);        /* phone */
   stchar(buf[5],&cusrec[89],80);        /* address */
@@ -324,7 +324,7 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
   stchar(buf[12],&cusrec[386],10);      /* end_date */
   stchar(buf[13],&cusrec[396],10);      /* start_date*/
   stchar("          ",&cusrec[406],10); /* end_date2 */
-  stchar(buf[14],&cusrec[416],5);       /* sales */ 
+  stchar(buf[14],&cusrec[416],5);       /* sales */
 
   if (cc == 0)
   {
@@ -333,16 +333,16 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     if (cc != 0)
     {
       fprintf(sysfd,"vircusmod:isrewrite error %d for vircust file\n",iserrno);
-      isunlock(fdcus); 
-      isclose(fdcus); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-    isunlock(fdcus); 
-  } 
-  else if (iserrno == ENOREC) 
+      isunlock(fdcus);
+      isclose(fdcus);
+      fclose(sysfd);
+      return FALSE;
+    }
+    isunlock(fdcus);
+  }
+  else if (iserrno == ENOREC)
   {
-    islock(fdcus);  
+    islock(fdcus);
     cc = iswrite(fdcus,cusrec);
     if (cc != 0)
     {
@@ -359,10 +359,10 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     sleep(1);
     goto readit;
   }
-  isclose(fdcus); 
-  fclose(sysfd); 
+  isclose(fdcus);
+  fclose(sysfd);
   return TRUE;
-} 
+}
 
 /**********************************************************
  * customer change the start_date and end_date            *
@@ -440,29 +440,29 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
 
 /*************************************************************
  *  Add the New sales record                                 *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_saleadd(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char buf[8][80],passwd[5],chmodmsg[50];  
-  char *token; 
-  FILE *sysfd; 
+  char buf[8][80],passwd[5],chmodmsg[50];
+  char *token;
+  FILE *sysfd;
 
 
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("virsaleadd:Open errlog Failed !\n");
 
-  i=0; 
-  /* parsing the buffer to each field data */ 
-  token = strtok(buffer,tokensep); 
+  i=0;
+  /* parsing the buffer to each field data */
+  token = strtok(buffer,tokensep);
   while (token != NULL)
   {
     sprintf(buf[i],"%s",token);
     i++;
     token = strtok(NULL,tokensep);
-  } 
+  }
 
   passwd[0] = buf[1][3] - 10;
   passwd[1] = buf[1][1] - 10;
@@ -496,14 +496,14 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     }
     else
     {
-    	fprintf(sysfd,"virsaleadd:isopen error %d for virsales file\n",iserrno); 
-    	fclose(sysfd); 
-    	return FALSE; 
+    	fprintf(sysfd,"virsaleadd:isopen error %d for virsales file\n",iserrno);
+    	fclose(sysfd);
+    	return FALSE;
     }
-  }  
+  }
   /**************************
    * Putting data to record *
-   **************************/ 
+   **************************/
   stchar(buf[0],&salesrec[0],5);
   readit:
   cc = isread(fdsales,salesrec,ISEQUAL);
@@ -514,17 +514,17 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
   stchar(buf[5],&salesrec[144],15);
   stchar(buf[6],&salesrec[159],20);
   stchar(buf[7],&salesrec[179],1);
-  if (cc == 0) 
+  if (cc == 0)
   {
     islock(fdsales);
     cc = isrewrite(fdsales,salesrec);
     if (cc != 0)
     {
       fprintf(sysfd,"virsaleadd:isrewrite error %d for sales file\n",iserrno);
-      isunlock(fdsales); 
-      isclose(fdsales); 
-      fclose(sysfd); 
-      return FALSE; 
+      isunlock(fdsales);
+      isclose(fdsales);
+      fclose(sysfd);
+      return FALSE;
     }
   }
   else if (iserrno == ENOREC)
@@ -545,23 +545,23 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     sleep(1);
     goto readit;
   }
-  isunlock(fdsales); 
-  isclose(fdsales); 
-  fclose(sysfd); 
+  isunlock(fdsales);
+  isclose(fdsales);
+  fclose(sysfd);
   return TRUE;
-} 
-  
+}
+
 /*************************************************************
- * Delete the sales record                                   *  
- *************************************************************/ 
-int 
+ * Delete the sales record                                   *
+ *************************************************************/
+int
 Wipc_saledel(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char chmodmsg[50];  
-  char *token; 
-  FILE *sysfd; 
+  char chmodmsg[50];
+  char *token;
+  FILE *sysfd;
 
 
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
@@ -597,9 +597,9 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
         fclose(sysfd);
         return FALSE;
     }
-  }  
+  }
   stchar(buffer,&salesrec[0],5);
-  readit: 
+  readit:
   cc = isread(fdsales,salesrec,ISEQUAL);
   if (cc == 0)
   {
@@ -608,13 +608,13 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     if (cc != 0)
     {
       fprintf(sysfd,"virsaledel:isdelete error %d for virsales file\n",iserrno);
-      isunlock(fdsales); 
-      isclose(fdsales); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-    isunlock(fdsales); 
-  } 
+      isunlock(fdsales);
+      isclose(fdsales);
+      fclose(sysfd);
+      return FALSE;
+    }
+    isunlock(fdsales);
+  }
   else
   {
     if (iserrno == ELOCKED || iserrno == EFLOCKED)
@@ -622,46 +622,46 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
       sleep(1);
       goto readit;
     }
-    else 
+    else
     {
       if (iserrno == ENOREC)
         fprintf(sysfd,"virsaledel:NO this sales[%s] EXIST\n",buffer);
       else
         fprintf(sysfd,"virsaledel:isread error %d for sales file\n",iserrno);
-      isclose(fdsales); 
+      isclose(fdsales);
       fclose(sysfd);
-      return FALSE; 
-    } 
-  } 
-  isclose(fdsales); 
+      return FALSE;
+    }
+  }
+  isclose(fdsales);
   fclose(sysfd);
   return TRUE;
-} 
+}
 
 /*************************************************************
  *  Modify the sales record                                  *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_salemod(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char buf[8][80],passwd[5],chmodmsg[50];  
-  char *token; 
-  FILE *sysfd; 
+  char buf[8][80],passwd[5],chmodmsg[50];
+  char *token;
+  FILE *sysfd;
 
 
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("virsalemod:Open errlog Failed !\n");
 
-  i=0; 
-  token = strtok(buffer,tokensep); 
+  i=0;
+  token = strtok(buffer,tokensep);
   while (token != NULL)
   {
     sprintf(buf[i],"%s",token);
     i++;
     token = strtok(NULL,tokensep);
-  } 
+  }
 
   passwd[0] = buf[1][3] - 10;
   passwd[1] = buf[1][1] - 10;
@@ -699,12 +699,12 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
         fclose(sysfd);
         return FALSE;
     }
-  }  
+  }
   /****************************************
    * Using Primary key to find the record *
-   ****************************************/ 
+   ****************************************/
   stchar(buf[0],&salesrec[0],5);
-  readit: 
+  readit:
   cc = isread(fdsales,salesrec,ISEQUAL);
   /**************************
    * Putting data to record *
@@ -749,91 +749,91 @@ char buffer[WIPC_MAX_MESSAGE_SIZE];
     sleep(1);
     goto readit;
   }
-  fclose(sysfd); 
-  isclose(fdsales); 
+  fclose(sysfd);
+  isclose(fdsales);
   return TRUE;
-} 
+}
 
 /*************************************************************
  *  update the customer password                             *
- *************************************************************/ 
-int 
+ *************************************************************/
+int
 Wipc_updateps(buffer)
-char buffer[WIPC_MAX_MESSAGE_SIZE]; 
+char buffer[WIPC_MAX_MESSAGE_SIZE];
 {
   int cc,i,ch,flag,DONE;
-  char buf[3][80],passwd[5];  
-  char *token; 
-  FILE *fp,*sysfd; 
+  char buf[3][80],passwd[5];
+  char *token;
+  FILE *fp,*sysfd;
 
 
   if ((sysfd=fopen("/home/workfile/errlog","a+")) == NULL)
     printf("virupdateps:Open errlog Failed !\n");
 
-  i=0; 
-  token = strtok(buffer,tokensep); 
+  i=0;
+  token = strtok(buffer,tokensep);
   while (token != NULL)
   {
     sprintf(buf[i],"%s",token);
     i++;
     token = strtok(NULL,tokensep);
-  } 
+  }
   passwd[0] = buf[1][3] - 10;
   passwd[1] = buf[1][1] - 10;
   passwd[2] = buf[1][2] - 10;
   passwd[3] = buf[1][0] - 10;
-  passwd[4] = '\0'; 
+  passwd[4] = '\0';
 
   fdcus=cc=isopen("/DB/vircust",ISMANULOCK+ISINOUT);
   if (cc < 0)
   {
-    fprintf(sysfd,"virupdateps:isopen error %d for vircust file\n",iserrno); 
-    fclose(sysfd); 
-    return FALSE; 
-  }  
-  /* Using faxno to find the record ,if this record was locked,try again */ 
+    fprintf(sysfd,"virupdateps:isopen error %d for vircust file\n",iserrno);
+    fclose(sysfd);
+    return FALSE;
+  }
+  /* Using faxno to find the record ,if this record was locked,try again */
   stchar(buf[0],&cusrec[0],20);
-  readit: 
+  readit:
   cc = isread(fdcus,cusrec,ISEQUAL);
   if (cc == 0)
   {
-    /* Putting the modify data to record */ 
+    /* Putting the modify data to record */
     stchar(passwd,&cusrec[60],4);
     /**************************
      * Putting data to record *
-     **************************/ 
+     **************************/
     islock(fdcus);
     cc = isrewrite(fdcus,cusrec);
     if (cc != 0)
     {
       fprintf(sysfd,"virupdateps:isrewrite error %d for vircust file\n",iserrno);
-      isunlock(fdcus); 
-      isclose(fdcus); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-    isunlock(fdcus); 
-  } 
+      isunlock(fdcus);
+      isclose(fdcus);
+      fclose(sysfd);
+      return FALSE;
+    }
+    isunlock(fdcus);
+  }
   else
-  { 
+  {
     if (iserrno == ELOCKED || iserrno == EFLOCKED)
     {
       sleep(1);
       goto readit;
     }
-    else 
+    else
     {
       if (iserrno == ENOREC)
         fprintf(sysfd,"virupdateps:NO this accno[%s] EXIST\n",buf[0]);
       else
         fprintf(sysfd,"virupdateps:isread error %d for vircust file\n",iserrno);
-      isclose(fdcus); 
-      fclose(sysfd); 
-      return FALSE; 
-    } 
-  } 
-  isclose(fdcus); 
-  fclose(sysfd); 
+      isclose(fdcus);
+      fclose(sysfd);
+      return FALSE;
+    }
+  }
+  isclose(fdcus);
+  fclose(sysfd);
   return TRUE;
-} 
+}
 

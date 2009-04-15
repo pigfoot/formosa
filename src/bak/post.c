@@ -1,5 +1,5 @@
-/* 
- * Re-written and comment by 
+/*
+ * Re-written and comment by
  * Li-te Huang, lthuang@cc.nsysu.edu.tw, 12/05/97
  */
 
@@ -98,15 +98,15 @@ char *uident;
 }
 
 
-/*  Provided for bm to manage affairs of the board, 
+/*  Provided for bm to manage affairs of the board,
  *  including
  *
  *  - edit/delete the board welcome
  *  - edit the bmas list
- *  
- *  We allow sysop and board owner has the full permission, 
+ *
+ *  We allow sysop and board owner has the full permission,
  *  but bmas cannot edit the bmas lists
- *  
+ *
  *  Note: 1. For security, check whether current user is guest
  *           (when GUEST defined)
  *        2. Through this program source, we define
@@ -125,7 +125,7 @@ bm_manage_file()
 		return C_NONE;
 #endif
 
-	/* not sysop and do not has the permission of bm, 
+	/* not sysop and do not has the permission of bm,
 	 * including board owner and bmas
 	 */
 	if (HAS_PERM(PERM_SYSOP) || isBM)
@@ -203,16 +203,16 @@ bm_manage_file()
 	else
 	{
 		int save_umode = uinfo.mode;
-		
+
 		update_umode(EDITBMWEL);
 		setboardfile(fname, CurBList->filename, BM_WELCOME);
 		vedit(fname, NULL, NULL);
-		update_umode(save_umode);		
+		update_umode(save_umode);
 	}
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
@@ -232,12 +232,12 @@ read_help()
  *
  * Limit:
  *        level, ident (BRD_IDENT)
- * 
+ *
  * Who can post on treaure:
  *     (1) sysop
- *     (2) that has bm permission, including owner and bmas 
+ *     (2) that has bm permission, including owner and bmas
  *     (2) if owner of the board is absent, any one whose level is PERM_BM
- *   
+ *
  * Note: guest can only post on the board _STR_BOARD_GUEST
  *       [refer strhct.h for detail]
  *       (when GUEST define)
@@ -260,7 +260,7 @@ BOARDHEADER *bh1;
 
 /* by lthuang
 	if (!HAS_PERM(PERM_SYSOP)
-*/	
+*/
 	{
 		if (curuser.userlevel < bh1->level)
 		{
@@ -291,19 +291,19 @@ BOARDHEADER *bh1;
 }
 
 
-/* 
+/*
  * Note:
  * . only the post on board (normal, but not treausre) be send to news
  * and
- * 
+ *
  * (1) Do not send the post to news, if the user is not identified.
  * (when EMAIL_LIMIT defined)
- * (2) By default, all the post send to news. 
+ * (2) By default, all the post send to news.
  * Users can have theris own choice.
- * 
+ *
  * . only the post on board (normal) will be added to postnum,
  * but BRD_NOPOSTNUM excluded
- * 
+ *
  */
 static int
 mail2(to, filename, title)
@@ -417,10 +417,10 @@ char *fn_src, *to, *title;
 	retval = vedit(tempfile, title, NULL);
 	if (!retval)
 		retval = mail2(to, tempfile, title);
-		
+
 	update_umode(save_umode);
 	unlink(tempfile);
-	
+
 	return (retval) ? 0 : PMP_MAIL;
 }
 
@@ -492,8 +492,8 @@ char *postpath;
 			}
 		}
 
-		/* 
-		 * do not add postnum, when post on treasure, 
+		/*
+		 * do not add postnum, when post on treasure,
 		 * or the brdtype of the board is BRD_NOPOSTNUM
 		 */
 		if ((in_mail || in_board) && !(CurBList->brdtype & BRD_NOPOSTNUM))
@@ -501,7 +501,7 @@ char *postpath;
 
 		/* wirte the post file on the board directory immediately */
 		postno = PublishPost(tempfile, curuser.userid, curuser.username,
-				             CurBList->filename, title, curuser.ident, 
+				             CurBList->filename, title, curuser.ident,
 				             uinfo.from, tonews, postpath, 0);
 
 		if (postno == -1)
@@ -564,19 +564,19 @@ char *direct;
 		return C_INIT;
 	}
 	showmsg(_msg_post_fail);
-/*	
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 
 /*
  * process the treasure:
- * 
+ *
  * . copy/move the post to treausre
  * . copy/move the treausre between different level of directory
- * 
+ *
  */
 int
 treasure_article(ent, finfo, direct)
@@ -595,9 +595,9 @@ char *direct;
 
 	if (finfo->accessed & FILE_DELE)
 		return C_NONE;
-/*		
+/*
 	if (!HAS_PERM(PERM_SYSOP))
-*/	
+*/
 	{
 		if ((CurBList->owner[0] != '\0' || !HAS_PERM(PERM_BM)) && !hasBMPerm)
 			return C_NONE;
@@ -678,7 +678,7 @@ char *direct;
 			if (combin)
 			{
 				append_file(fn_comb, fname);
-				append_record(fn_comb, 
+				append_record(fn_comb,
 "\n>-------------------------------------------------------------------------<\n",
 				              strlen(genbuf));
 			}

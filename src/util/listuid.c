@@ -98,9 +98,9 @@ void main(int argc, char *argv[])
 	fprintf(rptfile, "#          total users:%d\n", total_user);
 	fprintf(rptfile, "#        passwd missed: %d\n", total_missed);
 	fprintf(rptfile, "# passwd size mismatch: %d\n", total_mismatch);
-	
+
 	fclose(rptfile);
 
 	/* ----------------------------------- */
-	return;	
+	return;
 }

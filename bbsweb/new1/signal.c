@@ -12,7 +12,7 @@ extern int RUNNING;
 extern int my_num;
 extern sigjmp_buf env;
 
-void 
+void
 init_signals(void)
 {
 
@@ -41,13 +41,13 @@ init_signals(void)
 }
 
 
-void 
+void
 shutdown_server(int sig)
 {
 	RUNNING = 0;
 }
 
-void 
+void
 sig_segv(int sig)
 {
 	server->error++;
@@ -82,7 +82,7 @@ sig_segv(int sig)
 }
 
 #if 0
-void 
+void
 sig_pipe(int sig)
 {
 	server->error++;
@@ -112,7 +112,7 @@ sig_pipe(int sig)
 /*******************************************************************
  *	reaper - clean up zombie children
  *******************************************************************/
-void 
+void
 reaper(int sig)
 {
 	pid_t cpid;
@@ -158,7 +158,7 @@ reaper(int sig)
 /*******************************************************************
  * Idle Timeout
  *******************************************************************/
-void 
+void
 timeout_check(int s)
 {
 	extern void lingering_close(int sock);

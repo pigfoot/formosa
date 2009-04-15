@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -53,12 +53,12 @@
 /*
  * util_date.c: date parsing utility routines
  *     These routines are (hopefully) platform-independent.
- * 
+ *
  * 27 Oct 1996  Roy Fielding
  *     Extracted (with many modifications) from mod_proxy.c and
  *     tested with over 50,000 randomly chosen valid date strings
  *     and several hundred variations of invalid date strings.
- * 
+ *
  */
 
 #include <ctype.h>
@@ -75,10 +75,10 @@
  *   & - hex digit
  *   # - digit
  *   ~ - digit or space
- *   * - swallow remaining characters 
+ *   * - swallow remaining characters
  *  <x> - exact match for any other character
  */
-static int 
+static int
 checkmask(const char *data, const char *mask)
 {
 	int i;
@@ -127,15 +127,15 @@ checkmask(const char *data, const char *mask)
 /*
  * tm2sec converts a GMT tm structure into the number of seconds since
  * 1st January 1970 UT.  Note that we ignore tm_wday, tm_yday, and tm_dst.
- * 
+ *
  * The return value is always a valid time_t value -- (time_t)0 is returned
  * if the input date is outside that capable of being represented by time(),
- * i.e., before Thu, 01 Jan 1970 00:00:00 for all systems and 
+ * i.e., before Thu, 01 Jan 1970 00:00:00 for all systems and
  * beyond 2038 for 32bit systems.
  *
  * This routine is intended to be very fast, much faster than mktime().
  */
-static time_t 
+static time_t
 tm2sec(const struct tm * t)
 {
 	int year;
@@ -178,7 +178,7 @@ tm2sec(const struct tm * t)
  * 0 if this would be out of range or if the date is invalid.
  *
  * The restricted HTTP syntax is
- * 
+ *
  *     HTTP-date    = rfc1123-date | rfc850-date | asctime-date
  *
  *     rfc1123-date = wkday "," SP date1 SP time SP "GMT"
@@ -214,7 +214,7 @@ tm2sec(const struct tm * t)
  * but many changes since then.
  *
  */
-time_t 
+time_t
 parseHTTPdate(const char *date)
 {
 	struct tm ds;

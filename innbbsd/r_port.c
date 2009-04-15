@@ -19,7 +19,7 @@ flock(fd, op)
 int fd,op;
 {
    switch (op) {
-     case LOCK_EX: op = F_LOCK; break;  
+     case LOCK_EX: op = F_LOCK; break;
      case LOCK_UN: op = F_ULOCK; break;
      default: return -1;
    }

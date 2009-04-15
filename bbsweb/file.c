@@ -15,7 +15,7 @@ extern int isTORNADO;
  *	Dispatch command according to $type, $tag in skin tags
  *
  *******************************************************************/
-static void 
+static void
 DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 {
 	struct _tag_cmd
@@ -29,7 +29,7 @@ DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 		{NULL, NULL}
 	};
 	int i;
-	
+
 	for (i = 0; tag_cmd[i].type; i++)
 	{
 		if (!strcasecmp(type, tag_cmd[i].type))
@@ -52,7 +52,7 @@ DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 		char *p, *para = NULL;
 		char value[256];
 
-	
+
 		if ((p = strchr(tag, ' ')) != NULL
 		    || (p = strchr(tag, '_')) != NULL)
 		{
@@ -67,10 +67,10 @@ DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 				if (!CheckNewmail(username, TRUE))
 				{
 					GetPara3(value, "VALUE2", para, sizeof(value), MSG_MailBox);
-					fprintf(fp_out, "<A HREF=\"/%smail/\">%s</A>", 
+					fprintf(fp_out, "<A HREF=\"/%smail/\">%s</A>",
 						BBS_SUBDIR, value);
 				}
-				else			
+				else
 				{
 					GetPara3(value, "VALUE1", para, sizeof(value), MSG_MailNew);
 					fprintf(fp_out, "<A HREF=\"/%smail/\"><FONT COLOR=\"RED\"><BLINK>%s</BLINK></FONT></A>",
@@ -103,14 +103,14 @@ DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 	else if (!strcasecmp(type, "Proxy"))
 	{
 		int len;
-		
+
 		/* Via: xxx,( */
 		if ((len = strspn(request_rec->via, ",(")) > 4)
 			fwrite(request_rec->via + 4, len - 4, 1, fp_out);
 	}
 	else if (!strcasecmp(type, "Skin"))
 	{
-		if (PSCorrect == Correct && (board->brdtype & BRD_WEBSKIN) 
+		if (PSCorrect == Correct && (board->brdtype & BRD_WEBSKIN)
 			&& (!strcmp(username, board->owner) || HAS_PERM(PERM_SYSOP)))
 		{
 			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[BM]修改看板介面</a>",
@@ -126,7 +126,7 @@ DoTagCommand(char *type, char *tag, BOARDHEADER *board, POST_FILE *pf)
 
 /*******************************************************************
  *	find WEB-BBS Special Tags
- *	
+ *
  *	<!BBS_Type_Name OPTION=   !>
  *
  *	<!BBS_Post_FileName!>
@@ -170,7 +170,7 @@ GetBBSTag(char *type, char *tag, char *data)
  *	如果是圖形或是其他類型檔案直接送出
  *	如果是 HTML 形式檔案則分析出 tag 將其代入適當的資料
  *******************************************************************/
-int 
+int
 fileSend(char *filename, int mime_type, time_t mtime, BOARDHEADER *board)
 {
 	FILE *fp;
@@ -259,7 +259,7 @@ fileSend(char *filename, int mime_type, time_t mtime, BOARDHEADER *board)
 
 #if 1
 			weblog_line(server->access_log, "cache fail: %s", filename);
-#endif				 
+#endif
 
 			if ((fp = fopen(filename, "r")) == NULL)
 				return FALSE;
@@ -291,7 +291,7 @@ fileSend(char *filename, int mime_type, time_t mtime, BOARDHEADER *board)
  *
  *	佈告區 & 精華區 & 信件 通用
  *******************************************************************/
-int 
+int
 GetPostInfo(POST_FILE * pf)
 {
 	int fd;
@@ -314,7 +314,7 @@ GetPostInfo(POST_FILE * pf)
 	{
 		return WEB_FILE_NOT_FOUND;
 	}
-	
+
 	xstrncpy(pf->fh.filename, p + 1, STRLEN - 8 - 12 - 4 - 4);
 
 #if 0
@@ -325,10 +325,10 @@ GetPostInfo(POST_FILE * pf)
 	if ((fd = open(board_dir, O_RDWR)) < 0)
 		return WEB_FILE_NOT_FOUND;
 
-	/* 
+	/*
 	 * NOTE:
-	 * 
-	 * seek from .DIR back is better 
+	 *
+	 * seek from .DIR back is better
 	 */
 	pf->num = pf->total_rec;
 
@@ -407,13 +407,13 @@ GetPostInfo(POST_FILE * pf)
 		xstrncpy(pf->date, ctime(&date), STRLEN);
 
 	/*
-	 * NOTE: 
+	 * NOTE:
 	 *
 	 * skip find last & next post info if not HTTP_GET
 	 */
 	if (request_rec->HttpRequestType != GET)
 	{
-		
+
 #ifdef USE_MMAP
 		munmap((void *) fileinfo, pf->total_rec * FH_SIZE);
 #else
@@ -594,11 +594,11 @@ GetPostInfo(POST_FILE * pf)
 
 
 /*******************************************************************
- *	Set file expire 
- *	
+ *	Set file expire
+ *
  *	call after mime_type set
  *******************************************************************/
-static void 
+static void
 SetExpire(SKIN_FILE * sf)
 {
 	/* specify file not to expire */
@@ -607,7 +607,7 @@ SetExpire(SKIN_FILE * sf)
 	    || strstr(sf->filename, HTML_PostReply)
 /* lasehu: 由於 not expire, 所以造成已通過認證 user
            遇到 cache 住的這兩頁, 會無法寄信
-	    || strstr(sf->filename, HTML_MailSend) 
+	    || strstr(sf->filename, HTML_MailSend)
 	    || strstr(sf->filename, HTML_MailReply) */
 	    || strstr(sf->filename, HTML_UserNew)
 	    || strstr(sf->filename, "log/"))
@@ -624,13 +624,13 @@ SetExpire(SKIN_FILE * sf)
 
 /*******************************************************************
  *	Get (skin) file info
- *	
+ *
  *	get file size, modify time
- *	determine MIME type & file exipre 
+ *	determine MIME type & file exipre
  *
  *	return: none
  *******************************************************************/
-BOOL 
+BOOL
 GetFileInfo(SKIN_FILE * sf)
 {
 	struct stat fstat;
@@ -646,7 +646,7 @@ GetFileInfo(SKIN_FILE * sf)
 #if 0
 		fprintf(fp_out, "[GetFileInfo mime_type=%d]", sf->mime_type);
 		fflush(fp_out);
-#endif				
+#endif
 		sf->size = fstat.st_size;
 		sf->mtime = fstat.st_mtime;
 	}
@@ -661,9 +661,9 @@ GetFileInfo(SKIN_FILE * sf)
 
 /*******************************************************************
  *	Get file mime type
- *	
+ *
  *******************************************************************/
-int 
+int
 GetFileMimeType(char *filename)
 {
 	char *p;

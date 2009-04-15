@@ -4,7 +4,7 @@
 /* sarek@cc.nsysu.edu.tw  */
 
 /*******************************************************************
- * .DIR 清理、維護	 			 	 
+ * .DIR 清理、維護
  *******************************************************************/
 
 #include "bbs.h"
@@ -31,7 +31,7 @@ list_dir()
 		//printf("Filename thrheadpos thrpostidx date postno ident unused owner title delby level accessed\n");
 		if (!fstat(dirfd, &st) && (size = st.st_size) > 0)
 		{
-			
+
 			while ((size = read(dirfd, &fh, sizeof(FILEHEADER))) > 0)
 			{
 				if (size >= sizeof(FILEHEADER))

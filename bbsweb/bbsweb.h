@@ -58,16 +58,16 @@
 #define MAX_TAG_SECTION				(256)
 #define REAL_CACHE_HTML_SIZE 		(MAX_CACHE_HTML_SIZE-SF_SIZE-(2*sizeof(unsigned int))-(2*sizeof(time_t))-(MAX_TAG_SECTION*(sizeof(FORMAT_ARRAY))))
 
-/* 
-	define POST article type 
+/*
+	define POST article type
 */
 #define POST_NORMAL		660			/* normal post */
 #define POST_SKIN		661			/* webbbs skin */
 #define POST_HTML		662			/* pure HTML post */
 
 
-/* 
-	define POST action keyword 
+/*
+	define POST action keyword
 */
 #define POST_PostSend				"PostSend"
 #define POST_PostEdit				"PostEdit"
@@ -89,12 +89,12 @@
 
 enum url_para_type
 {
-	Board, BoardList, BoardModify, TreaBoardList, SkinModify, 
-	AclModify, UserList, UserNew, UserQuery, UserPlan, 
-	UserData, UserFriend, UserSign, UserIdent, PostList, 
-	PostRead, PostSend, PostEdit, PostDelete, PostForward, 
-	TreaList, TreaRead, TreaSend, TreaEdit, TreaDelete, 
-	TreaForward, Mail, MailList, MailRead, MailSend, 
+	Board, BoardList, BoardModify, TreaBoardList, SkinModify,
+	AclModify, UserList, UserNew, UserQuery, UserPlan,
+	UserData, UserFriend, UserSign, UserIdent, PostList,
+	PostRead, PostSend, PostEdit, PostDelete, PostForward,
+	TreaList, TreaRead, TreaSend, TreaEdit, TreaDelete,
+	TreaForward, Mail, MailList, MailRead, MailSend,
 	MailDelete, MailForward, OtherFile, Redirect, WebbbsError,
 	AclMail
 };
@@ -104,14 +104,14 @@ enum url_para_type
 enum web_respond_type
 {
 	WEB_ERROR				= WEB_RESPOND_TYPE_BASE,
-	WEB_OK 					= WEB_RESPOND_TYPE_BASE + 1, 
+	WEB_OK 					= WEB_RESPOND_TYPE_BASE + 1,
 	WEB_OK_REDIRECT			= WEB_RESPOND_TYPE_BASE + 2,
-	WEB_REDIRECT			= WEB_RESPOND_TYPE_BASE + 3, 
-	WEB_NOT_MODIFIED 		= WEB_RESPOND_TYPE_BASE + 4, 
-	WEB_BAD_REQUEST 		= WEB_RESPOND_TYPE_BASE + 5, 
-	WEB_UNAUTHORIZED 		= WEB_RESPOND_TYPE_BASE + 6, 
+	WEB_REDIRECT			= WEB_RESPOND_TYPE_BASE + 3,
+	WEB_NOT_MODIFIED 		= WEB_RESPOND_TYPE_BASE + 4,
+	WEB_BAD_REQUEST 		= WEB_RESPOND_TYPE_BASE + 5,
+	WEB_UNAUTHORIZED 		= WEB_RESPOND_TYPE_BASE + 6,
 	WEB_FORBIDDEN			= WEB_RESPOND_TYPE_BASE + 7,
-	WEB_FILE_NOT_FOUND 		= WEB_RESPOND_TYPE_BASE + 8, 
+	WEB_FILE_NOT_FOUND 		= WEB_RESPOND_TYPE_BASE + 8,
 	WEB_BOARD_NOT_FOUND		= WEB_RESPOND_TYPE_BASE + 9,
 	WEB_USER_NOT_FOUND		= WEB_RESPOND_TYPE_BASE + 10,
 	WEB_USER_NOT_LOGIN		= WEB_RESPOND_TYPE_BASE + 11,
@@ -152,7 +152,7 @@ typedef struct
 typedef struct
 {
 	int num;						/* num th. of record in DIR_REC */
-	
+
 	FILEHEADER fh;					/* file header of post */
 #if 0
 	int size;						/* file size */
@@ -196,7 +196,7 @@ typedef struct
 #define URI_LEN						512					/* Bytes */
 
 
-typedef struct 
+typedef struct
 {
 /* == Client private data  == */
 	int URLParaType;
@@ -214,7 +214,7 @@ typedef struct
 	char cookie[STRLEN*2];
 	char authorization[STRLEN];
 	char auth_code[STRLEN-21];
-	char host[STRLEN];					/* host name string */	
+	char host[STRLEN];					/* host name string */
 	char cache_control[STRLEN];
 	char pragma[STRLEN];
 	char content_type[STRLEN];
@@ -241,7 +241,7 @@ typedef struct
 #define S_ACCEPT		(7)		/* wait for accept connection */
 #define S_ENOSPC		(8)		/* semop() error condition ENOSPC */
 
-typedef struct 
+typedef struct
 {
 	FILE *access_log;
 	FILE *error_log;
@@ -276,7 +276,7 @@ typedef struct
 }FORMAT_ARRAY;
 
 
-typedef struct 
+typedef struct
 {
 	SKIN_FILE file;
 	unsigned int key;
@@ -290,7 +290,7 @@ typedef struct
 
 #define HS_SIZE	(sizeof(HTML_SHM))
 
-typedef struct 
+typedef struct
 {
 	SKIN_FILE file;
 	unsigned int key;
@@ -305,18 +305,18 @@ typedef struct
 
 enum http_respond_type
 {
-	OK 						, 
-	MOVED_PERMANENTLY	 	, 
-	NOT_MODIFIED 			, 
-	BAD_REQUEST 			, 
-	AUTHORIZATION_REQUIRED 	, 
+	OK 						,
+	MOVED_PERMANENTLY	 	,
+	NOT_MODIFIED 			,
+	BAD_REQUEST 			,
+	AUTHORIZATION_REQUIRED 	,
 	FORBIDDEN				,
-	FILE_NOT_FOUND 			, 
-	METHOD_NOT_IMPLEMENTED 	
+	FILE_NOT_FOUND 			,
+	METHOD_NOT_IMPLEMENTED
 };
 
 enum http_request_method
-{ 
+{
 	GET, POST, HEAD, CERTILOG, KMP, UNKNOW
 };
 
@@ -324,8 +324,8 @@ enum http_request_method
 #define HAS_PERM(x)   CHECK_PERM(curuser.userlevel, x)  /* -ToDo- */
 
 
-/* 
-	define WEBBBS system reserved skin filename 
+/*
+	define WEBBBS system reserved skin filename
 */
 #define HTML_Announce				"Announce.html"
 #define HTML_BmWelcome				"BmWelcome.html"
@@ -366,8 +366,8 @@ enum http_request_method
 #define HTML_AclModify				"AclModify.html"
 #define HTML_AclMail				"AclMail.html"
 
-/* 
-	define source code message string 
+/*
+	define source code message string
 */
 #define MSG_ON						"¶}±Ò"
 #define MSG_OFF						"Ãö³¬"

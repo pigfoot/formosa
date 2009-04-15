@@ -21,8 +21,8 @@ static const char *const valid_userid_chars =
 #ifdef USE_ALOHA
 /* sarek:09162001: for aloha
  * XXX:移出lib,或是留在lib中?
- */                     
-USEREC *current_user;  
+ */
+USEREC *current_user;
 #endif
 
 #ifdef IGNORE_CASE
@@ -39,11 +39,11 @@ void strtolow(char *lowit)
 BOOL invalid_new_userid(char *userid)
 {
 	int i, dash = 0;
-/*	
+/*
 	char buf[IDLEN];
-*/	
+*/
 	char *s;
-	
+
 	if (!userid)
 		return TRUE;
 	for (s = userid, i = 0; *s; s++, i++)
@@ -59,9 +59,9 @@ BOOL invalid_new_userid(char *userid)
 			if (++dash > 1)
 				return 1;
 		}
-/*		
+/*
 		buf[i] = tolower(*s);
-*/		
+*/
 	}
 	if (i < LEAST_IDLEN)
 		return 1;
@@ -69,8 +69,8 @@ BOOL invalid_new_userid(char *userid)
 /*
 	if (!strcmp(buf, "new") || strstr(buf, "sysop") || xgrep(buf, BADUSERID))
 		return 1;
-*/		
-	if (!strcmp(userid, "new") || strstr(userid, "sysop") 
+*/
+	if (!strcmp(userid, "new") || strstr(userid, "sysop")
 		|| xgrep(userid, BADUSERID))
 	{
 		return 1;
@@ -111,24 +111,24 @@ unsigned int get_passwd(USEREC *urcp, char *userid)
 
 /**
  ** update user information to file record
- **/ 
+ **/
 unsigned int update_passwd(USEREC *urcp)
 {
 	int fd;
 	char fn_passwd[PATHLEN];
-#ifdef NSYSUBBS	
+#ifdef NSYSUBBS
 	USEREC urcTmp;
 #endif
 
 	if (urcp == NULL || urcp->userid[0] == '\0')
 		return 0;
-#ifdef NSYSUBBS		
+#ifdef NSYSUBBS
 	if (strstr(urcp->userid, "..") || urcp->userid[0] == '/')	/* debug */
 	{
-		bbslog("DEBUG", "update_passwd corrupt [%s]", urcp->userid);	
+		bbslog("DEBUG", "update_passwd corrupt [%s]", urcp->userid);
 		return 0;
 	}
-#endif		
+#endif
 	sethomefile(fn_passwd, urcp->userid, UFNAME_PASSWDS);
 	if ((fd = open(fn_passwd, O_RDWR)) > 0)
 	{
@@ -143,7 +143,7 @@ unsigned int update_passwd(USEREC *urcp)
 			close(fd);
 			return 0;
 		}
-#endif			
+#endif
 	    if (lseek(fd, 0, SEEK_SET) != -1)
 	    {
 			if (write(fd, urcp, sizeof(USEREC)) == sizeof(USEREC))
@@ -162,7 +162,7 @@ unsigned int update_passwd(USEREC *urcp)
 
 /*
  * update user information to a single file (.PASSWDS)
- */ 
+ */
 unsigned int update_user_passfile(USEREC *urcp)
 {
 	int fd;
@@ -175,9 +175,9 @@ unsigned int update_user_passfile(USEREC *urcp)
 #endif
 	if ((fd = open(PASSFILE, O_WRONLY | O_CREAT, 0600)) > 0)
 	{
-		/* we do file lock here */		
+		/* we do file lock here */
 		flock(fd, LOCK_EX);
-		if (lseek(fd, (off_t) ((urcp->uid - 1) * sizeof(USEREC)), 
+		if (lseek(fd, (off_t) ((urcp->uid - 1) * sizeof(USEREC)),
 		          SEEK_SET) != -1)
 		{
 			if (write(fd, urcp, sizeof(USEREC)) == sizeof(USEREC))
@@ -200,7 +200,7 @@ is_duplicate_userid(userid)
 char *userid;
 {
 	char indexfile[PATHLEN], *pt, tmp[IDLEN];
-	
+
 	sethomefile(indexfile, userid, NULL);
 	pt = indexfile + strlen(indexfile) - 1;
 	while (*pt == '/')	pt--;
@@ -244,8 +244,8 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 #endif
 	if (!force && invalid_new_userid(ubuf->userid))
 		return 0;
-	
-	if (/*is_duplicate_userid(ubuf->userid) 
+
+	if (/*is_duplicate_userid(ubuf->userid)
 	    || */get_passwd(NULL, ubuf->userid) > 0)
 	{
 		return 0;
@@ -253,23 +253,23 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 
 	if ((fd = open(USERIDX, O_RDWR | O_CREAT, 0600)) < 0)
 		return 0;
-		
+
 	flock(fd, LOCK_EX);
 	for (cnt = 1;read(fd, &uidx, sizeof(uidx)) == sizeof(uidx); cnt++)
 	{
 		if (uidx.userid[0] == '\0')
 			break;
 	}
-	
+
 	if (lseek(fd, ((off_t) ((cnt - 1) * sizeof(uidx))), SEEK_SET) != -1)
 	{
 		memset(&uidx, 0, sizeof(uidx));
 		strcpy(uidx.userid, ubuf->userid);
-		
+
 		if (write(fd, &uidx, sizeof(uidx)) == sizeof(uidx))
 		{
 			int fdp;
-			char fname[PATHLEN], homepath[PATHLEN];	
+			char fname[PATHLEN], homepath[PATHLEN];
 
 			sethomefile(homepath, ubuf->userid, NULL);
 			if (mkdir(homepath, 0755) == 0)
@@ -280,15 +280,15 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 					ubuf->uid = cnt;
 #ifdef NSYSUBBS1
 					ubuf->username[0] = '\0';
-#endif										
+#endif
 					if (write(fdp, ubuf, sizeof(USEREC)) == sizeof(USEREC))
 					{
 						close(fdp);
 						flock(fd, LOCK_UN);
 						close(fd);
-#ifdef NSYSUBBS						
+#ifdef NSYSUBBS
 						bbslog("NEWUSER", "%s", ubuf->userid);
-#endif						
+#endif
 						/* sarek: 12/13/2000
 						   Clean previous user's mail */
 
@@ -304,7 +304,7 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 						  aha[i], ubuf->userid);
 /* 第一站現在是 raid 1 --lasehu 2002/05/26 */
 						myrename(path, path2);
-#if 0						  
+#if 0
 # ifndef NSYSUBBS1	/* 第一站 MAIL 分佈在不同硬碟，不能這樣砍 --lmj */
 						rename(path, path2);
 # else
@@ -321,15 +321,15 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 						return ubuf->uid;
 					}
 					close(fdp);
-					unlink(fname);					
+					unlink(fname);
 				}
 				rmdir(homepath);
 			}
 			if (lseek(fd, ((off_t) ((cnt - 1) * sizeof(uidx))), SEEK_SET) != -1)
 			{
-				memset(&uidx, 0, sizeof(uidx));			
+				memset(&uidx, 0, sizeof(uidx));
 				write(fd, &uidx, sizeof(uidx));
-			}		
+			}
 		}
 	}
 	flock(fd, LOCK_UN);
@@ -357,28 +357,28 @@ int user_login(USER_INFO **cutmp, USEREC *urcp, char ctype,
 {
 	FILE *fp;
 	USER_INFO *upent;
-	extern USER_INFO *new_utmp();	
+	extern USER_INFO *new_utmp();
 
 	if ((*cutmp = new_utmp()) == NULL)
 		return ULOGIN_NOSPC;
-		
+
 	upent = *cutmp;
-	
+
 	if (get_passwd(urcp, userid) <= 0)
 	{
 		purge_ulist(upent);
 		*cutmp = NULL;
 		return ULOGIN_NOENT;
 	}
-		
+
 #ifdef GUEST
 	if (strcmp(urcp->userid, GUEST))
 	{
 #endif
 		if (urcp->passwd[0] == '\0')
 		{
-			purge_ulist(upent);		
-			*cutmp = NULL;			
+			purge_ulist(upent);
+			*cutmp = NULL;
 			return ULOGIN_ACCDIS;
 		}
 /*
@@ -386,16 +386,16 @@ int user_login(USER_INFO **cutmp, USEREC *urcp, char ctype,
 */
 		if (!checkpasswd(urcp->passwd, passwd))
 		{
-			purge_ulist(upent);		
-			*cutmp = NULL;			
+			purge_ulist(upent);
+			*cutmp = NULL;
 			return ULOGIN_PASSFAIL;
 		}
 #ifdef GUEST
 	}
 #endif
 
-#if 1	
-	/* speed-up for online user query */	
+#if 1
+	/* speed-up for online user query */
 	upent->userlevel = urcp->userlevel;
 	upent->numposts = urcp->numposts;
 	upent->numlogins = urcp->numlogins;
@@ -411,11 +411,11 @@ int user_login(USER_INFO **cutmp, USEREC *urcp, char ctype,
 #endif
 	strcpy(upent->userid, userid);
 	xstrncpy(upent->from, fromhost, sizeof(upent->from));
-	xstrncpy(upent->username, urcp->username, UNAMELEN);	/* lasehu */	
-/*	
+	xstrncpy(upent->username, urcp->username, UNAMELEN);	/* lasehu */
+/*
 pid assinged in new_utmp()
 	upent->pid = getpid();
-*/	
+*/
 	upent->uid = urcp->uid;
 	upent->ctype = ctype;
 	upent->mode = LOGIN;
@@ -424,20 +424,20 @@ pid assinged in new_utmp()
 	else
 		upent->invisible = FALSE;
 	upent->pager = urcp->pager;
-	
+
 	/* initialization for MSQ */
 	upent->msq_first = 0;
 	upent->msq_last = -1;
 
 	if (strcmp(urcp->userid, userid))	/* debug */
 	{
-/*		
-		strcpy(urcp->userid, userid); 	
-*/		
-		bbslog("ERR", "[%s] user_login corrupt", userid);	
+/*
+		strcpy(urcp->userid, userid);
+*/
+		bbslog("ERR", "[%s] user_login corrupt", userid);
 		exit(-1);
 	}
-			
+
 	upent->login_time = time(NULL);
 	if ((upent->login_time - urcp->lastlogin) > 3 * 60)	/* lasehu */
 		urcp->numlogins++;
@@ -449,10 +449,10 @@ pid assinged in new_utmp()
 	{
 		if (urcp->userlevel < PERM_NORMAL)
 		{
-#if 0		
+#if 0
 				urcp->userlevel++;	/* wnlee */
 				/* lthuang: why mark my code ? It's terrible! */
-#endif				
+#endif
 			if (urcp->numlogins < PERM_NORMAL)
 				urcp->userlevel = urcp->numlogins;
 			else
@@ -461,32 +461,32 @@ pid assinged in new_utmp()
 	}
 
 /*
-	update_passwd(&curuser);	
+	update_passwd(&curuser);
     */
 
 #ifdef GUEST
 	if (strcmp(urcp->userid, GUEST))
-#endif	
+#endif
 	{
 		char pathRec[PATHLEN];
 
-		sethomefile(pathRec, userid, UFNAME_RECORDS);		
+		sethomefile(pathRec, userid, UFNAME_RECORDS);
 		if ((fp = fopen(pathRec, "a")) != NULL)
 		{
 			fprintf(fp, "%s %s", fromhost, ctime(&(upent->login_time)));
 			fclose(fp);
 		}
 	}
-	
+
 	log_visitor(upent->userid, upent->from, upent->login_time, upent->ctype,
 		FALSE);
 
 #ifdef USE_ALOHA
 	/* sarek: 02/14/2001 : 送出好友上站通知給有設user為好友者 */
-	/* sarek: 09/16/2001 : 維護發送名單 */ 
+	/* sarek: 09/16/2001 : 維護發送名單 */
 	current_user=urcp;
 	apply_ulist(mnt_alohalist);
-	
+
 #ifdef GUEST
 	if(strcmp(urcp->userid, GUEST))
 #endif
@@ -520,20 +520,20 @@ void user_logout(USER_INFO *upent, USEREC *urcp)
 
 #ifdef GUEST
 	if(strcmp(urcp->userid, GUEST))
-#endif          
+#endif
 		send_aloha(urcp, FALSE);
 #endif
 
-	
-	
+
+
 /*
 TODO: 清除使用者於此次上線之暫存用途檔
-      unlink (tempfile); 
+      unlink (tempfile);
 */
 	if (!urcp || urcp->userid[0] == '\0' || urcp->uid <= 0)	/* debug */
 		return;
 
-	log_visitor(upent->userid, upent->from, (time(0)-upent->login_time)/60, 
+	log_visitor(upent->userid, upent->from, (time(0)-upent->login_time)/60,
 		upent->ctype, TRUE);
 
 #ifdef GUEST
@@ -547,11 +547,11 @@ TODO: 清除使用者於此次上線之暫存用途檔
 	if (upent->ever_delete_mail)
 	{
 		char fn_mbox[PATHLEN];
-		
+
 		setmailfile(fn_mbox, urcp->userid, DIR_REC);
 		pack_article(fn_mbox);
 	}
-	
+
 	if (get_passwd(&usrbuf, urcp->userid) > 0)
 	{
 #ifdef USE_IDENT
@@ -571,7 +571,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 	strcpy(urcp->lasthost, upent->from);
 	urcp->lastlogin = upent->login_time;
 	urcp->lastctype = upent->ctype;
-	urcp->pager = upent->pager;	
+	urcp->pager = upent->pager;
 
 	update_passwd(urcp);
 	update_user_passfile(urcp);
@@ -582,7 +582,7 @@ TODO: 清除使用者於此次上線之暫存用途檔
 	if (!search_ulist(cmp_userid, urcp->userid))
 	{
 		char pathname[PATHLEN];
-		
+
 		setuserfile(pathname, urcp->userid, UFNAME_WRITE);
 		unlink(pathname);
 	}

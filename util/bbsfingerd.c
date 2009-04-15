@@ -1,7 +1,7 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw, 1998
  */
- 
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -69,14 +69,14 @@ finger_main()
 	fprintf(fout, "%-12.12s %-20.20s %-16.16s %-26.26s\n",
 	        "UserID", "Nickname", "From", "Mode");
 	fprintf(fout, "%-12.12s %-20.20s %-16.16s %-26.26s\n",
-	        "============", "====================", 
+	        "============", "====================",
 	        "================", "==========================");
 
 	resolve_utmp();
 	apply_ulist(print_ulist);
 
 	fprintf(fout, "%-12.12s %-20.20s %-16.16s %-26.26s\n",
-	        "============", "====================", 
+	        "============", "====================",
 	        "================", "==========================");
 	fprintf (fout, "\n[%s] Total users = %d\n", BBSNAME, user_num);
 }
@@ -91,7 +91,7 @@ char *argv[];
 	fd_set ibits;
 	int on, len, ns, sock;
 
-	
+
 	if (fork () != 0)
 		exit (0);
 
@@ -115,13 +115,13 @@ char *argv[];
 		perror ("socket");
 		exit (-1);
 	}
-	
+
 	on = 1;
 	setsockopt (sock, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof (on));
 	on = 8192;
 	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (int *) &on, sizeof(on));
 	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (int *) &on, sizeof(on));
-	
+
 	sin.sin_family = PF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port = htons ((u_short) FINGER_PORT);
@@ -137,7 +137,7 @@ char *argv[];
 	}
 
 	init_bbsenv();
-	
+
 	sigsetjmp(env, 1);
 	signal(SIGTERM, shutdown_server);
 	signal(SIGALRM, timeout_check);
@@ -147,7 +147,7 @@ char *argv[];
 	{
 		alarm(0);
 		mysocket = -1;
-		
+
 		FD_ZERO (&ibits);
 		FD_SET (sock, &ibits);
 		if ((on = select (sock+1, &ibits, NULL, NULL, NULL)) < 1)
@@ -163,7 +163,7 @@ char *argv[];
 		}
 		if (!FD_ISSET (sock, &ibits))
 			continue;
-		len = sizeof (from);			
+		len = sizeof (from);
 		if ((ns = accept (sock, (struct sockaddr *) &from, &len)) < 0)
 			continue;
 		else
@@ -176,12 +176,12 @@ char *argv[];
 			{
 				shutdown(ns, 2);
 				close (ns);
-			}	
-#endif			
+			}
+#endif
 */
-			
+
 			alarm(TIMEOUT);
-			
+
 			if ((fout = fdopen (ns, "w")) == NULL)
 			{
 				close (ns);
@@ -195,26 +195,26 @@ char *argv[];
 			}
 
 			mysocket = ns;
-			
+
 			fgets(inbuf, sizeof(inbuf), fin);
 			if ((foo = strstr(inbuf, ".bbs")) != NULL)
 			{
 				char qbuf[4096];
-				int retval;				
+				int retval;
 
-				
+
 				*foo = '\0';
 
 				/* NOTE: the size of qbuf must be enough to accommodate output string */
 				retval = query_user(PERM_DEFAULT, inbuf, NULL, qbuf, TRUE);
 				/* sarek:02/24/2001:strip ansi codes */
-				
+
 				fprintf(fout, qbuf);
-				
+
 				if (retval == 0)
 				{
 					int fdplan, cc;
-					
+
 					fprintf(fout, "\n");
 					sethomefile(qbuf, inbuf, UFNAME_PLANS);
 					if ((fdplan = open(qbuf, O_RDONLY)) > 0)
@@ -231,22 +231,22 @@ char *argv[];
 				}
 /*
 				bbslog("fingerd",  "%s %s", inet_ntoa(from.sin_addr), inbuf);
-*/				
+*/
 			}
 			else
 			{
 				finger_main();
-/*				
-				bbslog("fingerd",  "%s", inet_ntoa(from.sin_addr));	
-*/				
+/*
+				bbslog("fingerd",  "%s", inet_ntoa(from.sin_addr));
+*/
 			}
-			
+
 			fflush(fout);
 			shutdown(ns, 2);
 			close (ns);
 		}
-		
+
 	}
-	
+
 	return 0;
 }

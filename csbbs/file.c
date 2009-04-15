@@ -53,7 +53,7 @@ char type;
 		RespondProtocol(OK_CMD);
 	}
 	else
-#endif	
+#endif
 	{
 		RespondProtocol(FILE_OUT_SITE);
 		inet_printf("%d\t%s\t%s\t%s\r\n", OUT_FILE, fullname.ori_filename,
@@ -120,12 +120,12 @@ int type;
 			return -1;
 		}
 		/* write fileinfo */
-		write(fp, fullname, FTPSIZE);		
+		write(fp, fullname, FTPSIZE);
 		close(fp);
 		return 0;
 	}
 	/* write fileinfo */
-	write(fp, fullname, FTPSIZE);	
+	write(fp, fullname, FTPSIZE);
 	RespondProtocol(OK_CMD);
 
 /*
@@ -210,7 +210,7 @@ DoKillFile()
 	}
 
 	get_record(boarddirect, &fileinfo, FH_SIZE, idx);
-	delete_one_article(idx, NULL, boarddirect, curuser.userid, 'D');	
+	delete_one_article(idx, NULL, boarddirect, curuser.userid, 'D');
 	setdotfile(temp_name, boarddirect, fileinfo.filename);
 	myunlink(temp_name);
 	pack_article(boarddirect);
@@ -256,7 +256,7 @@ DoGetFile()
 			setdotfile(genbuf, boarddirect, fileinfo.filename);
 			SendFile(genbuf, type);
 			return;
-		}	
+		}
 	}
 	RespondProtocol(FILE_NOT_EXIST);
 }
@@ -307,13 +307,13 @@ DoFilePut()
 	sprintf(fname, "tmp/%-s.%-d", curuser.userid, time(0));
 	if (RecvFile(fname, fullname, type) != 0)
 	{
-		RespondProtocol(WORK_ERROR);	
+		RespondProtocol(WORK_ERROR);
 		return -1;
 	}
 
 	setdotfile(path, boarddirect, NULL);
-	if (append_article(fname, path, curuser.userid, title, curuser.ident, 
-		stampfname, FALSE, (type) ? FILE_OUT : FILE_IN, NULL, -1, -1) == -1)	/* syhu */	
+	if (append_article(fname, path, curuser.userid, title, curuser.ident,
+		stampfname, FALSE, (type) ? FILE_OUT : FILE_IN, NULL, -1, -1) == -1)	/* syhu */
 	{
 		RespondProtocol(WORK_ERROR);
 		return -1;
@@ -324,10 +324,10 @@ DoFilePut()
 	unlink(fname);
 	if (type)
 		RespondProtocol(OK_CMD);
-#if 0			
+#if 0
 	num = get_num_records(boarddirect, FH_SIZE);	/* get post count */
 	/* inet_printf("%d\t%s\t%d\r\n", END_FILE, stampfname, num); */
-#endif		
+#endif
 	FormosaExit();	/* 傳檔完成便斷線 */
 }
 
@@ -414,12 +414,12 @@ DoGetFileHead()
 				post_state = 'D';	/* deleted post */
 			else if (fileinfo.accessed == FILE_TREA)
 				post_state = 'T';
-#if 0				
+#if 0
 			else if (fileinfo.accessed == FILE_OUT)
 				post_state = 'O';
 			else if (fileinfo.accessed == FILE_IN)
 				post_state = 'I';
-#endif				
+#endif
 			else
 				post_state = 'N';	/* new post */
 

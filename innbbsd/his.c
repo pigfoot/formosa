@@ -51,7 +51,7 @@ char *srchist;
     char *ptr;
     hismaint= fopen(srchist, "r");
     if (hismaint == NULL) {
-       return;   
+       return;
     }
     {
        char newhistpath[1024];
@@ -70,10 +70,10 @@ char *srchist;
 	    if (ptr != NULL) { *ptr = '\0'; ptr++;}
 	    key.dptr = maintbuff;
 	    key.dsize = strlen(maintbuff);
-	    myHISwrite(&key, ptr);	    
+	    myHISwrite(&key, ptr);
        }
        (void) HISclose();
-       /*rename(newhistpath, srchist); 	
+       /*rename(newhistpath, srchist);
        rename(newhistdirpath, fileglue("%s.dir", srchist));
        rename(newhistpagpath, fileglue("%s.pag", srchist));*/
     }
@@ -89,14 +89,14 @@ gethisinfo()
     char *ptr;
     hismaint= fopen(HISTORY, "r");
     if (hismaint == NULL) {
-       return 0;   
+       return 0;
     }
     fgets(maintbuff,sizeof(maintbuff), hismaint);
     fclose(hismaint);
     ptr = (char*)strchr(maintbuff,'\t');
     if (ptr != NULL)  {
        ptr++;
-       lasthist = atol(ptr); 
+       lasthist = atol(ptr);
        return lasthist;
     }
     return 0;
@@ -115,13 +115,13 @@ HISmaint()
     }
     hismaint= fopen(HISTORY, "r");
     if (hismaint == NULL) {
-       return;   
+       return;
     }
     fgets(maintbuff,sizeof(maintbuff), hismaint);
     ptr = (char*)strchr(maintbuff,'\t');
     if (ptr != NULL)  {
        ptr++;
-       lasthist = atol(ptr); 
+       lasthist = atol(ptr);
        time(&now);
      if ( lasthist + 86400 * Expiredays * 2 < now ) {
        char newhistpath[1024];
@@ -138,20 +138,20 @@ HISmaint()
        while ( fgets(maintbuff, sizeof(maintbuff), hismaint) != NULL) {
 	    datum key;
 	    ptr = (char*) strchr(maintbuff,'\t');
-	    if (ptr != NULL) { 
+	    if (ptr != NULL) {
 	            *ptr = '\0'; ptr++;
-	            lasthist = atol(ptr); 
+	            lasthist = atol(ptr);
 	    } else {
 	            continue ;
 	    }
 	    if ( lasthist + 99600 * Expiredays < now ) continue;
 	    key.dptr = maintbuff;
 	    key.dsize = strlen(maintbuff);
-	    myHISwrite(&key, ptr);	    
+	    myHISwrite(&key, ptr);
        }
        (void) HISclose();
-       rename(HISTORY, (char*)fileglue("%s.o",HISTORY)); 	
-       rename(newhistpath, HISTORY); 	
+       rename(HISTORY, (char*)fileglue("%s.o",HISTORY));
+       rename(newhistpath, HISTORY);
        rename(newhistdirpath, (char*)fileglue("%s.dir", HISTORY));
        rename(newhistpagpath, (char*)fileglue("%s.pag", HISTORY));
        (void) HISsetup();
@@ -164,7 +164,7 @@ HISmaint()
 /*
 **  Set up the history files.
 */
-void 
+void
 HISsetup()
 {
    myHISsetup(HISTORY);

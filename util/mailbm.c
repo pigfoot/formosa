@@ -92,7 +92,7 @@ main (argc, argv)
 #endif
 
 	fail = 0;
-	
+
 	for (i = 0; i < num_bm - 1;)
 	{
 		bms++;
@@ -101,7 +101,7 @@ main (argc, argv)
 #else
 		if (SendMail (-1, bm_fname, userid, all_bm_id[i],
 			  bm_title, ident) < 0)
-		{			 
+		{
 			fail++;
 		}
 #endif

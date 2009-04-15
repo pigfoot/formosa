@@ -2,7 +2,7 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <unistd.h>	
+#include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -94,13 +94,13 @@ int size;
 		{
 #if 0
 			printf("chdir: %s\n", de->d_name);
-#endif					
+#endif
 			if (chdir(de->d_name) == -1)
 			{
 				fprintf(stderr, "chdir: %s\n", de->d_name);
 				continue;
 			}
-			
+
 			procdir(ilevel + 1, plevel, filename, readfunc, procfunc, size);
 			chdir(wd);
 		}

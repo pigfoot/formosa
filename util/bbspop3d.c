@@ -97,9 +97,9 @@ pop3log(char *fmt, ...)
 	va_start(args, fmt);
 #if !HAVE_VSNPRINTF
 	vsprintf(msgbuf, fmt, args);
-#else	
+#else
 	vsnprintf(msgbuf, sizeof(msgbuf), fmt, args);
-#endif	
+#endif
 	va_end(args);
 
 	time(&now);
@@ -107,15 +107,15 @@ pop3log(char *fmt, ...)
 
 	if ((fp = fopen(PATH_POP3LOG, "a")) != NULL)
 	{
-		fprintf(fp, "%s %-12.12s %s\n", timestr, 
-	        	popuser ? popuser->userid : "", 
+		fprintf(fp, "%s %-12.12s %s\n", timestr,
+	        	popuser ? popuser->userid : "",
 	        	msgbuf);
 		fclose(fp);
 	}
 }
 
 
-int 
+int
 SendArticle(fhr, filename, line)
 FILEHEADER *fhr;
 char   *filename;
@@ -150,16 +150,16 @@ int line;
 	stamp[p-(fhr->filename)-2]='\0';
 
 	ti = atol(stamp);
-	
+
 	/* Date */
 	strftime(buffer, sizeof(buffer), "Date: %a, %e %b %Y %X +0800 (CST)",
 	         localtime(&ti));
 	printf("%s\r\n", buffer);
-	
-	/* Subject */	
+
+	/* Subject */
 	printf("Subject: %s\r\n", fhr->title);
-	
-	/* To */	
+
+	/* To */
 	printf("To: %s.bbs@%s\r\n\r\n", popname, host);
 
 	rewind(fp);
@@ -178,7 +178,7 @@ int line;
 }
 
 
-int 
+int
 PopHaveUser(name)
 char   *name;
 {
@@ -193,7 +193,7 @@ char   *name;
 }
 
 
-int 
+int
 PopGetUser(name)
 char   *name;
 {
@@ -209,7 +209,7 @@ char   *name;
 /*
  * pop3 protocol: STAT
  */
-void 
+void
 PopSTAT()
 {
 	struct stat st;
@@ -259,7 +259,7 @@ PopSTAT()
 }
 
 
-void 
+void
 PopLIST(list_num)
 int     list_num;
 {
@@ -356,7 +356,7 @@ MailGet(idx, line)
 	int     fd;
 	char    filename[PATHLEN];
 	struct fileheader fh;
-	int maxkeepmail;	
+	int maxkeepmail;
 
 	if (idx < 1)
 	{
@@ -371,10 +371,10 @@ MailGet(idx, line)
 		printf("-ERR no such message\r\n");
 		return;
 	}
-	
+
 	if (popuser->userlevel >= PERM_BM)
 		maxkeepmail = SPEC_MAX_KEEP_MAIL;
-	else  
+	else
 		maxkeepmail = MAX_KEEP_MAIL;
 	if (popuser->userlevel != PERM_SYSOP && idx > maxkeepmail)	/* lthuang */
 	{
@@ -426,15 +426,15 @@ MailGet(idx, line)
 	fflush(stdout);
 	SendArticle(&fh, filename, line);
 	printf("\r\n.\r\n");
-	
+
 	client.gets++;
-/*	
+/*
 	pop3log("%s from=<%s>", fh.filename, fh.owner);
-*/	
+*/
 }
 
 
-void 
+void
 PopRETR(idx)
 int     idx;
 {
@@ -442,7 +442,7 @@ int     idx;
 }
 
 
-void 
+void
 PopTOP(idx, line)
 int     idx;
 int line;
@@ -454,10 +454,10 @@ int line;
 /**
  **  以 Pop3 軟體下載本 BBS 站信件. 同時將信件刪除.
  **  BBS 系統必須同時回應刪除成功. 否則 Pop3 軟體會認為發生錯誤.
- **    
+ **
  **  所以 Pop3 軟體刪除信件將不論是否信件有標記 g 與否.
- **/        
-void 
+ **/
+void
 PopDELE(idx)
 int     idx;
 {
@@ -507,7 +507,7 @@ int     idx;
 	}
 
 	fh.accessed |= FILE_DELE;
-	
+
 	if (lseek(fd, FH_SIZE * (idx - 1), SEEK_SET) == -1)
 	{
 		printf("-ERR seek mail header error\r\n");
@@ -520,16 +520,16 @@ int     idx;
 	close(fd);
 	ever_delete_mail = TRUE;
 	printf("+OK message deleted\r\n");
-	
+
 	client.dels++;
-/*	
-	pop3log("%s from=<%s>, subject=<%s>", 
+/*
+	pop3log("%s from=<%s>, subject=<%s>",
 	        fh.filename, fh.owner, fh.title);
-*/	        
+*/
 }
 
 
-void 
+void
 PopRSET(void)
 {
 	struct stat st;
@@ -568,7 +568,7 @@ PopRSET(void)
 }
 
 
-void 
+void
 PopUIDL(list_num)
 int     list_num;
 {
@@ -638,7 +638,7 @@ int     list_num;
 /*
  * Parse Input String to Command
  */
-int 
+int
 ParseCommand(inbuf)
 char   *inbuf;
 {
@@ -663,7 +663,7 @@ char   *inbuf;
 		else if (!strncasecmp(p, "TOP", 3))
 		{
 			char *idx, *line;
-			
+
 			strtok(p, " \t\r\n");
 			idx = strtok(NULL, " \t\r\n");
 			if ((line = strtok(NULL, " \t\r\n")) == NULL)
@@ -673,7 +673,7 @@ char   *inbuf;
 		}
 		else if (!strncasecmp(p, "RSET", 4))
 		{
-			/* RSET */		
+			/* RSET */
 			PopRSET();
 			return 1;
 		}
@@ -686,7 +686,7 @@ char   *inbuf;
 			if (*p == '\r' || *p == '\n' || *p == '\0')
 				PopLIST(0);
 			else
-				PopLIST(atoi(p));			
+				PopLIST(atoi(p));
 			return 1;
 		}
 		else if (!strncasecmp(p, "UIDL", 4))
@@ -698,10 +698,10 @@ char   *inbuf;
 			if (*p == '\r' || *p == '\n' || *p == '\0')
 				PopUIDL(0);
 			else
-				PopUIDL(atoi(p));			
+				PopUIDL(atoi(p));
 			return 1;
 		}
-		else if (!strncasecmp(p, "STATL", 4))		
+		else if (!strncasecmp(p, "STATL", 4))
 		{
 			/* STAT */
 			PopSTAT();
@@ -716,9 +716,9 @@ char   *inbuf;
 			if (*p == '\r' || *p == '\n' || *p == '\0')
 				printf("-ERR give me message number\r\n");
 			else
-				PopDELE(atoi(p));			
+				PopDELE(atoi(p));
 			return 1;
-		}		
+		}
 		else if (!strncasecmp(p, "NOOP", 4))
 		{
 			printf("+OK hello, I am alive\r\n");
@@ -749,19 +749,19 @@ char   *inbuf;
 				popuser = NULL;
 				return 1;
 			}
-			
+
 			if (PopGetUser(popname))
 			{
 				if (checkpasswd(popuser->passwd, p))
 				{
 					printf("+OK %s login successful\r\n", popname);
-					pop3log("LOGIN from=<%s>", client.from);					
+					pop3log("LOGIN from=<%s>", client.from);
 					setmailfile(maildirect, popuser->userid, DIR_REC);
 				}
 				else
 				{
 					printf("-ERR %s passwd incorrect\r\n", popname);
-					pop3log("PASSERR from=<%s>", client.from);					
+					pop3log("PASSERR from=<%s>", client.from);
 					popuser = NULL;
 				}
 				return 1;
@@ -791,7 +791,7 @@ char   *inbuf;
 						printf("-ERR connection rejected! 5 min(s) later!\r\n");
 						return -1;
 					}
-#endif					
+#endif
 					if (PopHaveUser(popname))
 						printf("+OK %s welcome, send PASS now\r\n", popname);
 					else
@@ -802,7 +802,7 @@ char   *inbuf;
 					return 1;
 				}
 			}
-			printf("-ERR your user name is incorrect\r\n");			
+			printf("-ERR your user name is incorrect\r\n");
 		}
 		return 1;
 	}
@@ -815,7 +815,7 @@ char   *inbuf;
 int     times;
 char    pop3_idle;
 
-void 
+void
 timeout_check()
 {
 	if (pop3_idle)
@@ -846,7 +846,7 @@ Pop3()
 	memset(popname, 0, sizeof(popname));
 	memset(maildirect, 0, sizeof(maildirect));	/* lasehu */
 	popuser = (USEREC *) NULL;
-	printf("+OK NSYSU Formosa BBS POP3 Server Ready, Send USER and PASS (%s)\r\n", 
+	printf("+OK NSYSU Formosa BBS POP3 Server Ready, Send USER and PASS (%s)\r\n",
 	       VERSION);
 	fflush(stdout);
 	while (times < 100)
@@ -855,7 +855,7 @@ Pop3()
 		{
 			if (!strncasecmp(inbuf, "QUIT", 4))
 			{
-				printf("+OK sayonala\r\n");				
+				printf("+OK sayonala\r\n");
 				fflush(stdout);
 				if (popuser)
 				{
@@ -941,10 +941,10 @@ char   *argv[];
 		signal(SIGHUP, SIG_IGN);
 		signal(SIGCHLD, SIG_IGN);
 		strcpy(host, "local");
-		memset(&client, 0, sizeof(client));				
-		xstrncpy(client.from, inet_ntoa(from.sin_addr), 
+		memset(&client, 0, sizeof(client));
+		xstrncpy(client.from, inet_ntoa(from.sin_addr),
 			sizeof(client.from));
-		init_bbsenv(); 		
+		init_bbsenv();
 
 		Pop3();
 		exit(0);
@@ -988,7 +988,7 @@ char   *argv[];
 	if (myhostip[0])
 		sin.sin_addr.s_addr = inet_addr(myhostip);
 	else
-		sin.sin_addr.s_addr = INADDR_ANY;			
+		sin.sin_addr.s_addr = INADDR_ANY;
 	sin.sin_port = htons((u_short) POP3PORT);
 
 	if (bind(s, (struct sockaddr *) &sin, sizeof sin) < 0 ||
@@ -1009,9 +1009,9 @@ char   *argv[];
 			chmod(PID_FILE, 0644);
 		}
 	}
-	
-	init_bbsenv(); 		
-	
+
+	init_bbsenv();
+
 	aha = sizeof(from);
 	maxs = s + 1;
 
@@ -1022,7 +1022,7 @@ char   *argv[];
 
 		wait.tv_sec = 5;
 		wait.tv_usec = 0;
-		
+
 		if ((on = select(maxs, &ibits, 0, 0, &wait)) < 1)
 		{
 			if ((on < 0 && errno == EINTR) || on == 0)
@@ -1039,8 +1039,8 @@ char   *argv[];
 			continue;
 		else
 		{
-			memset(&client, 0, sizeof(client));			
-			xstrncpy(client.from, inet_ntoa(from.sin_addr), 
+			memset(&client, 0, sizeof(client));
+			xstrncpy(client.from, inet_ntoa(from.sin_addr),
 				sizeof(client.from));
 
 			switch (fork())

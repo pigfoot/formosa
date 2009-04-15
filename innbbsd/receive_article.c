@@ -3,8 +3,8 @@
 
    The only two interfaces you must provide
 
-   #include "inntobbs.h" 
-   int receive_article(); 
+   #include "inntobbs.h"
+   int receive_article();
    0 success
    not 0 fail
 
@@ -12,23 +12,23 @@
    .... fail
    }
 
-   int cancel_article_front( char *msgid );          
+   int cancel_article_front( char *msgid );
    0 success
    not 0 fail
 
    char *ptr = (char*)DBfetch(msgid);
 
-   the post contents received (body) is in char *BODY, 
+   the post contents received (body) is in char *BODY,
    (header) in char *HEADER[]
    SUBJECT_H, FROM_H, DATE_H, MID_H, NEWSGROUPS_H,
    NNTPPOSTINGHOST_H, NNTPHOST_H, CONTROL_H, PATH_H,
    ORGANIZATION_H
 
-   To filter input text, another set of HEADER is processed 
+   To filter input text, another set of HEADER is processed
    at first and BODY processed later.
  */
 
-/* 
+/*
    Sample Implementation
 
    receive_article()         --> post_article()   --> bbspost_write_post();
@@ -96,7 +96,7 @@ struct fileheader
 
 #define	FILE_RECEIVE  0x20
 
-int 
+int
 buildfile (fname)
      char *fname;
 {
@@ -383,7 +383,7 @@ bbspost_write_control (fh, board, filename)
 #include "include/config.h"
 #include "include/struct.h"
 
-int 
+int
 get_only_postno (dotdir)
      char *dotdir;
 {
@@ -402,7 +402,7 @@ get_only_postno (dotdir)
 		{
 			if (lastf.postno >= BRC_REALMAXNUM)
 				number = 1;	/*
-						 * reset the postno. 
+						 * reset the postno.
 						 */
 			else if (lastf.postno > 0)
 				number = lastf.postno + 1;
@@ -624,8 +624,8 @@ receive_article ()
 				break;
 
 		}		/* for board1,board2,... */
-		/*if (nngptr != NULL) 
-		   ngptr = nngptr + 1; 
+		/*if (nngptr != NULL)
+		   ngptr = nngptr + 1;
 		   else
 		   break;
 		 */

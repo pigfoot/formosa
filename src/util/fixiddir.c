@@ -1,9 +1,9 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw
  */
- 
+
 /*******************************************************************
- * .DIR 清理、維護	 			 	 
+ * .DIR 清理、維護
  *******************************************************************/
 
 #include "bbs.h"
@@ -252,7 +252,7 @@ printf("total: %u   sizeof: %u\n", st.st_size / sizeof(DIR), sizeof(struct TABLE
 						//strtok (p, ">");
 						//printf("%s -- ", p);
 						strncpy (fh.owner, p, STRLEN);
-						
+
 						p=fh.owner;
 						//printf("==%s==", p);
 						//while (*p != ')')
@@ -261,7 +261,7 @@ printf("total: %u   sizeof: %u\n", st.st_size / sizeof(DIR), sizeof(struct TABLE
 						for (p_end=strlen(fh.owner)-2; p_end<STRLEN; p_end++)
 							*(p+p_end)='\0';
 						//printf("%s--\n", fh.owner);
-							
+
 						sprintf (fh.title, "身份確認: %s", fh.owner);
 						//printf("%s--\n", fh.title);
 #if 0
@@ -269,7 +269,7 @@ printf("total: %u   sizeof: %u\n", st.st_size / sizeof(DIR), sizeof(struct TABLE
 						{
 							if (GetPasswd (&urc, fh.owner) > 0)
 								fh.ident = urc.ident;
-							strcpy (fh.owner, p);							
+							strcpy (fh.owner, p);
 						}
 						else
 							sprintf(fh.owner, "#%s", p);

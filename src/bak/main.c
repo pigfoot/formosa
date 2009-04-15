@@ -1,6 +1,6 @@
 /*
  * Virtual TTY, Standalone BBS Daemon.
- * 本程式用來取代 Telnetd, 並成為 Server, 使ＢＢＳ不需要 TTY   
+ * 本程式用來取代 Telnetd, 並成為 Server, 使ＢＢＳ不需要 TTY
  * Ming-Jang Liang, lmj@cc.nsysu.edu.tw, 10/03/96
  */
 
@@ -160,14 +160,14 @@ char *argv[];
 #ifndef DEBUG
 	if (fork() != 0)
 		exit(0);
-#endif		
-		
+#endif
+
 	if (argc > 1)
 	{
 		if (!strcmp(argv[1], "-i"))
 			inetd = 1;
 		else
-		{	
+		{
 			if ((port = atoi(argv[1])) <= 0)
 			{
 				fprintf(stderr, "invalid port number\n");
@@ -187,13 +187,13 @@ char *argv[];
 	}
 	xstrncpy(myhostname, hbuf->h_name, sizeof(myhostname));
 	memcpy(&in.s_addr, *(hbuf->h_addr_list), sizeof(in.s_addr));
-#if 1	
+#if 1
 	{
 		char myhostip[16];
 
 		xstrncpy(myhostip, inet_ntoa(in), sizeof(myhostip));
 	}
-#endif	
+#endif
 
 	for (aha = getdtablesize(); aha > 2; aha--)
 		close(aha);
@@ -210,7 +210,7 @@ char *argv[];
 #ifndef DEBUG
 		if (fork() != 0)
 			exit(0);
-#endif			
+#endif
 
 		if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			exit(1);

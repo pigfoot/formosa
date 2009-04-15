@@ -55,13 +55,13 @@ SRCS      = admin.c article.c board.c chat.c chat2.c cursor.c edit.c formosa.c \
 # conditional configurations and optional modules
 #######################################################################
 
-ifdef WITH_VISIO
+ifndef WITHOUT_VISIO
 CFLAGS += -DUSE_VISIO
 SRCS += visio.c
 endif
 
 # Should with WITH_VISIO
-ifdef WITH_PFTERM
+ifndef WITHOUT_PFTERM
 CFLAGS += -DUSE_PFTERM
 SRCS += pfterm.c
 else

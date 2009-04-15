@@ -25,11 +25,11 @@ const struct conf conf_files[] =
 	{BBS_NEWS_CONF, "轉信設定"}	,
 #if 1
 	{"conf/class.cf.old", "看板分類設定" },
-#endif	
+#endif
 /* TODO
 	{ "conf/clang.cf", "中文訊息檔" },
 	{ "conf/elang.cf", "英文訊息檔" },
-*/	
+*/
 	{ EXPIRE_CONF, "佈告刪除設定"},
 	{ MENUSHOW_CONF, "畫面秀圖設定"},
 
@@ -49,7 +49,7 @@ const struct conf conf_files[] =
 
 	{ BBSSRV_WELCOME, "進站畫面 1"},
 	{ WELCOME0, "進站畫面 2" },
-#endif	
+#endif
 	{ NULL, NULL }
 };
 
@@ -93,7 +93,7 @@ static void show_board(const BOARDHEADER *brdhr)
 #ifdef	WEB_BOARD
 	brdtype[6] = "WEB SKIN";
 	brdtype[7] = "限定ID進入";
-#endif	
+#endif
 
 	move(2, 0);
 	clrtobot();
@@ -108,7 +108,7 @@ static void show_board(const BOARDHEADER *brdhr)
 	for (i = 0, j = 1; i < MAX_NR_BRDTYPE; i++)
 	{
 		move(3 + i, 53);
-		prints("(%c) %-10.10s : %s", 'A' + i, 
+		prints("(%c) %-10.10s : %s", 'A' + i,
 		       (brdtype[i]) ? brdtype[i] : "保留屬性",
 		       (*pbits & j) ? "Yes" : "No ");
 		j <<= 1;
@@ -139,9 +139,9 @@ static BOOL invalid_bname(char *bname)
 
 
 #if 1
-/** 
+/**
  **	set web skin file string
- **	by asuka: 990714 
+ **	by asuka: 990714
  **/
 void setskinfile(char *fname, char *boardname, char *skin)
 {
@@ -259,7 +259,7 @@ static int set_board(BOARDHEADER *brdhr)
 	{
 		BOARDHEADER *board = brdhr;
 		char buffer[PATHLEN], skin[PATHLEN];
-		char *custom_files[] = 
+		char *custom_files[] =
 		{
 			"BmWelcome.html",
 			"PostList.html",
@@ -273,9 +273,9 @@ static int set_board(BOARDHEADER *brdhr)
 			"TreaPost.html",
 			NULL
 		};
-	
+
 		setskinfile(buffer, board->filename, NULL);
-		
+
 		if(!isdir(buffer))
 		{
 			/* create webskin dir */
@@ -284,7 +284,7 @@ static int set_board(BOARDHEADER *brdhr)
 				showmsg("Can't create skin dir");
 				return -1;
 			}
-		
+
 			for(i = 0; custom_files[i]; i++)
 			{
 				sprintf(buffer, "%s%s%s", "HTML/", "txtVersion/", custom_files[i]);
@@ -297,7 +297,7 @@ static int set_board(BOARDHEADER *brdhr)
 			}
 		}
 	}
-#endif	
+#endif
 
 /* -ToDo- combine to .lib */
 	if (brdhr->owner[0] != '\0')
@@ -325,7 +325,7 @@ static int set_board(BOARDHEADER *brdhr)
 
 /*
   新增看板
-*/  
+*/
 static int new_board(BOARDHEADER *bhp)
 {
 	int fd;
@@ -339,7 +339,7 @@ static int new_board(BOARDHEADER *bhp)
 		{
 			if (bhbuf.filename[0] == '\0' || bhbuf.bid == 0)
 				break;
-			if (!strcasecmp(bhbuf.filename, bhp->filename))				
+			if (!strcasecmp(bhbuf.filename, bhp->filename))
 			{
 				bid = -1;
 				break;
@@ -362,7 +362,7 @@ static int new_board(BOARDHEADER *bhp)
 			close(fd);
 			return 0;
 		}
-		
+
 		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) != -1)
 		{
 			bhp->bid = bid;
@@ -371,17 +371,17 @@ static int new_board(BOARDHEADER *bhp)
 			{
 				char pathname[PATHLEN];
 
-			
+
 				flock(fd, LOCK_EX);
 				close(fd);
-				
+
 				setboardfile(pathname, bhp->filename, NULL);
 				mkdir(pathname, 0700);
 				settreafile(pathname, bhp->filename, NULL);
 				mkdir(pathname, 0700);
 
 				rebuild_brdshm(TRUE);
-				
+
 				return bid;
 			}
 		}
@@ -432,13 +432,13 @@ int adminMaintainBoard()
 
 	if (namecomplete_board(&bh_mod, bname, FALSE) <= 0)
 	{
-		showmsg(_msg_err_boardname);	
+		showmsg(_msg_err_boardname);
 		return C_FULL;
 	}
-	
+
 #if 1
 	ent = bh_mod.bid;
-#endif		
+#endif
 
 	/* pack the board, prune the articles marked deleted */
 	if (ans[0] == 'p')
@@ -454,7 +454,7 @@ int adminMaintainBoard()
 		set_brdt_numposts(bname, TRUE);    /* lthuang: 99/08/20 */
 		return C_FULL;
 	}
-/* -ToDo- combine to .lib */	
+/* -ToDo- combine to .lib */
 	else if (ans[0] == 'd')
 	{
 		show_board(&bh_mod);
@@ -485,7 +485,7 @@ int adminMaintainBoard()
  */
 		bbsd_log_write("DELBOARD", "%s", bname);
 	}
-/* -ToDo- combine to .lib */		
+/* -ToDo- combine to .lib */
 	else if (ans[0] == 'e')
 	{
 		if (set_board(&bh_mod) == -1)
@@ -530,7 +530,7 @@ int adminMaintainBoard()
 	return C_FULL;
 }
 
-/* 
+/*
  * kmwang:20000604: 詢問 admin 是否把信寄回給 user 的信箱
  */
 int fwUserMail(char *userid_del)
@@ -544,13 +544,13 @@ int fwUserMail(char *userid_del)
         // 把 userid_del 的資料搬到 del_user, 為了要取得他的 e-mail addr.
         if (get_passwd(&del_user, userid_del) <= 0)
                 return 0;  	//使用者不存在!
-	
+
 	if (!(del_user.email[0]))
 	{
 		msg("使用者無 E-mail Address.");
 		return 0;	// E-mail不存在.
 	}
-	
+
         msg("要把信寄回給被刪除的使用者的 E-MAIL 信箱嗎 (y/n)? [n]");
         if (igetkey() == 'y')
         {
@@ -590,7 +590,7 @@ int adminDeleteUser()
 
 		fwUserMail(userid_del);
 
-		/* removed by kmwang 
+		/* removed by kmwang
 		sprintf(cmd, "deluser -u \"%s\"", userid_del);
 		outdoor(cmd);
 		*/
@@ -615,7 +615,7 @@ int adminEditConf()
 	for (i = 0; conf_files[i].fname; i++)
 		prints("%2d) %s\n", i + 1, conf_files[i].desc);
 	max_conf_files = i;
-	
+
 	if (getdata(b_line, 0, "編輯檔案編號 ? [0]: ", genbuf, 3, XECHO)
 	&& (i = atoi(genbuf)) >= 1 && i <= max_conf_files)
 	{
@@ -630,10 +630,10 @@ int adminEditConf()
 				char buf[128], cn[8], bn[72], *pt, *s;
 				CLASSHEADER chbuf;
 				int n = 0;
-			
+
 				mycp("conf/class.cf.old", CLASS_CONF);
-				
-	
+
+
 				if ((fp = fopen(CLASS_CONF, "r")) != NULL)
 				{
 					if ((fd = open("tmp/class.cf", O_WRONLY | O_CREAT | O_TRUNC, 0600)) > 0)
@@ -645,14 +645,14 @@ int adminEditConf()
 								pt++;
 							if (*pt == '\n' || *pt == '\0')
 								continue;
-			
+
 							if ((s = strchr(pt, '.')) == NULL)
 								continue;
 							*s = '\0';
 							strcpy(cn, pt);
-		
+
 							pt = s + 1;
-		
+
 							if (cn[0] == '-')
 							{
 								if ((s = strchr(pt, ' ')) != NULL)
@@ -661,7 +661,7 @@ int adminEditConf()
 							if ((s = strchr(pt, '\n')) != NULL)
 								*s = '\0';
 							strcpy(bn, pt);
-		
+
 							strcpy(chbuf.cn, cn);
 							strcpy(chbuf.bn, bn);
 							chbuf.cid = ++n;
@@ -669,16 +669,16 @@ int adminEditConf()
 							if (write(fd, &chbuf, CH_SIZE) != CH_SIZE)
 								break;
 						}
-						close(fd);					
+						close(fd);
 					}
-					fclose(fp);		
+					fclose(fp);
 				}
 				myrename("tmp/class.cf", CLASS_CONF);
 				chmod(CLASS_CONF, 0644);
-	
+
 				rebuild_classhm();
 			}
-#endif			
+#endif
 		}
 		pressreturn();
 	}
@@ -691,16 +691,16 @@ static int kickuserFptr(USER_INFO *upent)
 {
 #ifdef IGNORE_CASE
         strtolow(kiuserid);
-#endif  
+#endif
 	if (!strcmp(upent->userid, kiuserid))
 	{
 		if (upent->pid > 2)	/* debug */
 			kill(upent->pid, SIGKILL);
 		/* not to write user data back */
 		purge_ulist(upent);
-#if 0		
+#if 0
 		kick_cnt++;
-#endif		
+#endif
 		return 0;
 	}
 	return -1;
@@ -737,8 +737,8 @@ adminKickUser()
 static int broadcastFptr(USER_INFO *upent)
 {
 	extern MSQ mymsq;
-	
-	return msq_snd(upent, &mymsq); 
+
+	return msq_snd(upent, &mymsq);
 }
 
 
@@ -781,7 +781,7 @@ int adminMailBm()
 		/* sarek:08022001:標題在shell下被判斷錯誤, 加上雙引號即可 */
 		sprintf(genbuf, "mailbm -f %s -t \"%s\" -u %s -i %d",
 			bm_fname, bm_title, curuser.userid, curuser.ident);
-			
+
 		outdoor(genbuf);
 	}
 	unlink(bm_fname);
@@ -890,31 +890,31 @@ int adminCancelUser()
 	USEREC urcCancel;
 	char *iemail;
 	char userid[IDLEN];
-	
+
 
 	move(2, 0);
 	clrtobot();
 	outs("取消帳號使用權 (請小心使用)");
 	if (!getdata(3, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP))
-	{	             
+	{
 		return C_FULL;
 	}
 
 #ifdef IGNORE_CASE
         strtolow(userid);
-#endif  
+#endif
 	// add by kmwang
 	fwUserMail(userid);
-		
+
 	if (get_passwd(&urcCancel, userid) > 0)
 	{
 		urcCancel.userlevel = 0;
 		sprintf(genbuf, "%u", (pid_t)getpid());
 		xstrncpy(urcCancel.passwd, genbuf, PASSLEN);
-		
+
 		xstrncpy(kiuserid, userid, sizeof(kiuserid));
 		apply_ulist(kickuserFptr);
-		
+
 		if (update_passwd(&urcCancel) > 0)
 		{
 			char *reason[MAX_CANCEL_REASON] =
@@ -927,12 +927,12 @@ int adminCancelUser()
 			int j, retval = -1;
 			char fnori[PATHLEN];
 			FILE *fpw;
-			
-			
+
+
 			if ((iemail = get_ident(&urcCancel)) != NULL)
 			{
 				char *p;
-				
+
 				prints("\n永久取消下列電子郵件信箱的認證權利:\n%s\n", iemail);
 				if ((p = strchr(iemail, ' ')) != NULL)
 					*p = '\0';
@@ -947,7 +947,7 @@ int adminCancelUser()
 			{
 				char title[78];
 
-				sprintf(title, "[停用帳號] %s ", userid);							
+				sprintf(title, "[停用帳號] %s ", userid);
 				outs("\n帳號停用原因 :\n");
 				for (j = 0; j < MAX_CANCEL_REASON; j++)
 					prints("(%d) %s\n", j+1, reason[j]);
@@ -967,10 +967,10 @@ int adminCancelUser()
 
 				/*  post on board, postpath is NULL */
 #ifdef USE_THREADING	/* syhu */
-				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop", 
+				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop",
 						title, curuser.ident, uinfo.from, FALSE, NULL, 0,-1,-1);
 #else
-				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop", 
+				retval = PublishPost(fnori, curuser.userid, curuser.username, "sysop",
 						title, curuser.ident, uinfo.from, FALSE, NULL, 0);
 #endif
 				unlink(fnori);

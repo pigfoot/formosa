@@ -64,7 +64,7 @@ USER_INFO *uentp;
 #endif
 
 
-int 
+int
 main(argc, argv)
 int     argc;
 char   *argv[];
@@ -123,7 +123,7 @@ char   *argv[];
 
 	aha = sizeof (from);
 	maxs = s + 1;
-#endif	
+#endif
 
 	init_bbsenv();
 
@@ -138,7 +138,7 @@ char   *argv[];
 		if ((on = select (maxs, &ibits, NULL, NULL, &wait)) < 1)
 #else
 		if ((on = select (0, NULL, NULL, NULL, &wait)) < 1)
-#endif				
+#endif
 		{
 			if (on < 0 && errno == EINTR)
 				continue;
@@ -154,7 +154,7 @@ char   *argv[];
 				exit (-1);
 			}
 		}
-#ifdef ACTFILE		
+#ifdef ACTFILE
 		if (!FD_ISSET (s, &ibits))
 			continue;
 		if ((ns = accept (s, (struct sockaddr *) &from, &aha)) < 0)
@@ -163,7 +163,7 @@ char   *argv[];
 		{
 			char *host = inet_ntoa(from.sin_addr);
 			int total, csbbs;
-			
+
 			if (!strncmp(host, "140.117.11.2", 12)
 			    || !strncmp(host, "140.117.11.4", 12)
 			    || !strncmp(host, "140.117.11.6", 12)

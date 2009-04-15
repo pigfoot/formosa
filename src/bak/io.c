@@ -145,7 +145,7 @@ igetch()
 	refresh();
 	read(0, inbuf, 1);
 	return inbuf[0];
-#endif	
+#endif
       igetagain:
 	if (ibufsize == icurrchar)
 	{
@@ -201,11 +201,11 @@ igetch()
 		}
 		if (i_newfd && FD_ISSET(i_newfd, &readfds))
 			return I_OTHERDATA;
-#ifndef _BBS_UTIL_			
+#ifndef _BBS_UTIL_
 		while ((ibufsize = read(0, inbuf, IBUFSIZE)) <= 0)
-#else		
+#else
 		while ((ibufsize = read(0, inbuf, 1)) <= 0)
-#endif		
+#endif
 		{
 			if (ibufsize < 0 && errno == EINTR)
 				continue;
@@ -223,7 +223,7 @@ igetch()
 			}
 
 			longjmp(byebye, -1);
-#endif			
+#endif
 		}
 		icurrchar = 0;
 	}
@@ -236,7 +236,7 @@ igetch()
 	idle_time = 0;
 	uinfo.idle_time = 0;
 	update_ulist(cutmp, &uinfo);
-#endif	
+#endif
 
 	if (inbuf[icurrchar] == CTRL('L'))
 	{
@@ -244,7 +244,7 @@ igetch()
 		icurrchar++;
 		goto igetagain;
 	}
-#ifndef _BBS_UTIL_	
+#ifndef _BBS_UTIL_
 	else if (inbuf[icurrchar] == 0x0d)
 	{
 		icurrchar++;
@@ -288,7 +288,7 @@ igetch()
 			}
 		}
 	}
-#endif	
+#endif
 	return inbuf[icurrchar++];
 }
 
@@ -387,7 +387,7 @@ char *prefix;
 		}
 		else
 			ch = igetch();
-#ifndef _BBS_UTIL_			
+#ifndef _BBS_UTIL_
 #if 1
 		if (dumb_term && !init_enter)
 		{
@@ -472,8 +472,8 @@ char *prefix;
 		buf[clen++] = (echo & LOWCASE) ? tolower(ch) : ch;
 		outc((echo & DOECHO) ? ch : '*');
 #ifdef _BBS_UTIL_
-		refresh();		
-#endif		
+		refresh();
+#endif
 		x++;
 	}
 	buf[clen] = '\0';

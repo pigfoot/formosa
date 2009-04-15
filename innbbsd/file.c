@@ -41,13 +41,13 @@ va_dcl
 	return newstring;
 }
 
-long 
+long
 filesize(filename)
 char* filename;
 {
 	struct stat st;
 
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
 	return st.st_size;
 }
 
@@ -56,7 +56,7 @@ char* filename;
 {
 	struct stat st;
 
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
 	if (st.st_size == 0) return 1;
 	return 0;
 }
@@ -66,7 +66,7 @@ char* filename;
 {
 	struct stat st;
 
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
 	if (!S_ISREG(st.st_mode)) return 0;
 	return 1;
 }
@@ -95,7 +95,7 @@ char* filename;
 {
 	struct stat st;
 
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
 	if (!S_ISDIR(st.st_mode)) return 0;
 	return 1;
 }
@@ -121,7 +121,7 @@ unsigned long  mtime(filename)
 char* filename;
 {
 	struct stat st;
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
         return st.st_mtime;
 }
 
@@ -146,7 +146,7 @@ unsigned long  atime(filename)
 char *filename;
 {
 	struct stat st;
-	if (stat(filename,&st)) return 0; 
+	if (stat(filename,&st)) return 0;
         return st.st_atime;
 }
 

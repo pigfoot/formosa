@@ -47,7 +47,7 @@ gen(file,varname,of)
 			break;
 	}
 	fprintf (of, "\n");
-	fprintf (of, "};\n"); 
+	fprintf (of, "};\n");
 	fprintf (of, "int %s_count = %d;\n", varname, count);
 	fprintf (of, "\n");
 }

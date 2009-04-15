@@ -9,21 +9,21 @@
   <a06g@alf.zfn.uni-bremen.de>.
 */
 
-/*	
+/*
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 1, or (at your option)
   any later version.
-	 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-	 
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/ 
+*/
 
 #include <stdio.h>
 #include <strings.h>
@@ -91,13 +91,13 @@ typedef struct code_pair
   char first, second;
 } code_pair;
 
-typedef struct named_character 
+typedef struct named_character
 {
   char * char_name;
   code_pair character_codes[NO_CODES];
 } named_character;
 
-named_character codes_for_named_characters[NO_NAMED_CHARACTERS] = 
+named_character codes_for_named_characters[NO_NAMED_CHARACTERS] =
 {
   {FAT_EQUAL,
      {
@@ -122,8 +122,8 @@ named_character codes_for_named_characters[NO_NAMED_CHARACTERS] =
      }}};
 
 
-  
-char * env_vars_to_check[NO_CODES] = 
+
+char * env_vars_to_check[NO_CODES] =
 {
   JIS_EUC_CHAR,
   BIG5_CHAR,
@@ -145,7 +145,7 @@ static int translation_table[NO_CHAR_IN_TABLE][2];
 
 static char * progname;
 				/* file names of the translation files */
-static char * translation_files[10] = 
+static char * translation_files[10] =
 {
   "sinocogb.cod",
   "sinocogb.cod",
@@ -174,12 +174,12 @@ void setup_missing_chars_to_use(void)
   if( (env_ptr = getenv( SINOCODE_DEFAULT_MISSING_CHAR )) != NULL)
     for( i = 0; i < NO_CODES; i++)
       default_missing_char_names[i] = env_ptr;
-  
+
 				/* Then check the others */
   for( i = 0; i < NO_CODES; i++)
     if( (env_ptr = getenv(env_vars_to_check[i])) != NULL )
       default_missing_char_names[i] = env_ptr;
-  
+
 				/* Then set the codes up from the */
 				/* names they have been given */
   for( i = 0; i < NO_CODES; i++)
@@ -227,13 +227,13 @@ void setup_missing_chars_to_use(void)
     }
 }				/* setup_missing_chars_to_use */
 
-		  
+
 void read_translation_table( char *filename )
 {
   char *realpath;
   FILE *tranfp;
   int i, junk;
-  
+
 				/* allocate memory for the real */
 				/* filename */
   if( ! (realpath = (char *) malloc(strlen(TRANSLATIONSFILESDIR) +
@@ -244,7 +244,7 @@ void read_translation_table( char *filename )
 	      progname );
       exit( 1 );
     }
-  
+
   strcpy( realpath, TRANSLATIONSFILESDIR);
   strcat( realpath, filename );
 
@@ -254,7 +254,7 @@ void read_translation_table( char *filename )
 	      progname, realpath );
       exit( 1 );
     }
-  
+
   for( i = 1; 1; i++ )
     {
       translation_table[i][FIRST] = getc( tranfp );
@@ -262,14 +262,14 @@ void read_translation_table( char *filename )
       junk = getc( tranfp );
       if( junk == EOF )
 	break;
-    }	
+    }
   return;
 }
 
 void find_gb_big_code(int ch1, int ch2, int * outch1, int * outch2)
 {
   int index;
-  
+
   index = ((ch1 - 161) * 94)+ ch2 - 160;
 
   *outch1 = translation_table[index][FIRST];
@@ -301,7 +301,7 @@ void find_big( int char1, int char2,
   tmp2 += (tmp2>126)?34:0;
   *outchar1 = tmp1;
   *outchar2 = tmp2;
-  return;  
+  return;
 }				/* find_big */
 
 
@@ -309,7 +309,7 @@ void find_ibm( int char1, int char2,
 	      int * outchar1, int * outchar2 )
 {
   int rno, tmp1, tmp2;
-  
+
   rno = (char1 - 161) * 157 + char2 - 63-(char2>126)?34:0;
   rno += (rno>408)?93:0;
   tmp1 = (rno % 188) + 137;
@@ -327,9 +327,9 @@ void gb_2312_to_big_5( FILE *infilefp, FILE *outfilefp )
 {
   int char1, char2;
   int outchar1, outchar2;
-  
+
   read_translation_table( translation_files[GB_2312_TO_BIG_5]);
-  
+
   while ( (char1 = getc( infilefp )) != EOF )
     {
       if ( char1 >= 160 && char1 <= 255 )
@@ -350,17 +350,17 @@ void gb_2312_to_big_5( FILE *infilefp, FILE *outfilefp )
       else
 	putc( (char) char1, outfilefp );
     }
-  
+
   return;
 }
 				/* 2 */
 void gb_2312_to_ibm_555( FILE *infilefp, FILE *outfilefp )
-{ 
+{
   int char1, char2;
   int outchar1, outchar2;
-  
+
   read_translation_table( translation_files[GB_2312_TO_IBM_555]);
-  
+
   while ( (char1 = getc( infilefp )) != EOF )
     {
       if ( char1 >= 160 && char1 <= 255 )
@@ -447,7 +447,7 @@ void big_5_to_gb_2312( FILE *infilefp, FILE *outfilefp )
       else
 	putc( (char) char1, outfilefp );
     }
-  
+
   return;
 }
 
@@ -634,12 +634,12 @@ void main(argc, argv)
   char **argv;
 {
   FILE *infilefp, *outfilefp;
-  
+
   progname = argv[0];
 				/* make sure we use the correct */
 				/* missing chars */
   setup_missing_chars_to_use();
-  
+
 				/* this should aways be called with */
 				/* either one of four arguments. */
   if( argc == 2)
@@ -764,7 +764,7 @@ void main(argc, argv)
 	    ibm_555_to_gb_2312( infilefp, outfilefp );
 	    goto out;
 	  }
-	
+
 				/* If we arrive here, then we have not */
 				/* found a coding scheme */
 	fprintf(stderr, "%s: Unknown coding scheme(s)\n",

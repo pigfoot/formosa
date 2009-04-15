@@ -31,7 +31,7 @@ static char hzdecode(c, inst)
 	switch (state[inst]) {
 	  case S_ASC:
 		switch (c) {
-		  case '~':	state[inst] = S_PHZ;  
+		  case '~':	state[inst] = S_PHZ;
 #ifdef NOQUOTE
                                 c = ' ';
 #endif

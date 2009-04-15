@@ -45,12 +45,12 @@ int maxlen;
 	while (i < maxlen)
 	{
 		j = read(0, &c, 1);
-/*		
+/*
 		if (j < 0)
 			return -2;
 */
 		if (j <= 0)	/* lthuang: bug fixed */
-			return -2;			
+			return -2;
 		else if (c == '\n')
 			break;
 		else if (c != '\r')
@@ -76,12 +76,12 @@ int socket;
 	while (i < maxlen)
 	{
 		j = read(socket, &c, 1);
-/*		
+/*
 		if (j < 0)
 			return -2;
 */
-		if (j <= 0)	/* lthuang: bug fixed */	
-			return -2;			
+		if (j <= 0)	/* lthuang: bug fixed */
+			return -2;
 		else if ( /* j==0 || */ c == '\n')
 			break;
 		else if (c != '\r')

@@ -31,9 +31,9 @@ void bbslog(const char *mode, const char *fmt, ...)
 	va_start(args, fmt);
 #if !HAVE_VSNPRINTF
 	vsprintf(msgbuf, fmt, args);
-#else	
+#else
 	vsnprintf(msgbuf, sizeof(msgbuf), fmt, args);
-#endif	
+#endif
 	va_end(args);
 
 	time(&now);
@@ -43,7 +43,7 @@ void bbslog(const char *mode, const char *fmt, ...)
 	sprintf(buf, "%s %.8s: %s\n", timestr, mode, msgbuf);
 #else
 	snprintf(buf, sizeof(buf), "%s %.8s: %s\n", timestr, mode, msgbuf);
-#endif	
+#endif
 	append_record(PATH_BBSLOG, buf, strlen(buf));
 }
 #endif
@@ -126,10 +126,10 @@ void setmailfile(char *buf, char *userid, const char *filename)
 
 #ifdef IGNORE_CASE
         strtolow(userid);
-#endif	
+#endif
 
 	if (filename)
-		sprintf(buf, "%s/%c/%s/%s", UFNAME_MAIL, c, userid, filename);	
+		sprintf(buf, "%s/%c/%s/%s", UFNAME_MAIL, c, userid, filename);
 	else
 		sprintf(buf, "%s/%c/%s", UFNAME_MAIL, c, userid);
 }
@@ -150,7 +150,7 @@ void setdotfile(register char *buf, const char *dotfile, const char *fname)
 		*ptr-- = '\0';
 	ptr++;
 	if (fname)
-		strcpy(ptr, (*fname == '/') ? fname + 1 : fname);	
+		strcpy(ptr, (*fname == '/') ? fname + 1 : fname);
 	else
 		*ptr = '\0';
 }
@@ -167,17 +167,17 @@ void init_bbsenv()
 	}
 */
 	chdir(HOMEBBS);
-	
+
 	if (getuid() != BBS_UID)
 	{
-#ifdef CHROOT_BBS	
+#ifdef CHROOT_BBS
 		if (chroot(HOMEBBS) == -1 || chdir("/") == -1)
 		{
 			fprintf(stderr, "\ncannot chroot: %s\n", HOMEBBS);
 			fflush(stderr);
 			exit(-1);
 		}
-#endif		
+#endif
 		if (setgid(BBS_GID) == -1 || setuid(BBS_UID) == -1)
 		{
 			fprintf(stderr, "\nplease run this program in bbs\n");
@@ -185,7 +185,7 @@ void init_bbsenv()
 			exit(-1);
 		}
 	}
-	load_bbsconf();	
+	load_bbsconf();
 }
 
 

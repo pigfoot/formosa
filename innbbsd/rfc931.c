@@ -3,11 +3,11 @@
   * protocols. It consults an RFC 931 etc. compatible daemon on the client
   * host to look up the remote user name. The information should not be used
   * for authentication purposes.
-  * 
+  *
   * Diagnostics are reported through syslog(3).
-  * 
+  *
   * Author: Wietse Venema, Eindhoven University of Technology, The Netherlands.
-  * 
+  *
   * Inspired by the authutil package (comp.sources.unix volume 22) by Dan
   * Bernstein (brnstnd@kramden.acf.nyu.edu).
   */

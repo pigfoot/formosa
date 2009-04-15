@@ -8,15 +8,15 @@
 
 #include "bbslib.h"
 
-/* 
+/*
 #  filter.conf
-#node    in    out  
+#node    in    out
 mynode:b2g:g2b
 */
 
 char *big2gb(), *gb2big(), *gb2hz(), *hz2gb(), *big2hz(), *hz2big();
 char *big2jis(), *jis2big();
-int big2gb_init(), gb2big_init(), gb2hz_init(); 
+int big2gb_init(), gb2big_init(), gb2hz_init();
 int hz2gb_init(),  big2hz_init(), hz2big_init();
 int big2jis_init(),jis2big_init();
 
@@ -40,7 +40,7 @@ static filternode_t FILTERS[]={
 #ifdef HZ2GB
 {"hz2gb",  hz2gb, hz2gb_init},
 #endif
-#if defined(GB2BIG) && defined(HZ2GB) 
+#if defined(GB2BIG) && defined(HZ2GB)
 {"hz2big",  hz2big, hz2big_init},
 {"big2hz",  big2hz, big2hz_init},
 #endif
@@ -91,13 +91,13 @@ FuncPtr search_filtercmd(cmd)
 char *cmd;
 {
   filternode_t *nodep;
-  char *ptr; 
+  char *ptr;
   int savech;
 
   for (ptr = cmd; *ptr && strchr("\r\n\t\b ",*ptr) == NULL; ptr++);
   savech = *ptr; *ptr = '\0';
   for (nodep = FILTERS; nodep && nodep->name && *nodep->name; nodep++) {
-    if (strcasecmp(nodep->name, cmd)==0) 
+    if (strcasecmp(nodep->name, cmd)==0)
       return nodep->cmd;
   }
   *ptr = savech;
@@ -124,7 +124,7 @@ char *arg;
 
 char *
 hz2big(buf, len, init)
-char *buf; 
+char *buf;
 int *len;
 int init;
 {
@@ -134,7 +134,7 @@ int init;
 
 char *
 big2hz(buf, len, init)
-char *buf; 
+char *buf;
 int *len;
 int init;
 {
@@ -207,7 +207,7 @@ char *string;
 {
 }
 
-int 
+int
 Sfputs(string)
 char *string;
 {
@@ -247,20 +247,20 @@ b2gfprintf()
 #endif
 
 #if defined(JIS2BIG)
-char *jis2big() 
+char *jis2big()
 {
 }
 #endif
 
 #if defined(BIG2JIS)
-char *big2jis() 
+char *big2jis()
 {
 }
 #endif
 
-#if defined(HZ2GB) 
+#if defined(HZ2GB)
 char *
-hz2gb() 
+hz2gb()
 {
 }
 #endif

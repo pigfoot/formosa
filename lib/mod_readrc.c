@@ -46,9 +46,9 @@ void ReadRC_Update()
 
 	if ((fdr = open(fname_readrc, O_RDONLY)) > 0)
 	{
-		time_t now;		
+		time_t now;
 
-		
+
 		time(&now);
 		while (read(fdr, &rrc_buf, RRC_SIZE) == RRC_SIZE)
 		{
@@ -311,7 +311,7 @@ void ReadRC_Refresh(char *boardname)
 
 	if (get_board(&gbhbuf, boardname) <= 0)
 		return;
-	
+
 	new_rtime = gbhbuf.rewind_time;
 #ifdef DEBUG
 	prints("\nmtime = [%d], new_rtime = [%d]", myrrc.mtime, new_rtime);
@@ -329,7 +329,7 @@ void ReadRC_Refresh(char *boardname)
 		myrrc.mtime = new_rtime;
 		rrc_changed = 1;
 	}
-	
+
 	setboardfile(fname, boardname, DIR_REC);
 	total = get_num_records(fname, FH_SIZE);
 	if (get_record(fname, &gfhbuf, FH_SIZE, 1) == 0)
@@ -355,10 +355,10 @@ void ReadRC_Refresh(char *boardname)
 		}
 		else
 		{
-/*		
+/*
 			if (firstno > 1)
 				ReadRC_Clean(1, firstno - 1);
-*/				
+*/
 			if (lastno < BRC_REALMAXNUM)
 				ReadRC_Clean(lastno + 1, BRC_REALMAXNUM);
 		}
@@ -375,7 +375,7 @@ void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 	ReadRC_Init(bid, userid);
 	if (bitset)
 	{
-		myrrc.mtime = time(0);	
+		myrrc.mtime = time(0);
 		memset(myrrc.rlist, 0xFF, BRC_MAXNUM);
 	}
 	else
@@ -383,7 +383,7 @@ void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 		myrrc.mtime = 0;
 		memset(myrrc.rlist, 0x00, BRC_MAXNUM);
 	}
-	
+
 	if (!new_visit)
 		rrc_changed = TRUE;
 }

@@ -1,7 +1,7 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw
  */
- 
+
 #include "bbs.h"
 #include "tsbbs.h"
 
@@ -157,7 +157,7 @@ int top, last, rows;
 			len = 12;
 			if (curuser.ident == 7 && fhr->ident == 7)
 				outs(_str_marker);
-/*                              
+/*
  * else if (strchr(fhr->owner, '@') || strchr(fhr->owner, '.'))
  */
 			else if (fhr->owner[0] == '#')
@@ -730,8 +730,8 @@ char *direct;
 #ifdef NSYSUBBS
 	if (!strcmp(curuser.userid, "SYSOP"))
 		return C_NONE;
-#endif		
-	
+#endif
+
 	move(4, 0);
 	clrtobot();
 
@@ -765,7 +765,7 @@ char *direct;
 }
 
 
-/* 
+/*
  * function prototype for read_comms[]
  */
 struct one_key post_comms[] =
@@ -798,9 +798,9 @@ struct one_key post_comms[] =
 	{'a', author_backward},
 	{'A', author_forward},
 	{'<', title_backward},
-	{'?', title_backward},	
+	{'?', title_backward},
 	{'>', title_forward},
-	{'/', title_forward},	
+	{'/', title_forward},
 	{'[', thread_backward},
 	{']', thread_forward},
 	{'=', thread_original},
@@ -848,7 +848,7 @@ struct one_key trea_comms[] =
 
 
 /*
- * Select in Main Menu 
+ * Select in Main Menu
  */
 int
 Select()
@@ -867,7 +867,7 @@ MainRead()
 {
 	if (!CurBList)
 	{
-		clear();	
+		clear();
 		outs("½Ð¥ý¿ï¾Ü¬ÝªO!");
 		pressreturn();
 		return C_FULL;
@@ -950,7 +950,7 @@ Read()
 					hasBMPerm = TRUE;
 			}
 		}
-		
+
 		if (HAS_PERM(PERM_SYSOP))	/* lthuang */
 			hasBMPerm = TRUE;
 
@@ -1135,12 +1135,12 @@ int opt, autowarp, rows;
 			}
 
 		case C_FOOT:
-#if 1		
+#if 1
 			move(b_line - 1, 0);
 			clrtoeol();
 			if (clast - ctop >= ROWSIZE - 1)
 				cm_entry(x, hdrs, ctop, ctop + ROWSIZE - 1, ctop + ROWSIZE - 1, 1);
-#endif			
+#endif
 			if (cm_btitle)
 			{
 				move(b_line, 0);
@@ -1148,10 +1148,10 @@ int opt, autowarp, rows;
 				outs("[m");
 #if 0
 				outs(color);
-#endif			
+#endif
 				outs(MENU_TITLE_COLOR);
 				cm_btitle();
-				outs("[m");				
+				outs("[m");
 			}
 
 		case CX_CURS:
@@ -1163,16 +1163,16 @@ int opt, autowarp, rows;
 
 #if 1
 			if (*ccur != ocur)
-#endif			
+#endif
 			{
 				/* RMVCURS; */
 				move((ocur) - (otop) + y, x);
 				outs("  ");
 			}
-#if 1			
+#if 1
 			otop = ctop;
 			ocur = *ccur;
-#endif			
+#endif
 			/* PUTCURS; */
 			move((*ccur) - (ctop) + y, x);
 			outs("->");
@@ -1210,17 +1210,17 @@ int opt, autowarp, rows;
 		{
 			if (ch == CTRL('R'))
 			{
-#if 1			
+#if 1
 				if (rows == 1)
 				{
 					cmode = C_NONE;
 					continue;
 				}
-#endif				
+#endif
 				ReplyLastCall(1);
-#if 1				
+#if 1
 				cmode = C_LOAD; /* becuase ReplyLastCall had destroyed hdrs */
-#endif				
+#endif
 				continue;
 			}
 			else if (ch == CTRL('Q'))

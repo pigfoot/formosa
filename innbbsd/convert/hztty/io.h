@@ -6,7 +6,7 @@
 #define	MAX_MODULE	8	/* maximun number of module in a stream */
 
 extern int in_stream_setup(), out_stream_setup();
-extern int stream_read(), stream_write(); 
+extern int stream_read(), stream_write();
 
 /*
  * All io functions must take the following signatures:

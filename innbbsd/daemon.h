@@ -48,7 +48,7 @@ typedef struct Daemoncmd {
 	int  argc, argno, errorcode, normalcode;
 	int (*main) ARG(( ClientType*));
 } daemoncmd_t;
- 
+
 extern void installdaemon ARG((daemoncmd_t *,int,char*));
 #ifndef BSD44
 extern int daemon ARG((int));

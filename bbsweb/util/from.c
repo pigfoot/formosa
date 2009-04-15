@@ -341,7 +341,7 @@ char *argv[];
 			}
 
 			sort_time = time(0);
-			
+
 			if(total_ip)
 			{
 				strncpy(ct, line, 10);

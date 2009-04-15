@@ -6,7 +6,7 @@
  *  new:
  *      Interactive & filelist & argument line mode
  *  asuka@cc.nsysu.edu.tw
- * 
+ *
  *  fix:
  *      bug by asuka, mypasswd buffer overflow
  *      bug by asuka, mygenpass return local variable
@@ -113,7 +113,7 @@ char *userid;
 }
 
 
-void 
+void
 Usage(char *file)
 {
 	printf("Usage: %s [userid]|[userid list file]\n", file);
@@ -121,7 +121,7 @@ Usage(char *file)
 }
 
 
-int 
+int
 main(int argc, char *argv[])
 {
 	printf("FormosaBBS New User Utility Ver 1.2\n");

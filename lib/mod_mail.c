@@ -24,7 +24,7 @@ int InvalidEmailAddr(char *addr)
 	{
 		if (ch == '@')
 		{
-			/* 
+			/*
 			   xxx.@xxx
 			   xxx@
 			   @xxxx
@@ -69,13 +69,13 @@ static int DirectSMTPMail(int ms, const char *fname,
 		return -1;
 	if (strncmp(gbufTmp, "250 ", 4))
 		return -1;
-		
+
 	net_printf(ms, "RCPT TO:<%s>\r\n", to);
 	if (!net_gets(ms, gbufTmp, sizeof(gbufTmp)))
 		return -1;
 	if (strncmp(gbufTmp, "250 ", 4))
 		return -1;
-		
+
 	net_printf(ms, "DATA\r\n");
 	if (!net_gets(ms, gbufTmp, sizeof(gbufTmp)))
 		return -1;
@@ -85,15 +85,15 @@ static int DirectSMTPMail(int ms, const char *fname,
 	net_printf(ms, "From: %s\r\n", from);
 	net_printf(ms, "To: %s\r\n", to);
 
-	net_printf(ms, "Subject: %s\r\n", title);	
+	net_printf(ms, "Subject: %s\r\n", title);
 	if (forward)	/* lthuang */
 		net_printf(ms, "X-Forwarded-By: %s.bbs@%s", forward, myhostname);
 	net_printf(ms, "X-Disclaimer: [%s] %s\r\n\r\n", BBSTITLE, _msg_x_disclaimer);
-		
+
 	while (fgets(gbufTmp, sizeof(gbufTmp), fp))
 	{
 		char *ptr;
-			
+
 		if ((ptr = strchr(gbufTmp, '\n')) != NULL)
 			*ptr = '\0';
 		net_printf(ms, "%s\r\n", gbufTmp);
@@ -103,7 +103,7 @@ static int DirectSMTPMail(int ms, const char *fname,
 	net_printf(ms, "\r\n.\r\n");
 	if (!net_gets(ms, gbufTmp, sizeof(gbufTmp)))
 		return -1;
-		
+
 	if (strncmp(gbufTmp, "250 ", 4))
 		return -1;
 	net_printf(ms, "RSET\r\n");
@@ -131,9 +131,9 @@ char *find_fqdn(char *a, struct hostent *p)
 {
 	int x;
 
-	if (!strchr(p->h_name, '.')) 
+	if (!strchr(p->h_name, '.'))
 	{
-		for (x = 0; p->h_aliases[x]; ++x) 
+		for (x = 0; p->h_aliases[x]; ++x)
 		{
 			if (strchr(p->h_aliases[x], '.') &&
 			(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
@@ -153,7 +153,7 @@ int get_hostname_hostip()
 	{
 		struct hostent *hbuf;
 		struct in_addr in;
-		
+
 		if(gethostname(myhostname, sizeof(myhostname)) == -1)
 			return -1;
 		if ((hbuf = gethostbyname(myhostname)) != NULL)
@@ -212,15 +212,15 @@ static int SendMail_Internet(int ms, char *fname,
 	{
 		if ((msTmp = CreateMailSocket()) < 0)
 		{
-/*		
+/*
 			bbslog("ERR", "connect mail server");
-*/			
+*/
 			return -1;
 		}
 	}
 	if (!strchr(from, '@')) /* lasehu */
 	{
-		get_hostname_hostip();	
+		get_hostname_hostip();
 		sprintf(fromTmp, "%-s.bbs@%s", from, myhostname);
 	}
 	else
@@ -241,14 +241,14 @@ int CheckMail(USEREC *urc, char *to, BOOL strict)
 	int total;
 	USEREC urcTmp, *u = (urc) ? urc : &urcTmp;
 	int flexbility = (strict) ? 0 : 10;
-	
+
 	if (get_passwd(u, to) <= 0)
 		return -1;
-		
+
 	if (u->userlevel == PERM_SYSOP)
 		return 0;
 
-	setmailfile(dotdir, to, DIR_REC);	
+	setmailfile(dotdir, to, DIR_REC);
     total = get_num_records(dotdir, FH_SIZE);
     if ((u->userlevel >= PERM_BM && total >= SPEC_MAX_KEEP_MAIL+flexbility)
         || (u->userlevel < PERM_BM && total >= MAX_KEEP_MAIL+flexbility))
@@ -258,7 +258,7 @@ int CheckMail(USEREC *urc, char *to, BOOL strict)
 
 	return 0;
 }
-	
+
 
 /**************************************************************
  * 寄信給站上使用者
@@ -274,7 +274,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 	if (retval == -1)
 		return -1;
 	/* kmwang:20000610:blacklist */
-/* bug fixed by lasehu 2002/05/22 	
+/* bug fixed by lasehu 2002/05/22
 	if (in_blacklist(to, from))
 		return -1;
 		*/
@@ -282,7 +282,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 		return -1;
 	else if (retval > 0)
 	{
-		bbslog("SENDMAIL", "from=%s, to=%s, total=%d, stat=ENOSPC", 
+		bbslog("SENDMAIL", "from=%s, to=%s, total=%d, stat=ENOSPC",
 			from, to, retval);
 		return -2;
 	}
@@ -293,12 +293,12 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 #ifdef NSYSUBBS
 		if (strncmp(urcTmp.email, "bbs@", 4) && !strstr(urcTmp.email, ".."))
 		{
-#endif			
+#endif
 			if (SendMail_Internet(-1, fname, from, urcTmp.email, title, urcTmp.userid) == 0)
 				return 0;
 #ifdef NSYSUBBS
 		}
-#endif					
+#endif
 		bbslog("ERR", "auto-forward: %s", urcTmp.email);
 	}
 
@@ -308,7 +308,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 		if (mkdir(pathTmp, 0700) == -1)
 			return -1;
 	}
-	
+
 	if (!(fsize = get_num_records(fname, sizeof(char))))
 		return -2;
 
@@ -318,7 +318,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 		       from, to, fsize);
 		return -3;
 	}
- 
+
 #ifdef USE_THREADING	/* syhu */
 	if (append_article(fname, pathTmp, from, title, ident, NULL, FALSE, 0, NULL, -1, -1 ) == -1)		/* syhu */
 #else
@@ -346,7 +346,7 @@ int CreateMailSocket()		/* open socket to mail server */
 	int ms;
 	char buffer[256];
 
-	ms = ConnectServer(MAILSERVER, SMTPPORT);	
+	ms = ConnectServer(MAILSERVER, SMTPPORT);
 	if (ms < 0)
 		ms = ConnectServer("127.0.0.1", SMTPPORT);
 	if (ms > 0)
@@ -435,8 +435,8 @@ int CheckNewmail(char *name, BOOL force_chk)
 		{
 #if 0
 			time_t now = time(0), timestamp;
-#endif					
-		
+#endif
+
 			lseek(fd, (off_t) (st.st_size - FH_SIZE), SEEK_SET);
 			i = 0;
 			while (numfiles-- > 0 && i++ < CHK_MAIL_NUM)
@@ -456,7 +456,7 @@ int CheckNewmail(char *name, BOOL force_chk)
 					break;
 				if (!isme)	/* lthuang: only check the last one mail */
 					break;
-#endif					
+#endif
 				lseek(fd, -((off_t) (2 * FH_SIZE)), SEEK_CUR);
 			}
 			close(fd);

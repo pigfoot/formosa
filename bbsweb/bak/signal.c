@@ -2,7 +2,7 @@
 #include "webbbs.h"
 #include "bbswebproto.h"
 #include "log.h"
-#include "webvar.h"               
+#include "webvar.h"
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -48,7 +48,7 @@ void sig_segv(int sig)
 {
 	server->error++;
 	server->sigsegv++;
-	
+
 #ifdef PRE_FORK
 	(server->childs)[my_num].status = S_SIGSEGV;
 	(server->childs)[my_num].pid = 0x00;
@@ -60,12 +60,12 @@ void sig_segv(int sig)
 	if(request_rec->mark1 != 0x55 || request_rec->mark2 != 0xaa)
 		sprintf(log, "ERR=\"Caught SIGSEGV\" request_rec data error!");
 	else
-		sprintf(log, "ERR=\"Caught SIGSEGV\" REQ=\"%s %s\" UA=\"%s\"", 
+		sprintf(log, "ERR=\"Caught SIGSEGV\" REQ=\"%s %s\" UA=\"%s\"",
 			request_rec->request_method, request_rec->URI, request_rec->user_agent);
 	fprintf(stderr, "%s", log);
 	weblog_line(log, server->error_log, request_rec->fromhost, time(0));
 	fflush(server->error_log);
-	
+
 }
 #endif
 
@@ -77,7 +77,7 @@ void sig_pipe(int sig)
 {
 	server->error++;
 	server->sigpipe++;
-	
+
 #ifdef PRE_FORK
 	(server->childs)[my_num].status = S_SIGPIPE;
 #if 0
@@ -86,7 +86,7 @@ void sig_pipe(int sig)
 	shutdown(0, 2);
 #endif
 #ifdef WEB_ERROR_LOG
-	sprintf(log, "ERR=\"%s\" REQ=\"%s %s\" UA=\"%s\"", 
+	sprintf(log, "ERR=\"%s\" REQ=\"%s %s\" UA=\"%s\"",
 		"Caught SIGPIPE", request_rec->request_method, request_rec->URI, request_rec->user_agent);
 	weblog_line(log, server->error_log, request_rec->fromhost, request_rec->atime);
 	fflush(server->error_log);
@@ -127,7 +127,7 @@ void reaper(int sig)
 				(server->childs)[i].status = S_ERROR;
 				server->error++;
 #ifdef WEB_ERROR_LOG
-				sprintf(log, "ERR=\"Child unexpected return, pid=%d, status=%d (%s)\"", 
+				sprintf(log, "ERR=\"Child unexpected return, pid=%d, status=%d (%s)\"",
 					(int)cpid, (int)status, strsignal(status));
 				weblog_line(log, server->error_log, "127.0.0.1", time(0));
 				fflush(server->error_log);
@@ -138,10 +138,10 @@ void reaper(int sig)
 	}
 
 	(void) signal(SIGCHLD, reaper);			/* 再度啟動 signal 接收 */
-	
+
 }
-   
-   
+
+
 /*******************************************************************
  * Idle Timeout
  *******************************************************************/

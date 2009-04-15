@@ -28,13 +28,13 @@ int
 main ()
 {
 	int i;
-#if 0	
+#if 0
 	extern struct UTMPFILE *utmpshm;
 
 	resolve_utmp ();
 	printf ("utmpshm: %X\n", (int) utmpshm);
 	apply_ulist (list_user);
-#endif	
+#endif
 
 	chdir ("/apps/bbs");
 	clangshm = attach_shm (CLANGSHM_KEY, sizeof (struct LANG));

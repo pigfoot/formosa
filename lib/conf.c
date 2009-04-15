@@ -63,7 +63,7 @@ char *bbsconf_str(const char *key, const char *default_value)
 	int n;
 
 	for (n = 0; n < bbsconf_key; n++)
-		if (strcmp (key, bbsvar[n].key) == 0 && 
+		if (strcmp (key, bbsvar[n].key) == 0 &&
             bbsvar[n].str && bbsvar[n].str[0])
 			return (bbsvar[n].str);
 
@@ -120,7 +120,7 @@ void parse_bbsconf (char *fname)
 
 		if (*ptr == '#' || *ptr == '\n')
 			continue;
-		
+
 		key = strtok (ptr, "=# \t\n");
 		if (key) {
 			str = key + strlen(key) + 1;
@@ -179,7 +179,7 @@ void build_bbsconf (char *configfile, char *imgfile)
 
 	if((bbsvar = (void *) malloc (SC_KEYSIZE * sizeof (struct sdefine))) == NULL)
 		exit(1);
-	bbsconf_key = 0;	
+	bbsconf_key = 0;
 
 	if((bbsconf_buf = (void *) malloc (SC_BUFSIZE)) == NULL)
 		exit(1);
@@ -256,7 +256,7 @@ void load_bbsconf ()
 	struct stat stc, sti;
 
 	sprintf(fname, "conf/%s", BBS_CONF);
-	sprintf(path, "conf/%s", BBS_IMG);	
+	sprintf(path, "conf/%s", BBS_IMG);
 	if (stat(fname, &stc) == 0) {
 		if ((stat(path, &sti) != 0) || stc.st_mtime > sti.st_mtime)
 			build_bbsconf (fname, path);
@@ -287,17 +287,17 @@ TODO
 	BBSLOG_IDLE_OUT = "Yes"					/* 閒置離線記錄 */
 	BBSLOG_MAIL = "No"					/* 寄信至站外記錄 */
 	ACTFILE = "conf/actfile"				/* 顯示它站上線人數 (for nsysubbs) */
-	BBS_UID = 9999 
+	BBS_UID = 9999
 	BBS_GID = 999
 	HOMEBBS = bbsconf_str("HOMEBBS");
 	SPOOL_MAIL = bbsconf_str("SPOOL_MAIL");
 	MAXACTIVE = 2048					/* 最多允許同時上線人數 */
 	MAXBOARD = 512						/* 看板個數 */
-	CHROOT_BBS = "Yes" 
-	SYSOP_BIN = "Yes" 
-	NSYSUBBS = "Yes" 
-	LOGINASNEW = "Yes" 
-	USE_IDENT = "Yes" 
-	EMAIL_LIMIT = "Yes" 
-#endif	
-}	
+	CHROOT_BBS = "Yes"
+	SYSOP_BIN = "Yes"
+	NSYSUBBS = "Yes"
+	LOGINASNEW = "Yes"
+	USE_IDENT = "Yes"
+	EMAIL_LIMIT = "Yes"
+#endif
+}

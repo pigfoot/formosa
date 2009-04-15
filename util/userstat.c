@@ -1,7 +1,7 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw
  */
- 
+
 #include "bbs.h"
 #include "conf.h"
 
@@ -74,10 +74,10 @@ USER_INFO *upent;
 		break;
 	case CHATROOM:
 	case CHATROOM2:
-#if 0	
+#if 0
 	case IRCCHAT:
 	case LOCALIRC:
-#endif	
+#endif
 		n = S_CHAT;
 		break;
 	case SENDMSG:
@@ -98,7 +98,7 @@ USER_INFO *upent;
 	case VOTING:
 	case UNDEFINE:
 		break;
-*/	
+*/
 	default:
 		if (upent->ctype == CTYPE_CSBBS)
 			n = S_CSBBS;
@@ -124,11 +124,11 @@ DoStatistics()
 	memset(Smode, 0, sizeof(Smode));
 	resolve_utmp();
 	apply_ulist(CountStat);
-	
+
 	time(&now);
 	strftime(buf, 3, "%H", localtime(&now));
 	fprintf(fp, "%s:", buf);
-	
+
 	for (i = 0; i < MAX_SMODE; i++)
 		fprintf(fp, " %d", Smode[i]);
 	fprintf(fp, "\n");
@@ -144,19 +144,19 @@ logins_stat()
 	int hr;
 	int counter[24];
 	FILE *fp;
-#ifdef NSYSUBBS3	
+#ifdef NSYSUBBS3
 	int not_local = 0;
-#endif	
+#endif
 	int total_logouts = 0, total_duration = 0;
 
 
 	memset(counter, 0, sizeof(counter));
-		
+
 	if ((fd = open(PATH_VISITOR, O_RDONLY)) > 0)
-	{	
-		struct tm *tm;	
-		struct visitor vis;		
-		
+	{
+		struct tm *tm;
+		struct visitor vis;
+
 		while (read(fd, &vis, sizeof(vis)) == sizeof(vis))
 		{
 			if (vis.userid[0] == '\0')
@@ -184,7 +184,7 @@ logins_stat()
 		}
 		close(fd);
 	}
-	
+
 	if (prune_flag)
 		unlink(PATH_VISITOR);
 
@@ -196,31 +196,31 @@ logins_stat()
 		fprintf(fp, "\n\n¤W¯¸¤H¦¸");
 #ifdef NSYSUBBS3
 		fprintf(fp, "\n¥u²Î­p®Õ¤º¨Ï¥Îª¬ªp");
-#endif		
+#endif
 		for (start = 0; start < 24; start += 12)
 		{
 			int sub_cnt = 0;
-			
-            fprintf(fp, "\n +---------------------------------------------------------------------------+");	
+
+            fprintf(fp, "\n +---------------------------------------------------------------------------+");
             fprintf(fp, "\n |®É¶¡ ");
 			for (hr = start; hr < start + 12; hr++)
 				fprintf(fp, "   %02d", hr);
 			fprintf(fp, " | SubAvg |");
-            fprintf(fp, "\n +---------------------------------------------------------------------------+");	
+            fprintf(fp, "\n +---------------------------------------------------------------------------+");
             fprintf(fp, "\n  ¤H¦¸ ");
 			for (hr = start; hr < start + 12; hr++)
 			{
 				sub_cnt += counter[hr];
 				fprintf(fp, "%5d", counter[hr]);
 			}
-			fprintf(fp, "   %5d", sub_cnt/12);			
+			fprintf(fp, "   %5d", sub_cnt/12);
 			cnt += sub_cnt;
 		}
-		fprintf(fp, "\n\n           [¤W¯¸Á`¤H¦¸: %d   ¥­§¡¨C¤p®É %d ¤H¦¸, °±¯d®É¶¡ %d ¤À]\n", 
+		fprintf(fp, "\n\n           [¤W¯¸Á`¤H¦¸: %d   ¥­§¡¨C¤p®É %d ¤H¦¸, °±¯d®É¶¡ %d ¤À]\n",
 		        cnt, cnt/24, (total_logouts == 0) ? 0 : total_duration/total_logouts);
 #ifdef NSYSUBBS3
 		fprintf(fp, "\n¨Ó¦Û®Õ¥~¤W¯¸Á`¤H¦¸: %d\n", not_local);
-#endif		
+#endif
 		fclose(fp);
 	}
 
@@ -231,7 +231,7 @@ logins_stat()
 			fprintf(fp, "%d:%d\n", hr, counter[hr]);
 		fclose(fp);
 	}
-#endif	
+#endif
 }
 
 
@@ -244,13 +244,13 @@ char *bname;
 	FILE *fpr, *fpw;
 	char inbuf[80], timestr[11];
 	int i, j;
-	char *filename[] = { 
+	char *filename[] = {
 		PATH_USERSTAT_RPT, PATH_VISITOR_RPT
-#if 0		
+#if 0
 		, PATH_ONLINES_PIC, PATH_LOGINS_PIC
-#endif		
+#endif
 	};
-	                    
+
 /*
    unlink(PATH_USERSTAT_LOG);
  */
@@ -259,14 +259,14 @@ char *bname;
 	if ((fpw = fopen(fname, "w")) != NULL)
 	{
 		char *ptr;
-		
+
 		ptr = ctime(&past);
 		ptr[strlen(ptr) - 1] = '\0';
-		
-		strftime(timestr, sizeof(timestr), "%Y/%m/%d", localtime(&past));		
-	 	sprintf(title, "[%s ²Î­p] ¤W¯¸¤H¦¸ / ¨Ï¥Îª¬ºA¤À§G", timestr);		
-		
-		write_article_header(fpw, "SYSOP", "¨t²ÎºÞ²z­û", bname, ptr, 
+
+		strftime(timestr, sizeof(timestr), "%Y/%m/%d", localtime(&past));
+	 	sprintf(title, "[%s ²Î­p] ¤W¯¸¤H¦¸ / ¨Ï¥Îª¬ºA¤À§G", timestr);
+
+		write_article_header(fpw, "SYSOP", "¨t²ÎºÞ²z­û", bname, ptr,
 		                     title, "localhost");
 
 		fprintf(fpw, "\n\n%s\n", BBSTITLE);
@@ -280,20 +280,20 @@ char *bname;
 					fprintf(fpw, "%s", inbuf);
 				fclose(fpr);
 			}
-		
+
 			for (i %= 24; i > 0 && i < 15; i++)
 				fprintf(fpw, "\n");
 		}
 		fclose(fpw);
-	
+
 #ifdef	USE_THREADING	/* syhu */
-	 	if (PublishPost(fname, "SYSOP", "¨t²ÎºÞ²zªÌ", 
-	 	                bname, title, 7, "localhost", 
-	                    FALSE, NULL, 0, -1, -1) == 0)	 	
+	 	if (PublishPost(fname, "SYSOP", "¨t²ÎºÞ²zªÌ",
+	 	                bname, title, 7, "localhost",
+	                    FALSE, NULL, 0, -1, -1) == 0)
 #else
-	 	if (PublishPost(fname, "SYSOP", "¨t²ÎºÞ²zªÌ", 
-	 	                bname, title, 7, "localhost", 
-	                    FALSE, NULL, 0) == 0)	 	
+	 	if (PublishPost(fname, "SYSOP", "¨t²ÎºÞ²zªÌ",
+	 	                bname, title, 7, "localhost",
+	                    FALSE, NULL, 0) == 0)
 #endif
 		{
 			unlink(fname);
@@ -330,7 +330,7 @@ onlines_stat()
 	memset(maxSmode, 0, sizeof(maxSmode));
 	memset(totalSmode, 0, sizeof(totalSmode));
 	memset(Hr_Logins, 0, sizeof(Hr_Logins));
-	memset(Hr_lines, 0, sizeof(Hr_lines));	
+	memset(Hr_lines, 0, sizeof(Hr_lines));
 
 	while (fgets(inbuf, sizeof(inbuf), fpr))
 	{
@@ -340,8 +340,8 @@ onlines_stat()
 		if ((ptr = strtok(inbuf, " :")) == NULL)
 			continue;
 		Hr = atoi(ptr);
-		
-		tmpOnlineUsers = 0;		
+
+		tmpOnlineUsers = 0;
 		for (i = 0; i < MAX_SMODE; i++)
 		{
 			if ((ptr = strtok(NULL, " ")) == NULL)
@@ -352,11 +352,11 @@ onlines_stat()
 			totalSmode[i] += nTmp;
 			tmpOnlineUsers += nTmp;
 		}
-#if 1		
+#if 1
 		/* ¬Y¤@¨ú¼Ë®É¶¡¤º, ½u¤W¤H¼Æ¬° 0 ®É, ¤£¦C¤J²Î­p */
 		if (tmpOnlineUsers == 0)
 			continue;
-#endif			
+#endif
 		if (tmpOnlineUsers > maxOnlineUsers)
 			maxOnlineUsers = tmpOnlineUsers;
 		Hr_Logins[Hr] += tmpOnlineUsers;
@@ -364,8 +364,8 @@ onlines_stat()
 		totalLogins += tmpOnlineUsers;
 		TotalLines++;
 	}
-	fclose(fpr);	
-	
+	fclose(fpr);
+
 	if (prune_flag)
 		unlink(PATH_USERSTAT_LOG);
 
@@ -381,7 +381,7 @@ onlines_stat()
 	fprintf(fpw, "\n +--------------+------+------+----------+");
 	fprintf(fpw, "\n |              | Avg. | Max. |  Percent |");
 	fprintf(fpw, "\n +--------------+------+------+----------+");
-	
+
 	for (i = 0; i < MAX_SMODE; i++)
 	{
 		fprintf(fpw, "\n | %-12s | %4d | %4d | %6.2f %% |",
@@ -389,12 +389,12 @@ onlines_stat()
 		       maxSmode[i],
 		       (float) (totalSmode[i] / TotalLines) * 100 / ((totalLogins / TotalLines) == 0 ? 1 : (totalLogins / TotalLines)));
 	}
-	fprintf(fpw, "\n +--------------+------+------+----------+");	
+	fprintf(fpw, "\n +--------------+------+------+----------+");
 	fprintf(fpw, "\n | %-12s | %4d | %4d | 100.00 %% |",
 	       "Á`­p", totalLogins / TotalLines, maxOnlineUsers);
-	fprintf(fpw, "\n +--------------+------+------+----------+");	       
+	fprintf(fpw, "\n +--------------+------+------+----------+");
 	fclose(fpw);
-	
+
 #if 0
 	if ((fpw = fopen(PATH_ONLINES_AVE, "w")) != NULL)
 	{
@@ -402,10 +402,10 @@ onlines_stat()
 			fprintf(fpw, "%d:%d\n", i, Hr_Logins[i]/Hr_lines[i]);
 		fclose(fpw);
 	}
-#endif	
+#endif
 
 	return 0;
-}	
+}
 
 
 void
@@ -443,22 +443,22 @@ char *argv[];
 	}
 
 	init_bbsenv();
-	
+
 	while ((ch = getopt(argc, argv, "cp:sk")) != EOF)
 	{
 		switch (ch)
 		{
 		case 'c':
-			DoStatistics();		
+			DoStatistics();
 #if 0
 			{
 				unsigned timer;
-				
+
 				if (fork())
 					exit(0);
 				{
 					int s, ndescriptors = 64;
-	
+
 					for (s = 0; s < ndescriptors; s++);
 					(void) close(s);
 					s = open("/dev/null", O_RDONLY);
@@ -478,23 +478,23 @@ char *argv[];
 					sleep(timer);
 				}
 			}
-#endif			
+#endif
 			break;
 		case 's':
 			logins_stat();
 			onlines_stat();
 #if 0
 			draw_pic(PATH_LOGINS_AVE, "¤W¯¸¤H¦¸");
-			draw_pic(PATH_ONLINES_AVE, "­t¸ü¤H¼Æ");	
-#endif			
-			break;			
+			draw_pic(PATH_ONLINES_AVE, "­t¸ü¤H¼Æ");
+#endif
+			break;
 		case 'p':
 			logins_stat();
 			onlines_stat();
-#if 0			
+#if 0
 			draw_pic(PATH_LOGINS_AVE, "¤W¯¸¤H¦¸");
-			draw_pic(PATH_ONLINES_AVE, "­t¸ü¤H¼Æ");				
-#endif			
+			draw_pic(PATH_ONLINES_AVE, "­t¸ü¤H¼Æ");
+#endif
 			PostStatistics(optarg);
 			break;
 		case 'k':
@@ -566,16 +566,16 @@ char *title;
 
 	d = ((max / degree) > 0) ? (max / degree) : 1;
 
-/*      
+/*
 	c = d * 1;
 */
-					
+
 	c = (degree > 1) ? (degree / 15 / d) : d;
 	printf("\nmax, degree, d, c = (%d, %d, %d, %d)\n", max, degree, d, c);
-/*	
-	c = d * 10;	
+/*
+	c = d * 10;
 	c = max / 10;
-*/	
+*/
 
 	for (i = max / c + 1; i >= 0; i--)
 	{
@@ -588,9 +588,9 @@ char *title;
 				if (flag != 1)
 				{
 					flag = 1;
-/*					
+/*
 					fprintf(fp, "[33m");
-*/					
+*/
 				}
 				if (pic[j] >= 1000) /* lasehu */
 					fprintf(fp, "[36m%3d", pic[j]/10);
@@ -620,9 +620,9 @@ char *title;
 		}
 		fprintf(fp, "[m\n");
 	}
-	
-	strftime(buf, 9, "%y/%m/%d", localtime(&past));	
-	
+
+	strftime(buf, 9, "%y/%m/%d", localtime(&past));
+
 	fprintf(fp, "    [1;34m¢|¢w¢w¢w[35m%s%s²Î­p[34m¢w", BBSNAME, title);
 	fprintf(fp, "¢w[35m%s[34m¢w¢w¢w[m\n", buf);
 	fprintf(fp, "        [1;33m0  1  2  3  4  5  6  7  8  9 10 11 12 13 14");

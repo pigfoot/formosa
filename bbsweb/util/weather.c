@@ -17,7 +17,7 @@ char *html_out[]=
 	"HTML/txtVersion/Weather03.html"
 };
 
-char *uri[] = 
+char *uri[] =
 {
 	"/Data/forecast/W01.txt",
 	"/Data/forecast/W03.txt",
@@ -29,8 +29,8 @@ char *uri[] =
 char *GetBBSTag(char *type, char *tag, char *data)
 {
 	char *start, *end, *p;
-	
-	if((start = strstr(data, "<!")) != NULL 
+
+	if((start = strstr(data, "<!")) != NULL
 	&& !strncasecmp(start+2, "BBS", 3)
 	&& (end = strstr(start+6, "!>")) != NULL)
 	{
@@ -43,7 +43,7 @@ char *GetBBSTag(char *type, char *tag, char *data)
 		}
 		else
 			*tag = '\0';
-		
+
 		strcpy(type, start+6);
 		return end+2;
 	}
@@ -54,12 +54,12 @@ char *GetBBSTag(char *type, char *tag, char *data)
 void ShowWeather(FILE *fpw, char *data)
 {
 	/*
-		skip first line and last line 
+		skip first line and last line
 		strip unnessaty white space
 	*/
-	
+
 	char *start, *end;
-	
+
 	if((start = strchr(data, '\n')) != NULL
 	&& (end = strstr(data, "¼f®Ö¡G")) != NULL)
 	{
@@ -74,7 +74,7 @@ void ShowWeather(FILE *fpw, char *data)
 	#endif
 		fwrite(start, sizeof(char), (int)(end-start)+1, fpw);
 	}
-	
+
 }
 
 
@@ -83,27 +83,27 @@ int CreateHTML(char *in, char *out, char *wdata)
 	FILE *fpr, *fpw;
 	char type[STRLEN], tag[512];
 	char pbuf[1024];
-	
+
 	char *p, *data, *next;
-	
-	
+
+
 	if ((fpr = fopen(in, "r")) == NULL)
 	{
 		fprintf(stderr, "open read file %s error\n", in);
 		return FALSE;
 	}
-	
+
 	if ((fpw = fopen(out, "w")) == NULL)
 	{
 		fprintf(stderr, "open write file %s error\n", out);
 		return FALSE;
 	}
-	
+
 #if 0
 		printf("here....\n");
 		fflush(stdout);
 #endif
-	
+
 	while (fgets(pbuf, sizeof(pbuf), fpr) != NULL)
 	{
 		if ((p = strrchr(pbuf, '\n')) != NULL)
@@ -123,11 +123,11 @@ int CreateHTML(char *in, char *out, char *wdata)
 				if(!strcasecmp(type, "Weather"))	/* tag keyword */
 				{
 					ShowWeather(fpw, wdata);
-					
+
 				#if 0
 					fprintf(fpw, "%s", wdata);
 				#endif
-				
+
 				}
 				else
 				{
@@ -136,7 +136,7 @@ int CreateHTML(char *in, char *out, char *wdata)
 					else
 						fprintf(fpw, "<!BBS_%s!>", type);
 				}
-			
+
 			}
 			else
 			{
@@ -145,14 +145,14 @@ int CreateHTML(char *in, char *out, char *wdata)
 				fflush(stdout);
 #endif
 				fprintf(fpw, "%s\n", data);
-				break;	
+				break;
 			}
 		}
 	}
-	
+
 	fclose(fpr);
 	fclose(fpw);
-	
+
 	return TRUE;
 }
 
@@ -170,11 +170,11 @@ int main(int argc, char *argv[])
 	char btemp[8192];
 
 	init_bbsenv();
-	
+
 	signal(SIGALRM, timeout_check);
-	
+
 	alarm(30);
-	
+
 	while(uri[index])
 	{
 		BOOL failed = FALSE;
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 		if((sd = ConnectServer(server, 80)) > 0)
 		{
 			FILE *fin, *fout;
-			
+
 			if((fin = fdopen(sd, "r")) == NULL
 			|| (fout = fdopen(sd, "w")) == NULL)
 			{
@@ -190,13 +190,13 @@ int main(int argc, char *argv[])
 				close(sd);
 				return -1;
 			}
-		
-			
+
+
 			fprintf(fout, "GET %s HTTP/1.1\r\n", uri[index]);
 			fprintf(fout, "Host: %s\r\n\n", server);
 			fflush(fout);
-			
-			
+
+
 			fgets(temp, sizeof(temp), fin);
 			/* exam respond */
 			if(strncmp(temp, "HTTP/1.1 200 ", 13))	/* 200 OK */
@@ -204,14 +204,14 @@ int main(int argc, char *argv[])
 				failed = TRUE;
 				fprintf(stderr, "%s", temp);
 			}
-			
+
 			/* skip remain respond header */
 			while(fgets(temp, sizeof(temp), fin))
 			{
 				if(*temp == '\r' && *(temp+1) == '\n')
 				break;
 			}
-			
+
 			if(failed)
 			{
 				index++;
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 				close(sd);
 				continue;
 			}
-			
+
 			bzero(btemp, sizeof(btemp));
 			/* get content */
 			while(fgets(temp, sizeof(temp), fin))
@@ -233,10 +233,10 @@ int main(int argc, char *argv[])
 				}
 				strcat(btemp, temp);
 			}
-			
+
 			/* create html */
 			CreateHTML(html_in[index], html_out[index], btemp);
-		
+
 			fclose(fin);
 			fclose(fout);
 			close(sd);
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
 		{
 			fprintf(stderr, "Connect Server %s error...\n", server);
 		}
-		
+
 	}
 
 	return 0;

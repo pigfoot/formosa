@@ -1,6 +1,6 @@
 #include "bbs.h"
 #include "bbsweb.h"
-#include "log.h"	/* log.h must be included after bbsweb.h, 
+#include "log.h"	/* log.h must be included after bbsweb.h,
                        lasehu guess this is asuka's strick, yap :)
                      */
 #include "bbswebproto.h"
@@ -11,7 +11,7 @@ extern pid_t mypid;
 /*******************************************************************
  *	WEB-BBS generic LOG function
  *******************************************************************/
-void 
+void
 weblog(char *msg, char *logfile)
 {
 	time_t now;
@@ -30,7 +30,7 @@ weblog(char *msg, char *logfile)
 
 /*******************************************************************
  *	WEB-BBS generic LOG function
- *	use with opened file 
+ *	use with opened file
  *******************************************************************/
 void
 weblog_line(FILE * fp, char *fmt,...)
@@ -42,18 +42,18 @@ weblog_line(FILE * fp, char *fmt,...)
 	mk_timestr2(timestr, request_rec->atime);
 
 	va_start(args, fmt);
-#if !HAVE_VSNPRINTF	
+#if !HAVE_VSNPRINTF
 	vsprintf(msg, fmt, args);
 #else
 	vsnprintf(msg, sizeof(msg), fmt, args);
-#endif	
+#endif
 	va_end(args);
 
 	fprintf(fp, "%s %s %s (%d) %d\n",
 		timestr, request_rec->fromhost, msg, (int) mypid, request_rec->num_request);
 }
 
-void 
+void
 OpenLogFile(SERVER_REC * server)
 {
 
@@ -89,7 +89,7 @@ OpenLogFile(SERVER_REC * server)
 }
 
 
-void 
+void
 CloseLogFile(SERVER_REC * server)
 {
 
@@ -107,7 +107,7 @@ CloseLogFile(SERVER_REC * server)
 
 }
 
-void 
+void
 FlushLogFile(SERVER_REC * server)
 {
 

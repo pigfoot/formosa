@@ -72,7 +72,7 @@
 # ifdef SYSV
 # undef CTRL                    /* SVR4 CTRL macro is hokey */
 # define CTRL(c) ('c'&037)      /* This gives ESIX a warning...ignore it! */
-# endif 
+# endif
 #endif
 
 #ifndef	MIN

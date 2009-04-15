@@ -9,36 +9,36 @@
 
 char *chat_keyword[MAX_CHATCMDS] = {
 	"JOIN",
-	"USRID",      
-	"QUIT",       
+	"USRID",
+	"QUIT",
 
-	"MSG",        		
-	"WHO",        
-	"WHOALL",     
-	"NICKNAME",   
-	"LISTCHAN",   
+	"MSG",
+	"WHO",
+	"WHOALL",
+	"NICKNAME",
+	"LISTCHAN",
 	"SPEAK",
-	
-	"TOPIC",      
-	"PASSWD",     
-	"IGNORE"
-};	
-	
-enum chat_proto {
-	CHAT_JOIN,       
-	CHAT_USRID,      
-	CHAT_QUIT,       	
 
-	CHAT_MSG,        
-	CHAT_WHO,        
-	CHAT_WHOALL,     
-	CHAT_NICKNAME,   
-	CHAT_LISTCHAN,   
+	"TOPIC",
+	"PASSWD",
+	"IGNORE"
+};
+
+enum chat_proto {
+	CHAT_JOIN,
+	CHAT_USRID,
+	CHAT_QUIT,
+
+	CHAT_MSG,
+	CHAT_WHO,
+	CHAT_WHOALL,
+	CHAT_NICKNAME,
+	CHAT_LISTCHAN,
 	CHAT_SPEAK,
 
-	CHAT_TOPIC,      
-	CHAT_PASSWD,     
-	CHAT_IGNORE     
+	CHAT_TOPIC,
+	CHAT_PASSWD,
+	CHAT_IGNORE
 };
 
 /* Error Message Define */
@@ -68,7 +68,7 @@ mycrypt (pw)
 #ifdef NSYSUBBS
 */
 	sprintf (saltc, "%ld", atol (pw) + 1);
-/*	
+/*
 #else
 	unsigned char c;
 	int i;

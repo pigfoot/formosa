@@ -59,7 +59,7 @@ DoKill()
 /*******************************************************************
  *
  * 檢查重覆 login
- * 把所有的login秀出來	
+ * 把所有的login秀出來
  *******************************************************************/
 /*ARGUSED */
 int
@@ -107,7 +107,7 @@ static int
 CallUserLogin(name, passwd, client_type)
 char *name, *passwd, client_type;
 {
-	if (user_login(&cutmp, &curuser, client_type, name, passwd, 
+	if (user_login(&cutmp, &curuser, client_type, name, passwd,
 		myfromhost) == ULOGIN_OK)
 	{
 		memcpy(&uinfo, cutmp, sizeof(USER_INFO));
@@ -139,7 +139,7 @@ char *name, *passwd, client_type;
 		friend_cache.size = 0;
 		friend_cache.ids = NULL;
 		sethomefile(ufile_overrides, curuser.userid, UFNAME_OVERRIDES);
-			
+
 		RespondProtocol(OK_CMD);
 		return 0;
 	}
@@ -165,12 +165,12 @@ DoUserLogin()
 	{
 		passwd = Get_para_string(2);
 		client = Get_para_string(3);
-		
+
 		if (!strcmp(client, "WEBBBS"))
 			client_type = CTYPE_WEBBBS;
 		else
 			client_type = CTYPE_CSBBS;
-		
+
 		if (passwd != NULL && *passwd != '\0')
 		{
 			if (CallUserLogin(name, passwd, client_type) == 0)
@@ -225,7 +225,7 @@ char *name, *passwd;
 	uinfo.sockaddr = 0;
 
 	uinfo.mode = LOGIN;
-	
+
 	setmailfile(maildirect, curuser.userid, DIR_REC);
 
 #if 0
@@ -250,10 +250,10 @@ DoAllowNew()
 {
 #if 0
 	RespondProtocol(NOT_ALLOW_NEW);
-#endif	
-#if 1	
+#endif
+#if 1
 	RespondProtocol(OK_CMD);
-#endif	
+#endif
 }
 
 
@@ -293,7 +293,7 @@ DoNewLogin()
 	char *tmp;
 
 	memset(nu, 0, sizeof(*nu));
-	
+
 	userid = Get_para_string(1);
 	if (!userid || userid[0] == '\0')
 	{

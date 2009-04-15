@@ -75,7 +75,7 @@ time_t *tp;
 	tm = localtime(tp);
 	sprintf(s, "%02d.%02d.%02d",
 		tm->tm_year - 11, tm->tm_mon + 1, tm->tm_mday);
-}		
+}
 
 
 static int
@@ -152,7 +152,7 @@ VOTEHEADER *vinfo;
 	fprintf(fp, "    總票數：%6d\n", n_tickets);
 	fprintf(fp, "    總人數：%6d\n", n_users);
 
-	close(fd);	
+	close(fd);
 	fclose(fp);
 }
 
@@ -252,7 +252,7 @@ int top, last, rows;
 
 		if (show_info)
 		{
-/*              
+/*
  * if (HAS_PERM(PERM_SYSOP))
  * prints("目錄名 : %s\n\n", vinfo->filename);
  */
@@ -646,10 +646,10 @@ char *direct;
 
 	if (substitute_record(direct, vinfo, sizeof(*vinfo), ent) == 0)
 		return C_INIT;
-/*		
+/*
 	return C_FULL;
 */
-	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */	
+	return C_LOAD;	/* becuase ReplyLastCall had destroyed hdrs */
 }
 
 

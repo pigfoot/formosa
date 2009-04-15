@@ -1,7 +1,7 @@
 /*
  * written by wnlee@cc.nsysu.edu.tw
  */
- 
+
 #include "bbs.h"
 
 
@@ -27,8 +27,8 @@ a_encode (file1, file2, file3)
 
 	if (mycp (file1, file2) == -1)
 		return -1;
-/*              
-   #ifdef NSYSUBBS              
+/*
+   #ifdef NSYSUBBS
    sprintf(gbuf, "%s -e %s \"%s\"", PGP_EXEC, file2, PUBLIC_KEY);
    dprintf(3, ("file: %s\n", file2));
    dprintf(2, ("command: %s\n", gbuf));
@@ -43,7 +43,7 @@ a_encode (file1, file2, file3)
    return 0;
    }
    }
-   #endif       
+   #endif
  */
 	dprintf (2, ("nopgp: %s\n", file2));
 	if (rename (file2, file3) == -1)

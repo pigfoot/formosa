@@ -11,7 +11,7 @@
 
 // flags used by strip_ansi
 enum STRIP_FLAG {
-    STRIP_ALL = 0, 
+    STRIP_ALL = 0,
     ONLY_COLOR,	    // allow only colors (ESC [ .. m)
     NO_RELOAD	    // allow all known (color+move)
 };

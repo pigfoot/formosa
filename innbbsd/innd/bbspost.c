@@ -19,7 +19,7 @@ bbspost (list|visit) bbs_home\n\
 #endif
 
 #if !defined(PalmBBS)
-   
+
 #include "bbs.h"
 #include "innbbsconf.h"
 
@@ -118,7 +118,7 @@ void search_boards( visit )
     printf( "New article listed:\n" );
 
     while ((de = readdir( dirp )) != NULL ) {
-        if( de->d_name[0] > ' ' && de->d_name[0] != '.' ) 
+        if( de->d_name[0] > ' ' && de->d_name[0] != '.' )
 	    search_article( de->d_name );
     }
 
@@ -337,11 +337,11 @@ char	*brdname, *days_str;
 		ftime = atoi( head.filename + 2 );
 		if( head.owner[0] == '-' )
 		    keep = 0;
-#if	defined(FormosaBBS)		    
+#if	defined(FormosaBBS)
 		else if( head.accessed & FILE_MARKED || total <= minpost )
-#else		
+#else
 		else if( head.accessed[0] & FILE_MARKED || total <= minpost )
-#endif		
+#endif
 		    keep = 1;
 		else if( ftime < duetime || total > maxpost )
 		    keep = 0;
@@ -392,7 +392,7 @@ char	*argv[];
 	post_article( 1 );
     } else if( ci_strcmp( progmode, "cancel" ) == 0 ) {
 	if( argc < 5 )  usage();
-	if ( argc >= 6) 
+	if ( argc >= 6)
 	  cancel_article( argv[3], argv[4], argv[5] );
 	else
 	  cancel_article( argv[3], argv[4] );

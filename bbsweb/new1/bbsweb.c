@@ -6,7 +6,7 @@
  *******************************************************************/
 
 /*
- * 含括檔區 
+ * 含括檔區
  */
 
 #include "bbs.h"
@@ -49,7 +49,7 @@ extern int my_num;
  *	Dispatch command according to $type, $tag in skin tags
  *
  *******************************************************************/
-void 
+void
 DoTagCommand(char *type, char *tag)
 {
 	if (!strcasecmp(type, "Post"))
@@ -105,7 +105,7 @@ DoTagCommand(char *type, char *tag)
 	}
 	else if (!strcasecmp(type, "Skin"))
 	{
-		if (PSCorrect == Correct && (c_board.brdtype & BRD_WEBSKIN) 
+		if (PSCorrect == Correct && (c_board.brdtype & BRD_WEBSKIN)
 			&& (!strcmp(username, c_board.owner) || HAS_PERM(PERM_SYSOP)))
 		{
 			fprintf(fp_out, "<a href=\"/%sboards/%s/%s\">[BM]修改看板介面</a>",
@@ -128,9 +128,9 @@ DoTagCommand(char *type, char *tag)
 /*******************************************************************
  *	檢查首頁 HTML_Announce 登入密碼正確與否
  *
- *	
+ *
  *******************************************************************/
-int 
+int
 WebLoginCheck()
 {
 	if (strstr(skin_file->filename, HTML_Announce))
@@ -155,10 +155,10 @@ WebLoginCheck()
 /*******************************************************************
  *	根據 URLParaType 執行 GET 的要求
  *
- *	
+ *
  *	return WebRespondType
  *******************************************************************/
-int 
+int
 DoGetRequest(REQUEST_REC * rc, BOARDHEADER * board, POST_FILE * pf)
 {
 	char *p, *boardname;
@@ -360,7 +360,7 @@ DoGetRequest(REQUEST_REC * rc, BOARDHEADER * board, POST_FILE * pf)
  *
  *	return HttpRespondType
  *******************************************************************/
-int 
+int
 DoPostRequest(REQUEST_REC * r, BOARDHEADER * board, POST_FILE * pf)
 {
 	int result, URLParaType;
@@ -736,11 +736,11 @@ CMD cmd[] =
  *	2.=== parse HTTP Header info
  *	3.=== parse URI
  *	4.check password & set 'PSCorrect'
- *	5.do request 
+ *	5.do request
  *	6.print HTTP Respond header
  *	7.print request body (if any)
  *******************************************************************/
-static int 
+static int
 ParseCommand(char *inbuf)
 {
 	char *p;
@@ -803,7 +803,7 @@ ParseCommand(char *inbuf)
 			return WEB_ERROR;
 	}
 
-/* 
+/*
    log after ParseHttpHeader() to get real fromhost if connect from proxy
  */
 #ifdef WEB_ACCESS_LOG
@@ -871,7 +871,7 @@ ParseCommand(char *inbuf)
 #endif
 			}
 			return WEB_OK;
-			
+
 		default:
 			request_rec->WebRespondType = WEB_NOT_IMPLEMENTED;
 	}
@@ -974,7 +974,7 @@ ParseCommand(char *inbuf)
 /*******************************************************************
  *	webbbs Main Function
  *******************************************************************/
-void 
+void
 WebMain(int child_num)
 {
 	char inbuf[HTTP_REQUEST_LINE_BUF];

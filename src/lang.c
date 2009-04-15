@@ -45,7 +45,7 @@ static void parse_lang_cf(char *file, struct LANG *shm)
 			/* message text */
 			s = strchr(str+1, '"') + 1;
 			str = pool;
-re_read:			
+re_read:
 			while (*s != '\0' && *s != '"')
 			{
 				if (*s == '\n')
@@ -54,7 +54,7 @@ re_read:
 					s = buf;
 					goto re_read;
 				}
-				
+
 				if (*s == '\\')
 				{
 					s++;
@@ -120,7 +120,7 @@ static void resolve_clangshm()
 void lang_init(char lang)
 {
 	extern struct LANG *elangshm, *clangshm;
-/* 
+/*
 anothoer language
 	extern struct LANG *xlangshm;
 */
@@ -135,8 +135,8 @@ anothoer language
 		resolve_clangshm();
 		langshm = clangshm;
 		break;
-/* 
-another language                     
+/*
+another language
 	case LANG_XXXX;
 		resolve_xlangshm();
 		langshm = xlangshm;

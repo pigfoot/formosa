@@ -6,7 +6,7 @@
 /*
  *  有關於螢幕處理的定義與資料結構
  */
- 
+
 #define ANSILINELEN (246)       /* Maximum Screen width in chars */
 
 /* Line buffer modes */
@@ -26,7 +26,7 @@ struct screenline {
     unsigned char width ;
     unsigned char scmod ;
     unsigned char ecmod ;
-#endif    
+#endif
 } ;
 
 typedef struct {

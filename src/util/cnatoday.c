@@ -1,12 +1,12 @@
 /*
  * written by lthuang@cc.nsysu.edu.tw, 1999
  */
- 
+
 #include "bbs.h"
 
 #define CNA_PATH	"boards/cna-today"
 
-int 
+int
 menushow_parsefile (path, list)
      char *path;
      struct MSList *list;
@@ -16,25 +16,25 @@ menushow_parsefile (path, list)
 	char buf[MENUSHOW_BODY];
 #if 1
 	BOOL is_cna_news;
-	
+
 	if (strstr(path, "cna-"))
 		is_cna_news = TRUE;
 	else
 		is_cna_news = FALSE;
-#endif	
+#endif
 
 	if ((fp = fopen (path, "r")) == (FILE *) NULL)
 		return -1;
 
 	memset (list, 0, sizeof (struct MSList));
-	strncpy (list->filename, path, sizeof (list->filename) - 1);	
+	strncpy (list->filename, path, sizeof (list->filename) - 1);
 
 	while (fgets (line, sizeof (line), fp))
 	{
 		if (line[0] == '\n' || line[0] == '\r')
 			break;
 		else if (list->owner[0] == '\0'
-		         && (!strncmp (line, "發信人: ", 8) 
+		         && (!strncmp (line, "發信人: ", 8)
 		             || !strncmp (line, "發信人：", 8)))
 		{
 			p1 = line + 8;
@@ -46,11 +46,11 @@ menushow_parsefile (path, list)
 				if (*p2 == '\r')
 					*p2 = '\0';
 			}
-			strncpy (list->owner, p1, sizeof (list->owner) - 1); 
+			strncpy (list->owner, p1, sizeof (list->owner) - 1);
 		}
 		else if (list->title[0] == '\0'
-		         && (!strncmp (line, "標題: ", 6) 
-		         || !strncmp (line, "標  題:", 7) 		        
+		         && (!strncmp (line, "標題: ", 6)
+		         || !strncmp (line, "標  題:", 7)
 		             || !strncmp (line, "標題：", 6)))
 		{
 			p1 = line + 6;
@@ -72,7 +72,7 @@ menushow_parsefile (path, list)
 		fclose(fp);
 		return -1;
 	}
-#endif	
+#endif
 
 	/* getting the content to show */
 	buf[0] = '\0';
@@ -82,7 +82,7 @@ menushow_parsefile (path, list)
 		/* skip the first few empty lines */
 		if (p1 == buf && line[0] == '\n')
 			continue;
-#if 1			
+#if 1
 		if (is_cna_news)
 		{
 			if (p1 == buf)
@@ -91,23 +91,23 @@ menushow_parsefile (path, list)
 				p1 += strlen(p1);
 #if 1
 				break;
-#endif								
+#endif
 			}
 			if (line[0] == '\n')
 				continue;
 		}
-#endif			
+#endif
 		/* below double dash is not content */
-		if (!strcmp(line, "--\n"))	
+		if (!strcmp(line, "--\n"))
 			break;
 		if (p1 + strlen(line) >= buf + sizeof(buf))
 			break;
-		strcpy(p1, line);		
+		strcpy(p1, line);
 		p1 += strlen(line);
 	}
-/*	
+/*
 	fread (buf, sizeof(buf), 1, fp);
-*/	
+*/
 	for (p1 = buf + sizeof(buf) - 1; *p1 != '\n'; p1--)
 		*p1 = '\0';
 	for (p1 = buf; *p1 == '\n' || *p1 == '\r'; p1++)
@@ -122,7 +122,7 @@ menushow_parsefile (path, list)
 struct MenuShowShm *msshm = NULL;
 
 
-int 
+int
 main (argc, argv)
      int argc;
      char *argv[];
@@ -132,20 +132,20 @@ main (argc, argv)
 	char *p, buf[PATHLEN];
 	struct fileheader fh;
 	time_t now;
-#if 1	
-	struct MenuShowShm mspool;	
+#if 1
+	struct MenuShowShm mspool;
 	msshm = &mspool;
-#endif	
-	
+#endif
+
 	init_bbsenv();
 	time(&now);
 
 #if 0
 	if (!msshm)
 		msshm = (struct MenuShowShm *) attach_shm (MENUSHOW_KEY+1, sizeof (struct MenuShowShm));
-#endif	
+#endif
 	memset (msshm, 0, sizeof (struct MenuShowShm));
-	list = &(msshm->list[0]);	
+	list = &(msshm->list[0]);
 
 	sprintf (buf, "%s/%s", CNA_PATH, DIR_REC);
 	p = strrchr(buf, '/') + 1;
@@ -168,11 +168,11 @@ main (argc, argv)
 			break;
 	}
 	close (fd);
-	
+
 	for (i = 0; i < msshm->number; i++)
 	{
 		printf("[%d] %s", i+1, msshm->list[i].body);
 	}
-	
+
 	return 0;
 }

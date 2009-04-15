@@ -6,7 +6,7 @@
  *	Show WEBBBS Server Runtime Information
  *
  *******************************************************************/
-void 
+void
 ShowServerInfo(char *tag, SERVER_REC * s, REQUEST_REC * r, FILE_SHM * file_shm, HTML_SHM * html_shm)
 {
 	int i;
