@@ -520,7 +520,6 @@ int x_blacklist()
         return C_FULL;
 }
 
-/*ARGUSED */
 int set_user_info(char *userid)
 {
 	char buf[STRLEN];
@@ -545,8 +544,9 @@ int set_user_info(char *userid)
 
 	show_user_info(&urcOld);
 
+	move(14, 0);
 	outs(_msg_not_sure_modify);
-	getdata(0, 0, NULL, buf, 2, ECHONOSP | XLCASE);
+	getdata(14, strlen(_msg_not_sure_modify), NULL, buf, 2, ECHONOSP | XLCASE);
 	if (buf[0] != 'y')
 		return 0;
 
