@@ -1396,7 +1396,7 @@ int Read()
 
 int autoch = 0;
 #define MAX_HDRSIZE	(256)
-char hdrs[ROWSIZE * MAX_HDRSIZE];	/* ROWSIZE * MAX_HDRSIZE */
+char hdrs[MAX_SCREEN_SIZE * MAX_HDRSIZE];
 
 /*
  * Cursor Menu (treasure / mail / boards / post )
@@ -1427,12 +1427,6 @@ int cursor_menu( int y, int x,
 	int ctop = 0, ocur = 0, otop = 0, savemode;
 	/* TODO: please note sizeof nbuf, sizeof keys */
 	char nbuf[20], keys[50], *cret, *coft;
-
-
-/*
-	if (!hdrs)
-		hdrs = (char *) malloc(ROWSIZE * MAX_HDRSIZE);
-*/
 
 	cret = keys;
 	keys[0] = '\0';

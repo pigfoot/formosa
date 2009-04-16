@@ -35,7 +35,8 @@
 #define I_TIMEOUT   (0x180)
 #define I_OTHERDATA (0x181)
 
-#define SCREEN_SIZE 	(23)
+#define MAX_SCREEN_SIZE 128
+#define SCREEN_SIZE 	((b_line > MAX_SCREEN_SIZE) ? MAX_SCREEN_SIZE : b_line)
 
 #define TTLEN	60        /* -ToDo- Length of article title */
 

@@ -166,21 +166,22 @@ typedef struct user_info {
 #define SCORE_MIN	-255
 
 struct fileheader {
-	char filename[STRLEN-8-12-4-4];
-	int thrheadpos;			/* syhu: pos of thread head in .THREADHEAD */
-	int thrpostidx;			/* syhu: relative idx of this post in .THREADPOST */
-	char date[12];			/* yy/mm/dd */
-	int  postno;			/* unique no. of post */
-	char ident;			/* ident of owner */
+	char filename[52];
+	int thrheadpos;                 /* syhu: pos of thread head in .THREADHEAD */
+	int thrpostidx;                 /* syhu: relative idx of this post in .THREADPOST */
+	char date[12];                  /* yy/mm/dd */
+	int  postno;                    /* unique no. of post */
+	char ident;                     /* ident of owner */
 	unsigned char pushcnt;
 	unsigned char flags;
-	char unused_ch;
-	char owner[STRLEN];
-	char title[STRLEN-IDLEN];
+	char unused1;
+	char owner[80];
+	char title[67];
 	char delby[IDLEN];
 	unsigned int level;
 	unsigned char accessed;
-};
+	unsigned char unused2[3];
+} __attribute__ ((packed));
 
 typedef struct fileheader FILEHEADER;
 
