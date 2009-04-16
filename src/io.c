@@ -371,7 +371,7 @@ drop_input(void)
  * Move to next line before getdata
  *
  */
-int getdataln(char *prompt, char *buf, int len, int echo)
+int getdataln(const char *prompt, char *buf, int len, int echo)
 {
 	int  line, col;
 
@@ -379,23 +379,23 @@ int getdataln(char *prompt, char *buf, int len, int echo)
 	return _getdata(line + 1, col, prompt, buf, len, echo, NULL);
 }
 
-int getdata(int line, int col, char *prompt, char *buf, int len, int echo)
+int getdata(int line, int col, const char *prompt, char *buf, int len, int echo)
 {
 	return _getdata(line, col, prompt, buf, len, echo, NULL);
 }
 
-int getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo)
+int getdata_buf(int line, int col, const char *prompt, char *buf, int len, int echo)
 {
 	return _getdata(line, col, prompt, buf, len, echo, NULL);
 }
 
 /* With default value */
-int getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
+int getdata_str(int line, int col, const char *prompt, char *buf, int len, int echo, char *prefix)
 {
 	return _getdata(line, col, prompt, buf, len, echo, prefix);
 }
 
-int _getdata(int line, int col, char *prompt, char *buf, int len, int echo, char *prefix)
+int _getdata(int line, int col, const char *prompt, char *buf, int len, int echo, char *prefix)
 {
 	unsigned char ch;
 	int clen = 0;
@@ -545,30 +545,39 @@ getdata2vgetflag(int echo)
     return echo;
 }
 
+
+static int max_len(int col, const char *prompt, int buflen)
+{
+    unsigned int plen = strlen(prompt);
+    if ((col + plen + buflen) > t_columns)
+	return t_columns - col - plen;
+    return buflen;
+}
+
 /* Ptt */
 int
-getdata_buf(int line, int col, char *prompt, char *buf, int len, int echo)
+getdata_buf(int line, int col, const char *prompt, char *buf, int len, int echo)
 {
     move(line, col);
     if(prompt && *prompt) outs(prompt);
-    return vgetstr(buf, len, getdata2vgetflag(echo), buf);
+    return vgetstr(buf, max_len(col, prompt, len), getdata2vgetflag(echo), buf);
 }
 
 
 int
-getdata_str(int line, int col, char *prompt, char *buf, int len, int echo, char *defaultstr)
+getdata_str(int line, int col, const char *prompt, char *buf, int len, int echo, char *defaultstr)
 {
     move(line, col);
     if(prompt && *prompt) outs(prompt);
-    return vgetstr(buf, len, getdata2vgetflag(echo), defaultstr);
+    return vgetstr(buf, max_len(col, prompt, len), getdata2vgetflag(echo), defaultstr);
 }
 
 int
-getdata(int line, int col, char *prompt, char *buf, int len, int echo)
+getdata(int line, int col, const char *prompt, char *buf, int len, int echo)
 {
     move(line, col);
     if(prompt && *prompt) outs(prompt);
-    return vgets(buf, len, getdata2vgetflag(echo));
+    return vgets(buf, max_len(col, prompt, len), getdata2vgetflag(echo));
 }
 #endif // ifdef USE_VISIO
 
