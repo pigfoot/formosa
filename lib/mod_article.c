@@ -135,7 +135,7 @@ int clean_dirent(char *direct)
 static void get_only_name(char *dir, char *fname)
 {
 	char *t, *s, tmpbuf[PATHLEN];
-	int fd;
+	int fd, cnt = 1, n;
 
 	sprintf(tmpbuf, "%s/M.%d.A", dir, (int)time(0));
 	t = tmpbuf + strlen(tmpbuf) - 1;
@@ -143,13 +143,17 @@ static void get_only_name(char *dir, char *fname)
 	/* keep modifying the last letter until file can successfully create  */
 	while ((fd = open(tmpbuf, O_WRONLY | O_CREAT | O_EXCL, 0644)) < 0)
 	{
-		if (*t == 'Z')
-		{
-			*(++t) = 'A';
-			*(t + 1) = '\0';
+		s = t;
+		n = cnt;
+
+		while (n) {
+			*s = 'A' + (n % 26);
+			n /= 26;
+			++s;
 		}
-		else
-			(*t)++;
+		*s = '\0';
+
+		++cnt;
 	}
 
 	/* store just the filename into 'fname' to be passed back */
