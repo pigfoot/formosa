@@ -511,7 +511,7 @@ int m_read()
 
 		cursor_menu(4, 0, tmpdir, mail_comms, FH_SIZE, &mail_ccur,
 			    mail_title, read_btitle,
-			    read_entry, read_get, read_max, NULL, 1, FALSE, SCREEN_SIZE-4);
+			    read_entry, read_get, read_max, NULL, 1, FALSE);
 	}
 	while (check_mail_num(1));
 

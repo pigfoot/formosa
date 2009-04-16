@@ -68,12 +68,11 @@ int select_board()
 }
 
 
-static void board_entry(int x, struct BoardList ent[], int idx, int top, int last, int rows)
+static void board_entry(int x, void *ep, int idx, int top, int last, int rows)
 {
 	int num;
-	struct BoardList *be1;
+	struct BoardList *ent = (struct BoardList *)ep, *be1;
 	CLASSHEADER *chr;
-
 
 	be1 = &(ent[top - idx]);
 	for (num = top; num <= last && (num - top) < rows; num++, be1++)
@@ -138,10 +137,10 @@ static int board_max(char *direct, int size)
 }
 
 
-static int board_findkey(char *nbuf, struct BoardList ent[], int start, int total)
+static int board_findkey(char *nbuf, void *ep, int start, int total)
 {
 	register int i, len = strlen(nbuf);
-	struct BoardList *s;
+	struct BoardList *ent = (struct BoardList *)ep, *s;
 
 
 	if (depth_class >= 1)
@@ -328,7 +327,7 @@ int Boards()
 {
 	cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
 			&board_ccur,board_title, board_btitle, board_entry,
-			board_get, board_max, board_findkey, 0, TRUE, SCREEN_SIZE-4);
+			board_get, board_max, board_findkey, 0, TRUE);
 
 	/* reload previous menu */
 	return C_LOAD;
@@ -423,7 +422,7 @@ int Class()
 	{
 		if (cursor_menu(4, 0, NULL, board_comms, sizeof(struct BoardList),
 				&class_ccur, board_title, board_btitle,	board_entry,
-				class_get, class_max, board_findkey, 0, TRUE, SCREEN_SIZE-4) == 0)
+				class_get, class_max, board_findkey, 0, TRUE) == 0)
 		{
 			if (--depth_class < 1)
 				break;

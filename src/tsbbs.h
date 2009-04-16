@@ -175,7 +175,7 @@ void read_btitle(void);
 int Select(void);
 int MainRead(void);
 int Read(void);
-int cursor_menu(int y, int x, char *direct, struct one_key *comm, int hdrsize, int *ccur, void (*cm_title)(void), void (*cm_btitle)(void), void (*cm_entry)(int, void *, int, int, int, int), int (*cm_get)(char *, void *, int, int), int (*cm_max)(char *, int), int (*cm_findkey)(char *, void *, int, int), int opt, int autowarp, int rows);
+int cursor_menu(int y, int x, char *direct, struct one_key *comm, int hdrsize, int *ccur, void (*cm_title)(void), void (*cm_btitle)(void), void (*cm_entry)(int, void *, int, int, int, int), int (*cm_get)(char *, void *, int, int), int (*cm_max)(char *, int), int (*cm_findkey)(char *, void *, int, int), int opt, int autowarp);
 /* edit.c */
 int vedit(const char *filename, const char *saveheader, char *bname);
 /* formosa.c */
