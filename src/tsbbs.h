@@ -146,13 +146,11 @@ int Boards(void);
 int Class(void);
 /* chat.c */
 void *xstrdup(const char *str);
-int chat_write(int fd, void *buf);
-int chat_printf(int sd, char *fmt, ...);
 void printchatline(const char *str);
-int mygets(int fd, char *buf, int size);
 int t_chat(void);
 /* chat2.c */
 char *mycrypt(char *pw);
+void printchatline2(const char *str);
 int t_chat2(void);
 /* cursor.c */
 int read_get(char *direct, void *s, int size, int top);
