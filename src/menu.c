@@ -282,8 +282,9 @@ static void menu_btitle()
 }
 
 
-static void menu_entry(int x, struct commands ent[], int idx, int top, int last, int rows)
+static void menu_entry(int x, void *ep, int idx, int top, int last, int rows)
 {
+	struct commands *ent = (struct commands *)ep;
 	int i, num;
 
 	for (num = top; num <= last; num++)
@@ -372,12 +373,16 @@ static int menu_get(char *direct, void *s, int size, int top)
 }
 
 
-static int menu_findkey(char *nbuf, struct commands ent[], register int start, register int total)
+static int menu_findkey(char *nbuf, void *ep, register int start, register int total)
 {
 	/* by Keeper:
 	   start and total are not in the list,
 	   so I guess they are register int.
-	   Maybe they are int? */
+	   Maybe they are int?
+	   By CD:
+	   It doesn't matter actually. :p
+	   */
+	struct commands *ent = (struct commands *)ep;
 	register int i;
 
 	for (i = start; i < total; i++)
@@ -452,7 +457,7 @@ void domenu()
 		if (cursor_menu(11, 13, NULL, menu_comms, sizeof(struct commands),
 				&(m_ccur[menu_depth - 1]),
 				menu_title, menu_btitle, menu_entry, menu_get, menu_max,
-				menu_findkey, 0, TRUE, SCREEN_SIZE-4) == 0)
+				menu_findkey, 0, TRUE) == 0)
 		{
 			if (menu_depth == 1)
 			{

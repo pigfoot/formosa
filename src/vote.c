@@ -91,10 +91,10 @@ static char *Vtime(time_t *ti)
 }
 
 
-static void vote_entry(const int x, VOTE ent[], const int idx, const int top, const int last, const int rows)
+static void vote_entry(const int x, void *ep, const int idx, const int top, const int last, const int rows)
 {
+	VOTE *ent = (VOTE *)ep;
 	int i, num;
-
 
 	for (i = top - idx; i < rows && i <= last - idx; i++)
 	{
@@ -133,8 +133,9 @@ static void cand_title()
 }
 
 
-static void cand_entry(int x, CAND ent[], int idx, int top, int last, int rows)
+static void cand_entry(int x, void *ep, int idx, int top, int last, int rows)
 {
+	CAND *ent = (CAND *)ep;
 	int i, num;
 	unsigned long j;
 
@@ -481,7 +482,7 @@ static int vcmd_enter(int ent, VOTE *vinfo, char *direct)
 
 	cursor_menu(4, 0, tmpdir, cand_comms, sizeof(CAND), &ca_ccur,
 		    cand_title, NULL /* cm_btitle */ , cand_entry, read_get, read_max,
-		    NULL, 1, TRUE, SCREEN_SIZE-4);
+		    NULL, 1, TRUE);
 
 	/* 我投過票囉! */
 	if (MyBox.userid[0])
@@ -715,7 +716,7 @@ int v_board()
 
 	cursor_menu(4, 0, tmpdir, vote_comms, sizeof(VOTE), &v_ccur,
 		    vote_title, NULL /* vote_btitle */ , vote_entry, read_get,
-		    read_max, NULL, 1, TRUE, SCREEN_SIZE-4);
+		    read_max, NULL, 1, TRUE);
 
 	return C_LOAD;
 }

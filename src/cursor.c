@@ -921,7 +921,7 @@ static int art_read(int ent, FILEHEADER *finfo, char *direct)
 	strcpy(tmpdir, direct);
 	cursor_menu(4, 0, tmpdir, art_comms, FH_SIZE, &post_ccur,
 			      post_title, read_btitle, read_entry, art_get, art_max,
-				  NULL, 1, FALSE, SCREEN_SIZE-4);
+				  NULL, 1, FALSE);
 	art_mode = FALSE;
 	title_thr[0] = '\0';
 
@@ -1098,7 +1098,7 @@ static int thr_read(int ent, FILEHEADER *finfo, char *direct)
 	strcpy(tmpdir, direct);
 	cursor_menu(4, 0, tmpdir, thr_comms, FH_SIZE, &thr_ccur,
 			      post_title, read_btitle, read_entry, thr_get, thr_max,
-				  NULL, 1, FALSE, SCREEN_SIZE-4);
+				  NULL, 1, FALSE);
 	thr_mode = FALSE;
 	free(all_thrs);
 	free(all_arts);
@@ -1365,7 +1365,7 @@ int Read()
 
 		ret = cursor_menu(4, 0, tmpdir, comm, FH_SIZE, ccur,
 		      post_title, read_btitle, read_entry, read_get, read_max,
-				  NULL, opt, FALSE, SCREEN_SIZE-4);
+				  NULL, opt, FALSE);
 
 		if (!in_board && nowdepth > 1 && ret == 0)
 		{
@@ -1421,12 +1421,13 @@ int cursor_menu( int y, int x,
 				 int (*cm_get) (char *, void *, int, int),
 				 int (*cm_max) (char *, int),
 				 int (*cm_findkey) (char *, void *, int, int ),
-				 int opt, int autowarp, int rows)
+				 int opt, int autowarp)
 {
 	int clast = 0, cmode = C_INIT, i, ch = 0;
 	int ctop = 0, ocur = 0, otop = 0, savemode;
 	/* TODO: please note sizeof nbuf, sizeof keys */
 	char nbuf[20], keys[50], *cret, *coft;
+	int rows = ROWSIZE;
 
 	cret = keys;
 	keys[0] = '\0';
@@ -1441,6 +1442,11 @@ int cursor_menu( int y, int x,
 
 	for (;;)
 	{
+		if (rows != ROWSIZE) {
+			cmode = C_INIT;
+			rows = ROWSIZE;
+		}
+
 		switch (cmode)
 		{
 		case C_DOWN:

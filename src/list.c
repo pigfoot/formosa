@@ -168,8 +168,9 @@ static char pagerchar(struct pickup *pkent, char ident)
 }
 #endif
 
-static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, int rows)
+static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
 {
+	struct pickup *ent = (struct pickup *)ep;
 	register struct pickup *pkp;
 	register int num;
 	BOOL update = FALSE;	/* buggy and TODO when page-changed :) */
@@ -195,7 +196,7 @@ static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, 
 					update = TRUE;
 				}
 			}
-			prints("   %4d %s%-12s %-20.20s[m %-15.15s %c%c %-15.15s",
+			prints("   %4d %s%-12s %-20.20s[m %-15.15s %c%c %-14.14s",
 			       num,
 			       pkp->friend ? "[1;36m" : "",
 /* kmwang:20000628:¨Ï¥ÎªÌ¦W³æÅã¥Üªº¬Ofakeid */
@@ -223,9 +224,14 @@ static void ulist_entry(int x, struct pickup ent[], int idx, int top, int last, 
 			       (uentp->pager & 0x00FF) ? '*' : ' ',
 #endif
 			       modestring(uentp, 1));
-			if (uentp->idle_time)
-				prints(" %2d", (uentp->idle_time > 100) ?
-				       99 : uentp->idle_time);
+			if (uentp->idle_time) {
+				if (uentp->idle_time >= 1440)
+					prints(" %2dd", uentp->idle_time / 1440);
+				else if (uentp->idle_time >= 60)
+					prints(" %2dh", uentp->idle_time / 60);
+				else
+					prints("  %2d", uentp->idle_time);
+			}
 			outs("\n");
 		}
 		else
@@ -613,7 +619,7 @@ static void pickup_user()
 
 	cursor_menu(4, 0, NULL, ulist_comms, sizeof(struct pickup), &u_ccur,
 		    ulist_title, ulist_btitle, ulist_entry,
-		    ulist_get, ulist_max, NULL, 0, TRUE, SCREEN_SIZE-4);
+		    ulist_get, ulist_max, NULL, 0, TRUE);
 }
 
 

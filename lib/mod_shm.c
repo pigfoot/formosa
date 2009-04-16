@@ -554,6 +554,7 @@ void resolve_classhm()
 
 CLASSHEADER *search_class_by_cid(unsigned int cid)
 {
+	resolve_classhm();
 	if (cid < 1 || cid > classhm->number)
 		return (CLASSHEADER *)NULL;
 	return &(classhm->clshr[cid - 1]);
