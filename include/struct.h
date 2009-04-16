@@ -286,13 +286,22 @@ typedef struct classheader {
 
 #define CH_SIZE (sizeof(struct classheader))
 
-
-#define BRC_MAXNUM      (500)
-#define BRC_REALMAXNUM	(BRC_MAXNUM*8)
+struct  BoardList {         /* lmj@cc.nsysu.edu.tw */
+	BOARDHEADER *bhr;
+	struct board_t *binfr;
+	int     cid ;
+	int     bcur ;              /* 上次看到第幾篇 */
+	unsigned char	enter_cnt ;	    /* 拜訪某看板次數 */
+#ifdef USE_VOTE
+	unsigned char	voting ;         /* 看板是否正進行投票中 */
+#endif
+};
 
 /*
  * record of whether board posts have been read or not
  */
+#define BRC_MAXNUM      (500)
+#define BRC_REALMAXNUM	(BRC_MAXNUM*8)
 struct readrc {
 	unsigned int  bid;
 	unsigned char rlist[BRC_MAXNUM];

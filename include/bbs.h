@@ -92,30 +92,4 @@
 #include "conf.h"
 #include "libproto.h"
 
-#ifndef _BBS_LIB_PROTO_H_
-int cmp_userid(char *userid, USER_INFO *upent);
-void *malloc_str(char *str);
-int malloc_array(struct array *a, char *filename);
-int cmp_userid(char *userid, USER_INFO *upent);
-char *pagerstring(USER_INFO *upent);
-struct array *cmpd_array(struct array *atop, char *str, int (*cmpfunc)(const char *, const char *));
-void *attach_shm(key_t shmkey, int shmsize);
-USER_INFO *search_ulist(int (*fptr)(char *, USER_INFO *), char *farg);
-char *Ctime(time_t *clock);
-CLASSHEADER *search_class_by_cid(unsigned int cid);
-char *xgrep(char *pattern, char *filename);
-#endif
-
-struct  BoardList {         /* lmj@cc.nsysu.edu.tw */
-	BOARDHEADER *bhr;
-	struct board_t *binfr;
-	int     cid ;
-	int     bcur ;              /* 上次看到第幾篇 */
-	unsigned char	enter_cnt ;	    /* 拜訪某看板次數 */
-#ifdef USE_VOTE
-	unsigned char	voting ;         /* 看板是否正進行投票中 */
-#endif
-};
-
-
 #endif /* _BBS_BBS_H_ */
