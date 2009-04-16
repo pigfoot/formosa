@@ -19,9 +19,8 @@ extern struct word *iglist;
 
 #define MAX_IGNORE_USER  40
 
-int chat_line;
-int ECHATWIN, PLINE;
-
+static int chat_line;
+static int ECHATWIN, PLINE;
 
 #if 0
 #define BADCIDCHARS " %*$`\"\\;:|[{]},./?=~!@#^()<>"
@@ -45,13 +44,13 @@ static void fixchatid(unsigned char *chatid)
 }
 
 
-int ac;
+static int ac;
 
 #define CHATIDLEN		(13)
-char mychatid[CHATIDLEN];
+static char mychatid[CHATIDLEN];
 
 #define SAYWORD_POINT	(14)
-char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
+static char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
 
 #define CHAT_SERVER		"127.0.0.1"
 

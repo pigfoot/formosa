@@ -468,7 +468,6 @@ int t_chat()
 	char rcvbuf[512];
 	char *mycrypt();
 
-
 	if (check_page_perm() < 0)
 		return C_FOOT;
 
