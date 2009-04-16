@@ -46,7 +46,6 @@ extern char myhostname[];
 char debug[8192];
 #endif
 
-
 #if 1
 #define BADCIDCHARS " %*$`\"\\;:|[{]},./?=~!@#^()<>"
 #else
@@ -100,16 +99,6 @@ char mychatid[CHATIDLEN];
 
 #define SAYWORD_POINT	(14)
 char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
-
-#if 0
-#define CHAT_SERVER		"210.65.1.170"	/* irc.hinet.net */
-#define CHAT_SERVER		"140.117.12.62"
-#define CHAT_SERVER		"140.113.209.108"	/* irc.csie.nctu.edu.tw */
-#endif
-
-#if 1
-#define CHAT_SERVER	"140.117.11.20"
-#endif
 
 void printchatline(const char *str)
 {
@@ -450,6 +439,25 @@ static void *xmemchr(const void *s, int c, size_t n)
 	return (int *)NULL;
 }
 
+#define CUR_PLINE    (b_line - 1)
+#define CUR_ECHATWIN (b_line - 2)
+
+static void draw_chat_screen()
+{
+	PLINE = CUR_PLINE;
+	ECHATWIN = CUR_ECHATWIN;
+
+	clear();
+	move(ECHATWIN, 0);
+	outs("________________________________________________________________________________");
+	chat_line = 0;		/* reset */
+	printchatline(_msg_chat_6);
+
+	/* show prompt */
+	move(PLINE, 0);
+	clrtoeol();
+	outs(prompt);
+}
 
 int t_chat()
 {
@@ -482,7 +490,7 @@ int t_chat()
 
 	fixchatid(mychatid);
 
-	if ((ac = ConnectServer(CHAT_SERVER, IRC_CHATPORT)) < 0)
+	if ((ac = ConnectServer(IRC_SERVER, IRC_CHATPORT)) < 0)
 	{
 		perror("connect failed");
 		pressreturn();
@@ -495,15 +503,6 @@ int t_chat()
 	uinfo.mode = CHATROOM;
 	xstrncpy(uinfo.chatid, mychatid, sizeof(uinfo.chatid));
 	update_ulist(cutmp, &uinfo);
-
-	PLINE = t_lines - 1;
-	ECHATWIN = t_lines - 2;
-
-	clear();
-	move(ECHATWIN, 0);
-	outs("________________________________________________________________________________");
-	chat_line = 0;		/* reset */
-	printchatline(_msg_chat_6);
 
 	if (strlen(mychatid) >= 9)
 	{
@@ -532,13 +531,9 @@ int t_chat()
 	strcat(prompt, ":           ");
 	prompt[SAYWORD_POINT] = '\0';
 
-	/* show prompt */
-	move(PLINE, 0);
-	clrtoeol();
-	outs(prompt);
+	draw_chat_screen();
 
 	add_io(ac, 0);
-
 
 	chat_printf(ac, "NICK %s\r\n", mychatid);
 	chat_printf(ac, "JOIN %s\r\n", DEFAULT_CHANNAME);
@@ -549,6 +544,10 @@ int t_chat()
 	while (1)
 	{
 		ch = getkey();
+		if (PLINE != CUR_PLINE) {
+			draw_chat_screen();
+			continue;
+		}
 		if (talkrequest)
 			page_pending = TRUE;
 		if (page_pending)
@@ -850,7 +849,7 @@ int t_chat()
 			}
 			inbuf[currchar++] = ch;
 			inbuf[currchar] = '\0';
-			move(23, SAYWORD_POINT + currchar - 1);
+			move(PLINE, SAYWORD_POINT + currchar - 1);
 			outc(ch);
 		}
 		else if (ch == '\n' || ch == '\r')

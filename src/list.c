@@ -125,7 +125,7 @@ static int ulist_max()
 	friends_number = 0;
 	num_users = 0;
 	apply_ulist(malloc_ulist);
-	qsort(pklist, num_users, sizeof(struct pickup), pickup_cmp);
+	qsort(pklist, num_users, sizeof(struct pickup), (compare_proto)pickup_cmp);
 	time(&pk_mtime);
 	return num_users;
 }

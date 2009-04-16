@@ -14,7 +14,7 @@ void UpdateClientCode(unsigned char c); // see mbbsd.c
 #endif
 
 unsigned int telnet_handler(unsigned char c) ;
-void	telnet_init(void);
+void telnet_init(void);
 ssize_t tty_read(unsigned char *buf, size_t max);
 
 enum TELNET_IAC_STATES {
@@ -37,8 +37,7 @@ static unsigned char iac_state = 0; /* as byte to reduce memory */
  * on those terminals when IACs were sent.
  */
 
-void
-telnet_init(void)
+void telnet_init(void)
 {
     /* We are the boss. We don't respect to client.
      * It's client's responsibility to follow us.

@@ -553,7 +553,7 @@ outns(const char *str, int n)
 }
 
 
-void outs(register char *str)
+void outs(register const char *str)
 {
 	while (*str != '\0')
 		outc(*str++);

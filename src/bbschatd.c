@@ -158,11 +158,7 @@ Chanrec[MAXCHANS];
  * xstrncpy() - similar to strncpy(3) but terminates string
  * always with '\0' if n != 0, and doesn't do padding
  */
-char *
-xstrncpy(dst, src, n)
-register char *dst;
-const char *src;
-size_t n;
+char * xstrncpy(register char *dst, const char *src, size_t n)
 {
 	if (n == 0)
 		return dst;
@@ -180,7 +176,7 @@ size_t n;
 int cur_sock;
 int cur_seat;	/* this should be seat ? */
 
-void time_out(int s)
+static void time_out(int s)
 {
 	shutdown(cur_sock, 2);
 	close(cur_sock);
@@ -201,7 +197,7 @@ void time_out(int s)
 #endif
 
 
-void report(char *s)
+static void report(char *s)
 {
 	static int disable = 0;
 	int fd;
@@ -227,7 +223,7 @@ void report(char *s)
 }
 
 
-int get_chatuid(char *userid)
+static int get_chatuid(char *userid)
 {
 	register int i;
 
@@ -243,7 +239,7 @@ int get_chatuid(char *userid)
 }
 
 
-int get_chid(char *chname)
+static int get_chid(const char *chname)
 {
 	register int i;
 

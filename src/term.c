@@ -165,8 +165,7 @@ int outcf(char ch)
 	return 0;	/* ? */
 }
 
-static void
-sig_term_resize(int sig)
+static void sig_term_resize(int sig)
 {
     struct winsize  newsize;
     signal(SIGWINCH, SIG_IGN);	/* Don't bother me! */

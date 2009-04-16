@@ -182,7 +182,7 @@ int vedit(const char *filename, const char *saveheader, char *bname);
 void saybyebye(int s);
 void abort_bbs(int s);
 int Announce(void);
-void Formosa(char *host, char *term, int argc, char **argv);
+void Formosa(char *host, int argc, char **argv);
 /* globals.c */
 /* ident.c */
 int x_idcheck(void);
@@ -251,7 +251,7 @@ void standout(void);
 void standend(void);
 void getyx(int *y, int *x);
 int outc(register unsigned char c);
-void outs(register char *str);
+void outs(register const char *str);
 #ifndef USE_VISIO
 void prints(char *fmt, ...);
 #endif
@@ -270,12 +270,12 @@ void bbsd_log_write(char *mode, char *fmt, ...);
 void bbsd_log_close(void);
 int Goodbye(void);
 void free_wlist(struct word **wtop, void (*freefunc)(void *));
-void add_wlist(struct word **wtop, char *str, void *(*addfunc)(char *));
+void add_wlist(struct word **wtop, char *str, void *(*addfunc)(const char *));
 int cmp_wlist(struct word *wtop, char *str, int (*cmpfunc)(const char *, const char *));
 struct word *cmpd_wlist(struct word **pwtop, char *str, int (*cmpfunc)(const char *, const char *), void (*freefunc)(void *));
 int namecomplete(struct word *toplev, char data[], BOOL simple);
 void update_umode(int mode);
-void *malloc_str(char *str);
+void *malloc_str(const char *str);
 /* talk.c */
 void friendAdd(char *ident, char type);
 void friendDelete(char *ident, char type);
@@ -301,6 +301,7 @@ int t_fmsq(void);
 /* term.c */
 void init_vtty(void);
 int outcf(char ch);
+void term_resize(int w, int h);
 int term_init(char *term);
 void do_move(int destcol, int destline, int (*outc)(char));
 /* vote.c */
@@ -308,6 +309,7 @@ void DisplayNewVoteMesg(void);
 void CheckNewSysVote(void);
 int v_board(void);
 /* xyz.c */
+char *get_ident(USEREC *urcIdent);
 int x_info(void);
 int x_date(void);
 int x_signature(void);

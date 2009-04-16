@@ -76,7 +76,6 @@ char *argv[];
 {
 	char *host, term[8];
 	int on;
-	extern int Formosa(char *host, char *term, int argc, char **argv);
 
 #if 0
 	on = 1;
@@ -101,7 +100,8 @@ char *argv[];
 	}
 	else
 #endif
-		Formosa(host, telnet_init(), argc, argv);
+	telnet_init();
+	Formosa(host, argc, argv);
 
 	shutdown(0, 2);
 	exit(0);

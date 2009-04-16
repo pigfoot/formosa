@@ -1192,7 +1192,6 @@ int set_article_title(char title[])
  */
 int tag_article(int ent, FILEHEADER *finfo, char *direct)
 {
-	extern void *malloc_str();
 	if (!cmp_wlist(artwtop, finfo->filename, strcmp))
 		add_wlist(&artwtop, finfo->filename, malloc_str);
 	else
