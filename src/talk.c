@@ -1213,7 +1213,7 @@ int msq_reply()		/* lthuang */
 				redraw = TRUE;
 			}
 		}
-		else if (ch == '\n' || ch == KEY_LEFT)
+		else if (ch == '\r' || ch == KEY_LEFT)
 			break;
 	}
 
