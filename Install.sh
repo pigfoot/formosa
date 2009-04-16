@@ -66,6 +66,5 @@ done
 (cd ${HOMEBBS}/boards; ln -s ../ID . )
 
 ${INSTALL} -m 770 -g bbs -o bbs /bin/sort     ${HOMEBBS}/bin
-${INSTALL} -m 770 -g bbs -o bbs /usr/bin/uuencode ${HOMEBBS}/bin
 
 echo "Install finished..."
