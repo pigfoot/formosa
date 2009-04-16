@@ -13,7 +13,7 @@ extern BOOL show_ansi;
 char *show_id = "";
 int n_field = 0;
 
-int show_bm(BOARDHEADER *bhentp)
+static int show_bm(BOARDHEADER *bhentp)
 {
 	if (!strcmp(bhentp->owner, show_id))
 	{

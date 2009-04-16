@@ -617,7 +617,7 @@ static void multi_user_check()
 /*
  * Main function of BBS
  */
-void Formosa(char *host, char *term, int argc, char **argv)
+void Formosa(char *host, int argc, char **argv)
 {
 	signal(SIGHUP, abort_bbs);
 	signal(SIGBUS, abort_bbs);

@@ -13,7 +13,6 @@ MAKE      = @MAKE@
 CFLAGS	  = @CFLAGS@ -I.. -I../include -I../lib
 LDLIBS	  = @LIBS@ -lncurses
 
-STRIP     = @STRIP@
 PERL      = @PERL@
 INSTALL   = @INSTALL@
 ECHO_N    = @ac_n@
@@ -87,11 +86,9 @@ debug: all
 
 bbsd: $(LIBFILE) $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LDLIBS) $(LIBFILE)
-	#$(STRIP) bbsd
 
 bbschatd: bbschatd.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c  $(LDLIBS)
-	#$(STRIP) $@
 
 genlogin: genlogin.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LDLIBS) $(LIBFILE)

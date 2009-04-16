@@ -94,6 +94,25 @@ char *str;
 }
 #endif
 
+#define CUR_PLINE    (b_line - 1)
+#define CUR_ECHATWIN (b_line - 2)
+
+static void draw_chat_screen()
+{
+	PLINE = CUR_PLINE;
+	ECHATWIN = CUR_ECHATWIN;
+
+	clear();
+	move(ECHATWIN, 0);
+	outs("________________________________________________________________________________");
+	chat_line = 0;		/* reset */
+	printchatline(_msg_chat_6);
+
+	/* show prompt */
+	move(PLINE, 0);
+	clrtoeol();
+	outs(prompt);
+}
 
 int t_chat2()
 {
@@ -169,24 +188,12 @@ int t_chat2()
 	xstrncpy(uinfo.chatid, mychatid, sizeof(uinfo.chatid));
 	update_ulist(cutmp, &uinfo);
 
-	PLINE = t_lines - 1;
-	ECHATWIN = t_lines - 2;
-
-	clear();
-	move(ECHATWIN, 0);
-	outs("________________________________________________________________________________");
-	chat_line = 0;		/* reset */
-	printchatline(_msg_chat_6);
-
 	/* set prompt */
 	strcpy(prompt, mychatid);
 	strcat(prompt, ":           ");
 	prompt[SAYWORD_POINT] = '\0';
 
-	/* show prompt */
-	move(PLINE, 0);
-	clrtoeol();
-	outs(prompt);
+	draw_chat_screen();
 
 	add_io(ac, 0);
 
@@ -207,6 +214,10 @@ int t_chat2()
 	while (1)
 	{
 		ch = getkey();
+		if (PLINE != CUR_PLINE) {
+			draw_chat_screen();
+			continue;
+		}
 		if (talkrequest)
 			page_pending = TRUE;
 		if (page_pending)
@@ -270,7 +281,7 @@ int t_chat2()
 			}
 			inbuf[currchar++] = ch;
 			inbuf[currchar] = '\0';
-			move(23, SAYWORD_POINT + currchar - 1);
+			move(PLINE, SAYWORD_POINT + currchar - 1);
 			outc(ch);
 		}
 		else if (ch == '\n' || ch == '\r')

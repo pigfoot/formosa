@@ -449,7 +449,7 @@ void free_wlist(struct word **wtop, void (*freefunc) (void *))
  * 假如 link data 是純指標, 則 addfunc 必須傳 NULL 進來
  * 傳回新 link list 的 pointer (前端)
  *******************************************************************/
-void add_wlist(struct word **wtop, char *str, void *(*addfunc) (char *))
+void add_wlist(struct word **wtop, char *str, void *(*addfunc) (const char *))
 {
 	struct word *new, *tmp;
 
@@ -1055,7 +1055,7 @@ int (*cmpfunc) (const char *, const char *);
  * 傳入 string, malloc 一塊 memory 存下字串
  * 傳回 該 MEMORY Pointer
  *******************************************************************/
-void *malloc_str(char *str)
+void *malloc_str(const char *str)
 {
 	char *new;
 

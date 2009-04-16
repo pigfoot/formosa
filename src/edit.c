@@ -390,7 +390,7 @@ static void vedit_init()
 /*
  * read text from file into editor buffer
  */
-static void read_file(char *filename)
+static void read_file(const char *filename)
 {
 	register int fd;
 	unsigned char ch;
@@ -480,7 +480,7 @@ static void vedit_exit()
 }
 
 
-static int write_file(char *filename, char *saveheader, char *bname)
+static int write_file(const char *filename, const char *saveheader, const char *bname)
 {
 	FILE *fpr, *fpw;
 	char abort[2];
@@ -520,10 +520,11 @@ static int write_file(char *filename, char *saveheader, char *bname)
 */
 #ifdef IGNORE_CASE
                 write_article_header(fpw, strcasecmp(curuser.fakeuserid, curuser.userid)? curuser.userid:curuser.fakeuserid, uinfo.username, bname,
+				     NULL, saveheader, NULL);
 #else
                 write_article_header(fpw, curuser.userid, uinfo.username, bname,
-#endif
 				     NULL, saveheader, NULL);
+#endif
 		fputs("\n", fpw);
 	}
 
