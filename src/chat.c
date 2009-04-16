@@ -31,19 +31,19 @@ void *xstrdup(const char *str)
 }
 
 
-struct word *iglist = NULL;
+static struct word *iglist = NULL;
 
-int chat_line;
-int ECHATWIN, PLINE;
+static int chat_line;
+static int ECHATWIN, PLINE;
 
 #if 1
-char *pargv[5];
-char cur_chname[80];
+static char *pargv[5];
+static char cur_chname[80];
 extern char myhostname[];
 #endif
 
 #if 1
-char debug[8192];
+static char debug[8192];
 #endif
 
 #if 1
@@ -69,13 +69,13 @@ static void fixchatid(unsigned char *chatid)
 }
 
 
-int chat_write(int fd, void *buf)
+static int chat_write(int fd, void *buf)
 {
 	return write(fd, buf, strlen(buf));
 }
 
 
-int chat_printf(int sd, char *fmt, ...)
+static int chat_printf(int sd, char *fmt, ...)
 {
 	va_list args;
 	char str[1024];
@@ -92,13 +92,13 @@ int chat_printf(int sd, char *fmt, ...)
 }
 
 
-int ac;
+static int ac;
 
 #define CHATIDLEN		(13)
-char mychatid[CHATIDLEN];
+static char mychatid[CHATIDLEN];
 
 #define SAYWORD_POINT	(14)
-char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
+static char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
 
 void printchatline(const char *str)
 {
@@ -152,7 +152,7 @@ void printchatline(const char *str)
 }
 
 
-int mygets(int fd, char *buf, int size)
+static int mygets(int fd, char *buf, int size)
 {
 	int i;
 	char *p;

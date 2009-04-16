@@ -11,11 +11,7 @@
 static void dochatcommand(char *cmd);
 
 
-#if 0
-struct word *iglist = NULL;
-#else
-extern struct word *iglist;
-#endif
+static struct word *iglist = NULL;
 
 #define MAX_IGNORE_USER  40
 
@@ -52,29 +48,37 @@ static char mychatid[CHATIDLEN];
 #define SAYWORD_POINT	(14)
 static char prompt[SAYWORD_POINT + 1 + CHATIDLEN + 1];
 
-#define CHAT_SERVER		"127.0.0.1"
-
-
-#if 0
-void
-printchatline(str)
-char *str;
+void printchatline2(const char *str)
 {
-	move(chat_line, 0);
+	int i = 0;
+	int wrap = 0;
+	int y, x;
+
+	move(chat_line, i);
 	clrtoeol();
 
 	while (*str)
 	{
-		if (*str == '\n')
+		getyx(&y, &x);
+		if (y == 79 || *str == '\n')
 		{
 			chat_line++;
 			if (chat_line == ECHATWIN)
 				chat_line = 0;
-			move(chat_line, 0);
+			i = 0;
+			move(chat_line, i);
 			clrtoeol();
+#if 1
+			wrap = 1;
+			refresh();
+#endif
 		}
 		else
+		{
+			if (y == 0 && wrap)
+				outs("  ");
 			outc(*str);
+		}
 		str++;
 	}
 	chat_line++;
@@ -90,8 +94,13 @@ char *str;
 	standout();
 	outs("-->");
 	standend();
-}
+#if 1
+	refresh();
 #endif
+}
+
+
+#define CHAT_SERVER		"127.0.0.1"
 
 #define CUR_PLINE    (b_line - 1)
 #define CUR_ECHATWIN (b_line - 2)

@@ -286,9 +286,12 @@ BOOL servicepage(int arg)
 				outs("-----------------------------------------------------------");	/* ?? */
 				outs("");
 				break;
-			default:	/* a chat mode */
+			case CHATROOM:	/* a chat mode */
 				sprintf(genbuf, "** INFO: no longer paged by %s", page_requestor);
 				printchatline(genbuf);
+			case CHATROOM2:	/* a chat mode */
+				sprintf(genbuf, "** INFO: no longer paged by %s", page_requestor);
+				printchatline2(genbuf);
 			}
 			memset(page_requestor, 0, sizeof(page_requestor));
 			last_check = 0;
@@ -312,9 +315,12 @@ BOOL servicepage(int arg)
 				move(arg, 0);
 				prints(_msg_talk_30, page_requestor);
 				break;
-			default:	/* chat */
+			case CHATROOM:	/* chat */
 				sprintf(genbuf, "** INFO: being paged by %s", page_requestor);
 				printchatline(genbuf);
+			case CHATROOM2:	/* chat */
+				sprintf(genbuf, "** INFO: being paged by %s", page_requestor);
+				printchatline2(genbuf);
 			}
 		}
 	}
