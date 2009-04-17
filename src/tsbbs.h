@@ -213,6 +213,7 @@ int m_new(void);
 int m_read(void);
 /* main.c */
 int main(int argc, char *argv[]);
+void mod_ps_display(int argc, char *argv[], const char *disp);
 char *telnet(char *term);
 /* menu.c */
 void domenu(void);

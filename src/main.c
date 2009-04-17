@@ -43,13 +43,13 @@
 
 #include "struct.h"
 #include "globals.h"
-
+#include "tsbbs.h"
 
 extern int errno;
 
 char *telnet();
 
-short check = 0;
+static char check = 0;
 
 #undef DEBUG
 
@@ -107,11 +107,28 @@ char *argv[];
 	exit(0);
 }
 
+#define MAGIC_STR "Formosa!@#$\%^&*()"
 
-int
-main(argc, argv)
-int argc;
-char *argv[];
+void mod_ps_display(int argc, char *argv[], const char *disp)
+{
+	int i, len1, len2;
+
+	if (!disp)
+		return;
+
+	len1 = strlen(disp);
+	len2 = strlen(MAGIC_STR);
+	if (len1 < len2) {
+		for (i = len1; i < len2; ++i)
+			argv[argc-1][i] = ' ';
+		argv[argc-1][i] = '\0';
+	} else if (len1 > len2) {
+		len1 = len2;
+	}
+	strncpy(argv[argc-1], disp, len1);
+}
+
+int main(int argc, char *argv[])
 {
 	int aha, on = 1;
 	struct sockaddr_in from, sin;
@@ -122,8 +139,10 @@ char *argv[];
 #if defined(SOLARIS)
 	struct sigaction sact, oact;
 #endif
+	char *myargv[5], portstr[12];
 
-	if (argc > 3)
+	if (argc > 4 ||
+		(argc == 4 && strcmp(argv[3], MAGIC_STR)))
 	{
 		printf("Usage: %s PortNumber [check]\n", argv[0]);
 		exit(1);
@@ -147,7 +166,25 @@ char *argv[];
 	}
 
 	if (argc > 2 && !strcmp(argv[2], "check"))
-		check++;
+		check = 1;
+
+	if (strcmp(argv[argc-1], MAGIC_STR)) {
+		myargv[0] = argv[0];
+		if (inetd) {
+			myargv[1] = "-i";
+		} else {
+			sprintf(portstr, "%u", port);
+			myargv[1] = portstr;
+		}
+		s = 2;
+		if (check)
+			myargv[s++] = "check";
+		myargv[s++] = MAGIC_STR;
+		myargv[s] = NULL;
+		execv(myargv[0], myargv);
+	}
+
+	mod_ps_display(argc, argv, "[Listen]");
 
 #ifndef DEBUG
 	if (fork() != 0)
