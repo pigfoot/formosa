@@ -8,6 +8,12 @@ PHONY_TARGETS := all debug clean distclean install install_once update kill_proc
 VERSION := 1.4.0
 HOMEBBS := @prefix@
 MAKE    := @MAKE@
+BBS_UID	:= @BBS_UID@
+BBS_UID_DEFAULT	:= @BBS_UID_DEFAULT@
+BBS_GID	:= @BBS_GID@
+BBS_GID_DEFAULT	:= @BBS_GID_DEFAULT@
+BBS_TCP_PORT	:= @BBS_TCP_PORT@
+BBS_TCP_PORT_DEFAULT	:= @BBS_TCP_PORT_DEFAULT@
 
 .PHONY: $(SUBDIRS) $(CLEANDIRS) $(CLEANDIRS_CLEAN) $(PHONY_TARGETS)
 
@@ -20,11 +26,11 @@ debug: target := debug
 debug: $(SUBDIRS)
 
 kill_process:
-	-kill `cat /tmp/formosa.23`
+	-kill `cat /tmp/formosa.@BBS_TCP_PORT@`
 	-killall bbsweb
 
 update: kill_process install
-	$(HOMEBBS)/bin/bbsd 23
+	$(HOMEBBS)/bin/bbsd @BBS_TCP_PORT@
 	$(HOMEBBS)/bin/bbsweb
 
 config:
@@ -62,5 +68,5 @@ install: $(HOMEBBS)/bin $(SUBDIRS)
 
 $(HOMEBBS)/bin:
 	mkdir -p $@
-	chown bbs:bbs $@
+	chown -R @BBS_UID@:@BBS_GID@ $@
 
