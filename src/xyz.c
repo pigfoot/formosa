@@ -8,6 +8,7 @@
 
 extern char *genpasswd();
 extern BOOL show_ansi;
+extern BOOL fix_screen;
 
 #ifdef NSYSUBBS
 char *show_id = "";
@@ -733,9 +734,9 @@ XECHO, urcNew.fakeuserid);
 int x_uflag()
 {
 	int i, j;
-	unsigned char *pbits = &(curuser.flags[0]);
+	unsigned char *pbits;
 
-#define MAX_UFLAG 8
+#define MAX_UFLAG 9
 
 	char *uflag[MAX_UFLAG] =
 	{
@@ -746,20 +747,22 @@ int x_uflag()
 		"不看留言板",
 		"不看彩色代稱",
 		"不引入全部看板",
-		"不用彩色"
+		"不用彩色",
+		"Screen修正"
 	};
-
 
 	for (;;)
 	{
 		move(2, 0);
 		clrtobot();
 
-		for (i = 0, j = 1; i < MAX_UFLAG; i++, j <<= 1)
+		for (i = 0, j = 1; i < MAX_UFLAG; ++i, j <<= 1)
 		{
 			if (!HAS_PERM(PERM_SYSOP) && (j & CLOAK_FLAG))
 				continue;
 
+			pbits = &(curuser.flags[i / 8]);
+			j = (j < 0x100) ? j : j >> 8;
 			prints("(%c) %-14.14s : %s\n", 'a' + i, uflag[i],
 			       (*pbits & j ? "Yes" : "No "));
 		}
@@ -774,9 +777,10 @@ int x_uflag()
 			if (!HAS_PERM(PERM_SYSOP) && (j & CLOAK_FLAG))
 				continue;
 
+			pbits = &(curuser.flags[i / 8]);
+			j = (j < 0x100) ? j : j >> 8;
 			*pbits ^= j;
 		}
-
 	}
 
 	if (curuser.flags[0] & COLOR_FLAG)
@@ -795,6 +799,11 @@ int x_uflag()
         else
                 strip_ansi = FALSE;
 	/* sarek:01/02/2001:above */
+
+	if (curuser.flags[1] & SCREEN_FLAG)
+		fix_screen = TRUE;
+	else
+		fix_screen = FALSE;
 
 	update_ulist(cutmp, &uinfo);
 

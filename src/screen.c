@@ -7,7 +7,7 @@
 extern int tputs(char *, int, int (*)(char));
 
 extern int dumb_term;
-BOOL show_ansi = TRUE;
+extern BOOL show_ansi = TRUE;
 
 extern char clearbuf[];
 extern char cleolbuf[];

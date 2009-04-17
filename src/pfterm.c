@@ -1238,8 +1238,8 @@ outstr(const char *str)
 #endif
 }
 
-void
-outc(unsigned char c)
+static void
+outc_orig(unsigned char c)
 {
     // 0xFF is invalid for most cases (even DBCS),
     if (c == 0xFF || c == 0x00)
@@ -1329,6 +1329,36 @@ outc(unsigned char c)
                 ft.y --;
             }
         }
+    }
+}
+
+extern BOOL fix_screen;
+void outc(unsigned char c)
+{
+    static int possible_wrong = 0;
+
+    if (fix_screen) {
+        if (!possible_wrong && c == 0xA1u) {
+            possible_wrong = 1;
+            return;
+        }
+        if (possible_wrong) {
+            possible_wrong = 0;
+            if (c == 0x6Du) {
+                outc_orig('<');
+                outc_orig('<');
+                return;
+            }
+            if (c == 0x6Eu) {
+                outc_orig('>');
+                outc_orig('>');
+                return;
+            }
+            outc_orig(0xA1u);
+        }
+        outc_orig(c);
+    } else {
+        outc_orig(c);
     }
 }
 

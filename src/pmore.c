@@ -2044,6 +2044,7 @@ pmore(const char *fpath, int promptend)
     int flExit = 0, retval = 0;
     int ch = 0;
     int invalidate = 1;
+    int old_rows = t_lines, old_cols = t_columns;
 
     /* simple re-entrant hack
      * I don't want to write pointers everywhere,
@@ -2403,6 +2404,10 @@ pmore(const char *fpath, int promptend)
 
         /* vkey() will do refresh(); */
         ch = vkey();
+        if (old_rows != t_lines || old_cols != t_columns) {
+            retval = FULLUPDATE;
+            break;
+        }
         switch (ch) {
             /* -------------- NEW EXITING KEYS ------------------ */
 #ifdef RET_DOREPLY

@@ -25,6 +25,9 @@ struct useridx {	/* Structure used in .USERIDX */
 #define	YANK_FLAG       0x40    /* the board list yank flag, true if yank out */
 #define	COLOR_FLAG      0x80    /* color mode or black/white mode, ture is b/w*/
 
+/* these are flags in userec.flags[1] */
+#define SCREEN_FLAG	0x01    /* Screen wrong character work around */
+
 /* used in ctype */
 #define CTYPE_CSBBS     0
 #define CTYPE_TSBBS     1
