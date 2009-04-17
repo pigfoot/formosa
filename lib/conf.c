@@ -267,6 +267,7 @@ void load_bbsconf ()
 	BBSTITLE = bbsconf_str("BBSTITLE", "FormosaBBS System");	/* 站名 (Long) */
 	MAILSERVER = bbsconf_str("MAILSERVER", "127.0.0.1");		/* SMTP Server */
 	IRC_SERVER = bbsconf_str("IRC_SERVER", "140.117.11.2");		/* 跨站聊天室 IRC Server */
+	SYSOP_HOSTS = bbsconf_str("SYSOP_HOSTS", "ALL");		/* 允許Admin Menu的Host列表 */
 
 	MULTILOGINS = bbsconf_eval("MULTILOGINS", 3);			/* 最多允許同時幾次重覆上線 */
 	MAX_SIG_LINES = bbsconf_eval("MAX_SIG_LINES", 4);		/* 簽名檔行數 */
