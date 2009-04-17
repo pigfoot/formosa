@@ -316,11 +316,7 @@ static int is_sysop_host(const char *from)
 			return 1;
 		p = ep + 1;
 	}
-
-	if (p == SYSOP_HOSTS)
-		return !strcmp(from, SYSOP_HOSTS);
-
-	return 0;
+	return !strcmp(from, p);
 }
 
 static int menu_max(char *direct, int size)
