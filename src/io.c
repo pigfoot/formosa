@@ -548,7 +548,7 @@ getdata2vgetflag(int echo)
 
 static int max_len(int col, const char *prompt, int buflen)
 {
-    unsigned int plen = strlen(prompt);
+    unsigned int plen = (prompt) ? strlen(prompt) : 0;
     if ((col + plen + buflen) > t_columns)
 	return t_columns - col - plen;
     return buflen;
