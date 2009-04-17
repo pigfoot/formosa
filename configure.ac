@@ -3,6 +3,9 @@ AC_INIT(include/bbs.h)
 AC_CONFIG_AUX_DIR(cfgaux)
 AC_VALIDATE_CACHED_SYSTEM_TUPLE(rm -f config.cache)
 AC_CANONICAL_SYSTEM
+BBS_UID_DEFAULT=9999
+BBS_GID_DEFAULT=999
+BBS_TCP_PORT_DEFAULT=23
 
 LDFLAGS="-g"
 
@@ -230,6 +233,36 @@ ECHO_T=${ac_t}
 AC_PREFIX_DEFAULT(/home/bbs)
 
 AC_DEFINE_UNQUOTED(HOMEBBS,"$prefix",[Define the home directory of BBS])
+
+AC_ARG_WITH(bbs-uid,
+    [  --with-bbs-uid=number
+                          BBS User ID (default 9999)],
+    [ BBS_UID=$withval ],
+    [ BBS_UID=$BBS_UID_DEFAULT ]
+    )
+
+AC_SUBST(BBS_UID)
+AC_SUBST(BBS_UID_DEFAULT)
+
+AC_ARG_WITH(bbs-gid,
+    [  --with-bbs-gid=number
+                          BBS Group ID (default 999)],
+    [ BBS_GID=$withval ],
+    [ BBS_GID=$BBS_GID_DEFAULT ]
+    )
+
+AC_SUBST(BBS_GID)
+AC_SUBST(BBS_GID_DEFAULT)
+
+AC_ARG_WITH(tcp-port,
+    [  --with-tcp-port=number
+                          Which port to use for BBS services (default 23)],
+    [ BBS_TCP_PORT=$withval ],
+    [ BBS_TCP_PORT=$BBS_TCP_PORT_DEFAULT ]
+    )
+
+AC_SUBST(BBS_TCP_PORT)
+AC_SUBST(BBS_TCP_PORT_DEFAULT)
 
 #AC_SUBST(BBS_UID)
 #AC_SUBST(BBS_GID)

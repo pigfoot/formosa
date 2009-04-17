@@ -619,6 +619,8 @@ static void multi_user_check()
  */
 void Formosa(char *host, int argc, char **argv)
 {
+	mod_ps_display(argc, argv, "[login]");
+
 	signal(SIGHUP, abort_bbs);
 	signal(SIGBUS, abort_bbs);
 #ifdef SYSV
@@ -658,6 +660,7 @@ void Formosa(char *host, int argc, char **argv)
 	lang_init(LANG_CHINESE);
 	xstrncpy(myfromhost, (host ? host : "local"), sizeof(myfromhost));
 	login_query();
+	mod_ps_display(argc, argv, uinfo.userid);
 	/* multi-language message supported */
 	lang_init(curuser.lang);
 
