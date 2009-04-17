@@ -544,9 +544,9 @@ int set_user_info(char *userid)
 
 	show_user_info(&urcOld);
 
-	move(14, 0);
+	move(16, 0);
 	outs(_msg_not_sure_modify);
-	getdata(14, strlen(_msg_not_sure_modify), NULL, buf, 2, ECHONOSP | XLCASE);
+	getdata(16, strlen(_msg_not_sure_modify), NULL, buf, 2, ECHONOSP | XLCASE);
 	if (buf[0] != 'y')
 		return 0;
 
