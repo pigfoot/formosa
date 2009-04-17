@@ -304,6 +304,24 @@ static void menu_entry(int x, void *ep, int idx, int top, int last, int rows)
 	}
 }
 
+static int is_sysop_host(const char *from)
+{
+	char *p = SYSOP_HOSTS, *ep;
+
+	if (!strcmp(SYSOP_HOSTS, "ALL"))
+		return 1;
+
+	while ((ep = strchr(p, ',')) != NULL) {
+		if (!strncmp(from, p, ep - p))
+			return 1;
+		p = ep + 1;
+	}
+
+	if (p == SYSOP_HOSTS)
+		return !strcmp(from, SYSOP_HOSTS);
+
+	return 0;
+}
 
 static int menu_max(char *direct, int size)
 {
@@ -317,25 +335,17 @@ static int menu_max(char *direct, int size)
 #endif
 		if (curuser.userlevel < cmenus[i].level)
 			continue;
-#ifdef NSYSUBBS
 		if (cmenus[i].level == PERM_SYSOP)
 		{
+#ifdef NSYSUBBS
 			extern BOOL IsRealSysop;
 
 			if (!IsRealSysop)
 				continue;
-			if (strncmp(uinfo.from, "140.117.12.", 11)
-#if defined(NSYSUBBS2)
-			    && strncmp(uinfo.from, "140.117.11.14", 13)
 #endif
-			    && strncmp(uinfo.from, "127.0.0.1", 9)
-			    && strncmp(uinfo.from, "140.117.11.1", 12)
-			    && strncmp(uinfo.from, "140.117.18.61", 13))
-			{
+			if (!is_sysop_host(uinfo.from))
 				continue;
-			}
 		}
-#endif
 		if (j != i)
 			memcpy(&(cmenus[j]), &(cmenus[i]), sizeof(struct commands));
 		j++;
