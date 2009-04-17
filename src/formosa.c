@@ -34,7 +34,8 @@ char mypasswd[PASSLEN];
 int multi_logins = 1;
 
 extern pid_t child_pid;
-extern BOOL show_ansi;
+BOOL show_ansi;
+BOOL fix_screen;
 extern MSQ allmsqs[];
 extern int msq_first, msq_last;
 
@@ -176,6 +177,10 @@ static void user_init()
                 strip_ansi = FALSE;
 	/* sarek:01/02/2000 above */
 
+	if (curuser.flags[1] & SCREEN_FLAG)
+		fix_screen = TRUE;
+	else
+		fix_screen = FALSE;
 
 	ReadRC_Expire();
 
