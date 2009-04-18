@@ -472,7 +472,8 @@ static void access_mail(const char *r_file)
 		/*
 		 * Adding to spam entry
 		 */
-		search_spamshm(r_file, SEARCH_MAIL);
+		if (minfo.type == 'm')
+			search_spamshm(r_file, SEARCH_MAIL);
 #endif
 		return;
 	}
@@ -512,6 +513,18 @@ static void access_mail(const char *r_file)
 				minfo.from, minfo.sender, minfo.subject);
 			return;
 		}
+	}
+
+	if (user.flags[1] & REJMAIL_FLAG) {
+		bbsmail_log_write("USRREJ", "from=<%s>, to=<%s>, subject=<%s>",
+				minfo.from, minfo.sender, minfo.subject);
+#ifdef ANTISPAM
+		/*
+		 * Adding to spam entry
+		 */
+		search_spamshm(r_file, SEARCH_MAIL);
+#endif
+		return;
 	}
 
 	do_mail(r_file);
