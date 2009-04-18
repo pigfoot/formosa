@@ -736,7 +736,7 @@ int x_uflag()
 	int i, j;
 	unsigned char *pbits;
 
-#define MAX_UFLAG 9
+#define MAX_UFLAG 10
 
 	char *uflag[MAX_UFLAG] =
 	{
@@ -748,7 +748,8 @@ int x_uflag()
 		"不看彩色代稱",
 		"不引入全部看板",
 		"不用彩色",
-		"Screen修正"
+		"Screen修正",
+		"拒收站外信"
 	};
 
 	for (;;)

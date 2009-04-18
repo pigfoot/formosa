@@ -27,6 +27,7 @@ struct useridx {	/* Structure used in .USERIDX */
 
 /* these are flags in userec.flags[1] */
 #define SCREEN_FLAG	0x01    /* Screen wrong character work around */
+#define REJMAIL_FLAG	0x02    /* Do not receive e-mail from out side */
 
 /* used in ctype */
 #define CTYPE_CSBBS     0
