@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
+#include <errno.h>
+#include <syslog.h>
 #include "libproto.h"
 
 	/* ref. semctl() */
@@ -26,11 +28,9 @@
 int sem_init(key_t key)
 {
 	int semid;
-	union semun arg =
-	{
-		1
-	};
+	union semun arg;
 
+	arg.val = 1;
 	semid = semget(key, 1, 0);
 	if (semid == -1)
 	{
@@ -62,9 +62,19 @@ void sem_cleanup(int sem_id)
 void sem_lock(int semid, int op)
 {
 	struct sembuf sops;
+	int rt;
 
 	sops.sem_num = 0;
 	sops.sem_flg = SEM_UNDO;
 	sops.sem_op = op;
-	semop(semid, &sops, 1);
+	do { 
+		rt = semop(semid, &sops, 1);
+	} while (rt == -1 &&
+		(errno == EAGAIN || errno == EINTR));
+
+	if (rt == -1) {
+		openlog("bbsd", LOG_NDELAY | LOG_NOWAIT, LOG_LOCAL0);
+		syslog(LOG_ERR, "Getting utmp Lock error.");
+		exit(1);
+	}
 }
