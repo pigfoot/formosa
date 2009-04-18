@@ -321,7 +321,7 @@ int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr,
 		strcpy(online, "\n¥Ø«e¤£¦b½u¤W, ");
 
 	sprintf(outstr, "­Ó¤H¸ê®Æ¬d¸ß¡G\n\
-%s (%s), µ¥¯Å %d%s, ¤W¯¸ %d ¦¸, ±i¶K %d ½g%s\n\
+%s (%s[0m), µ¥¯Å %d%s, ¤W¯¸ %d ¦¸, ±i¶K %d ½g%s\n\
 ¤W¦¸¤W¯¸®É¶¡ %s ¨Ó¦Û %s\n\
 ---- %s%s",
 #ifndef IGNORE_CASE
