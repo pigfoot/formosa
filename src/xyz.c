@@ -733,7 +733,7 @@ XECHO, urcNew.fakeuserid);
 
 int x_uflag()
 {
-	int i, j;
+	int i, j, k;
 	unsigned char *pbits;
 
 #define MAX_UFLAG 10
@@ -763,9 +763,9 @@ int x_uflag()
 				continue;
 
 			pbits = &(curuser.flags[i / 8]);
-			j = (j < 0x100) ? j : j >> 8;
+			for (k = j; k >= 0x100; k >>= 8);
 			prints("(%c) %-14.14s : %s\n", 'a' + i, uflag[i],
-			       (*pbits & j ? "Yes" : "No "));
+			       (*pbits & k ? "Yes" : "No "));
 		}
 
 		if (!getdata(b_line, 0, _msg_xyz_36, genbuf, 2, ECHONOSP))
@@ -779,8 +779,8 @@ int x_uflag()
 				continue;
 
 			pbits = &(curuser.flags[i / 8]);
-			j = (j < 0x100) ? j : j >> 8;
-			*pbits ^= j;
+			for (k = j; k >= 0x100; k >>= 8);
+			*pbits ^= k;
 		}
 	}
 
