@@ -62,17 +62,17 @@ void sem_cleanup(int sem_id)
 void sem_lock(int semid, int op)
 {
 	struct sembuf sops;
-	int rt;
+	int rc;
 
 	sops.sem_num = 0;
 	sops.sem_flg = SEM_UNDO;
 	sops.sem_op = op;
-	do { 
-		rt = semop(semid, &sops, 1);
-	} while (rt == -1 &&
+	do {
+		rc = semop(semid, &sops, 1);
+	} while (rc == -1 &&
 		(errno == EAGAIN || errno == EINTR));
 
-	if (rt == -1) {
+	if (rc == -1) {
 		openlog("bbsd", LOG_NDELAY | LOG_NOWAIT, LOG_LOCAL0);
 		syslog(LOG_ERR, "Getting utmp Lock error.");
 		exit(1);

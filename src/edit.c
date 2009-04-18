@@ -487,7 +487,7 @@ static int write_file(const char *filename, const char *saveheader, const char *
 
 	sprintf(genbuf, _msg_edit_5, (saveheader) ? _msg_edit_6 : _msg_edit_7);
 	getdata(0, 0, genbuf, abort, sizeof(abort), ECHONOSP | XLCASE);
-	if (abort[0] == 'a')
+	if (abort[0] == 'a' || abort[0] == 'A')
 	{
 		vedit_exit();
 		outs("\nFile NOT saved\n");
@@ -495,9 +495,9 @@ static int write_file(const char *filename, const char *saveheader, const char *
 			unlink(filename);
 		return ABORT_EDITING;
 	}
-	else if (abort[0] == 'e')
+	else if (abort[0] == 'e' || abort[0] == 'E')
 		return KEEP_EDITING;
-	else if (abort[0] == 't')	/* lthuang */
+	else if (abort[0] == 't' || abort[0] == 'T')	/* lthuang */
 	{
 		vedit_exit();
 		outs("\nWrite to buffers\n");

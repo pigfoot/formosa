@@ -1332,6 +1332,11 @@ outc_orig(unsigned char c)
     }
 }
 
+/*
+ * 因為screen(http://www.gnu.org/software/screen/)的Big5->UTF-8
+ * 轉碼有問題, 碰到Big5的"<<" ">>"這兩種全形字, 就會錯位畫面亂掉
+ * 所以就把這兩種全形字轉成用 '<''<' 以及 '>''>' 取代
+ */
 extern BOOL fix_screen;
 void outc(unsigned char c)
 {

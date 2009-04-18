@@ -87,7 +87,7 @@ struct LANG {
 #define	_msg_chat_44	MsgInfo(94)	/*	"*** «ü©wÀW¹D¤£¦s¦b"	*/
 #define	_msg_chat_45	MsgInfo(95)	/*	"*** ¿ù»~: «á­±­n¥[¤@¥y¸Ü"	*/
 #define	_msg_chat_46	MsgInfo(96)	/*	"¥´ /help ¥i¬Ý»¡©úµe­±\n"	*/
-#define	_msg_edit_5	MsgInfo(106)	/*	"(S)%s, (A)©ñ±ó, (T)¦s¤J¼È¦sÀÉ, ©Î (E)Ä~Äò½s¿è? [S]: "	*/
+#define	_msg_edit_5	MsgInfo(106)	/*	"(s)%s, (a)©ñ±ó, (t)¦s¤J¼È¦sÀÉ, ©Î (e)Ä~Äò½s¿è? [s]: "	*/
 #define	_msg_edit_6	MsgInfo(107)	/*	"°e¥X"	*/
 #define	_msg_edit_7	MsgInfo(108)	/*	"¦sÀÉ"	*/
 #define	_msg_edit_8	MsgInfo(109)	/*	"\n±z¦³¤@­Ó½s¿è¥¢±Ñªº³Æ¥÷ÀÉ !!\n½Ð°Ý (1)¤Þ¤J (2)²M±¼³Æ¥÷ ? (1/2) [1] : "	*/
@@ -206,7 +206,7 @@ struct LANG {
 #define	_msg_main_1	MsgInfo(248)	/*	"\r\n\r\n©êºp¡A±zªº¦ì§} %s ¤£¯à¨Ï¥Î¥»¯¸\r\n"	*/
 #define	_msg_main_2	MsgInfo(249)	/*	"\r\n\r\n¡¸ %s ¡¸\r\n\r\r\n\r"	*/
 #define	_msg_title_func	MsgInfo(250)	/*	"¬ÝªO¡G%-16.16s [m"	*/
-#define	_msg_menu_2	MsgInfo(251)	/*	" (¡ô)(¡õ)´å¼Ð (¡÷)(Enter)¿ï¾Ü (¡ö)(Q)¤W¼h (Tab)¨q¹Ï       %s [m"	*/
+#define	_msg_menu_2	MsgInfo(251)	/*	" (¡ô)(¡õ)´å¼Ð (¡÷)(Enter)¿ï¾Ü (¡ö)(Q)¤W¼h (Tab)®i¶}¤½§i   %s [m"	*/
 #define	_msg_more_1	MsgInfo(253)	/*	"[1;37;45m--More--(%d%%)p.%d [0;44m [¡÷]:¤U¤@­¶,[¡õ]:¤U¤@¦C,[B]:¤W¤@­¶,[¡ö][q]:Â÷¶}             [m"	*/
 #define	_msg_abort	MsgInfo(254)	/*	"©ñ±ó."	*/
 #define	_msg_board_normal	MsgInfo(257)	/*	"[¤@¯ë°Ï]"	*/
