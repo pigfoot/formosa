@@ -150,6 +150,7 @@ int msq_record(MSQ *msqp, const char *filename, const char *to);
 char *pagerstring(USER_INFO *uentp);
 int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr, BOOL strip_ansi);
 int file_delete_line(const char *fname, const char *str);
+size_t ascii_color_len(const char *buf);
 char *esc_filter(const char *buf);
 /* mod_user.c */
 BOOL invalid_new_userid(char *userid);
