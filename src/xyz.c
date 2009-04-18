@@ -808,7 +808,7 @@ int x_uflag()
 
 	update_ulist(cutmp, &uinfo);
 
-/*	update_passwd(&curuser); */
+	update_passwd(&curuser);
 
 	return C_FULL;
 }
