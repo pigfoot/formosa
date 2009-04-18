@@ -329,16 +329,7 @@ int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr,
 #else
                qurc.fakeuserid,
 #endif
-#ifdef NSYSUBBS1
-	#ifdef KHBBS
-	       (strip_ansi ? esc_filter(qurc.username) : qurc.username),
-	#else
 	       qurc.ident != 7 ? "¤¤¤s¹C«È" : (strip_ansi ? esc_filter(qurc.username) : qurc.username),
-	#endif
-#else
-	       (strip_ansi ? esc_filter(qurc.username) : qurc.username),
-
-#endif
 	       qurc.userlevel,
            (
 #ifdef GUEST
@@ -405,6 +396,28 @@ int file_delete_line(const char *fname, const char *str)
 	return -1;
 }
 
+size_t ascii_color_len(const char *buf)
+{
+	const char *p = buf;
+	size_t len = 0;
+
+	if (!buf)
+		return 0;
+
+	while (*p) {
+		if (*p == '' && *(p + 1) == '[') {
+			p += 2;
+			len += 2;
+			while (*p && *p != 'm')
+				++p, ++len;
+			++p, ++len;
+			continue;
+		}
+		++p;
+	}
+
+	return len;
+}
 
 /* sarek:12/12/2000: ESC filter */
 /* sarek:08/25/2001: modified for all purpose... */

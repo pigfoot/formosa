@@ -196,7 +196,7 @@ static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
 					update = TRUE;
 				}
 			}
-			prints("   %4d %s%-12s %-20.20s[m %-15.15s %c%c %-14.14s",
+			prints("   %4d %s%-12s %-*.*s[m %-15.15s %c%c %-14.14s",
 			       num,
 			       pkp->friend ? "[1;36m" : "",
 /* kmwang:20000628:¨Ï¥ÎªÌ¦W³æÅã¥Üªº¬Ofakeid */
@@ -206,12 +206,10 @@ static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
                                strcasecmp(uentp->fakeuserid,uentp->userid)? uentp->userid :
                                uentp->fakeuserid,
 #endif
-/* sarek:12/30/2000 Âo°£ANSI±±¨î½X */
-#ifndef KHBBS
+			       20 + (strip_ansi ? 0 : ascii_color_len(uentp->username)),
+			       20 + (strip_ansi ? 0 : ascii_color_len(uentp->username)),
+				/* sarek:12/30/2000 Âo°£ANSI±±¨î½X */
 			       (uentp->ident != 7) ? "¤¤¤s¹C«È" : (strip_ansi ? esc_filter(uentp->username) : uentp->username),
-#else
-			       (uentp->ident != 7) ? "°ª¸ê¹C«È" : (strip_ansi ? esc_filter(uentp->username) : uentp->username),
-#endif
 
 /* TODO
 			       uentp->home,
