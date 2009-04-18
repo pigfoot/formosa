@@ -396,13 +396,35 @@ int file_delete_line(const char *fname, const char *str)
 	return -1;
 }
 
-size_t ascii_color_len(const char *buf)
+static void fix_ascii_color(char *buf)
+{
+	char *p = buf, *sp;
+
+	while (*p) {
+		sp = p;
+		if (*sp == '' && *(sp + 1) == '[') {
+			sp += 2;
+			while (*sp && *sp != 'm') {
+				if (!isdigit(*sp) && *sp != ';')
+					break;
+				++sp;
+			}
+			if (*sp != 'm')
+				*p = '*';
+		}
+		++p;
+	}
+}
+
+size_t ascii_color_len(char *buf)
 {
 	const char *p = buf;
 	size_t len = 0;
 
 	if (!buf)
 		return 0;
+
+	fix_ascii_color(buf);
 
 	while (*p) {
 		if (*p == '' && *(p + 1) == '[') {

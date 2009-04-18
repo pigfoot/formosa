@@ -196,6 +196,7 @@ static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
 					update = TRUE;
 				}
 			}
+			tmp = 20 + (strip_ansi ? 0 : ascii_color_len(uentp->username));
 			prints("   %4d %s%-12s %-*.*s[m %-15.15s %c%c %-14.14s",
 			       num,
 			       pkp->friend ? "[1;36m" : "",
@@ -206,8 +207,8 @@ static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
                                strcasecmp(uentp->fakeuserid,uentp->userid)? uentp->userid :
                                uentp->fakeuserid,
 #endif
-			       20 + (strip_ansi ? 0 : ascii_color_len(uentp->username)),
-			       20 + (strip_ansi ? 0 : ascii_color_len(uentp->username)),
+			       tmp,
+			       tmp,
 				/* sarek:12/30/2000 Âo°£ANSI±±¨î½X */
 			       (uentp->ident != 7) ? "¤¤¤s¹C«È" : (strip_ansi ? esc_filter(uentp->username) : uentp->username),
 
