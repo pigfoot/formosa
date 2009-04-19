@@ -257,7 +257,7 @@ struct boardheader {
         char owner[5*IDLEN+15];   /* TODO: max 5 bmas, each length is IDLEN */
         char title[CBNAMELEN+4];  /* description of board */
         int last_postno;
-        char unused2[STRLEN-CBNAMELEN-8] ;
+        char unused2[36] ;
         unsigned int level;
 } __attribute__ ((packed));
 

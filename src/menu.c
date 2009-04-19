@@ -226,6 +226,8 @@ static void menu_title()
  * if (j < 13)
  * j = 13;
  */
+			move(10, 0);
+			outs("\x1b[1;32m(TAB) 展開全文\x1b[m");
 			move(10, 69 - strlen(msshm->list[pict_no].owner));
 			prints("【提供】%s ", msshm->list[pict_no].owner);
 			j = 2;
