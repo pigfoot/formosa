@@ -16,7 +16,7 @@ BOARDHEADER *bhentp;
 		return -1;
 	if (!can_see_board(bhentp, 0))
 		return -1;
-	if(board_class != '*' && bhentp->class != board_class)	/* '*' is all class */
+	if(board_class != '*' && bhentp->bclass != board_class)	/* '*' is all class */
 		return -1;
 
 	allboards[numbrds++] = bhentp;

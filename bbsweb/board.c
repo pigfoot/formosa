@@ -52,7 +52,7 @@ struct board_t *binfr;
 		return -1;
 	if (!can_see_board(bhentp, curuser.userlevel))
 		return -1;
-	if (board_class != '*' && bhentp->class != board_class)		/* '*' is all class */
+	if (board_class != '*' && bhentp->bclass != board_class)	/* '*' is all class */
 		return -1;
 
 	if (binfr->rank < 1 || binfr->rank > MAXBOARD)
@@ -95,7 +95,7 @@ ShowBoard(char *tag, BOARDHEADER * board, POST_FILE * pf)
 	}
 	else if (!strcasecmp(tag, "Class"))
 	{
-		fprintf(fp_out, "%c", board->class);
+		fprintf(fp_out, "%c", board->bclass);
 	}
 	else if (!strcasecmp(tag, "Welcome"))
 	{
@@ -218,7 +218,7 @@ ShowBoardList(char *tag, POST_FILE * pf)
 				if (!strncasecmp(tag, "NUM", tag_len))
 					fprintf(fp_out, "%d", idx);
 				else if (!strncasecmp(tag, "CLASS", tag_len))
-					fprintf(fp_out, "%c", toupper((int) (web_all_brds[recidx - 1].bhr->class)));
+					fprintf(fp_out, "%c", toupper((int) (web_all_brds[recidx - 1].bhr->bclass)));
 				else if (!strncasecmp(tag, "BID", tag_len))
 					fprintf(fp_out, "%d", web_all_brds[recidx - 1].bhr->bid);
 				else if (!strncasecmp(tag, "E-BNAME", tag_len))
