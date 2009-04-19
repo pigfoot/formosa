@@ -428,6 +428,7 @@ enum ULOGIN {
 #define READ_HELP    "doc/READ_HELP"
 #define MAIL_HELP    "doc/MAIL_HELP"
 #define EDIT_HELP    "doc/EDIT_HELP"
+#define PMORE_HELP   "doc/PMORE_HELP"
 #define WELCOME0     "doc/Welcome0"
 #define WELCOME      "doc/Welcome"
 #define NEWGUIDE     "doc/NewGuide"
