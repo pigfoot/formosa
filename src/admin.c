@@ -102,7 +102,7 @@ static void show_board(const BOARDHEADER *brdhr)
 	prints("\n(1) %s %s", _msg_admin_2, brdhr->filename);
 	prints("\n(2) %s %s", _msg_admin_bdesc, brdhr->title);
 	prints("\n(3) %s %d", _msg_admin_blevel, brdhr->level);
-	prints("\n(4) %s %c", _msg_admin_class, brdhr->class);
+	prints("\n(4) %s %c", _msg_admin_class, brdhr->bclass);
 	prints("\n(5) %s %s", _msg_admin_owner, brdhr->owner);
 
 	for (i = 0, j = 1; i < MAX_NR_BRDTYPE; i++)
@@ -207,7 +207,7 @@ static int set_board(BOARDHEADER *brdhr)
 			break;
 		case '4':
 			if (getdata(15, 0, _msg_admin_class, inbuf, 2, ECHONOSP))
-				brdhr->class = inbuf[0];
+				brdhr->bclass = inbuf[0];
 			break;
 		case '5':
 			if (getdata_str(15, 0, _msg_admin_owner, inbuf, IDLEN, ECHONOSP,
@@ -241,7 +241,7 @@ static int set_board(BOARDHEADER *brdhr)
 	clrtobot();
 
 	if (brdhr->filename[0] == '\0' || brdhr->title[0] == '\0'
-	    || brdhr->class == '\0')
+	    || brdhr->bclass == '\0')
 	{
 		outs(_msg_admin_9);
 		return -1;
