@@ -476,13 +476,13 @@ int t_chat()
 	currchar = 0;
 	chat_line = 0;
 
-#if 1
-	if (getdata(1, 0, "(1) 跨站聊天室 (2) 站內聊天室 : [1] ", genbuf, 2, ECHONOSP)
-		&& genbuf[0] == '2')
+	if (getdata(1, 0, "(1) 跨站聊天室 (2) 站內聊天室 (3) 退出: [3] ", genbuf, 2, ECHONOSP))
 	{
-		return t_chat2();
+		if (genbuf[0] == '2')
+			return t_chat2();
+	} else {
+		return C_FULL;
 	}
-#endif
 
 	if (!getdata(1, 0, "Enter Chat id: ", mychatid, CHATIDLEN, ECHONOSP))
 		xstrncpy(mychatid, curuser.userid, CHATIDLEN);
