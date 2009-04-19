@@ -170,7 +170,7 @@ static int board_findkey(char *nbuf, void *ep, int start, int total)
 
 static int bcmd_help(int ent, struct BoardList *bent, char *direct)
 {
-	more(BOARD_HELP, TRUE);
+	pmore(BOARD_HELP, TRUE);
 	return C_FULL;
 }
 

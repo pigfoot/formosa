@@ -1314,7 +1314,7 @@ int Read()
 			if (curbe->enter_cnt < 2)
 			{
 				setboardfile(genbuf, CurBList->filename, BM_WELCOME);
-				more(genbuf, TRUE);
+				pmore(genbuf, TRUE);
 				clear();
 				if (display_bmas() > 0)
 					pressreturn();

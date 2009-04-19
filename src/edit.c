@@ -613,7 +613,7 @@ static void display_buffer()
 
 static void vedit_help()
 {
-	more(EDIT_HELP, TRUE);
+	pmore(EDIT_HELP, TRUE);
 	redraw_everything = TRUE;
 }
 

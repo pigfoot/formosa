@@ -339,7 +339,7 @@ int m_new()
 
 /* kmwang: 再讀新信時提醒 user 收信回去 */
 #ifdef MAILWARN
-	more(MAIL_WARN, TRUE);
+	pmore(MAIL_WARN, TRUE);
 #endif
 
 	if ((fd = open(ufile_mail, O_RDONLY)) < 0)
@@ -398,7 +398,7 @@ int m_new()
  */
 static int mail_help(int ent, FILEHEADER *finfo, char *direct)
 {
-	more(MAIL_HELP, TRUE);
+	pmore(MAIL_HELP, TRUE);
 	return C_FULL;
 }
 
@@ -499,7 +499,7 @@ int m_read()
 
 /* kmwang: 讀信時提醒 user 收信回去 */
 #ifdef MAILWARN
-        more(MAIL_WARN, TRUE);
+        pmore(MAIL_WARN, TRUE);
 #endif
 
 	in_mail = TRUE;		/* lthuang */

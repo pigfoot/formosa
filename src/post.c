@@ -31,7 +31,7 @@ int display_bmwel(int ent, FILEHEADER *finfo, char *direct)
 {
 	setboardfile(genbuf, CurBList->filename, BM_WELCOME);
 	if (isfile(genbuf))
-		more(genbuf, TRUE);
+		pmore(genbuf, TRUE);
 	clear();
 	if (display_bmas() > 0)
 		pressreturn();
@@ -216,7 +216,7 @@ int bm_manage_file()
  */
 int read_help()
 {
-	more(READ_HELP, TRUE);
+	pmore(READ_HELP, TRUE);
 	return C_FULL;
 }
 
