@@ -734,7 +734,6 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 			switch (ch)
 			{
 			case KEY_UP:
-			case CTRL('U'):
 				if (lastcharindent == -1)
 					lastcharindent = currpnt;
 				if (!currline->prev)
@@ -747,7 +746,6 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 				currpnt = (currline->len > lastcharindent) ? lastcharindent : currline->len;
 				break;
 			case KEY_DOWN:
-			case CTRL('O'):
 				if (lastcharindent == -1)
 					lastcharindent = currpnt;
 				if (!currline->next)
@@ -784,8 +782,14 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 					}
 					while (currpnt & 0x7);
 					break;
+				case CTRL('U'):
 				case CTRL('V'):
 					insert_char(0x1b);
+					break;
+				case CTRL('C'):
+					insert_char(0x1b);
+					insert_char('[');
+					insert_char('m');
 					break;
 				case KEY_RIGHT:
 				case CTRL('F'):
