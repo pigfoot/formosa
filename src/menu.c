@@ -66,9 +66,6 @@ extern int x_info(), x_override(), x_signature(), x_plan(), x_date(), x_viewnote
 #ifdef USE_IDENT
 extern int x_idcheck();
 #endif
-#ifdef STRIP_ANSI_USERNAME
-extern int x_username();
-#endif
 
 
 struct commands XyzMenu[] =
@@ -85,14 +82,7 @@ struct commands XyzMenu[] =
 #ifdef USE_IDENT
 	{'c', 1, NULL, x_idcheck, 0, "ID Check", "進行身份確認"},
 #endif
-#ifdef STRIP_ANSI_USERNAME
-	{'f', 1, NULL, x_username, 0, "Fix username", "去除暱稱彩色控制碼"},
-#endif
-#ifdef ANIMEBBS
-	{'x', 0, MainMenu, NULL, XMENU, "Xyz Menu", "工具街"},
-#else
 	{'x', 0, MainMenu, NULL, XMENU, "Xyz Menu", "個人資料維護工具箱"},
-#endif
 	{0, 0, NULL, NULL, 0, NULL, NULL}
 };
 

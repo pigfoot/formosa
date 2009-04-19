@@ -51,7 +51,7 @@ void saybyebye(int s)
 
 	while (fd)
 		close(--fd);
-	shutdown(0, 2);
+	shutdown(0, SHUT_RDWR);
 	close(0);
 	exit(0);
 }
@@ -63,7 +63,7 @@ void abort_bbs(int s)
 		kill(child_pid, SIGKILL);
 
 	user_logout(cutmp, &curuser);
-	shutdown(0, 2);
+	shutdown(0, SHUT_RDWR);
 	exit(0);
 }
 
@@ -460,7 +460,7 @@ static void login_query()
 		move(18, 0);
 		prints(_msg_formosa_16, MAXACTIVE);
 		oflush();
-		shutdown(0, 2);
+		shutdown(0, SHUT_RDWR);
 		exit(0);
 	}
 
@@ -471,7 +471,7 @@ static void login_query()
 			move(line_err, 0);
 			prints(_msg_formosa_17, 3);
 			oflush();
-			shutdown(0, 2);
+			shutdown(0, SHUT_RDWR);
 			exit(0);
 		}
 
@@ -505,7 +505,7 @@ static void login_query()
   #ifdef GUEST
 			printf(_msg_formosa_23);
 			oflush();
-			shutdown(0, 2);
+			shutdown(0, SHUT_RDWR);
 			exit(0);
   #endif
 #else /* !LOGINASNEW */
@@ -578,7 +578,7 @@ static int count_multi_login(USER_INFO *upent)
 				{
 					outs(_msg_formosa_39);
 					oflush();
-					shutdown(0, 2);
+					shutdown(0, SHUT_RDWR);
 					exit(0);
 				}
 				return 0;
@@ -599,7 +599,7 @@ static int count_multi_login(USER_INFO *upent)
 			      force_leave:
 				prints(_msg_formosa_41, multi_logins);
 				oflush();
-				shutdown(0, 2);
+				shutdown(0, SHUT_RDWR);
 				exit(0);
 			}
 		}
@@ -618,12 +618,34 @@ static void multi_user_check()
 	apply_ulist(count_multi_login);
 }
 
+static int g_argc;
+static char **g_argv;
+
+static void sig_segv(int sig)
+{
+	if (child_pid > 2)
+		kill(child_pid, SIGKILL);
+
+	user_logout(cutmp, &curuser);
+	shutdown(0, SHUT_RDWR);
+
+	if (g_argc) {
+		mod_ps_display(g_argc, g_argv, "[segment fault]");
+		while(1) {
+			sleep(10);
+		}
+	} else {
+		exit(1);
+	}
+}
 
 /*
  * Main function of BBS
  */
 void Formosa(char *host, int argc, char **argv)
 {
+	g_argc = argc;
+	g_argv = argv;
 	mod_ps_display(argc, argv, "[login]");
 
 	signal(SIGHUP, abort_bbs);
@@ -635,7 +657,7 @@ void Formosa(char *host, int argc, char **argv)
 	signal(SIGCHLD, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	signal(SIGSEGV, SIG_DFL);
+	signal(SIGSEGV, sig_segv);
 	signal(SIGPIPE, abort_bbs);	/* lthuang */
 	signal(SIGURG, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
@@ -646,7 +668,7 @@ void Formosa(char *host, int argc, char **argv)
 
 	if (setjmp(byebye))
 	{
-		shutdown(0, 2);
+		shutdown(0, SHUT_RDWR);
 		exit(1);
 	}
 

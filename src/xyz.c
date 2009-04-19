@@ -963,7 +963,6 @@ int x_viewnote()			/* by Seraph */
 	return C_FULL;
 }
 
-
 #ifdef USE_MULTI_LANGUAGE
 int x_lang()
 {
@@ -989,50 +988,3 @@ int x_lang()
 }
 #endif
 
-
-#ifdef STRIP_ANSI_USERNAME
-int x_username()
-{
-	char *s, *t;
-	char *buf = malloc(strlen(curuser.username)+1);
-
-
-	outs("\n\
-抱歉, 由於您的暱稱含有彩色控制碼, 且未加上還原碼, 為了使得出現在\n\
-信件、佈告、使用者列表中之彩色控制碼, 不致引起畫面亂掉的問題,\n\
-所以需要您作以下暱稱修正的步驟: \n");
-	if (!buf)
-	{
-		outs("\n系統發生錯誤! 請通知系統管理員!");
-		return C_FULL;
-	}
-
-	strcpy(buf, curuser.username);
-	move(10, 0);
-	prints("\n您原本的暱稱為: %s", curuser.username);
-	s = buf;
-	t = buf;
-	while (*s)
-	{
-		if (*s == 0x1b)
-		{
-			if (*++s == '[')
-				s++;
-			continue;
-		}
-		*t++ = *s++;
-	}
-	*t = '\0';
-	prints("\n修正後的暱稱為: %s", buf);
-	outs("\n確定執行以上修正嗎 (y/n) ? [n]: ");
-	if (igetkey() == 'y')
-	{
-		strcpy(curuser.username, buf);
-		outs("\n已修正完成!");
-	}
-	else
-		outs("\n放棄修正!");
-	free(buf);
-	return C_FULL;
-}
-#endif
