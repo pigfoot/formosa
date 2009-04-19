@@ -169,7 +169,7 @@ struct commands MainMenu[] =
 	{'r', 0, NULL, MainRead, READING, "Read", "Åª¨ú§G§i"},
 	{'t', 0, &(TalkMenu[0]), NULL, TMENU, "Talk Menu", "¥ð¶¢²á¤Ñ¶é¦a"},
 	{'m', 1, &(MailMenu[0]), NULL, MAIL, "Mail Menu", "­Ó¤H¶l¥ó«H½c"},
-    {'x', 0, &(XyzMenu[0]), NULL, XMENU, "Xyz Utilities", "­Ó¤H¸ê®ÆºûÅ@¤u¨ã½c"},
+	{'x', 0, &(XyzMenu[0]), NULL, XMENU, "Xyz Utilities", "­Ó¤H¸ê®ÆºûÅ@¤u¨ã½c"},
 #ifdef USE_MULTI_LANGUAGE
 	{'l', 0, NULL, x_lang, 0, "Language switch", "¤Á´«»y¨¥ª©¥»"},
 #endif
@@ -256,7 +256,7 @@ static void menu_title()
 			p1 = msshm->list[pict_no].body;
 			while (j-- > 0 && (chs = *p1++) != '\0')
 				outc(chs);
-			outs("[m");
+			outs("\x1b[m");
 
 			redraw = FALSE;
 		}
