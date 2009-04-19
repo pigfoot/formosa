@@ -394,6 +394,7 @@ static int mcmd_enter(int ent, struct commands *cent, char *direct)
 		return C_REDO;
 	}
 	update_umode(cent->mode);
+	redraw = TRUE;
 	return (*(cent->cfunc)) ();
 }
 
