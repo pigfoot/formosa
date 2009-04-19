@@ -50,7 +50,7 @@ static void setvotefile2(char *fname, char *direct, char *vf, char *f)
 
 void DisplayNewVoteMesg()
 {
-	more("doc/NewVote", TRUE);
+	pmore("doc/NewVote", TRUE);
 }
 
 
@@ -267,7 +267,7 @@ static int vcmd_desc(int ent, VOTE *vinfo, char *direct)
 {
 	/* 選舉說明 */
 	setvotefile2(genbuf, direct, vinfo->filename, "/desc");
-	more(genbuf, TRUE);
+	pmore(genbuf, TRUE);
 
 	return C_FULL;
 }
@@ -611,7 +611,7 @@ static int vcmd_result(int ent, VOTE *vinfo, char *direct)
 			fclose(fpr);
 		}
 	}
-	more(fn_result, TRUE);
+	pmore(fn_result, TRUE);
 
 	return C_FULL;
 }
@@ -669,7 +669,7 @@ static int vcmd_info(int ent, VOTE *vinfo, char *direct)
 
 static int vcmd_help(int ent, VOTE *vinfo, char *direct)
 {
-	more("doc/VOTE_HELP", TRUE);
+	pmore("doc/VOTE_HELP", TRUE);
 	return C_FULL;
 }
 

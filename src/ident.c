@@ -132,7 +132,7 @@ int x_idcheck()
 		return C_FULL;
 	}
 
-	more("doc/ident", TRUE);
+	pmore("doc/ident", TRUE);
 	clear();
 	outs(_msg_ident_10);
 	if (igetkey() != 'y')

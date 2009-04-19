@@ -39,9 +39,6 @@ BOOL fix_screen;
 extern MSQ allmsqs[];
 extern int msq_first, msq_last;
 
-extern char *genpasswd();
-
-
 /**
  ** Idle Timeout
  **/
@@ -549,7 +546,7 @@ static void login_query()
 
 int Announce()
 {
-	more(WELCOME, TRUE);
+	pmore(WELCOME, TRUE);
 	return C_FULL;
 }
 
@@ -726,7 +723,7 @@ void Formosa(char *host, int argc, char **argv)
 	}
 
 	/* welcome banner */
-	more(WELCOME0, TRUE);
+	pmore(WELCOME0, TRUE);
 	/* Announce banner */
 	Announce();
 
@@ -735,7 +732,7 @@ void Formosa(char *host, int argc, char **argv)
 
 	/* new user guide */
 	if (curuser.userlevel <= 3)
-		more(NEWGUIDE, TRUE);
+		pmore(NEWGUIDE, TRUE);
 
 	/* enter main menu */
 	domenu();

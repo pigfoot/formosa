@@ -204,7 +204,7 @@ int QueryUser(char *userid, USER_INFO *upent)
                 clrtoeol();
                 outs(_msg_talk_18);
                 igetkey();
-                more(genbuf, TRUE);
+                pmore(genbuf, TRUE);
         }
         else
         {
@@ -1237,7 +1237,7 @@ msq_reply_ret:
 
 int t_review()
 {
-	more(ufile_write, TRUE);
+	pmore(ufile_write, TRUE);
 
 	return C_FULL;
 }

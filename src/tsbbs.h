@@ -126,6 +126,18 @@ int adminBroadcast(void);
 int adminMailBm(void);
 int adminSyscheck(void);
 int adminListUsers(void);
+#ifdef USE_DELUSER
+/*
+ * Not complete?
+ */
+int adminDeleteUser(void)
+#endif
+#if defined(NSYSUBBS1) || defined(NSYSUBBS3) /* sarek:12/15/2001 */
+int adminCancelUser(void);
+#endif
+#ifndef NSYSUBBS
+int adminSyscheck(void);
+#endif
 /* article.c */
 int title_article(int ent, FILEHEADER *finfo, char *direct);
 int edit_article(int ent, FILEHEADER *finfo, char *direct);
@@ -320,6 +332,9 @@ int set_user_info(char *userid);
 int x_uflag(void);
 int x_bakpro(void);
 int x_viewnote(void);
+#ifdef USE_MULTI_LANGUAGE
+int x_lang(void);
+#endif
 
 #define ROWSIZE (SCREEN_SIZE - 4)
 

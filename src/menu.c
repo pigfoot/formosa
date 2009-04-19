@@ -9,22 +9,6 @@ extern struct commands MainMenu[];
 /*******************************************************************
  * Admin Menu
  *******************************************************************/
-extern int adminMaintainUser(), adminCreateBoard(), adminMaintainBoard(),
-	adminEditConf(), adminListUsers(), adminBroadcast(), adminMailBm();
-
-#ifdef USE_DELUSER
-extern int adminDeleteUser();
-#endif
-#if defined(NSYSUBBS1) || defined(NSYSUBBS3) /* sarek:12/15/2001 */
-extern int adminCancelUser();
-#endif
-#ifndef NSYSUBBS
-extern int adminSyscheck();
-#endif
-
-#if 0
-extern int adminKickUser();
-#endif
 
 struct commands AdminMenu[] =
 {
@@ -35,7 +19,7 @@ struct commands AdminMenu[] =
 	{'n', PERM_SYSOP, NULL, adminCreateBoard, ADMIN, "New Board", "建立新看板"},
 	{'m', PERM_SYSOP, NULL, adminMaintainBoard, ADMIN, "Modify Board", "更改/刪除/整理看板設定"},
 	{'e', PERM_SYSOP, NULL, adminEditConf, ADMIN, "Edit Config", "編輯設定檔案"},
-    {'u', PERM_SYSOP, NULL, adminListUsers, LAUSERS, "List All Users", "列出所有使用者"},
+	{'u', PERM_SYSOP, NULL, adminListUsers, LAUSERS, "List All Users", "列出所有使用者"},
 #if 0
 	{'k', PERM_SYSOP, NULL, adminKickUser, ADMIN, "Kick User", "將線上使用者斷線"},
 #endif
@@ -60,13 +44,6 @@ struct commands AdminMenu[] =
 /*******************************************************************
  * Xyz Menu
  *******************************************************************/
-extern int x_info(), x_override(), x_signature(), x_plan(), x_date(), x_viewnote(),
-    x_uflag(), x_bakpro(), x_blacklist();
-
-#ifdef USE_IDENT
-extern int x_idcheck();
-#endif
-
 
 struct commands XyzMenu[] =
 {
@@ -90,7 +67,6 @@ struct commands XyzMenu[] =
 /*******************************************************************
  * Mail Menu
  *******************************************************************/
-extern int m_new(), m_read(), m_send(), m_group();
 
 struct commands MailMenu[] =
 {
@@ -110,9 +86,6 @@ struct commands MailMenu[] =
 /*******************************************************************
  * Talk Menu
  *******************************************************************/
-extern int t_query(), t_talk(), t_chat(), x_override(), t_list(), t_friends(),
-    t_msq(), t_fmsq(), t_review(), t_pager(), t_bpager();
-
 
 struct commands TalkMenu[] =
 {
@@ -134,11 +107,6 @@ struct commands TalkMenu[] =
 /*******************************************************************
  * Main Menu
  *******************************************************************/
-extern int Select(), Goodbye(), Boards(), Class(), Announce(), MainRead();
-
-#ifdef USE_MULTI_LANGUAGE
-extern int x_lang();
-#endif
 
 #ifdef ANIMEBBS
 struct commands MainMenu[] =
@@ -189,7 +157,6 @@ int menu_depth = 1;
 static int n_cmenus = 0;
 struct commands *cmenus = MainMenu;
 short redraw;
-
 
 #ifdef USE_MENUSHOW
 int pict_no = 0;
@@ -410,7 +377,7 @@ static int mcmd_menushow(int ent, struct commands *cent, char *direct)
 {
 	if (!(curuser.flags[0] & PICTURE_FLAG))
 	{
-		more(msshm->list[pict_no].filename, TRUE);
+		pmore(msshm->list[pict_no].filename, TRUE);
 		redraw = TRUE;
 		return C_FULL;
 	}
@@ -427,6 +394,7 @@ static int mcmd_enter(int ent, struct commands *cent, char *direct)
 		return C_REDO;
 	}
 	update_umode(cent->mode);
+	redraw = TRUE;
 	return (*(cent->cfunc)) ();
 }
 

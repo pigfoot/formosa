@@ -796,11 +796,6 @@ static int delthread(int ent, FILEHEADER *finfo, char *direct)
 }
 
 
-#ifdef USE_VOTE
-extern int v_board();
-#endif
-
-
 #if USE_THREAD
 int total_arts;
 int curr_thr_no;
@@ -1319,7 +1314,7 @@ int Read()
 			if (curbe->enter_cnt < 2)
 			{
 				setboardfile(genbuf, CurBList->filename, BM_WELCOME);
-				more(genbuf, TRUE);
+				pmore(genbuf, TRUE);
 				clear();
 				if (display_bmas() > 0)
 					pressreturn();
