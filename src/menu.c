@@ -122,10 +122,10 @@ struct commands TalkMenu[] =
 	{'p', 1, NULL, t_pager, PAGE, "Pager Switch", "切換聊天呼喚鈴"},
 	{'d', 1, NULL, t_bpager, PAGE, "Broadcast Pager Switch", "切換廣播呼喚鈴"},
 	{'t', 1, NULL, t_talk, PAGE, "Talk", "雙人談心雅室"},
-	{'w', 1, NULL, t_msq, SENDMSG, "Send Message", "線上送訊息"},
-	{'b', 1, NULL, t_fmsq, SENDMSG, "BroadCast", "送訊息給好友"},
-	{'r', 1, NULL, t_review, SENDMSG, "Review Message", "回顧線上訊息"},
 	{'c', 3, NULL, t_chat, CHATROOM, "BBS Chat Room", "站內聊天廣場"},
+	{'b', 1, NULL, t_fmsq, SENDMSG, "BroadCast", "送訊息給好友"},
+	{'w', 1, NULL, t_msq, SENDMSG, "Send Message", "線上送訊息"},
+	{'r', 1, NULL, t_review, SENDMSG, "Review Message", "回顧線上訊息"},
 	{'t', 0, MainMenu, NULL, TMENU, "Talk Menu", "休閒聊天園地"},
 	{0, 0, NULL, NULL, 0, NULL, NULL}
 };
