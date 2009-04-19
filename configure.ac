@@ -285,7 +285,7 @@ AC_SUBST(ac_n)
 dnl
 
 AC_OUTPUT(Makefile bbsweb/Makefile csbbs/Makefile lib/Makefile src/Makefile
-          src/util/Makefile util/Makefile bbsweb/util/Makefile)
+	  src/util/Makefile util/Makefile bbsweb/util/Makefile docs/Makefile)
 
 cat << EOF
 

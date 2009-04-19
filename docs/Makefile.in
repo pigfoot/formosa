@@ -1,0 +1,12 @@
+HOMEBBS := @prefix@
+BBS_UID := @BBS_UID@
+BBS_GID := @BBS_GID@
+
+all:
+
+install:
+	cp ../bbshome/doc/*_HELP $(HOMEBBS)/doc/
+	chown $(BBS_UID):$(BBS_GID) $(HOMEBBS)/doc/*_HELP
+
+.PHONY: all install
+

@@ -271,7 +271,7 @@
  // key mapping
  //
  // environments and features
- // #undef PMORE_USE_INTERNAL_HELP
+ #undef PMORE_USE_INTERNAL_HELP
  #undef PMORE_USE_SOB_THREAD_NAV
  #define PMORE_USE_FORMOSA_NAV
  #undef PMORE_USE_REPLYKEY_HINTS
@@ -2703,16 +2703,21 @@ pmore(const char *fpath, int promptend)
                 }
                 break;
 
-#ifdef PMORE_USE_INTERNAL_HELP
             case 'h': case 'H':
             case '?':
 #ifdef KEY_F1
             case KEY_F1:
-#endif
                 // help
+#ifdef PMORE_USE_INTERNAL_HELP
                 show_help(pmore_help);
                 MFDISP_DIRTY();
                 break;
+#else
+                more(PMORE_HELP, TRUE);
+                MFDISP_DIRTY();
+                break;
+#endif
+
 #endif // PMORE_USE_INTERNAL_HELP
 
 #ifdef  PMORE_NOTIFY_NEWPREF
