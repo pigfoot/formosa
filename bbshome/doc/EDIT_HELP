@@ -6,6 +6,8 @@ Fomorsa BBS 編輯器命令說明: (特殊按鍵以 VT100 為準)
         Ctrl-L  重畫螢幕. 若畫面亂掉可用此功能恢復.
         Ctrl-Z  顯示本說明畫面.
         Ctrl-V  ANSI 控制碼 (ESC) (Ascii code 27)
+        Ctrl-U  ANSI 控制碼 (ESC)
+        Ctrl-C  ANSI 控制碼 + 基本色碼
         Ctrl-Q  預覽 ANSI 編輯畫面
 (二)游標與移動的相關命令:
         [PgUp] ,  Ctrl-P  上一頁.
@@ -13,8 +15,6 @@ Fomorsa BBS 編輯器命令說明: (特殊按鍵以 VT100 為準)
         [Tab]             Tab 跳格鍵. (每次跳 8 格).
         Ctrl-B            前一個字元.
         Ctrl-F            下一個字元.
-        Ctrl-U            上一行.
-        Ctrl-O            下一行.
         Ctrl-S            跳到篇首. 
         Ctrl-T            跳到篇末.
         [Home], Ctrl-A    跳到行首. 
