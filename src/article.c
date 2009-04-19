@@ -520,6 +520,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	case 'd':
 		delete_article(ent, finfo, direct);
 		return updown;
+	case 'X':
 	case '%':
 		return push_article(ent, finfo, direct);
 	case 'q':

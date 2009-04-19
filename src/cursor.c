@@ -1124,6 +1124,7 @@ struct one_key post_comms[] =
 	{'E', edit_article},
 	{'i', title_article},
 	{'x', cross_article},
+	{'X', push_article},
 	{'%', push_article},
 	{'m', mail_article},
 	{'d', delete_article},
