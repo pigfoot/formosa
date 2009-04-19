@@ -39,9 +39,6 @@ BOOL fix_screen;
 extern MSQ allmsqs[];
 extern int msq_first, msq_last;
 
-extern char *genpasswd();
-
-
 /**
  ** Idle Timeout
  **/

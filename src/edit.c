@@ -626,7 +626,6 @@ static void do_article_sig(const char *wfile)
 	int sig_no = 0, avalsig = 0, i;		/* default: don't include signature */
 	FILE *fpr;
 	static BOOL shownote = TRUE;
-	extern int include_sig();
 
 	if (curuser.flags[0] & SIG_FLAG)
 	{

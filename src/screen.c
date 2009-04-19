@@ -4,8 +4,6 @@
 #include "screen.h"
 #include <stdarg.h>
 
-extern int tputs(char *, int, int (*)(char));
-
 extern int dumb_term;
 extern BOOL show_ansi = TRUE;
 
@@ -21,9 +19,6 @@ extern int strtstandoutlen;
 extern int endstandoutlen;
 
 extern int automargins;
-
-extern int ochar(char ch);
-extern void output();
 
 #define o_clear()     output(clearbuf,clearbuflen)
 #define o_cleol()     output(cleolbuf,cleolbuflen)

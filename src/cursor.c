@@ -796,11 +796,6 @@ static int delthread(int ent, FILEHEADER *finfo, char *direct)
 }
 
 
-#ifdef USE_VOTE
-extern int v_board();
-#endif
-
-
 #if USE_THREAD
 int total_arts;
 int curr_thr_no;

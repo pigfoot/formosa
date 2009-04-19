@@ -5,8 +5,6 @@
 #include "bbs.h"
 #include "tsbbs.h"
 
-
-extern char *genpasswd();
 extern BOOL show_ansi;
 extern BOOL fix_screen;
 

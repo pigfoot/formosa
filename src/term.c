@@ -7,10 +7,6 @@
 #include "bbs.h"
 #include "tsbbs.h"
 
-
-extern int tputs(char *, int, int (*)(char));
-
-
 #if	defined(LINUX) && (__GLIBC__ < 2)
 #include <bsd/sgtty.h>
 #else
