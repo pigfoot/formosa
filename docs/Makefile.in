@@ -8,9 +8,13 @@ debug:
 
 install_once:
 
+clean:
+
+distclean:
+
 install:
 	cp ../bbshome/doc/*_HELP $(HOMEBBS)/doc/
 	chown $(BBS_UID):$(BBS_GID) $(HOMEBBS)/doc/*_HELP
 
-.PHONY: all debug install install_once
+.PHONY: all debug install install_once clean distclean
 
