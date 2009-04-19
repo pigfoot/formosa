@@ -281,9 +281,7 @@
  #undef PMORE_AUTOEXIT_FIRSTPAGE
  #define PMORE_AUTONEXT_ON_PAGEFLIP
  #define PMORE_AUTONEXT_ON_RIGHTKEY
- #ifndef  SHOW_USER_IN_TEXT
- # undef  PMORE_EXPAND_ESC_STAR
- #endif // !SHOW_USER_IN_TEXT
+ #define PMORE_EXPAND_ESC_STAR
  // use m3 style separator [none]: comment these if you like Maple2.36/SOB/PTT style
  #undef MFDISP_SEP_DEFAULT
  #define MFDISP_SEP_DEFAULT MFDISP_SEP_NONE
@@ -631,28 +629,32 @@ enum MFSEARCH_DIRECTION {
 // your own version outside pmore.c, and define in config.h:
 //
 // #define HAVE_EXPAND_ESC_STAR
-//
 
 int
 expand_esc_star(char *buf, const char *src, int szbuf)
 {
+    time_t now;
+
     assert(*src == KEY_ESC && *(src+1) == '*');
     src += 2;
     switch(*src)
     {
         // secure content (return 1)
         case 't':   // current time.
-            strlcpy(buf, Now(), szbuf);
+            time(&now);
+            strlcpy(buf, ctime(&now), szbuf);
+            if (strlen(buf) > 0)
+                buf[strlen(buf)-1] = '\0';
             return 1;
         // insecure content (return 2)
         case 's':   // current user id
-            strlcpy(buf, cuser.userid, szbuf);
+            strlcpy(buf, curuser.userid, szbuf);
             return 2;
         case 'l':   // current user logins
-            snprintf(buf, szbuf, "%d", cuser.numlogins);
+            snprintf(buf, szbuf, "%d", uinfo.numlogins);
             return 2;
         case 'p':   // current user posts
-            snprintf(buf, szbuf, "%d", cuser.numposts);
+            snprintf(buf, szbuf, "%d", uinfo.numposts);
             return 2;
     }
 
