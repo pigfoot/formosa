@@ -245,7 +245,7 @@ static int spam_filehash(const char *filename, int pool_size)
 	return idx & (pool_size - 1);
 }
 
-int search_spamshm(const char *filename, int opt)
+int search_spamshm(const char *filename, int opt, int *key)
 {
 	int idx, spam_num;
 	struct spam *pool;
@@ -263,6 +263,8 @@ int search_spamshm(const char *filename, int opt)
 	} else {
 		return 0;
 	}
+	if (key)
+		*key = idx;
 
 	time(&now);
 	if (now > pool[idx].timeout)
@@ -283,16 +285,17 @@ int do_post(const char *r_file)
 	char    str[STRLEN];
 	BOARDHEADER bhead;
 	char   *timestr;
+	int key;
 
 
 	if (minfo.board[0] == '\0')
 		return -1;
 
 #ifdef ANTISPAM
-	if (search_spamshm(r_file, SEARCH_POST))
+	if (search_spamshm(r_file, SEARCH_POST, &key))
 	{
-		bbsmail_log_write("POSTSPAM", "from=<%s>, board=<%s>, subject=<%s>",
-		            minfo.from, minfo.board, minfo.subject);
+		bbsmail_log_write("POSTSPAM", "from=<%s>, board=<%s>, subject=<%s>, key=(%d)",
+		            minfo.from, minfo.board, minfo.subject, key);
 		return -1;
 	}
 #endif
@@ -400,6 +403,7 @@ int do_mail(const char *r_file)
 	FILE   *fpr, *fpw;
 	int     result;
 	char   *timestr, *subject;
+	int	key = 99999999;
 
 	sprintf(fn_new, "%s.new", r_file);
 
@@ -407,10 +411,10 @@ int do_mail(const char *r_file)
 #ifdef ANTISPAM
 	if (strcmp(minfo.from, "MAILER-DAEMON"))
 	{
-		if (search_spamshm(r_file, SEARCH_MAIL))
+		if (search_spamshm(r_file, SEARCH_MAIL, &key))
 		{
-			bbsmail_log_write("MAILSPAM", "from=<%s>, to=<%s>, subject=<%s>",
-			            minfo.from, minfo.sender, minfo.subject);
+			bbsmail_log_write("MAILSPAM", "from=<%s>, to=<%s>, subject=<%s>, key=<%d>",
+			            minfo.from, minfo.sender, minfo.subject, key);
 			return -1;
 		}
 	}
@@ -451,8 +455,8 @@ int do_mail(const char *r_file)
 		bbsmail_log_write("ERROR", "SendMail for %s => %s",
 			minfo.from, minfo.sender);
 	} else {
-		bbsmail_log_write("MAIL", "from=<%s>, to=<%s>, subject=<%s>",
-			    minfo.from, minfo.sender, subject);	/* lthuang */
+		bbsmail_log_write("MAIL", "from=<%s>, to=<%s>, subject=<%s>, key=<%d>",
+			    minfo.from, minfo.sender, subject, key);	/* lthuang */
 	}
 	unlink(fn_new);
 
@@ -462,19 +466,22 @@ int do_mail(const char *r_file)
 static void access_mail(const char *r_file)
 {
 	int tsize;
+	int key;
 
 	memset(&user, 0, sizeof(user));
 	if (get_passwd(&user, minfo.sender) <= 0)
 	{
-		bbsmail_log_write("ENOENT", "from=<%s>, to=<%s>, subject=<%s>",
-				minfo.from, minfo.sender, minfo.subject);
 #ifdef ANTISPAM
 		/*
 		 * Adding to spam entry
 		 */
 		if (minfo.type == 'm')
-			search_spamshm(r_file, SEARCH_MAIL);
+			search_spamshm(r_file, SEARCH_MAIL, &key);
+		else
+			key = 9999999;
 #endif
+		bbsmail_log_write("ENOENT", "from=<%s>, to=<%s>, subject=<%s>, key=<%d>",
+				minfo.from, minfo.sender, minfo.subject, key);
 		return;
 	}
 
@@ -516,14 +523,14 @@ static void access_mail(const char *r_file)
 	}
 
 	if (user.flags[1] & REJMAIL_FLAG) {
-		bbsmail_log_write("USRREJ", "from=<%s>, to=<%s>, subject=<%s>",
-				minfo.from, minfo.sender, minfo.subject);
 #ifdef ANTISPAM
 		/*
 		 * Adding to spam entry
 		 */
-		search_spamshm(r_file, SEARCH_MAIL);
+		search_spamshm(r_file, SEARCH_MAIL, &key);
 #endif
+		bbsmail_log_write("USRREJ", "from=<%s>, to=<%s>, subject=<%s>, key=<%d>",
+				minfo.from, minfo.sender, minfo.subject, key);
 		return;
 	}
 
