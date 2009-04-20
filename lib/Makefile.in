@@ -7,7 +7,7 @@
 OSTYPE    = @systype@
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@
-CFLAGS	  = @CFLAGS@ -I. -I.. -I../include
+CFLAGS	  = @CFLAGS@ -I. -I.. -I../include -Wall
 MAKE      = @MAKE@
 
 ifeq (-DANIMEBBS,$(SITE_DEF))

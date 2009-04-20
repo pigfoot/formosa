@@ -1,6 +1,8 @@
 #include <iconv.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include "libproto.h"
 
 int str_conv(iconv_t ict, char *str, size_t maxlen) {
 	char *copy, *src, *dst;

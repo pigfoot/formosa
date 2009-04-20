@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 #include "bbsconfig.h"
 #define _BBS_CONF_C_
