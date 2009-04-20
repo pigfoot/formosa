@@ -10,7 +10,7 @@ HOMEBBS   = @prefix@
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@
 MAKE      = @MAKE@
-CFLAGS	  = @CFLAGS@ -I.. -I../include -I../lib
+CFLAGS	  = @CFLAGS@ -I.. -I../include -I../lib -Wall
 LDLIBS	  = @LIBS@ -lncurses
 
 PERL      = @PERL@

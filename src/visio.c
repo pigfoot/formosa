@@ -908,7 +908,9 @@ vgetstring(char *_buf, int len, int flags, const char *defstr, const VGET_CALLBA
     int line, col;
     int abort = 0;
     int c;
+#ifdef FULL_VISIO
     char ismsgline = 0;
+#endif
 
     // callback
     VGET_CALLBACKS cb = {NULL};

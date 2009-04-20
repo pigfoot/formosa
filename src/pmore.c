@@ -263,7 +263,6 @@
  // input/output API
  #define vkey getkey
  #define vmsg showmsg
- #define outs(x)                            outs((unsigned char*)(x))
  // variables
  #define b_lines    b_line
 // #define t_lines    (b_lines + 1)
@@ -643,8 +642,7 @@ expand_esc_star(char *buf, const char *src, int szbuf)
         case 't':   // current time.
             time(&now);
             strlcpy(buf, ctime(&now), szbuf);
-            if (strlen(buf) > 0)
-                buf[strlen(buf)-1] = '\0';
+            chomp(buf);
             return 1;
         // insecure content (return 2)
         case 's':   // current user id

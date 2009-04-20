@@ -7,15 +7,8 @@
 #endif
 
 #include "bbs.h"
+#include "tsbbs.h"
 #include <arpa/telnet.h>
-
-#ifdef DETECT_CLIENT
-void UpdateClientCode(unsigned char c); // see mbbsd.c
-#endif
-
-unsigned int telnet_handler(unsigned char c) ;
-void telnet_init(void);
-ssize_t tty_read(unsigned char *buf, size_t max);
 
 enum TELNET_IAC_STATES {
 	IAC_NONE,
@@ -26,7 +19,7 @@ enum TELNET_IAC_STATES {
 	IAC_ERROR
 };
 
-static raw_connection = 1;
+static int raw_connection = 1;
 static unsigned char iac_state = 0; /* as byte to reduce memory */
 
 #define TELNET_IAC_MAXLEN (16)

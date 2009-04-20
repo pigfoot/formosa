@@ -4,6 +4,7 @@
 
 #include "ansi.h"
 #include "cmsys.h"
+#include "tsbbs.h"
 
 #define CHAR_LOWER(c)  ((c >= 'A' && c <= 'Z') ? c|32 : c)
 /* ----------------------------------------------------- */
@@ -14,8 +15,7 @@
  * @param t allocated char array
  * @param s
  */
-void
-str_lower(char *t, const char *s)
+void str_lower(char *t, const char *s)
 {
     register unsigned char ch;
 
@@ -29,8 +29,7 @@ str_lower(char *t, const char *s)
  * 移除字串 buf 後端多餘的空白。
  * @param buf
  */
-void
-trim(char *buf)
+void trim(char *buf)
 {				/* remove trailing space */
     char           *p = buf;
 
@@ -61,8 +60,7 @@ void chomp(char *src)
 /* ----------------------------------------------------- */
 /* ANSI 處理函數                                         */
 /* ----------------------------------------------------- */
-int
-strip_blank(char *cbuf, char *buf)
+int strip_blank(char *cbuf, char *buf)
 {
     for (; *buf; buf++)
 	if (*buf != ' ')
@@ -89,6 +87,10 @@ static const char EscapeFlag[] = {
     /* E0 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     /* F0 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
+#define isEscapeParam(X) (EscapeFlag[(int)(X)] & 1)
+#define isEscapeCommand(X) (EscapeFlag[(int)(X)] & 2)
+
+#if 0
 /**
  * 根據 mode 來 strip 字串 src，並把結果存到 dst
  * @param dst
@@ -99,12 +101,9 @@ static const char EscapeFlag[] = {
  *             NO_RELOAD:  只留上面認識的(移位+色彩)
  * @return strip 後的長度
  */
-int
-strip_ansi_str(char *dst, const char *src, enum STRIP_FLAG mode)
+int strip_ansi_str(char *dst, const char *src, enum STRIP_FLAG mode)
 {
     register int    count = 0;
-#define isEscapeParam(X) (EscapeFlag[(int)(X)] & 1)
-#define isEscapeCommand(X) (EscapeFlag[(int)(X)] & 2)
 
     for(; *src; ++src)
 	if( *src != ESC_CHR ){
@@ -135,13 +134,13 @@ strip_ansi_str(char *dst, const char *src, enum STRIP_FLAG mode)
 	*dst = 0;
     return count;
 }
+#endif
 
 /**
  * query the offset of nth non-ANSI element in s
  * if string is less then nth, return missing blanks in negative value.
  */
-int
-strat_ansi(int count, const char *s)
+int strat_ansi(int count, const char *s)
 {
     register int mode = 0;
     const char *os = s;
@@ -180,8 +179,7 @@ strat_ansi(int count, const char *s)
     return s - os;
 }
 
-int
-strlen_noansi(const char *s)
+int strlen_noansi(const char *s)
 {
     // XXX this is almost identical to
     // strip_ansi(NULL, s, STRIP_ALL)
@@ -226,8 +224,7 @@ strlen_noansi(const char *s)
 /* DBCS 處理函數                                         */
 /* ----------------------------------------------------- */
 
-void
-strip_nonebig5(unsigned char *str, int maxlen)
+void strip_nonebig5(unsigned char *str, int maxlen)
 {
   int i;
   int len=0;
@@ -347,8 +344,7 @@ int DBCS_Status(const char *dbcstr, int pos)
 /**
  * DBCS_strcasestr(pool, ptr): 在字串 pool 中尋找 ptr (只忽略英文大小寫)
  */
-char *
-DBCS_strcasestr(const char* pool, const char *ptr)
+char *DBCS_strcasestr(const char* pool, const char *ptr)
 {
     int i = 0, i2 = 0, found = 0,
         szpool = strlen(pool),
@@ -398,8 +394,7 @@ DBCS_strcasestr(const char* pool, const char *ptr)
 /* 字串檢查函數：英文、數字、檔名、E-mail address        */
 /* ----------------------------------------------------- */
 
-int
-invalid_pname(const char *str)
+int invalid_pname(const char *str)
 {
     const char           *p1, *p2, *p3;
 

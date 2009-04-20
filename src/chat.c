@@ -52,11 +52,11 @@ static char debug[8192];
 #define BADCIDCHARS " *`\"\\;:|,./=~'!"
 #endif
 
-static void fixchatid(unsigned char *chatid)
+static void fixchatid(char *chatid)
 {
 	char *p;
 
-	if ((p = strstr((const char *)chatid, (const char *)"¡@")))		/* lthuang */
+	if ((p = strstr(chatid, "¡@")))		/* lthuang */
 		memcpy(p, "__", 2);
 	while (*chatid)
 	{
