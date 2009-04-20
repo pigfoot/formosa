@@ -1151,8 +1151,7 @@ int msq_reply()		/* lthuang */
 
 			move(b_line - 1, 0);
 			clrtoeol();
-			prints("<<訊息採證>>: 你確定且同意將訊息採證給站長嗎 (y/n)? [n]: ",
-					CAPTURE_BOARD);
+			prints("<<訊息採證>>: 你確定且同意將訊息採證給站長嗎 (y/n)? [n]: ");
 			if (igetkey() != 'y')
 			{
 				move(b_line - 1, 0);
