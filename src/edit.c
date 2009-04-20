@@ -2,7 +2,7 @@
 #include "tsbbs.h"
 #include <sys/stat.h>
 
-#define WRAPMARGIN ((80-1)*2)
+#define WRAPMARGIN (256)
 
 struct textline
 {
@@ -553,7 +553,7 @@ static void vedit_outs(char *s)
 		return;
 	}
 	s += shift;
-	i = 79;
+	i = t_columns - 1;
 	while (*s != '\0' && i-- > 0)
 	{
 		if (*s == 0x1b)
@@ -640,7 +640,7 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 	int lastcharindent = -1;
 	BOOL firstkey = TRUE;
 	char bakfile[PATHLEN];
-
+	int old_rows = t_lines, old_columns = t_columns;
 
 	sethomefile(bakfile, curuser.userid, UFNAME_EDIT);
 
@@ -696,7 +696,24 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 			ch = CTRL('G');
 #endif
 		}
-		if (ch < 0x100 && isprint2(ch))
+		if (old_rows != t_lines || old_columns != t_columns)
+		{
+			static const char *msg_resized = "[1;34;47m¿Ã¹õ¤j¤p¤w§ïÅÜ, «ö(Ctrl-G)¦^¨ì­¶­º![m";
+
+			old_rows = t_lines;
+			old_columns = t_columns;
+
+			top_of_win = firstline;
+			currline = top_of_win;
+			curr_window_line = 0;
+			currpnt = 0;
+			shift = 0;
+			redraw_everything = TRUE;
+			move(t_lines / 2, (t_columns - strlen(msg_resized)) / 2);
+			outs(msg_resized);
+			while (getkey() != CTRL('G'));
+		}
+		else if (ch < 0x100 && isprint2(ch))
 		{
 			insert_char(ch);
 			lastcharindent = -1;
