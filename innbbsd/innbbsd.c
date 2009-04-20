@@ -306,7 +306,7 @@ ClientType *client;
 	fprintf(argv->out,"NONE NEWSFEEDS %d\r\n", NONENEWSFEEDS);
 	fprintf(argv->out,"Max connections %d\r\n", Maxclient);
 #ifdef DEBUGCWD
-	getwd(cwdpath);
+	getcwd(cwdpath,sizeof(cwdpath));
 	fprintf(argv->out,"Working directory %s\r\n", cwdpath);
 #endif
 	if (Channel)
