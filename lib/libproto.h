@@ -152,6 +152,10 @@ int query_user(int myulevel, char *userid, USER_INFO *upent, char *outstr, BOOL 
 int file_delete_line(const char *fname, const char *str);
 size_t ascii_color_len(char *buf);
 char *esc_filter(const char *buf);
+#ifdef USE_ALOHA
+void send_aloha(USEREC *current_user, int option);
+void aloha_edit(const char *src_id, const char *trg_id, int option);
+#endif
 /* mod_user.c */
 BOOL invalid_new_userid(char *userid);
 unsigned int get_passwd(USEREC *urcp, char *userid);

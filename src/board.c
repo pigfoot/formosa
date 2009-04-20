@@ -140,7 +140,7 @@ static int board_max(char *direct, int size)
 static int board_findkey(char *nbuf, void *ep, int start, int total)
 {
 	register int i, len = strlen(nbuf);
-	struct BoardList *ent = (struct BoardList *)ep, *s;
+	struct BoardList *s;
 
 
 	if (depth_class >= 1)

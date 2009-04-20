@@ -207,11 +207,11 @@ int igetch(void);
 int getkey(void);
 int igetkey(void);
 void bell(void);
+void drop_input(void);
 int getdataln(const char *prompt, char *buf, int len, int echo);
 int getdata(int line, int col, const char *prompt, char *buf, int len, int echo);
 int getdata_buf(int line, int col, const char *prompt, char *buf, int len, int echo);
 int getdata_str(int line, int col, const char *prompt, char *buf, int len, int echo, char *prefix);
-
 /* lang.c */
 void lang_init(char lang);
 /* list.c */
@@ -249,6 +249,12 @@ int do_post(int ent, FILEHEADER *finfo, char *direct);
 int treasure_article(int ent, FILEHEADER *finfo, char *direct);
 int mkdir_treasure(int ent, FILEHEADER *finfo, char *direct);
 int xchg_treasure(int ent, FILEHEADER *finfo, char *direct);
+#ifdef USE_PFTERM
+/* pfterm.c */
+#include "pfterm.h"
+/* visio.c */
+void msg(char *fmt, ...);
+#else
 /* screen.c */
 void initscr(void);
 void standoutput(char *buf, int ds, int de, int sso, int eso);
@@ -271,6 +277,21 @@ void scroll(void);
 void rscroll(void);
 void save_screen(void);
 void restore_screen(void);
+#endif
+/* string.c */
+int strat_ansi(int count, const char *s);
+void str_lower(char *t, const char *s);
+void trim(char *buf);
+void chomp(char *src);
+int strip_blank(char *cbuf, char *buf);
+int strat_ansi(int count, const char *s);
+int strlen_noansi(const char *s);
+void strip_nonebig5(unsigned char *str, int maxlen);
+int DBCS_RemoveIntrEscape(unsigned char *buf, int *len);
+int DBCS_Status(const char *dbcstr, int pos);
+char *DBCS_strcasestr(const char* pool, const char *ptr);
+int invalid_pname(const char *str);
+int is_number(const char *p);
 /* stuff.c */
 int pressreturn(void);
 int showmsg(char *text);
@@ -309,6 +330,13 @@ int msq_reply(void);
 int t_review(void);
 int t_msq(void);
 int t_fmsq(void);
+/* telnet.c */
+#ifdef DETECT_CLIENT
+void UpdateClientCode(unsigned char c); // see mbbsd.c
+#endif
+unsigned int telnet_handler(unsigned char c);
+void telnet_init(void);
+ssize_t tty_read(unsigned char *buf, size_t max);
 /* term.c */
 void init_vtty(void);
 int outcf(char ch);

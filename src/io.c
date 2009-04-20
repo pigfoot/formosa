@@ -360,8 +360,7 @@ void bell()
 	fprintf(stderr, "%c", CTRL('G'));
 }
 
-void
-drop_input(void)
+void drop_input(void)
 {
     icurrchar = ibufsize = 0;
 }

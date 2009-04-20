@@ -89,7 +89,8 @@ char *argv[];
 {
 	struct sockaddr_in sin, from;
 	fd_set ibits;
-	int on, len, ns, sock;
+	int on, ns, sock;
+	socklen_t len;
 
 
 	if (fork () != 0)

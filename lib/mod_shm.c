@@ -329,7 +329,6 @@ static struct board_t *search_brdt_by_bname(const char *bname)
 
 int get_board_bid(register char *farg)
 {
-	register int i;
 	struct board_t *brdtp;
 
 	resolve_brdshm();
@@ -372,7 +371,6 @@ void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
 
 unsigned int get_board(BOARDHEADER *bhead, char *bname)
 {
-	register int i;
 	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
@@ -389,7 +387,6 @@ unsigned int get_board(BOARDHEADER *bhead, char *bname)
 
 BOOL is_new_vote(const char *bname, time_t lastlogin)
 {
-	register int i;
 	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
@@ -414,7 +411,6 @@ void rebuild_brdshm(BOOL opt)
 
 void set_brdt_numposts(char *bname, BOOL reset)
 {
-	register int i;
 	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')
@@ -435,7 +431,6 @@ void set_brdt_numposts(char *bname, BOOL reset)
 
 void set_brdt_vote_mtime(const char *bname)
 {
-	register int i;
 	struct board_t *brdtp;
 
 	if (!bname || bname[0] == '\0')

@@ -676,7 +676,8 @@ int check_page_perm()
 
 int talk_user(USER_INFO *tkuinf)
 {
-	int sock, msgsock, length;
+	int sock, msgsock;
+	socklen_t length;
 	struct sockaddr_in server;
 	char reponse;
 
@@ -699,7 +700,7 @@ int talk_user(USER_INFO *tkuinf)
 		perror("binding stream socket");
 		return -1;
 	}
-	length = sizeof server;
+	length = sizeof(server);
 	if (getsockname(sock, (struct sockaddr *) &server, &length) < 0)
 	{
 		perror("getting socket name");
@@ -761,7 +762,7 @@ int talk_user(USER_INFO *tkuinf)
 			return -1;
 		}
 	}
-	if ((msgsock = accept(sock, (struct sockaddr *) 0, (int *) 0)) < 0)
+	if ((msgsock = accept(sock, (struct sockaddr *) 0, (socklen_t *) 0)) < 0)
 	{
 		perror("accept");
 		return -1;

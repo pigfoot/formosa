@@ -225,11 +225,11 @@ static void ulist_entry(int x, void *ep, int idx, int top, int last, int rows)
 			       modestring(uentp, 1));
 			if (uentp->idle_time) {
 				if (uentp->idle_time >= 1440)
-					prints(" %2dd", uentp->idle_time / 1440);
+					prints(" %2lud", uentp->idle_time / 1440u);
 				else if (uentp->idle_time >= 60)
-					prints(" %2dh", uentp->idle_time / 60);
+					prints(" %2luh", uentp->idle_time / 60u);
 				else
-					prints("  %2d", uentp->idle_time);
+					prints("  %2lu", uentp->idle_time);
 			}
 			outs("\n");
 		}

@@ -23,7 +23,7 @@ static int ECHATWIN, PLINE;
 #endif
 #define BADCIDCHARS " *\";:,./='!"
 
-static void fixchatid(unsigned char *chatid)
+static void fixchatid(char *chatid)
 {
 	char *p;
 

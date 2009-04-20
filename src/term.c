@@ -210,7 +210,7 @@ int term_init(char *term)
 	char sbuf[2048];
 	char *sbp, *s;
 	char *tgetstr();
-	int	tgetent(char *, char *);
+	int tgetent(char *, char *);
 	int tgetflag(char *);
 	int tgetnum(char *);
 	int tputs(char *, int, int (*)(char));
@@ -296,6 +296,7 @@ int term_init(char *term)
 void do_move(int destcol, int destline, int (*outc) (char))
 {
 	char *tgoto();
+	int tputs(char *, int, int (*)(char));
 
 	tputs(tgoto(cm, destcol, destline), 0, outc);
 }

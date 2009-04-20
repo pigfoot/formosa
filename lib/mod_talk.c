@@ -483,9 +483,9 @@ char *esc_filter(const char *buf)
 
 #ifdef USE_ALOHA
 /* sarek:02/14/2001: 好友上站通知 */
-USEREC *curruser;
-struct array aloha_cache;
-MSQ mymsq;
+static USEREC *curruser;
+static struct array aloha_cache;
+static MSQ mymsq;
 
 static int aloha_msq(USER_INFO *upent)
 {

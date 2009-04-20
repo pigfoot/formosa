@@ -3,6 +3,7 @@
  */
 
 #include "bbs.h"
+#include "str_codec.h"
 #include <ctype.h>
 
 #define BIN_PGP  "bin/pgp"

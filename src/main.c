@@ -74,8 +74,9 @@ struct sockaddr_in *from;
 int argc;
 char *argv[];
 {
-	char *host, term[8];
+	char *host;
 	int on;
+	socklen_t len;
 
 #if 0
 	on = 1;
@@ -87,8 +88,8 @@ char *argv[];
 		struct sockaddr_in cli;
 
 		from = &cli;
-		on = sizeof(*from);
-		getsockname(1, (struct sockaddr *) from, &on);	/* cannot work correctly ? */
+		len = sizeof(*from);
+		getsockname(1, (struct sockaddr *) from, &len);	/* cannot work correctly ? */
 	}
 	host = inet_ntoa(from->sin_addr);
 #if 1
@@ -131,6 +132,7 @@ void mod_ps_display(int argc, char *argv[], const char *disp)
 int main(int argc, char *argv[])
 {
 	int aha, on = 1;
+	socklen_t len;
 	struct sockaddr_in from, sin;
 	int s = 0, ns;
 	struct pollfd pd;
@@ -286,7 +288,7 @@ int main(int argc, char *argv[])
 		/* UNREACHED */
 	}
 
-	aha = sizeof(from);
+	len = sizeof(from);
 
 	pd.fd = s;
 	pd.events = POLLIN;
@@ -313,7 +315,7 @@ int main(int argc, char *argv[])
 		if (!(pd.events & pd.revents))
 			continue;
 
-		if ((ns = accept(s, (struct sockaddr *) &from, (int *) &aha)) < 0)
+		if ((ns = accept(s, (struct sockaddr *) &from, &len)) < 0)
 			continue;
 		else
 		{

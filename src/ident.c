@@ -79,14 +79,15 @@ static int send_checkmail(char email[], char stamp[])
 /*
  * Check Chinese string
  */
-static int check_cname(unsigned char name[])
+static int check_cname(char *name)
 {
 	int i = strlen(name);
+	unsigned char *usname = (unsigned char *)name;
 
 	if (i == 0 || (i % 2) == 1)
 		return -1;
 	while ((i = i - 2) >= 0)
-		if (name[i] < 128)
+		if (usname[i] < 128)
 			return -1;
 	return 0;
 }

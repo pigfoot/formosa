@@ -969,7 +969,8 @@ void shutdown_server(int sig)
 
 int main(int argc, char *argv[])
 {
-	int sock, length, flen, i;
+	int sock, i;
+	socklen_t flen, length;
 	struct sockaddr_in server, client;
 	char hostip[80];
 	long seed;

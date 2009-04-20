@@ -271,34 +271,18 @@ int has_postperm(BOARDHEADER *bh1)
 	}
 #endif
 
-/* By kmwang:20000529:For KHBBS */
-#if 0
-	else if (curuser.ident != 7)
+	if (curuser.userlevel < bh1->level)
 	{
-                outs(_msg_postperm_reason_ident);
-                pressreturn();
+		prints(_msg_postperm_reason_level,
+		       curuser.userlevel, bh1->filename, bh1->level);
+		pressreturn();
 		return -1;
 	}
-#endif
-/* End of By kmwang:20000529:For KHBBS */
-
-/* by lthuang
-	if (!HAS_PERM(PERM_SYSOP)
-*/
+	if ((bh1->brdtype & BRD_IDENT) && curuser.ident != 7)
 	{
-		if (curuser.userlevel < bh1->level)
-		{
-			prints(_msg_postperm_reason_level,
-			       curuser.userlevel, bh1->filename, bh1->level);
-			pressreturn();
-			return -1;
-		}
-		if ((bh1->brdtype & BRD_IDENT) && curuser.ident != 7)
-		{
-			outs(_msg_postperm_reason_ident);
-			pressreturn();
-			return -1;
-		}
+		outs(_msg_postperm_reason_ident);
+		pressreturn();
+		return -1;
 	}
 
 	if (!in_board)

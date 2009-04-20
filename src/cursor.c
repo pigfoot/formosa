@@ -175,7 +175,7 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 				outs("  ");
 			}
 
-			str = fhr->owner;
+			str = (unsigned char *)fhr->owner;
 			while (len > 0 && *str && *str != '@' && *str != '.')
 			{
 				outc(*str++);
@@ -204,7 +204,7 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 #else
 			len = 42;
 #endif
-			str = fhr->title;
+			str = (unsigned char *)fhr->title;
 			while (len-- > 0 && *str)
 				outc(*str++);
 /*
