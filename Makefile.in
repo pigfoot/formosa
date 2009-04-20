@@ -6,7 +6,7 @@ SUBDIRS := lib src util bbsweb bbsweb/util docs
 CLEANDIRS := $(SUBDIRS) src/util
 PHONY_TARGETS := all debug clean distclean install install_once update kill_process
 VERSION := 1.4.0
-HOMEBBS := @prefix@
+HOMEBBS := @HOMEBBS@
 MAKE    := @MAKE@
 BBS_UID	:= @BBS_UID@
 BBS_UID_DEFAULT	:= @BBS_UID_DEFAULT@
@@ -39,7 +39,7 @@ config:
 
 config_bbs3:
 	./autogen.sh
-	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
+	CFLAGS=-DNSYSUBBS3 ./configure --with-homebbs=/apps/bbs
 
 install_once: target := install_once
 install_once: $(SUBDIRS)

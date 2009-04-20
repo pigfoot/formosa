@@ -3,7 +3,7 @@
 ################################################
 #
 # This Makefile for "@systype@"
-HOMEBBS    = @prefix@
+HOMEBBS    = @HOMEBBS@
 
 DEFINES    = @OS_DEF@ $(SITE_DEF) -DHAVE_CONFIG_H
 CC         = @CC@

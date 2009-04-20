@@ -124,8 +124,14 @@ ECHO_C=${ac_c}
 ECHO_T=${ac_t}
 AC_SUBST(ac_n)
 
-AC_PREFIX_DEFAULT(/home/bbs)
-AC_DEFINE_UNQUOTED(HOMEBBS,"$prefix",[Define the home directory of BBS])
+HOMEBBS_DEFAULT="/home/bbs"
+AC_ARG_WITH(homebbs,
+	[  --with-homebbs=PATH
+			  BBS Home Directory (default /home/bbs)],
+	[ HOMEBBS=$withval ],
+	[ HOMEBBS=$HOMEBBS_DEFAULT ]
+)
+AC_DEFINE_UNQUOTED(HOMEBBS, "$HOMEBBS", [Define the home directory of BBS])
 
 BBS_UID_DEFAULT=9999
 AC_ARG_WITH(bbs-uid,
