@@ -48,8 +48,9 @@ qp_decode_str(char *src)	/* wnlee */
 				ptr++;
 			}
 			else
-				*dst++ = combine_high_low_bits(*ptr++) * 16
-					+ combine_high_low_bits(*ptr++);
+				*dst = combine_high_low_bits(*ptr++) * 16;
+				*dst += combine_high_low_bits(*ptr++);
+				++dst;
 		}
 		else
 			*dst++ = *ptr++;
