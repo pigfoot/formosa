@@ -319,7 +319,8 @@ main(argc, argv)
 int     argc;
 char   *argv[];
 {
-	int     s, i, flen, fd, sock;
+	int     s, i, fd, sock;
+	socklen_t flen;
 	struct sockaddr_in server, client;
 	fd_set  readfds;
 	FILE   *fp;

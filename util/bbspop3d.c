@@ -22,6 +22,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 /*
 #ifdef AIX
@@ -34,7 +35,6 @@
 #include "perm.h"
 #include "conf.h"
 #include "libproto.h"
-
 
 /*
  * 參考檔路徑定義
@@ -906,7 +906,8 @@ main(argc, argv)
 int     argc;
 char   *argv[];
 {
-	int     aha, on = 1, maxs;
+	int aha, on = 1, maxs;
+	socklen_t len;
 	fd_set  ibits;
 	struct sockaddr_in from, sin;
 	int     s, ns;
@@ -1012,7 +1013,7 @@ char   *argv[];
 
 	init_bbsenv();
 
-	aha = sizeof(from);
+	len = sizeof(from);
 	maxs = s + 1;
 
 	while (1)
@@ -1035,7 +1036,7 @@ char   *argv[];
 		}
 		if (!FD_ISSET(s, &ibits))
 			continue;
-		if ((ns = accept(s, (struct sockaddr *) &from, &aha)) < 0)
+		if ((ns = accept(s, (struct sockaddr *) &from, &len)) < 0)
 			continue;
 		else
 		{
