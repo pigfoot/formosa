@@ -194,7 +194,7 @@ static void menu_title()
  * j = 13;
  */
 			move(10, 0);
-			outs("\x1b[1;32m(TAB) 展開全文\x1b[m");
+			outs(ANSI_COLOR(1;32) "(TAB) 展開全文" ANSI_RESET);
 			move(10, 69 - strlen(msshm->list[pict_no].owner));
 			prints("【提供】%s ", msshm->list[pict_no].owner);
 			j = 2;
@@ -223,7 +223,7 @@ static void menu_title()
 			p1 = msshm->list[pict_no].body;
 			while (j-- > 0 && (chs = *p1++) != '\0')
 				outc(chs);
-			outs("\x1b[m");
+			outs(ANSI_RESET);
 
 			redraw = FALSE;
 		}

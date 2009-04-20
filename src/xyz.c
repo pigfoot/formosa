@@ -98,6 +98,7 @@ static void show_user_info(USEREC *urcPerson)
 	outs(_msg_xyz_31);
 	outs("\n1) ");
 	prints(_msg_xyz_7, urcPerson->username);
+	outs(ANSI_RESET);
 
 	outs("\n2) ");
 	prints(_msg_xyz_8, urcPerson->email);
