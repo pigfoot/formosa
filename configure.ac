@@ -133,6 +133,9 @@ AC_ARG_WITH(homebbs,
 )
 AC_DEFINE_UNQUOTED(HOMEBBS, "$HOMEBBS", [Define the home directory of BBS])
 
+AC_SUBST(HOMEBBS)
+AC_SUBST(HOMEBBS_DEFAULT)
+
 BBS_UID_DEFAULT=9999
 AC_ARG_WITH(bbs-uid,
 	[  --with-bbs-uid=number
