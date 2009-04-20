@@ -212,7 +212,6 @@ static int join(register struct textline *line)
 		register char *s;
 		register struct textline *p = line->next;
 
-
 		s = p->data + p->len - ovfl - 1;
 		while (s != p->data && *s == ' ')
 			s--;
@@ -891,13 +890,17 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 						curr_window_line--;
 						currline = currline->prev;
 						currpnt = currline->len;
-						if (*killsp(currline->next->data) == '\0')
-						{
+						if (*killsp(currline->next->data) == '\0') {
 							delete_line(currline->next);
 							redraw_everything = TRUE;
-						}
-						else
+						} else {
 							join_currline();
+						}
+						if (curr_window_line == -1) {
+							curr_window_line = 0;
+							top_of_win = currline;
+							rscroll();
+						}
 						break;
 					}
 					currpnt--;
