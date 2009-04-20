@@ -212,7 +212,6 @@ static int join(register struct textline *line)
 		register char *s;
 		register struct textline *p = line->next;
 
-
 		s = p->data + p->len - ovfl - 1;
 		while (s != p->data && *s == ' ')
 			s--;
@@ -750,7 +749,7 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 				switch (ch)
 				{
 				case CTRL('T'):
-					top_of_win = back_line(lastline, 22);
+					top_of_win = back_line(lastline, b_lines - 2);
 					currline = lastline;
 					curr_window_line = getlineno();
 					currpnt = 0;
@@ -820,7 +819,7 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 					break;
 				case KEY_PGUP:
 				case CTRL('P'):
-					top_of_win = back_line(top_of_win, 22);
+					top_of_win = back_line(top_of_win, b_lines - 2);
 					currline = top_of_win;
 					currpnt = 0;
 					curr_window_line = 0;
@@ -828,7 +827,7 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 					break;
 				case KEY_PGDN:
 				case CTRL('N'):
-					top_of_win = forward_line(top_of_win, 22);
+					top_of_win = forward_line(top_of_win, b_lines - 2);
 					currline = top_of_win;
 					currpnt = 0;
 					curr_window_line = 0;
@@ -891,13 +890,17 @@ int vedit(const char *filename, const char *saveheader, char *bname)
 						curr_window_line--;
 						currline = currline->prev;
 						currpnt = currline->len;
-						if (*killsp(currline->next->data) == '\0')
-						{
+						if (*killsp(currline->next->data) == '\0') {
 							delete_line(currline->next);
 							redraw_everything = TRUE;
-						}
-						else
+						} else {
 							join_currline();
+						}
+						if (curr_window_line == -1) {
+							curr_window_line = 0;
+							top_of_win = currline;
+							rscroll();
+						}
 						break;
 					}
 					currpnt--;

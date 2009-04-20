@@ -5,7 +5,7 @@
 # This Makefile for "@systype@"
 #
 # The home directory for the user 'bbs'
-HOMEBBS   = @prefix@
+HOMEBBS   = @HOMEBBS@
 
 DEFINES   = @OS_DEF@ $(SITE_DEF) @DEFS@
 CC        = @CC@
@@ -96,16 +96,16 @@ genlogin: genlogin.c $(LIBFILE)
 $(LIBFILE): $(LIBSRCS)
 	cd ../lib; $(MAKE)
 
-install_once: all genlogin
+install_once: install genlogin
 	@(HOMEBBS="$(HOMEBBS)" INSTALL="$(INSTALL)" ECHO_N=$(ECHO_N) \
 		../Install.sh)
 	@(./genlogin -c Sysop -p SYSOP -l 255 -i 7 SYSOP)
 	@(./genlogin -c Guest -p guest -l 0   -i 0 guest)
 
-install: installbbsd installbbschatd
-	
+install: all installbbsd installbbschatd
 
 install%: %
+	mkdir -p $(HOMEBBS)/bin
 	(cd $(HOMEBBS); [ ! -f ./bin/$? ] || mv -f ./bin/$? ./bin/$?.old)
 	-cp -p $? $(HOMEBBS)/bin
 

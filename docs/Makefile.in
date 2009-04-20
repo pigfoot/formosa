@@ -1,4 +1,4 @@
-HOMEBBS := @prefix@
+HOMEBBS := @HOMEBBS@
 BBS_UID := @BBS_UID@
 BBS_GID := @BBS_GID@
 
