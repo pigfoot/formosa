@@ -155,12 +155,14 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 				int tag_len = format_array[i+1].offset-format_array[i].offset-2;
 				char *tag = &(format[format_array[i].offset+1]);
 
-				if(!strncasecmp(tag, "Num", tag_len))
+				if(!strncasecmp(tag, "Num", tag_len)) {
 					fprintf(fp, "%d", pt[idx].count);
-				else if(!strncasecmp(tag, "PushNum", tag_len))
-					fprintf(fp, "%2.2X", pt[idx].pcount);
-				else if(!strncasecmp(tag, "PostTitle", tag_len))
-				{
+				} else if(!strncasecmp(tag, "PushNum", tag_len)) {
+					if (pt[idx].pcount >= 0)
+						fprintf(fp, "%2.2X", pt[idx].pcount);
+					else
+						fprintf(fp, "-%2.2X", 0 - pt[idx].pcount);
+				} else if(!strncasecmp(tag, "PostTitle", tag_len)) {
 				#if 0
 					if(strstr(pt[idx].title, "=?"))
 					{
@@ -170,13 +172,13 @@ void ShowTopList(FILE *fp, char *tag, int total_title_num, POST_TITLE *pt)
 					}
 				#endif
 					fprintf(fp, "%s", pt[idx].title);
-				}
-				else if(!strncasecmp(tag, "BBS_Subdir", tag_len))
+				} else if(!strncasecmp(tag, "BBS_Subdir", tag_len)) {
 					fprintf(fp, "<!BBS_Subdir!>");
-				else if(!strncasecmp(tag, "PostFileName", tag_len))
+				} else if(!strncasecmp(tag, "PostFileName", tag_len)) {
 					fprintf(fp, "%s.html", pt[idx].filename);
-				else if(!strncasecmp(tag, "BoardName", tag_len))
+				} else if(!strncasecmp(tag, "BoardName", tag_len)) {
 					fprintf(fp, "%s", pt[idx].boardname);
+				}
 
 			}
 		}
