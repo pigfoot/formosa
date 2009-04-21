@@ -473,6 +473,7 @@ static void access_mail(const char *r_file, const struct MailHeader *mh, const s
 	int tsize, key, i;
 
 	if (*mh->content_type &&
+	     strncasecmp(mh->content_type, "multipart/", 10) &&
 	    (strncasecmp(mh->content_type, "text/", 5) ||
 	    strcasestr(mh->content_type, "html"))) {
 		bbsmail_log_write("DENYTYPE", "from=<%s>, to=<%s>, subject=<%s>, type=<%s>",
