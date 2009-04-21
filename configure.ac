@@ -116,7 +116,7 @@ AC_CACHE_CHECK(if sys_siglist is already defined, ac_cv_needs_sys_siglist,
 				ac_cv_needs_sys_siglist="yes")
 			  )
 if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
-	AC_DEFINE(NEED_SYS_SIGLIST, 1, [Description])
+	AC_DEFINE(NEED_SYS_SIGLIST, [1], [Define sys_siglist support])
 fi
 
 ECHO_N=${ac_n}
