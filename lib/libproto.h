@@ -192,6 +192,7 @@ enum lengths {
 };
 enum nrs {
 	MAX_ADDR_NR = 8,
+	MAX_PART_NR = 3
 };
 struct MailHeader {
 	char content_type[CONTENTTYPE_LEN];
@@ -212,7 +213,8 @@ struct MailHeader {
 char *cgetline(char *input, char **buf, size_t offset, size_t *buflen);
 int is_notmycharset(const char *cs);
 char *parse_header(char *input, struct MailHeader *mh);
-int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh);
+int print_content(char *input, FILE *output, char *errmsg,
+		struct MailHeader *mh, struct MailHeader *subhdr);
 /* lib_str.c */
 int str_conv(iconv_t ict, char *str, size_t maxlen);
 void str_trim(volatile char *buf);
