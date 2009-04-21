@@ -110,11 +110,12 @@ static int mail_group(char *fname, char *title)
 		/* TODO: check return vaule ? */
 #ifndef IGNORE_CASE
                 SendMail(msNew, fname, curuser.userid, curuser.userid, genbuf,
+			curuser.ident);
 #else
                 SendMail(msNew, fname, strcasecmp(curuser.fakeuserid,
 curuser.userid)? curuser.userid:curuser.fakeuserid, curuser.userid, genbuf,
-#endif
 			curuser.ident);
+#endif
 	}
 
 	/* delivery mail for the assigned list */
