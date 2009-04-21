@@ -448,12 +448,12 @@ out:
 
 }
 
-int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh)
+int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh, struct MailHeader *subhdr)
 {
 	int rt, n = 0;
 	char buf[80], *next_line = input;
-	struct MailHeader subhdr;
 
+	memset(subhdr, 0, sizeof(struct MailHeader) * MAX_PART_NR);
 	if (!strncasecmp(mh->content_type, "multipart/", 10)) {
 		if (!*(mh->boundary)) {
 			strcpy(errmsg, "MultipartNoBoundary");
@@ -464,43 +464,49 @@ int print_content(char *input, FILE *output, char *errmsg, struct MailHeader *mh
 
 		rt = print_simple_content(next_line, output, errmsg, mh, &next_line);
 		if (rt == ERROR)
-			return -1;
+			return ERROR;
 		else if (rt == ENDOFINPUT)
 			return 0;
 
 		dbg("first rt: %d\n", rt);
 
 		do {
-			next_line = parse_header(next_line, &subhdr);
+			if (++n > MAX_PART_NR) {
+				strcpy(errmsg, "PARTLIM");
+				return ERROR;
+			}
+
+			next_line = parse_header(next_line, subhdr + (n - 1));
 
 			dbg("header rt: %p\n", next_line);
 
 			if (!next_line) {
-				strcpy(errmsg, "SUBHDR_ERR");
+				strcpy(errmsg, "ESUBHDR");
 				return -1;
 			}
 
-			sprintf(buf, "============================== Part %d ==============================\n", ++n);
+			sprintf(buf, "\n============================== Part %d ==============================\n", n);
 			fputs(buf, output);
-			strcpy(subhdr.boundary, mh->boundary);
+			strcpy((subhdr + (n - 1))->boundary, mh->boundary);
 
-			if (strncasecmp(subhdr.content_type, "text/", 5)) {
+			if (strncasecmp((subhdr + (n - 1))->content_type, "text/", 5)) {
 			    	fputs("It's not a text file, ignored printing.\n", output);
-				rt = print_simple_content(next_line, NULL, errmsg, &subhdr, &next_line);
+				rt = print_simple_content(next_line, NULL, errmsg, subhdr + (n - 1), &next_line);
 			} else {
-				rt = print_simple_content(next_line, output, errmsg, &subhdr, &next_line);
+				rt = print_simple_content(next_line, output, errmsg, subhdr + (n - 1), &next_line);
 			}
 
 			dbg("psc rt: %d\n", rt);
 		} while (rt == HIT_BOUNDARY);
 
 		if (rt == HIT_END_BOUNDARY) {
-			sprintf(buf, "============================= Tail Part =============================\n");
+			sprintf(buf, "\n============================= Tail Part =============================\n");
 			fputs(buf, output);
 			rt = print_simple_content(next_line, output, errmsg, mh, &next_line);
 			if (rt != ERROR)
-				rt = 0;
+				rt = n;
 		}
+
 
 		return rt;
 	}

@@ -10,6 +10,11 @@
 
 #define ANTISPAM
 
+#ifdef linux
+#define _GNU_SOURCE
+#include <string.h>
+#endif
+
 #include "bbs.h"
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -463,10 +468,29 @@ int do_mail(const char *r_file)
 	return result;
 }
 
-static void access_mail(const char *r_file)
+static void access_mail(const char *r_file, const struct MailHeader *mh, const struct MailHeader *smh)
 {
-	int tsize;
-	int key;
+	int tsize, key, i;
+
+	if (*mh->content_type &&
+	    (strncasecmp(mh->content_type, "text/", 5) ||
+	    strcasestr(mh->content_type, "html"))) {
+		bbsmail_log_write("DENYTYPE", "from=<%s>, to=<%s>, subject=<%s>, type=<%s>",
+				minfo.from, minfo.sender, minfo.subject, mh->content_type);
+		return;
+	}
+
+	for (i = 0; i < MAX_PART_NR; ++i) {
+		if (!(*smh->content_type))
+			break;
+		if (strncasecmp(smh->content_type, "text/", 5) ||
+		    strcasestr(smh->content_type, "html")) {
+			bbsmail_log_write("DENYTYPE", "from=<%s>, to=<%s>, subject=<%s>, type=<%s>",
+					minfo.from, minfo.sender, minfo.subject, smh->content_type);
+			return;
+		}
+		++smh;
+	}
 
 	memset(&user, 0, sizeof(user));
 	if (get_passwd(&user, minfo.sender) <= 0)
@@ -537,7 +561,7 @@ static void access_mail(const char *r_file)
 	do_mail(r_file);
 }
 
-static void classfy_mail(const char *const filename, const struct MailHeader *mh)
+static void classfy_mail(const char *const filename, const struct MailHeader *mh, const struct MailHeader *smh)
 {
 	char *s;
 
@@ -586,7 +610,7 @@ static void classfy_mail(const char *const filename, const struct MailHeader *mh
 		}
 	}
 
-	access_mail(filename);
+	access_mail(filename, mh, smh);
 }
 
 #define HEAD_VAR_NR 6
@@ -647,7 +671,7 @@ int main(int argc, char *argv[])
 	char msg[512];
 	char *ptr, *nextp, *endp;
 	size_t fsize;
-	struct MailHeader mh;
+	struct MailHeader mh, smh[MAX_PART_NR];
 	int fd, n = 0, rt;
 	FILE *fp;
 
@@ -715,14 +739,14 @@ int main(int argc, char *argv[])
 				if (endp)
 					*endp = '\0';
 
-				rt = print_content(nextp, fp, msg, &mh);
+				rt = print_content(nextp, fp, msg, &mh, smh);
 				fclose(fp);
 				if (rt == -1)
 					bbsmail_log_write("PNTERR",
 						"%s: from=<%s>, subject=<%s>",
 						msg, mh.xfrom, mh.subject);
 				else
-					classfy_mail(w_file, &mh);
+					classfy_mail(w_file, &mh, smh);
 				unlink(w_file);
 
 				if (endp)
