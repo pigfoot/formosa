@@ -2,26 +2,27 @@
 FormosaBBS - Frequently Asked Questions (FAQ)
 
 First updated:1998/06/27
-Last updated: 1999/06/17
+Last updated: 2009/04/22
 
 Any suggestion or question, please mail to 
-bbsmaster@cc.nsysu.edu.tw
+formosabbs@googlegroups.com
 
 
 1. 如果現在是用舊版的Formosa，那是不是不用將之刪除，可
    以直接再重新蓋上去呢？或是要將之刪除比較好呢？
 Ans:
-   更換所有執行檔即可.
+   可參考下列步驟更新:
 
-   (cd src; make installbbsd; make installbbschatd)
-   (cd csbbs; make installcsbbsd)
-   (cd util; make install)
+   bbs% make distclean
+   bbs% ./autogen
+   bbs% ./configure
+   bbs% make update
 
 
 2. 請問那個“活動看版”的功能是用開啟的嗎？還是外掛？
    要如何做呢？
 Ans:
-   安裝手冊 (ftp://ftp.nsysu.edu.tw/NSYSU/BBS/INSTALL) 中
+   安裝手冊 (FormosaBBS 程式所包含的 INSTALL 檔案) 中
 
    十四、秀圖模式設定(menushow)：
 
