@@ -222,7 +222,7 @@ static int spam_filehash(const char *filename, int pool_size)
 	int	fd;
 	size_t	fsize;
 	char	*ptr;
-	long	*hptr, *eptr, idx;
+	long	*hptr, *eptr, idx = 0;
 
 	if ((fd = open(filename, O_RDONLY)) < 0)
 		return -1;
