@@ -2,9 +2,11 @@
 支援 
 ====
 
-RedHat Linux 6.x
-Slackware 3.x.x
-Solaris 2.x
+Gentoo Linux
+Debian Linux
+FreeBSD 4.0 or above
+MacOS 10.5 or above
+Solaris 10 (x86 and sparc)
 
 
 服務
@@ -39,3 +41,6 @@ Solaris 2.x
     * 投票系統
     * guest 參觀用帳號
     * 轉貼信箱內信件至看板
+    * 推/呸文系統
+    * 行內編輯
+    * 長螢幕/寬螢幕支援
