@@ -125,9 +125,9 @@ int ParseKMP(char *cmd, REQUEST_REC *r)
 	{
 		int start = 0, end = 0;
 
-		if(arg1)
+		if(*arg1)
 			start = atoi(arg1);
-		if(arg2)
+		if(*arg2)
 			end = atoi(arg2);
 
 	#if 0

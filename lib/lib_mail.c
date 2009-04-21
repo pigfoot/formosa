@@ -172,7 +172,7 @@ static int mail_get_multi(char *buf,
 			char addr[MAX_ADDR_NR][ADDR_LEN])
 {
 	int n;
-	char *token, *saveptr;
+	char *token, *saveptr = NULL;
 
 	token = strtok_r(buf, ",", &saveptr);
 	for (n = 0 ; n < MAX_ADDR_NR && token ; ++n) {

@@ -454,8 +454,9 @@ ModifyBoard(char *pbuf, BOARDHEADER * board)
 	}
 
 #if 0
-	sprintf(WEBBBS_ERROR_MESSAGE, "bname=%s, title=%s, owner=%s, level=%d, class=%c, MAX_BRDTYPE=%d
-		< br > IDENT = %s < br > NEWS = %s < br > UNZAP = %s < br > NOPOSTNUM = %s < br > CROSS = %s < br > PRIVATE = %s < br > WEBSKIN = %s < br > ACL = %s ",
+	sprintf(WEBBBS_ERROR_MESSAGE, "bname=%s, title=%s, owner=%s, level=%d, class=%c, MAX_BRDTYPE=%d"
+		"< br > IDENT = %s < br > NEWS = %s < br > UNZAP = %s < br >"
+		"NOPOSTNUM = %s < br > CROSS = %s < br > PRIVATE = %s < br > WEBSKIN = %s < br > ACL = %s ",
 		board->filename, board->title, board->owner, board->level, board->class, sizeof(board->brdtype),
 		board->brdtype & BRD_IDENT ? "YES" : "NO",
 		board->brdtype & BRD_NEWS ? "YES" : "NO",

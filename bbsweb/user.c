@@ -381,8 +381,8 @@ ShowUserList(char *tag, POST_FILE *pf)
 		 || !strcmp(buffer, "FRIENDONLY"))
 	{
 #if 0
-	fprintf(fp_out, "start3=%d, end3=%d, num_users=%d, num_friends=%d,
-		\r\n",
+	fprintf(fp_out, "start3=%d, end3=%d, num_users=%d, num_friends=%d,"
+		"\r\n",
 		start, end, num_users, num_friends);
 	fflush(stdout);
 #endif
