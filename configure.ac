@@ -128,6 +128,8 @@ AC_PREFIX_DEFAULT(/home/bbs)
 test "x$prefix" = "xNONE" && prefix=$ac_default_prefix
 AC_DEFINE([HOMEBBS], [], [Define the home directory of BBS])
 AC_DEFINE_UNQUOTED(HOMEBBS, "`eval echo "${prefix}"`")
+HOMEBBS=$prefix
+AC_SUBST(HOMEBBS)
 
 BBS_UID_DEFAULT=9999
 AC_ARG_WITH(bbs-uid,
