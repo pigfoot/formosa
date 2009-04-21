@@ -124,17 +124,10 @@ ECHO_C=${ac_c}
 ECHO_T=${ac_t}
 AC_SUBST(ac_n)
 
-HOMEBBS_DEFAULT="/home/bbs"
-AC_ARG_WITH(homebbs,
-	[  --with-homebbs=PATH
-			  BBS Home Directory (default /home/bbs)],
-	[ HOMEBBS=$withval ],
-	[ HOMEBBS=$HOMEBBS_DEFAULT ]
-)
-AC_DEFINE_UNQUOTED(HOMEBBS, "$HOMEBBS", [Define the home directory of BBS])
-
-AC_SUBST(HOMEBBS)
-AC_SUBST(HOMEBBS_DEFAULT)
+AC_PREFIX_DEFAULT(/home/bbs)
+test "x$prefix" = "xNONE" && prefix=$ac_default_prefix
+AC_DEFINE([HOMEBBS], [], [Define the home directory of BBS])
+AC_DEFINE_UNQUOTED(HOMEBBS, "`eval echo "${prefix}"`")
 
 BBS_UID_DEFAULT=9999
 AC_ARG_WITH(bbs-uid,
