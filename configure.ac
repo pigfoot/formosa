@@ -8,7 +8,6 @@ AC_VALIDATE_CACHED_SYSTEM_TUPLE(rm -f config.cache)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-
 AC_SUBST(VERSION)
 
 dnl Checks for programs.
@@ -106,7 +105,6 @@ case ${target} in
 	LIBS="-ltermcap"
 	;;
 esac
-
 AC_SUBST(systype)
 AC_SUBST(OS_DEF)
 
@@ -116,7 +114,7 @@ AC_CACHE_CHECK(if sys_siglist is already defined, ac_cv_needs_sys_siglist,
 				ac_cv_needs_sys_siglist="yes")
 			  )
 if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
-	AC_DEFINE(NEED_SYS_SIGLIST, 1, [Description])
+	AC_DEFINE(NEED_SYS_SIGLIST, [1], [Define sys_siglist support])
 fi
 
 ECHO_N=${ac_n}
@@ -124,17 +122,12 @@ ECHO_C=${ac_c}
 ECHO_T=${ac_t}
 AC_SUBST(ac_n)
 
-HOMEBBS_DEFAULT="/home/bbs"
-AC_ARG_WITH(homebbs,
-	[  --with-homebbs=PATH
-			  BBS Home Directory (default /home/bbs)],
-	[ HOMEBBS=$withval ],
-	[ HOMEBBS=$HOMEBBS_DEFAULT ]
-)
-AC_DEFINE_UNQUOTED(HOMEBBS, "$HOMEBBS", [Define the home directory of BBS])
-
+AC_PREFIX_DEFAULT(/home/bbs)
+test "x$prefix" = "xNONE" && prefix=$ac_default_prefix
+AC_DEFINE([HOMEBBS], [], [Define the home directory of BBS])
+AC_DEFINE_UNQUOTED(HOMEBBS, "$prefix")
+HOMEBBS=$prefix
 AC_SUBST(HOMEBBS)
-AC_SUBST(HOMEBBS_DEFAULT)
 
 BBS_UID_DEFAULT=9999
 AC_ARG_WITH(bbs-uid,
@@ -143,7 +136,6 @@ AC_ARG_WITH(bbs-uid,
 	[ BBS_UID=$withval ],
 	[ BBS_UID=$BBS_UID_DEFAULT ]
 )
-
 AC_SUBST(BBS_UID)
 AC_SUBST(BBS_UID_DEFAULT)
 
@@ -154,7 +146,6 @@ AC_ARG_WITH(bbs-gid,
 	[ BBS_GID=$withval ],
 	[ BBS_GID=$BBS_GID_DEFAULT ]
 )
-
 AC_SUBST(BBS_GID)
 AC_SUBST(BBS_GID_DEFAULT)
 
@@ -165,7 +156,6 @@ AC_ARG_WITH(tcp-port,
 	[ BBS_TCP_PORT=$withval ],
 	[ BBS_TCP_PORT=$BBS_TCP_PORT_DEFAULT ]
 )
-
 AC_SUBST(BBS_TCP_PORT)
 AC_SUBST(BBS_TCP_PORT_DEFAULT)
 

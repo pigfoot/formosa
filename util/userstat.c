@@ -412,18 +412,11 @@ void
 usage(prog)
 char *prog;
 {
-#if 0
-	printf("Usage: %s -c time_sec -p boardname \n\
-\t-s report the statistics of logins till now
-\t-c run as daemon, record the status of online user every [time_sec] sec\n\
-\t-p post the statistics report on specified board\n", prog);
-#endif
-
 	printf("Usage: %s -c -s -k -p boardname\n"
-			"\t-s report the statistics of logins till now\n"
-			"\t-c record the status of online user\n"
-			"\t-p post the statistics report on specified board\n"
-			"\t-k with pruning the log record\n", prog);
+		"\t-s report the statistics of logins till now\n"
+		"\t-c record the status of online user\n"
+		"\t-p post the statistics report on specified board\n"
+		"\t-k with pruning the log record\n", prog);
 
 }
 

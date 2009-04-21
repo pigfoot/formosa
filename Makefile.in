@@ -39,7 +39,7 @@ config:
 
 config_bbs3:
 	./autogen.sh
-	CFLAGS=-DNSYSUBBS3 ./configure --with-homebbs=/apps/bbs
+	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
 
 install_once: target := install_once
 install_once: $(SUBDIRS)
