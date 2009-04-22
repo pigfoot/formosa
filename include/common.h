@@ -1,10 +1,10 @@
 #ifndef INCLUDE_COMMON_H
 #define INCLUDE_COMMON_H
 
-#define STR_AUTHOR1     "ä½œè€…:"
-#define STR_AUTHOR2     "ç™¼ä¿¡äºº:"
-#define STR_POST1       "çœ‹æ¿:"
-#define STR_POST2       "ç«™å…§:"
+#define STR_AUTHOR1     "§@ªÌ:"
+#define STR_AUTHOR2     "µo«H¤H:"
+#define STR_POST1       "¬İªO:"
+#define STR_POST2       "¯¸¤º:"
 #define LEN_AUTHOR1     (sizeof(STR_AUTHOR1) - 1)
 #define LEN_AUTHOR2     (sizeof(STR_AUTHOR2) - 1)
 #define Ctrl(c)         (c & 037)
