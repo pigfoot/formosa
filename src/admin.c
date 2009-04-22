@@ -334,10 +334,8 @@ static int new_board(BOARDHEADER *bhp)
 
 	if ((fd = open(BOARDS, O_RDWR | O_CREAT, 0600)) > 0)
 	{
-		if (myflock(fd, LOCK_EX)) {
-			close(fd);
-			return 0;
-		}
+		if (myflock(fd, LOCK_EX))
+			goto lock_err;
 		for (bid = 1; read(fd, &bhbuf, BH_SIZE) == BH_SIZE; bid++)
 		{
 			if (bhbuf.filename[0] == '\0' || bhbuf.bid == 0)
@@ -360,35 +358,37 @@ static int new_board(BOARDHEADER *bhp)
 			}
 		}
 		if (bid == -1)
+			goto op_err;
+
+		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) == -1 ||
+		    read(fd, &bhbuf, BH_SIZE) != BH_SIZE ||
+		    bhbuf.filename[0] != '\0')
+			goto op_err;
+
+		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) == -1)
+			goto op_err;
+
+		bhp->bid = bid;
+		bhp->ctime = time(NULL);
+		if (write(fd, bhp, BH_SIZE) == BH_SIZE)
 		{
+			char pathname[PATHLEN];
+
 			flock(fd, LOCK_UN);
 			close(fd);
-			return 0;
+
+			setboardfile(pathname, bhp->filename, NULL);
+			mkdir(pathname, 0700);
+			settreafile(pathname, bhp->filename, NULL);
+			mkdir(pathname, 0700);
+
+			rebuild_brdshm(TRUE);
+
+			return bid;
 		}
-
-		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) != -1)
-		{
-			bhp->bid = bid;
-			bhp->ctime = time(NULL);
-			if (write(fd, bhp, BH_SIZE) == BH_SIZE)
-			{
-				char pathname[PATHLEN];
-
-
-				flock(fd, LOCK_UN);
-				close(fd);
-
-				setboardfile(pathname, bhp->filename, NULL);
-				mkdir(pathname, 0700);
-				settreafile(pathname, bhp->filename, NULL);
-				mkdir(pathname, 0700);
-
-				rebuild_brdshm(TRUE);
-
-				return bid;
-			}
-		}
+op_err:
 		flock(fd, LOCK_UN);
+lock_err:
 		close(fd);
 	}
 	return 0;
