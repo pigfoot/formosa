@@ -595,7 +595,7 @@ void include_ori(char *rfile, char *wfile, char reply_mode)
 /*******************************************************************
  * •]ßt√±¶W¿…
  *		name	user ID
- *		wfile	¿…Æ◊¶W∫
+ *		wfile	¿…Æ◊¶W∫Ÿ
  *		num		√±¶W¿…Ωs∏π
  *******************************************************************/
 #ifndef IGNORE_CASE
