@@ -1,11 +1,11 @@
 
-  FormosaBBS v1.3.0 安裝手冊 <簡易版> for Linux
+  FormosaBBS v1.5-current 安裝手冊 <簡易版> for Linux
 
 
  作業系統需求 
  ============ 
-  
-  SunOS 4.1.x, Solaris 2.x, IBM AIX 4.x, Linux (Slackware), FreeBSD
+
+  Linux (Gentoo, Debian), FreeBSD, MacOS 10.5, Solaris 10 (x86 and sparc)
     
  
  安裝步驟
@@ -17,16 +17,9 @@
      bbs% chown bbs ~bbs
      bbs% chgrp bbs ~bbs
 
-  2. bbs% cd ~bbs/
-     bbs% ftp ftp.nsysu.edu.tw
-          ftp> username: ftp
-          ftp> password: ftp@localhost
-          ftp> cd /NSYSU/BBS
-          ftp> bin
-          ftp> get FormosaBBS-1.1.1.src.tar.gz
-          ftp> get FormosaBBS-1.3.0-bin.tar.gz
-          ftp> get FormosaBBS-1.3.0-1.i386.rpm
-          ftp> quit
+  2. 請到 github 取得最新程式.
+
+     <URL:http://github.com/pigfoot/formosa/tree/master>
 
   3. 
 
@@ -35,19 +28,29 @@
      (1a) 設定原始程式, 編譯與安裝：
      bbs% gzip -dc FormosaBBS-1.1.1.tar.gz | tar xf -
      bbs% cd FormosaBBS-1.1.1
+     bbs% ./autogen.sh
      bbs% ./configure             
 
      接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數, 
      最多看板個數, 主機 domain, IP Address, 是否採用身份認證系統.
 
      bbs% make                   
-     bbs% make install           
+     bbs% make install_once
 
      (1b)
      bbs% rpm -ivh FormosaBBS-1.3.0-1.i386.rpm
 
-     (1c)
-     bbs% tar zxpf FormosaBBS-1.3.0-bin.tar.gz
+     (1c) 以 git 取得開發中的最新程式：
+
+     bbs% git clone git://github.com/pigfoot/formosa.git
+     bbs% cd formosa
+
+     接著同 (1a):
+    
+     bbs% ./autogen.sh
+     bbs% ./configure
+     bbs% make
+     bbs% make install_once
 
      (2)
      bbs% vi /etc/hosts
