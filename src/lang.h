@@ -372,7 +372,7 @@ struct LANG {
 #define	_msg_vote_13	MsgInfo(439)	/*	"§ë²¼®É¶¡¤w¹L, ©êºp!!..."	*/
 #define	_msg_vote_14	MsgInfo(440)	/*	"§ë²¼µ¥¯Å¬°%3d, ©êºp!!..."	*/
 #define	_msg_vote_15	MsgInfo(441)	/*	"¶}²¼®É¶¡©|¥¼¨ì, ¤£´£¨Ñ¬d¸ß!"	*/
-#define	_msg_vote_17	MsgInfo(443)	/*	"\n(¡÷)(Enter)¿ï¾Ü§ë²¼ (¡ö)(Q)Â÷¶} (c)¿ïÁ|»¡©ú (i)Åã¥Ü³]©w (o)¶}²¼µ²ªG (h)»¡©ú\n(a)¼W¥[¿ïÁ|/­Ô¿ï¶µ¥Ø¼ (d)§R°£¿ïÁ|/­Ô¿ï¶µ¥Ø (E)­×§ï¿ïÁ|/­Ô¿ï¶µ¥Ø\n"	*/
+#define	_msg_vote_17	MsgInfo(443)	/*	"\n(¡÷)(Enter)¿ï¾Ü§ë²¼ (¡ö)(Q)Â÷¶} (c)¿ïÁ|»¡©ú (i)Åã¥Ü³]©w (o)¶}²¼µ²ªG (h)»¡©ú\n(a)¼W¥[¿ïÁ|/­Ô¿ï¶µ¥Ø (d)§R°£¿ïÁ|/­Ô¿ï¶µ¥Ø (E)­×§ï¿ïÁ|/­Ô¿ï¶µ¥Ø\n"	*/
 #define	_msg_vote_18	MsgInfo(444)	/*	"     §ë²¼Á`¤H¼Æ : %d"	*/
 #define	_msg_vote_22	MsgInfo(449)	/*	"§R°£§¹²¦!"	*/
 #define	_msg_vote_23	MsgInfo(450)	/*	"\n©êºp, ¥Ø«e©|µLÁ|¿ì¥ô¦ó§ë²¼!!"	*/
