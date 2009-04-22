@@ -1,5 +1,6 @@
 *.[oa]
 *.dSYM
+*~
 cscope.out
 tags
 

@@ -3,7 +3,7 @@
 ################################################
 
 SUBDIRS := lib src util bbsweb bbsweb/util docs
-CLEANDIRS := $(SUBDIRS) src/util
+CLEANDIRS := $(SUBDIRS) src/util csbbs
 PHONY_TARGETS := all debug clean distclean install install_once update kill_process
 VERSION := 1.4.0
 HOMEBBS := @HOMEBBS@
@@ -56,12 +56,13 @@ clean: $(CLEANDIRS_CLEAN)
 distclean: clean
 	@for i in $(CLEANDIRS); do \
 		echo  "Dist Cleaning $$i ...";\
-		(cd $$i; rm -f *~ DEADJOE core a.out Makefile proto.h;) \
+		(cd $$i; rm -f *~ DEADJOE core a.out Makefile;) \
 	done
-#	@(cd innbbsd; ${MAKE} clean; cd innd; ${MAKE} clean)
-#	@rm -f bbshome/HTML/*.html
+	@-rm -f src/globals.c
 	@-rm -f *~
-	@-rm -f configure config.cache config.status config.log
+	@-rm -f configure config.cache config.status config.log \
+		config.h config.h.in
+	@-rm -rf autom4te.cache
 
 install: target := install
 install: $(HOMEBBS)/bin $(SUBDIRS)
