@@ -1,11 +1,8 @@
-################################################
-# Makefile for Formosa BBS v1.4.0              #
-################################################
-
+# Formosa BBS Makefile
 SUBDIRS := lib src util bbsweb bbsweb/util docs
 CLEANDIRS := $(SUBDIRS) src/util csbbs
 PHONY_TARGETS := all debug clean distclean install install_once update kill_process
-VERSION := 1.4.0
+VERSION := @PACKAGE_VERSION@
 HOMEBBS := @HOMEBBS@
 MAKE    := @MAKE@
 BBS_UID	:= @BBS_UID@
