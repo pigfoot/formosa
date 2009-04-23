@@ -286,6 +286,8 @@
  #define MFDISP_SEP_DEFAULT MFDISP_SEP_NONE
 
  // theme: comment these if you like pmore style
+ #undef PMORE_COLOR_HEADER1
+ #undef PMORE_COLOR_HEADER2
  #undef PMORE_COLOR_FOOTER1
  #undef PMORE_COLOR_FOOTER1_VIEWALL
  #undef PMORE_COLOR_FOOTER1_VIEWNONE
@@ -294,6 +296,8 @@
  #undef PMORE_COLOR_FOOTER3_TEXT
  #undef PMORE_COLOR_FOOTER3
 
+#define PMORE_COLOR_HEADER1 ANSI_RESET
+#define PMORE_COLOR_HEADER2 ANSI_RESET
 #define PMORE_COLOR_FOOTER1_VIEWALL \
     ANSI_COLOR(1;37;45)
 #define PMORE_COLOR_FOOTER1_VIEWNONE \
@@ -1146,6 +1150,7 @@ mf_parseHeaders()
     int i = 0;
 
     RESETFH();
+    return;
 
     if(mf.len < LEN_AUTHOR2)
         return;
