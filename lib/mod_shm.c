@@ -17,6 +17,7 @@
 #include <time.h>
 
 #include "bbsconfig.h"
+#include "bbs_ipc.h"
 #include "struct.h"
 #include "libproto.h"
 
@@ -64,8 +65,6 @@ struct UTMPSHM {	/* Shared Memory, for unix-like utmp */
 
 
 static struct UTMPSHM *utmpshm = NULL;	/* pointer to user_info shared memory */
-
-#define UTMPSHM_KEY	0x1129	/* shared memory key, should be unique */
 
 int utmp_semid = 0;
 
@@ -233,7 +232,6 @@ struct BRDSHM {
 };
 
 
-#define BRDSHM_KEY	0x1329
 static struct BRDSHM *brdshm = NULL;	/* pointer to boardheader shared memory */
 
 static int cmp_brdt_bname(const void *a, const void *b)
@@ -451,7 +449,6 @@ struct CLASSHM {
 
 static struct CLASSHM *classhm = NULL;
 
-#define CLASSHM_KEY	0x1429
 
 #if 0
 int

@@ -144,9 +144,6 @@ typedef struct user_info {
 #define SEM_RSET	0	/* Reset semaphore */
 #endif
 
-#define UTMPSEM_KEY 1129
-
-
 /* Flags used in fileheader accessed */
 #define FILE_READ   0x01	/* mail readed*/
 #define FILE_DELE   0x02	/* article deleted */

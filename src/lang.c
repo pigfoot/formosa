@@ -6,10 +6,6 @@
 #include "tsbbs.h"
 #include "lang.h"
 
-
-#define ELANGSHM_KEY		0x1529
-#define CLANGSHM_KEY        0x1629
-
 #define ELANG_CF "conf/elang.cf"
 #define CLANG_CF "conf/clang.cf"
 
