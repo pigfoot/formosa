@@ -251,8 +251,7 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 	if (!force && invalid_new_userid(ubuf->userid))
 		return 0;
 
-	if (/*is_duplicate_userid(ubuf->userid)
-	    || */get_passwd(NULL, ubuf->userid) > 0)
+	if (get_passwd(NULL, ubuf->userid) > 0)
 	{
 		return 0;
 	}
@@ -264,13 +263,20 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 		close(fd);
 		return 0;
 	}
-	for (cnt = 1;read(fd, &uidx, sizeof(uidx)) == sizeof(uidx); cnt++)
+	for (cnt = 1;read(fd, &uidx, sizeof(uidx)) == sizeof(uidx); ++cnt)
 	{
 		if (uidx.userid[0] == '\0')
 			break;
 	}
+	/*
+	 * cooldavid 2009/04/22:
+	 * FIXME: no return check..
+	 * 	  It might get wrong it read is interrupted.
+	 *
+	 * Write a tool to scan all user's uid, and fix .PASSWDS, .USERIDX
+	 */
 
-	if (lseek(fd, ((off_t) ((cnt - 1) * sizeof(uidx))), SEEK_SET) != -1)
+	if (lseek(fd, ((off_t)(cnt - 1)) * sizeof(uidx), SEEK_SET) != -1)
 	{
 		memset(&uidx, 0, sizeof(uidx));
 		strcpy(uidx.userid, ubuf->userid);
@@ -287,17 +293,15 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 				if ((fdp = open(fname, O_WRONLY | O_CREAT, 0600)) > 0)
 				{
 					ubuf->uid = cnt;
-#ifdef NSYSUBBS1
 					ubuf->username[0] = '\0';
-#endif
+
 					if (write(fdp, ubuf, sizeof(USEREC)) == sizeof(USEREC))
 					{
 						close(fdp);
 						flock(fd, LOCK_UN);
 						close(fd);
-#ifdef NSYSUBBS
+
 						bbslog("NEWUSER", "%s", ubuf->userid);
-#endif
 						/* sarek: 12/13/2000
 						   Clean previous user's mail */
 
@@ -309,24 +313,8 @@ unsigned int new_user(USEREC *ubuf, BOOL force)
 							     i = 0;
 
 						sprintf(path, "mail/%c/%s", aha[i], ubuf->userid);
-						sprintf(path2, "%s/%c/%s", DEL_MAIL,
-						  aha[i], ubuf->userid);
-/* 第一站現在是 raid 1 --lasehu 2002/05/26 */
+						sprintf(path2, "%s/%c/%s", DEL_MAIL, aha[i], ubuf->userid);
 						myrename(path, path2);
-#if 0
-# ifndef NSYSUBBS1	/* 第一站 MAIL 分佈在不同硬碟，不能這樣砍 --lmj */
-						rename(path, path2);
-# else
-						if(rename(path, path2))
-						{
-							sprintf(path2, "%s/%c/%s", DEL_MAIL2,
-							  aha[i], ubuf->userid);
-							rename(path, path2);
-						}
-# endif
-#endif
-						/* sarek: 12/13/2000: above */
-
 						return ubuf->uid;
 					}
 					close(fdp);

@@ -5,12 +5,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#ifdef DEBUG
-#define dbg(fmt, arg...) printf(fmt, ## arg)
-#else
-#define dbg(fmt, arg...)
-#endif
-
 char *cgetline(char *input,
 			char **buf, size_t offset, size_t *buflen)
 {

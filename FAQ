@@ -2,26 +2,27 @@
 FormosaBBS - Frequently Asked Questions (FAQ)
 
 First updated:1998/06/27
-Last updated: 1999/06/17
+Last updated: 2009/04/22
 
-Any suggestion or question, please mail to 
-bbsmaster@cc.nsysu.edu.tw
+Any suggestion or question, please mail to
+formosabbs@googlegroups.com
 
 
 1. ¦pªG²{¦b¬O¥ÎÂÂª©ªºFormosa¡A¨º¬O¤£¬O¤£¥Î±N¤§§R°£¡A¥i
    ¥Hª½±µ¦A­«·s»\¤W¥h©O¡H©Î¬O­n±N¤§§R°£¤ñ¸û¦n©O¡H
 Ans:
-   §ó´«©Ò¦³°õ¦æÀÉ§Y¥i.
+   ¥i°Ñ¦Ò¤U¦C¨BÆJ§ó·s:
 
-   (cd src; make installbbsd; make installbbschatd)
-   (cd csbbs; make installcsbbsd)
-   (cd util; make install)
+   bbs% make distclean
+   bbs% ./autogen
+   bbs% ./configure
+   bbs% make update
 
 
 2. ½Ð°Ý¨º­Ó¡§¬¡°Ê¬Ýª©¡¨ªº¥\¯à¬O¥Î¶}±Òªº¶Ü¡HÁÙ¬O¥~±¾¡H
    ­n¦p¦ó°µ©O¡H
 Ans:
-   ¦w¸Ë¤â¥U (ftp://ftp.nsysu.edu.tw/NSYSU/BBS/INSTALL) ¤¤
+   ¦w¸Ë¤â¥U (FormosaBBS µ{¦¡©Ò¥]§tªº INSTALL ÀÉ®×) ¤¤
 
    ¤Q¥|¡B¨q¹Ï¼Ò¦¡³]©w(menushow)¡G
 
@@ -73,7 +74,7 @@ Ans:
     ^^^^^^^  ^^^^^^^^^
       (3)      (4)
 
-    (3) ¤@¦ê¦r¤¸, ³Ì¤j±«×¬° 7 ­Ó¦r¤¸, ªí¥Ü¬Y¤@¬ÝªO¦b¦¹¿ï³æ¤¤ªº¥N¸¹
+    (3) ¤@¦ê¦r¤¸, ³Ì¤jªø«×¬° 7 ­Ó¦r¤¸, ªí¥Ü¬Y¤@¬ÝªO¦b¦¹¿ï³æ¤¤ªº¥N¸¹
     (4) ¸Ó¬ÝªOªº­^¤åªO¦W
 
 
@@ -261,16 +262,37 @@ FormosaBBS 1.3.0
 
 1. ¬ÝªO©Î«H½cªº .DIR §G§i/«H¥ó¯Á¤ÞÀÉ·l·´¤F, ¸Ó¦p¦ó±Ï¦^¨Ó?
 Ans:
-    ¨Ï¥Î fixdir -r <path>
-  
-    ¨Ò¦p: 
-    ±Ï¦^ sysop ªOªº .DIR  
-    % fixdir -r ~bbs/boards/sysop
+    ¨Ï¥Î packbbs
+
+    ¨Ò¦p:
+    ±Ï¦^ sysop ªOªº .DIR
+    % packbbs -b sysop -r
     ±Ï¦^ SYSOP ­Ó¤H«H½cªº .DIR
-    % fixdir -r ~bbs/mail/s/SYSOP
+    % packbbs -u SYSOP -r
 
+    Äµ§i: ¥H¤U«ü¥O­Y¤£½T©w¦b°µ¤°»ò½Ð¤Å¨Ï¥Î
+    ±Ï¦^¥þ³¡¬ÝªOªº .DIR
+    % packbbs -B -r
+    ±Ï¦^¥þ³¡­Ó¤H«H½cªº .DIR
+    % packbbs -U -r
 
-2. ­n¦p¦ó­«·s§ó§ï BBS ¯¸¦W?
+2. ¬ÝªO©Î«H½c¦³µLªk¾\Åªªº¤å³¹(¥ÛÀY¤å), ¸Ó«ç»ò³B²z?
+Ans:
+    ¨Ï¥Î packbbs
+
+    ¨Ò¦p:
+    ²M°£ sysop ªOªº¥ÛÀY¤å
+    % packbbs -b sysop -r
+    ²M°£ SYSOP ­Ó¤H«H½cªº¥ÛÀY¤å
+    % packbbs -u SYSOP -r
+
+    Äµ§i: ¥H¤U«ü¥O­Y¤£½T©w¦b°µ¤°»ò½Ð¤Å¨Ï¥Î
+    ²M°£¥þ³¡¬ÝªOªº¥ÛÀY¤å
+    % packbbs -B -r
+    ²M°£¥þ³¡­Ó¤H«H½cªº¥ÛÀY¤å
+    % packbbs -U -r
+
+3. ­n¦p¦ó­«·s§ó§ï BBS ¯¸¦W?
 Ans:
    1) ½s¿è ~bbs/conf/bbs.conf
    2) §R°£ ~bbs/conf/bbs.img

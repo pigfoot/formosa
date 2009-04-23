@@ -3,7 +3,7 @@
 #define _BBS_STRUCT_H_
 
 
-#define PATHLEN    255	/* max # of characters in a path name */
+#define PATHLEN		255	/* max # of characters in a path name */
 #define STRLEN		80	/* Length of most string data */
 #define IDLEN		13	/* Length of userids */
 #define UNAMELEN	21	/* Length of username */
@@ -160,6 +160,17 @@ typedef struct user_info {
 #endif
 
 /*
+ * Informations for each board/mailbox
+ */
+struct infoheader {
+	int last_postno;
+} __attribute__ ((packed));
+
+typedef struct infoheader INFOHEADER;
+
+#define IH_SIZE    (sizeof(struct infoheader))
+
+/*
  * FHF_* for FILEHEADER.flags
  */
 #define PUSH_ERR	9999
@@ -256,8 +267,7 @@ struct boardheader {
         unsigned char brdtype;    /* 看板屬性旗標 */
         char owner[5*IDLEN+15];   /* TODO: max 5 bmas, each length is IDLEN */
         char title[CBNAMELEN+4];  /* description of board */
-        int last_postno;
-        char unused2[36] ;
+        char unused2[40] ;
         unsigned int level;
 } __attribute__ ((packed));
 
@@ -412,6 +422,7 @@ enum ULOGIN {
  * 路徑與檔名定義區
  */
 #define DIR_REC      ".DIR"
+#define INFO_REC     ".INFO"
 #define THREAD_REC      ".THREADPOST"       /* syhu: thread posts records */
 #define THREAD_HEAD_REC ".THREADHEAD"       /* syhu: thread head records */
 #define PASSFILE     "conf/.PASSWDS"

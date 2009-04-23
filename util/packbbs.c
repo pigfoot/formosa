@@ -7,115 +7,171 @@
 
 
 #include "bbs.h"
-
+#include <unistd.h>
+#include <getopt.h>
 
 void
 usage()
 {
-	fprintf (stderr, "usage: packbbs [-a] [-b boardname] [-m userid]\r\n");
+	fprintf (stderr, "usage: packbbs [-u userid | -b boardname | -U | -B] [-p | -f | -r]\n"
+			"\n"
+			"\tMust specify exactly one of the following target\n"
+			"\t-u userid:    Fix specified user's mail box.\n"
+			"\t-b boardname: Fix specified board.\n"
+			"\t-U:           Fix all users' mail box.\n"
+			"\t-B:           Fix all boards.\n"
+			"\n"
+			"\tMust specify at least one of the following type\n"
+			"\t-p: Pack .DIR file.\n"
+			"\t    -- Delete marked files, clean .DIR entries\n"
+			"\t-f: Fix .DIR file.\n"
+			"\t    -- Clean .DIR entries that associated with missing file.\n"
+			"\t-r: Recover .DIR file.\n"
+			"\t    -- Putting unassociated files back to .DIR file.\n"
+			);
 	fflush(stderr);
+	exit(0);
 }
 
+enum TYPE_ENUM {
+	TYPE_USER     = 1,
+	TYPE_BOARD    = 2,
+	TYPE_ALLUSER  = 3,
+	TYPE_ALLBOARD = 4,
+};
+enum MODE_ENUM {
+	MODE_PACK    = 1,
+	MODE_FIX     = 2,
+	MODE_RECOVER = 4,
+};
 
-int
-main (argc, argv)
-int argc;
-char *argv[];
+static void do_pack(int mode, const char *path)
+{
+	if (mode & MODE_PACK) {
+		/* 刪除已標記刪除文章 */
+		printf ("Packing '%s' ... ", path);
+		fflush(stdout);
+		if (pack_article (path) == -1)
+			printf ("failed!!\n");
+		else
+			printf ("finished!!\n");
+	}
+	if (mode & MODE_FIX) {
+		/* 清掉石頭文 */
+		printf ("Fixing '%s' ... ", path);
+		fflush(stdout);
+		if (clean_dirent(path) == -1)
+			printf ("failed!!\n");
+		else
+			printf ("finished!!\n");
+	}
+	if (mode & MODE_RECOVER) {
+		/* 重建.DIR檔 */
+		printf ("Recovering '%s' ... ", path);
+		fflush(stdout);
+		if (recover_dirent(path) == -1)
+			printf ("failed!!\n");
+		else
+			printf ("finished!!\n");
+	}
+}
+
+int main (int argc, char **argv)
 {
 	char path[PATHLEN];
 	int fd;
 	char id[STRLEN];
 	BOARDHEADER bh;
-	int c, mode = 0;
-	extern char *optarg;
-
-	init_bbsenv();
+	USEREC user;
+	int c, type = 0, mode = 0;
 
 	if (argc < 2)
-	{
 		usage();
-		exit(-1);
-	}
 
-	while ((c = getopt (argc, argv, "ab:f:m:")) != -1)
+	while ((c = getopt (argc, argv, "u:b:UBpfr")) != -1)
 	{
 		switch (c)
 		{
-		case 'a':
-			mode = 'a';
+		case 'u':
+			if (type)
+				usage();
+			type = TYPE_USER;
+			strcpy (id, optarg);
 			break;
 		case 'b':
-			mode = 'b';
+			if (type)
+				usage();
+			type = TYPE_BOARD;
 			strcpy (id, optarg);
+			break;
+		case 'U':
+			if (type)
+				usage();
+			type = TYPE_ALLUSER;
+			break;
+		case 'B':
+			if (type)
+				usage();
+			type = TYPE_ALLBOARD;
+			break;
+		case 'p':
+			mode |= MODE_PACK;
 			break;
 		case 'f':
-			mode = 'f';
-			strcpy (id, optarg);
+			mode |= MODE_FIX;
 			break;
-		case 'm':
-			mode = 'm';
-			strcpy (id, optarg);
+		case 'r':
+			mode |= MODE_RECOVER;
 			break;
 		case '?':
 		default:
 			usage();
-			exit(-1);
 		}
 	}
 
-	switch (mode)
-	{
-	/* pack all boards */
-	case 'a':
+	if (!type || !mode)
+		usage();
+
+	init_bbsenv();
+
+	if (type == TYPE_USER || type == TYPE_BOARD) {
+		if (type == TYPE_BOARD)
+			setboardfile(path, id, DIR_REC);
+		else
+			setmailfile (path, id, DIR_REC);
+
+		do_pack(mode, path);
+
+		if (type == TYPE_BOARD)
+			set_brdt_numposts(id, TRUE);
+	} else if (type == TYPE_ALLBOARD) {
 		if ((fd = open (BOARDS, O_RDONLY)) > 0)
 		{
+			printf ("Packing all boards ...\n");
 			while (read (fd, &bh, sizeof (bh)) == sizeof (bh))
 			{
+				if (!*bh.filename)
+					continue;
 				setboardfile(path, bh.filename, DIR_REC);
-				printf ("Packing board '%s' ... ", bh.filename);
-				if (pack_article (path) == -1)
-					printf ("failed!!\r\n");
-				else
-					printf ("finished!!\r\n");
-				set_brdt_numposts(bh.filename, TRUE);	/* lthuang: 99/08/20 */
+				do_pack(mode, path);
+				set_brdt_numposts(bh.filename, TRUE);
 			}
-			printf ("Pack all boards ... done!!\r\n");
+			printf ("Done!!\n");
 		}
-		break;
-	/* pack specified board */
-	case 'b':
-		setboardfile(path, id, DIR_REC);
-		printf ("Pack board '%s' ... ", id);
-		fflush(stdout);
-		if (pack_article (path) == -1)
-			printf ("failed!!\r\n");
-		else
-			printf ("finished!!\r\n");
-		set_brdt_numposts(id, TRUE);	/* lthuang: 99/08/20 */
-		break;
-	/* fix specified board */
-	case 'f':
-		setboardfile(path, id, DIR_REC);
-		printf ("Fix board '%s' ... ", id);
-		fflush(stdout);
-		if (clean_dirent(path) == -1)
-			printf ("failed!!\r\n");
-		else
-			printf ("finished!!\r\n");
-		set_brdt_numposts(id, TRUE);
-		break;
-	/* pack user mail box */
-	case 'm':
-		setmailfile (path, id, DIR_REC);
-		printf ("Pack mailbox '%s' ... ", id);
-		fflush(stdout);
-		if (pack_article (path) == -1)
-			printf ("failed!!\r\n");
-		else
-			printf ("finished!!\r\n");
-		break;
-	default:
-		exit(-1);
+	} else if (type == TYPE_ALLUSER) {
+		if ((fd = open (PASSFILE, O_RDONLY)) > 0)
+		{
+			printf ("Packing all mails ...\n");
+			while (read (fd, &user, sizeof(user)) == sizeof(user))
+			{
+				if (!*user.userid)
+					continue;
+				setmailfile(path, user.userid, DIR_REC);
+				do_pack(mode, path);
+			}
+			printf ("Done!!\n");
+		}
 	}
-	exit(0);
+
+	return 0;
 }

@@ -72,20 +72,25 @@ int  append_record(const char filename[], void *record, size_t size)
 /**
  ** get the nTH record from the file
  **/
-int   get_record(char *filename, void *rptr, size_t size, unsigned int id)
+int get_record(const char *filename, void *rptr, size_t size, unsigned int id)
 {
 	int fd;
 
-	if ((fd = open(filename, O_RDONLY, 0)) > 0)
+	if ((fd = open(filename, O_RDWR, 0)) > 0)
 	{
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return -1;
+		}
 		if (lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1)
 		{
-			if (read(fd, rptr, size) == size)
+			if (myread(fd, rptr, size) == size)
 			{
 				close(fd);
 				return 0;
 			}
 		}
+		flock(fd, LOCK_UN);
 		close(fd);
 	}
 	return -1;
@@ -177,16 +182,21 @@ int substitute_record(char *filename, void *rptr, size_t size, unsigned int id)
 	int fd;
 
 
-	if ((fd = open(filename, O_WRONLY /* O_CREAT, 0644 */)) > 0)
+	if ((fd = open(filename, O_RDWR | O_CREAT, 0644)) > 0)
 	{
+		if (myflock(fd, LOCK_EX)) {
+			close(fd);
+			return -1;
+		}
 		if (lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1)
 		{
-			if (write(fd, rptr, size) == size)
+			if (mywrite(fd, rptr, size) == size)
 			{
 				close(fd);
 				return 0;
 			}
 		}
+		flock(fd, LOCK_UN);
 		close(fd);
 	}
 	return -1;

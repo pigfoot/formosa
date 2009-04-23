@@ -116,7 +116,7 @@
     成功以後, 會建出一個目錄 FormosaBBS-1.1.1 內有 BBS 的原始程式碼.
 
       bbs% cd FormosaBBS-1.1.1
-      bbs% ./autogen              # 依照各系統環境產生 configure
+      bbs% ./autogen.sh           # 依照各系統環境產生 configure
       bbs% ./configure            # 依照各系統環境產生 Makefile, config.h
                                   # 及 Install.sh ... 等檔案
 
@@ -129,6 +129,18 @@
 
          bbs% rpm -ivh FormosaBBS-1.3.0-1.i386.rpm
     
+    (1c) 以 git 取得開發中的最新程式：
+
+      bbs% git clone git://github.com/pigfoot/formosa.git
+      bbs% cd formosa
+
+    接著同 (1a):
+    
+      bbs% ./autogen.sh
+      bbs% ./configure
+      bbs% make
+      bbs% make install_once
+
     (2)
 
         設定 /etc/hosts
@@ -301,20 +313,27 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 
       --------------------------------------------------------------
       NAME
-          packbbs - 標記刪除佈告清除程式
- 
+          packbbs - 佈告及信箱管理程式
+
       SYNOPSIS
-          packbbs [-a] [-b boardname] [-m userid]
+          packbbs [-u userid | -b boardname | -U | -B] [-p | -f | -r]
 
       DESCRIPTION
-          -a            清除所有看板上的標記刪除佈告
-          -b boardname  清除特定看板上的標記刪除佈告
-          -m userid     清除特定使用者信箱內的標記刪除信件
+	  下列四種選項必須選擇其中一個
+	  -u userid:    管理特定使用者的信箱
+	  -b boardname: 管理特定看板
+	  -U:           管理全部使用者的信箱
+	  -B:           管理全部看板
+
+	  下列三種選項至少要選擇一個
+	  -p: 刪除已標記刪除的文章
+	  -f: 清除石頭文
+	  -r: 修復.DIR檔案, 將不在.DIR檔的文章整理進去.
 
       --------------------------------------------------------------
       NAME
           bbsweb - BBS Web Server
- 
+
       SYNOPSIS
           bbsweb [-p port] [-b ip] [-d] [-c]
 
@@ -330,12 +349,12 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
           目錄中.
 
       STARTUP
-          開機執行          
+          開機執行
 
       --------------------------------------------------------------
       NAME
           bbs2g4 - bbs2g4 (BBS To Gopher Gateway)
- 
+
       SYNOPSIS
           bbs2g4 [-p port] [-t timeout_second]
 
@@ -489,7 +508,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
 #
 #
-30 8 * * * (/home/bbs/bin/expire 3500 500; /home/bbs/bin/packbbs -b ID > /dev/null; /home/bbs/bin/userstat -k -p sysop )
+30 8 * * * (/home/bbs/bin/expire 3500 500; /home/bbs/bin/packbbs -b ID -p > /dev/null; /home/bbs/bin/userstat -k -p sysop )
 #
 # 將 'syscheck' 的信箱內所有由使用者回覆的認證函處理完畢.
 #
@@ -578,7 +597,7 @@ ntelnet         24/tcp          normal login port
 十五、問題諮詢：
 
       歡迎到 bbs.cdpa.cc 的 FormosaBBS 板詢問，
-      其次是 E-mail 下列給下列之人：
+      其次是 E-mail 到：
 
       formosabbs@googlegroups.com
 
