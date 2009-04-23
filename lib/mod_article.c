@@ -9,123 +9,247 @@ static FILEHEADER genfhbuf;
 /*
  * immediately remove article which were mark deleted
  */
-int pack_article(char *direct)
+int pack_article(const char *direct)
 {
 	int fdr, fdw;
-	FILEHEADER fhTmp, *fhr = &fhTmp;
-	char fn_dirty[PATHLEN], fn_new[PATHLEN], fn_del[PATHLEN];
+	FILEHEADER fhr;
+	FILE *fhw;
+	char fn_dirty[PATHLEN];
 	int result = 0;
 
-	sprintf(fn_new, "%s.new", direct);
-	sprintf(fn_del, "%s.del", direct);
-/* lasehu
-   tempfile(fnnew);
-   tempfile(fndel);
- */
 	if ((fdr = open(direct, O_RDWR)) < 0)
 		return -1;
-	if ((fdw = open(fn_new, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-	{
-		close(fdr);
-		return -1;
-	}
 	if (myflock(fdr, LOCK_EX)) {
 		close(fdr);
-		close(fdw);
 		return -1;
 	}
-	while (read(fdr, fhr, FH_SIZE) == FH_SIZE)
+	fhw = tmpfile();
+	fdw = fileno(fhw);
+	while (myread(fdr, &fhr, FH_SIZE) == FH_SIZE)
 	{
-		if ((fhr->accessed & FILE_DELE)/* && !(fhr->accessed & FILE_RESV)*/)
+		if ((fhr.accessed & FILE_DELE))
 		{
-			setdotfile(fn_dirty, direct, fhr->filename);
+			setdotfile(fn_dirty, direct, fhr.filename);
 			unlink(fn_dirty);
+			++result;
 		}
 		else
 		{
-			if (write(fdw, fhr, FH_SIZE) != FH_SIZE)
+			if (mywrite(fdw, &fhr, FH_SIZE) != FH_SIZE)
 			{
 				result = -1;
 				break;
 			}
 		}
 	}
-	close(fdw);
+	if (result > 0)
+		result = myfdcp(fdw, fdr);
+	fclose(fhw);
 	flock(fdr, LOCK_UN);
 	close(fdr);
-	if (result == 0)
-	{
-		if (myrename(direct, fn_del) == 0)
-		{
-			if (myrename(fn_new, direct) == 0)
-			{
-				unlink(fn_del);
-				return 0;
-			}
-			myrename(fn_del, direct);
-		}
-	}
-	unlink(fn_new);
-	return -1;
+	return result;
 }
 
 /*
  * Delete records pointed to missing article file
  */
-int clean_dirent(char *direct)
+int clean_dirent(const char *direct)
 {
 	int fdr, fdw, fdt;
-	FILEHEADER fhTmp, *fhr = &fhTmp;
-	char fn_dirty[PATHLEN], fn_new[PATHLEN], fn_del[PATHLEN];
+	FILEHEADER fhr;
+	FILE *fhw;
+	char fn_dirty[PATHLEN];
 	int result = 0;
-
-	sprintf(fn_new, "%s.new", direct);
-	sprintf(fn_del, "%s.del", direct);
 
 	if ((fdr = open(direct, O_RDWR)) < 0)
 		return -1;
-	if ((fdw = open(fn_new, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-	{
-		close(fdr);
-		return -1;
-	}
 	if (myflock(fdr, LOCK_EX)) {
 		close(fdr);
-		close(fdw);
 		return -1;
 	}
-	while (read(fdr, fhr, FH_SIZE) == FH_SIZE)
+	fhw = tmpfile();
+	fdw = fileno(fhw);
+	while (myread(fdr, &fhr, FH_SIZE) == FH_SIZE)
 	{
-		if (fhr->filename[0]) {
-			fhr->filename[sizeof(fhr->filename)-1] = '\0';
-			setdotfile(fn_dirty, direct, fhr->filename);
+		if (fhr.filename[0]) {
+			fhr.filename[sizeof(fhr.filename)-1] = '\0';
+			setdotfile(fn_dirty, direct, fhr.filename);
 			if ((fdt = open(fn_dirty, O_RDONLY)) > 0) {
 				close(fdt);
-				if (write(fdw, fhr, FH_SIZE) != FH_SIZE) {
+				if (mywrite(fdw, &fhr, FH_SIZE) != FH_SIZE) {
 					result = -1;
 					break;
 				}
+				++result;
 			}
 		}
 	}
+	if (result > 0)
+		result = myfdcp(fdw, fdr);
 	close(fdw);
 	flock(fdr, LOCK_UN);
 	close(fdr);
-	if (result == 0)
-	{
-		if (myrename(direct, fn_del) == 0)
-		{
-			if (myrename(fn_new, direct) == 0)
-			{
-				unlink(fn_del);
-				return 0;
-			}
-			myrename(fn_del, direct);
+	return result;
+}
+
+/*
+ * Recover direct by merging existing .DIR and article files
+ */
+static int cmpfun(const void *a, const void *b)
+{
+	const struct file_list *fa = a, *fb = b;
+	long int na, nb, step;
+	char *ca, *cb;
+
+	na = strtol(fa->fname + 2, &ca, 10);
+	nb = strtol(fb->fname + 2, &cb, 10);
+
+	if (na == nb && *ca && *cb) {
+		++ca, ++cb;
+		na = 0, step = 1;
+		while (*ca >= 'A' && *ca <= 'Z') {
+			na += (*ca - 'A' + 1) * step;
+			step *= 26;
+			++ca;
+		}
+		nb = 0, step = 1;
+		while (*cb >= 'A' && *cb <= 'Z') {
+			nb += (*cb - 'A' + 1) * step;
+			step *= 26;
+			++cb;
 		}
 	}
-	unlink(fn_new);
-	return -1;
+	return na - nb;
 }
+static int get_only_postno(const char *dotdir);
+static void restore_fileheader(FILEHEADER *fhr, const char *direct, const char *fname)
+{
+	time_t t;
+	struct tm *tmp;
+	char dirpath[PATHLEN], buf[512], *p, *sp, *sp2;
+	USEREC urc;
+
+	memset(fhr, 0, sizeof(FILEHEADER));
+	if (!fhr || !fname)
+		return;
+
+	strcpy(fhr->filename, fname);
+
+	t = strtol(fname + 2, NULL, 10);
+	tmp = localtime(&t);
+	if (tmp)
+		sprintf(fhr->date, "%02d/%02d/%02d",
+			tmp->tm_year - 11, tmp->tm_mon + 1, tmp->tm_mday);
+	else
+		strcpy(fhr->date, "00/00/00");
+
+
+	setdotfile(dirpath, direct, fname);
+	get_record(dirpath, buf, sizeof(buf), 1);
+	p = strtok_r(buf,  " ", &sp);
+	p = strtok_r(NULL, " ", &sp);
+	if (p) {
+		strcpy(fhr->owner, p);
+		if (!strchr(fhr->owner, '.'))
+		{
+			if (get_passwd(&urc, fhr->owner) > 0)
+				fhr->ident = urc.ident;
+		} else {
+			p = strtok_r(fhr->owner, "@.", &sp2);
+			sprintf(buf, "#%s", p);
+			strcpy(fhr->owner, buf);
+		}
+	} else {
+		strcpy(fhr->owner, "UNKNOWN");
+	}
+
+	if (sp && (((p = strstr (sp, "標題:")) && (p = p + 5))
+		    || ((p = strstr (sp, "標題：")) && (p = p + 6))
+		    || ((p = strstr (sp, "標  題:")) && (p = p + 7))
+		    || ((p = strstr (sp, "Title:")) && (p = p + 6))
+		    || ((p = strstr (sp, "Subject:")) && (p = p + 8)))) {
+		while (*p == ' ')
+			p++;
+		if (*p != '\n')
+		{
+			strtok (p, "\n");
+			strcpy (fhr->title, p);
+		}
+	} else {
+		strcpy(fhr->title, "UNKNOWN");
+	}
+
+	fhr->postno = get_only_postno(direct);
+	/*
+	 * Mark readed for bbspop3d
+	 */
+	if (strstr(direct, "mail"))
+		fhr->accessed |= FILE_READ;
+
+}
+int recover_dirent(const char *direct)
+{
+	struct file_list *dl;
+	size_t dl_size;
+	int i = 0, cmp, fdr, fdw;
+	char dirpath[PATHLEN];
+	FILEHEADER fhr, nfhr;
+	FILE *fhw;
+	int result = 0;
+
+	setdotfile(dirpath, direct, NULL);
+	dl = get_file_list(dirpath, &dl_size, "M.");
+	if (!dl)
+		return -1;
+
+	qsort(dl, dl_size, sizeof(struct file_list), cmpfun);
+
+	if ((fdr = open(direct, O_RDWR)) < 0)
+		return -1;
+	if (myflock(fdr, LOCK_EX)) {
+		close(fdr);
+		return -1;
+	}
+
+	fhw = tmpfile();
+	fdw = fileno(fhw);
+	while (myread(fdr, &fhr, FH_SIZE) == FH_SIZE) {
+		cmp = cmpfun(fhr.filename, dl[i].fname);
+		while (cmp > 0) {
+			restore_fileheader(&nfhr, direct, dl[i].fname);
+			dbg("Inserted %s\n", dl[i].fname);
+			dbg("\tDate: %s User: %s Ident: %d\n",
+				nfhr.date, nfhr.owner, nfhr.ident);
+			dbg("\tTitle: %s\n", nfhr.title);
+			if (mywrite(fdw, &nfhr, FH_SIZE) != FH_SIZE) {
+				result = -1;
+				break;
+			}
+			cmp = cmpfun(fhr.filename, dl[++i].fname);
+			++result;
+		}
+		if (cmp == 0) {
+			++i;
+		} else {
+			dbg("Missing %s\n", fhr.filename);
+			dbg("\tDate: %s User: %s Ident: %d\n",
+				fhr.date, fhr.owner, fhr.ident);
+			dbg("\tTitle: %s\n", fhr.title);
+		}
+		if (mywrite(fdw, &fhr, FH_SIZE) != FH_SIZE) {
+			result = -1;
+			break;
+		}
+	}
+	if (result > 0)
+		result = myfdcp(fdw, fdr);
+	fclose(fhw);
+	flock(fdr, LOCK_UN);
+	close(fdr);
+	free(dl);
+	return result;
+}
+
 
 /*
  * create a unique stamp filename (M.nnnnnnnnnn.??)
@@ -167,13 +291,17 @@ static void get_only_name(char *dir, char *fname)
  * postno is for readrc mechanism
  * it reads from .DIR file the latest post 'postno' & returns next valid no.
  */
-static int get_only_postno(char *dotdir)
+static int get_only_postno(const char *dotdir)
 {
 	int fd;
 	int number = 1;
+	char finfo[PATHLEN];
+	INFOHEADER info;
 
-	if ((fd = open(dotdir, O_RDONLY)) > 0)
-	{
+	setdotfile(finfo, dotdir, INFO_REC);
+	if (get_record(finfo, &info, IH_SIZE, 1) == 0) {
+		number = info.last_postno;
+	} else if ((fd = open(dotdir, O_RDONLY)) > 0) {
 		FILEHEADER lastf;
 		struct stat st;
 
@@ -181,15 +309,17 @@ static int get_only_postno(char *dotdir)
 		if (st.st_size > 0 && st.st_size % FH_SIZE == 0)	/* debug */
 		{
 			lseek(fd, st.st_size - FH_SIZE, SEEK_SET);
-			if (read(fd, &lastf, sizeof(lastf)) == sizeof(lastf))
-			{
+			if (myread(fd, &lastf, sizeof(lastf)) == sizeof(lastf))
 				number = lastf.postno;
-				if (++number > BRC_REALMAXNUM)
-					number = 1;	/* reset the postno. */
-			}
 		}
 		close(fd);
 	}
+
+	if (number <= 0 || ++number > BRC_REALMAXNUM)
+		number = 1;	/* reset the postno. */
+	info.last_postno = number;
+	substitute_record(finfo, &info, IH_SIZE, 1);
+
 	return number;
 }
 

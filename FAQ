@@ -4,7 +4,7 @@ FormosaBBS - Frequently Asked Questions (FAQ)
 First updated:1998/06/27
 Last updated: 2009/04/22
 
-Any suggestion or question, please mail to 
+Any suggestion or question, please mail to
 formosabbs@googlegroups.com
 
 
@@ -262,16 +262,37 @@ FormosaBBS 1.3.0
 
 1. 看板或信箱的 .DIR 佈告/信件索引檔損毀了, 該如何救回來?
 Ans:
-    使用 fixdir -r <path>
-  
-    例如: 
-    救回 sysop 板的 .DIR  
-    % fixdir -r ~bbs/boards/sysop
+    使用 packbbs
+
+    例如:
+    救回 sysop 板的 .DIR
+    % packbbs -b sysop -r
     救回 SYSOP 個人信箱的 .DIR
-    % fixdir -r ~bbs/mail/s/SYSOP
+    % packbbs -u SYSOP -r
 
+    警告: 以下指令若不確定在做什麼請勿使用
+    救回全部看板的 .DIR
+    % packbbs -B -r
+    救回全部個人信箱的 .DIR
+    % packbbs -U -r
 
-2. 要如何重新更改 BBS 站名?
+2. 看板或信箱有無法閱讀的文章(石頭文), 該怎麼處理?
+Ans:
+    使用 packbbs
+
+    例如:
+    清除 sysop 板的石頭文
+    % packbbs -b sysop -r
+    清除 SYSOP 個人信箱的石頭文
+    % packbbs -u SYSOP -r
+
+    警告: 以下指令若不確定在做什麼請勿使用
+    清除全部看板的石頭文
+    % packbbs -B -r
+    清除全部個人信箱的石頭文
+    % packbbs -U -r
+
+3. 要如何重新更改 BBS 站名?
 Ans:
    1) 編輯 ~bbs/conf/bbs.conf
    2) 刪除 ~bbs/conf/bbs.img

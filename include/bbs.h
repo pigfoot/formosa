@@ -80,6 +80,11 @@
 #define MAX(a,b)                (((a)>(b))?(a):(b))
 #endif
 
+#ifdef DEBUG
+#define dbg(fmt, arg...) printf(fmt, ## arg)
+#else
+#define dbg(fmt, arg...)
+#endif
 
 /*******************************************************************
  *	¶€©wßt¨A¿…

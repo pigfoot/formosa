@@ -22,7 +22,10 @@ struct BoardList *SearchBoardList(char bname[]);
 /* misc.c */
 int flock(int fd, int op);
 int myflock(int fd, int op);
+size_t myread(int fd, void *buf, size_t len);
+size_t mywrite(int fd, void *buf, size_t len);
 int mycp(const char *from, const char *to);
+int myfdcp(int fromfd, int tofd);
 int myunlink(char name[]);
 int myrename(const char *from, const char *to);
 int isfile(const char *fname);
@@ -34,6 +37,11 @@ char *xgrep(char *pattern, char *filename);
 int append_file(char *afile, char *rfile);
 char *Ctime(register time_t *clock);
 void xsort(void *a, size_t n, size_t es, int (*cmp)(void));
+
+struct file_list {
+	char fname[PATHLEN];
+};
+struct file_list *get_file_list(const char *dirpath, size_t *cnt, const char *prefix);
 /* conf.c */
 void *bbsconf_addstr(char *str);
 char *bbsconf_str(const char *key, const char *default_value);
@@ -57,8 +65,9 @@ int host_deny(char *host);
 /* modetype.c */
 char *modestring(USER_INFO *upent, int complete);
 /* mod_article.c */
-int pack_article(char *direct);
-int clean_dirent(char *direct);
+int pack_article(const char *direct);
+int clean_dirent(const char *direct);
+int recover_dirent(const char *direct);
 int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
 void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);
@@ -106,7 +115,7 @@ long get_num_records(const char filename[], int size);
 long get_num_records1(const char filename[], int size);
 long get_num_records_byfd(int fd, int size);
 int append_record(const char filename[], void *record, size_t size);
-int get_record(char *filename, void *rptr, size_t size, unsigned int id);
+int get_record(const char *filename, void *rptr, size_t size, unsigned int id);
 int delete_record(char *filename, size_t size, unsigned int id);
 int substitute_record(char *filename, void *rptr, size_t size, unsigned int id);
 /* mod_sem.c */

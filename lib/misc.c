@@ -41,13 +41,65 @@ int flock(int fd, int op)
 
 int myflock(int fd, int op)
 {
-	int rt;
+	int rc;
 	do {
-		rt = flock(fd, op);
-	} while (rt == -1 && errno == EINTR);
+		rc = flock(fd, op);
+	} while (rc == -1 && errno == EINTR);
 
-	return rt;
+	return rc;
 }
+
+size_t myread(int fd, void *p, size_t len)
+{
+	int rc;
+	char *buf = p;
+	size_t offset = 0;
+
+	while (offset < len) {
+		rc = read(fd, buf + offset, len - offset);
+		if (rc == -1) {
+			/* Again if interrupted */
+			if (errno == EINTR || errno == EAGAIN)
+				continue;
+			/* Break on error */
+			else
+				break;
+		}
+		/* Break if EOF */
+		if (rc == 0)
+			break;
+		offset += rc;
+	}
+	if (rc != -1)
+		rc = offset;
+
+	return rc;
+}
+
+size_t mywrite(int fd, void *p, size_t len)
+{
+	int rc;
+	char *buf = p;
+	size_t offset = 0;
+
+	while (offset < len) {
+		rc = write(fd, buf + offset, len - offset);
+		if (rc == -1) {
+			/* Again if interrupted */
+			if (errno == EINTR || errno == EAGAIN)
+				continue;
+			/* Break on error */
+			else
+				break;
+		}
+		offset += rc;
+	}
+	if (rc != -1)
+		rc = offset;
+
+	return rc;
+}
+
 
 /*
  * copy file, first remove the dest file
@@ -68,7 +120,10 @@ int mycp(const char *from, const char *to)
 	{
 		if ((fdw = open(to, O_WRONLY | O_CREAT | O_TRUNC, 0644)) > 0)
 		{
-			while ((cc = read(fdr, cpbuf, sizeof(cpbuf))) > 0)
+			/*
+			 * FIXME: Should check write return value
+			 */
+			while ((cc = myread(fdr, cpbuf, sizeof(cpbuf))) > 0)
 				write(fdw, cpbuf, cc);
 			close(fdw);
 			close(fdr);
@@ -79,6 +134,36 @@ int mycp(const char *from, const char *to)
 	return -1;
 }
 
+/*
+ * copy file, by opened fd
+ */
+int myfdcp(int fromfd, int tofd)
+{
+	char cpbuf[8192];
+	int len;
+	size_t total_len = 0;
+
+	if (lseek(fromfd, 0, SEEK_SET) == -1)
+		return -1;
+	if (lseek(tofd, 0, SEEK_SET) == -1)
+		return -1;
+	while ((len = myread(fromfd, cpbuf, sizeof(cpbuf))) > 0) {
+		if (mywrite(tofd, cpbuf, len) == -1) {
+			bbslog("ERROR", "myfdcp write ERROR!!");
+			return -1;
+		}
+		total_len += len;
+	}
+	if (len == -1) {
+		bbslog("ERROR", "myfdcp read ERROR!!");
+		return -1;
+	}
+	if (ftruncate(tofd, total_len) == -1) {
+		bbslog("ERROR", "Truncate error: %s", strerror(errno));
+		return -1;
+	}
+	return 0;
+}
 
 /*
  * unlink(), remove file or directory,
@@ -150,14 +235,12 @@ int isfile(const char *fname)
 	                                  || S_ISLNK(st.st_mode)));
 }
 
-
 int isdir(char *fname)
 {
 	struct stat st;
 
 	return (stat(fname, &st) == 0 && S_ISDIR(st.st_mode));
 }
-
 
 int seekstr_in_file(char filename[], char seekstr[])
 {
@@ -241,7 +324,7 @@ static void strlwr(char *q)
 }
 
 
-char * xgrep(char *pattern, char *filename)
+char *xgrep(char *pattern, char *filename)
 {
 	FILE *fp;
 	static char buf[128];
@@ -384,7 +467,6 @@ static inline char *med3(char *a, char *b, char *c, int (*cmp) ())
 	     : (cmp(b, c) > 0 ? b : (cmp(a, c) < 0 ? a : c));
 }
 
-
 void xsort(void *a, size_t n, size_t es, int (*cmp) ())
 {
 	char *pa, *pb, *pc, *pd, *pl, *pm, *pn;
@@ -480,36 +562,72 @@ loop:
 	/* xsort(pn - r, r / es, es, cmp); */
 }
 
-
-#ifdef	TEST
-
-#define	MMM	(0x40000)
-
-static int int_cmp(int *a, int *b)
-{
-  return *a - *b;
-}
-
-
-int main()
-{
-  int *x, *y, *z, n;
-
-  x = malloc(MMM * sizeof(int));
-  if (!x)
-    return;
-
-  y = x;
-  z = x + MMM;
-
-  n = time(0) & (0x40000 -1) /* 16387 */;
-
-  do
-  {
-    *x = n = (n * 10001) & (0x100000 - 1);
-  } while (++x < z);
-
-  xsort(y, MMM, sizeof(int), int_cmp);
-  return 0;
-}
+#ifndef offsetof
+#define offsetof(tpy, mbr) ((off_t)(&((tpy *)NULL)->mbr))
 #endif
+struct file_list *get_file_list(const char *dirpath, size_t *cnt, const char *prefix)
+{
+	DIR *dir;
+	struct dirent *d, *dp;
+	struct file_list *dl = NULL;
+	size_t dirlen = strlen(dirpath), len, pflen;
+	size_t dl_size = 128, dln = 0;
+	char fpath[PATHLEN];
+
+	*cnt = 0;
+	dir = opendir(dirpath);
+	if (!dir) {
+		bbslog("ERROR", "Can not open dir(%s).\n", dirpath);
+		goto direrr_out;
+	}
+
+	len = offsetof(struct dirent, d_name) +
+		pathconf(dirpath, _PC_NAME_MAX) + 1;
+	d = malloc(len);
+	if (!d) {
+		bbslog("ERROR", "Out of memory.\n");
+		goto memerr_out;
+	}
+
+	dl = calloc(dl_size, sizeof(struct file_list));
+	if (!dl) {
+		bbslog("ERROR", "Out of memory.\n");
+		goto memerr_out2;
+	}
+
+	if (prefix)
+		pflen = strlen(prefix);
+
+	readdir_r(dir, d, &dp);
+	while (dp) {
+		if (strlen(dp->d_name) + dirlen + 1 < PATHLEN)
+			sprintf(fpath, "%s/%s", dirpath, dp->d_name);
+		else
+			goto next_file;
+		if (dln + 1 >= dl_size) {
+			dl_size <<= 1;
+			dl = realloc(dl, sizeof(struct file_list) * dl_size);
+			memset(dl + (dl_size >> 1), 0,
+				sizeof(struct file_list) * (dl_size >> 1));
+			if (!dl) {
+				bbslog("Error", "Out of memory.\n");
+				goto memerr_out2;
+			}
+		}
+		if (prefix && strncmp(dp->d_name, prefix, pflen))
+			goto next_file;
+		if (isfile(fpath))
+			strcpy(dl[dln++].fname, dp->d_name);
+next_file:
+		readdir_r(dir, d, &dp);
+	}
+	*cnt = dln;
+
+memerr_out2:
+	free(d);
+memerr_out:
+	closedir(dir);
+direrr_out:
+	return dl;
+}
+
