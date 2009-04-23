@@ -327,12 +327,12 @@ static struct board_t *search_brdt_by_bname(const char *bname)
 	return NULL;
 }
 
-int get_board_bid(register char *farg)
+int get_board_bid(const char *bname)
 {
 	struct board_t *brdtp;
 
 	resolve_brdshm();
-	brdtp = search_brdt_by_bname(farg);
+	brdtp = search_brdt_by_bname(bname);
 	if (brdtp)
 		return brdtp->bhr.bid;
 	else

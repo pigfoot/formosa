@@ -286,12 +286,11 @@ static void get_only_name(char *dir, char *fname)
 	close(fd);
 }
 
-
 /*
  * postno is for readrc mechanism
  * it reads from .DIR file the latest post 'postno' & returns next valid no.
  */
-static int get_only_postno(const char *dotdir, int fd, int lock)
+int get_last_postno(const char *dotdir, int fd, int lock)
 {
 	int nr;
 	int number = 1;
@@ -311,8 +310,21 @@ static int get_only_postno(const char *dotdir, int fd, int lock)
 			number = lastf.postno;
 	}
 
+	return number;
+}
+static int get_only_postno(const char *dotdir, int fd, int lock)
+{
+	int number;
+	char finfo[PATHLEN];
+	INFOHEADER info;
+
+	number = get_last_postno(dotdir, fd, lock);
 	if (number <= 0 || ++number > BRC_REALMAXNUM)
 		number = 1;	/* reset the postno. */
+
+	setdotfile(finfo, dotdir, INFO_REC);
+	if (get_record(finfo, &info, IH_SIZE, 1) == -1)
+		memset(&info, 0, sizeof(info));
 	info.last_postno = number;
 	substitute_record(finfo, &info, IH_SIZE, 1);
 

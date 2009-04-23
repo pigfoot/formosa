@@ -430,7 +430,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	extern char memtitle[];
 	int pr; /* pager result */
 
-    /* if this is an treasure area directory, then go into this dir. */
+	/* if this is an treasure area directory, then go into this dir. */
 	if (!in_board && !in_mail && finfo->accessed & FILE_TREA)
 	{
 		char *pt;
@@ -451,7 +451,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_REDO;
 	}
 
-    /* if post has been marked for delete, then just go to next post */
+	/* if post has been marked for delete, then just go to next post */
 	if (finfo->accessed & FILE_DELE)
 		return updown;
 
@@ -459,7 +459,7 @@ int read_article(int ent, FILEHEADER *finfo, char *direct)
 	if (in_mail && check_mail_num(0) && !(finfo->accessed & FILE_READ))
 		return C_LINE;
 
-    /* print out the content of this post with 'more' */
+	/* print out the content of this post with 'more' */
 	setdotfile(fname, direct, finfo->filename);
 	if (!isfile(fname))	/* debug */
 		return C_FULL;

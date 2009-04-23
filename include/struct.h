@@ -258,16 +258,16 @@ typedef struct {
 
 struct boardheader {
         char filename[BNAMELEN+3];
-        time_t  rewind_time;      /* lasehu: last refresh boardrc time */
+        char unused1[4];
         unsigned int bid;         /* lasehu: board unique number, implies the position in .BOARDS */
         time_t  ctime;            /* lthuang: time when board created */
-        char unused1[45];
+        char unused2[45];
         char bclass;              /* 板面分類 */
         char unused_type;         /* 轉信類別  */
         unsigned char brdtype;    /* 看板屬性旗標 */
         char owner[5*IDLEN+15];   /* TODO: max 5 bmas, each length is IDLEN */
         char title[CBNAMELEN+4];  /* description of board */
-        char unused2[40] ;
+        char unused3[40] ;
         unsigned int level;
 } __attribute__ ((packed));
 
