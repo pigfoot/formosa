@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <arpa/telnet.h>
 #include <fcntl.h>
 #include <stdlib.h>
 
@@ -46,8 +45,6 @@
 #include "tsbbs.h"
 
 extern int errno;
-
-char *telnet();
 
 static char check = 0;
 
@@ -337,91 +334,3 @@ int main(int argc, char *argv[])
 		}
 	}
 }
-
-#if 0
-
-char *
-telnet(term)
-char *term;
-{
-	int aha;
-	unsigned ibuf[80], *p;
-	unsigned char o1[] =
-	{IAC, DO, TELOPT_TTYPE};
-	unsigned char o2[] =
-	{IAC, WILL, TELOPT_ECHO};
-	unsigned char o3[] =
-	{IAC, WILL, TELOPT_SGA};
-	unsigned char o4[] =
-	{IAC, DO, TELOPT_ECHO};
-	unsigned char o5[] =
-	{IAC, DO, TELOPT_BINARY};
-	int igetch();
-
-	aha = 1;
-	*term = '\0';
-#if 0
-/*  del by lthuang, bcz linux will down when using non-blocking */
-#ifndef      SOLARIS
-	ioctl(0, FIONBIO, &aha);
-#endif
-#endif
-
-#ifdef SO_OOBINLINE
-	setsockopt(0, SOL_SOCKET, SO_OOBINLINE, (char *) &aha, sizeof aha);
-#endif
-
-	ibuf[0] = 0;
-
-	sprintf((char *) (ibuf + 1), "\r\n\r\n¡¸ %s ¡¸\r\n\r\r\n\r", BBSTITLE);
-	write(1, ibuf, strlen((char *) (ibuf + 1)) + 1);
-	write(1, o1, sizeof(o1));
-	fflush(stdout);
-
-	for (aha = 0; aha < 3; aha++)
-	{
-		ibuf[aha] = igetch();
-#ifdef	DEBUG
-		fprintf(stdout, "[%d]\n", ibuf[aha]);
-		fflush(stdout);
-#endif
-	}
-	if (ibuf[0] == IAC && ibuf[1] == WILL && ibuf[2] == TELOPT_TTYPE)
-	{
-		unsigned char oo[] =
-		{IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE};
-
-		write(1, oo, sizeof(oo));
-		for (aha = 0; aha < 4; aha++)
-			ibuf[aha] = igetch();
-		if (ibuf[0] == IAC && ibuf[3] == TELQUAL_IS)
-		{
-			p = ibuf;
-			while (1)
-			{
-				*p = igetch();
-				if (*p == IAC)
-				{
-					*p = '\0';
-					igetch();
-					break;
-				}
-				else
-					p++;
-			}
-			strncpy(term, (char *) &ibuf[0], 8);
-#ifdef	DEBUG
-			fprintf(stdout, "term = [%s]\n", ibuf);
-			fflush(stdout);
-#endif
-		}
-	}
-
-	write(1, o2, sizeof(o2));
-	write(1, o3, sizeof(o3));
-	write(1, o4, sizeof(o4));
-	write(1, o5, sizeof(o5));
-	return term;
-}
-
-#endif
