@@ -42,8 +42,6 @@ if test -z "$makever"; then
 		AC_MSG_ERROR(GNU Make is not installed.)
 fi
 
-LDFLAGS="-g"
-
 case ${target} in
 	*sun-sunos*)
 	systype=SunOS
@@ -64,40 +62,10 @@ case ${target} in
 	LIBS="-ltermcap"
 	;;
 
-	*hp-hpux*)
-	systype=HP_UX
-	OS_DEF="-DHP_UX -DSYSV -DTERMIOS"
-	LIBS="-ltermcap"
-	;;
-
-	*ibm-aix*)
-	systype=IBM_AIX
-	OS_DEF="-DAIX -DSYSV"
-	LIBS="-ltermcap -lbsd"
-	;;
-
-	*sgi-irix*)
-	systype=SGI_IRIX
-	OS_DEF="-DIRIX -DSYSV -DTERMIOS"
-	LIBS="-ltermcap"
-	;;
-
-	*dec-osf*)
-	systype=DEC_OSF
-	OS_DEF=""
-	LIBS="-ltermcap"
-	;;
-
 	*-linux*)
 	systype=LINUX
 	OS_DEF="-DSYSV -DLINUX -DTERMIOS"
 	LIBS=""
-	;;
-
-	*unixware*)
-	systype=UNIXWARE
-	OS_DEF="-DUNIXWARE"
-	LIBS="-ltermcap -lsocket"
 	;;
 
 	*)

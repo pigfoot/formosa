@@ -116,6 +116,7 @@ long get_num_records1(const char filename[], int size);
 long get_num_records_byfd(int fd, int size);
 int append_record(const char filename[], void *record, size_t size);
 int get_record(const char *filename, void *rptr, size_t size, unsigned int id);
+int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id, int lock);
 int delete_record(char *filename, size_t size, unsigned int id);
 int substitute_record(char *filename, void *rptr, size_t size, unsigned int id);
 /* mod_sem.c */

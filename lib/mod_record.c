@@ -42,7 +42,6 @@ long get_num_records_byfd(int fd, int size) 					/* syhu */
     return (st.st_size / size);
 }
 
-
 /**
  ** append a record to file
  **/
@@ -68,7 +67,6 @@ int  append_record(const char filename[], void *record, size_t size)
 	return -1;
 }
 
-
 /**
  ** get the nTH record from the file
  **/
@@ -86,6 +84,7 @@ int get_record(const char *filename, void *rptr, size_t size, unsigned int id)
 		{
 			if (myread(fd, rptr, size) == size)
 			{
+				flock(fd, LOCK_UN);
 				close(fd);
 				return 0;
 			}
@@ -96,6 +95,26 @@ int get_record(const char *filename, void *rptr, size_t size, unsigned int id)
 	return -1;
 }
 
+/**
+ ** get the nTH record by file descriptor
+ **/
+int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id, int lock)
+{
+	if (lock && myflock(fd, LOCK_EX))
+		return -1;
+	if (lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1)
+	{
+		if (myread(fd, rptr, size) == size)
+		{
+			if (lock)
+				flock(fd, LOCK_UN);
+			return 0;
+		}
+	}
+	if (lock)
+		flock(fd, LOCK_UN);
+	return -1;
+}
 
 /**
  ** delete the nTH record in file

@@ -121,7 +121,7 @@ static int cmpfun(const void *a, const void *b)
 	}
 	return na - nb;
 }
-static int get_only_postno(const char *dotdir);
+static int get_only_postno(const char *dotdir, int fd, int lock);
 static void restore_fileheader(FILEHEADER *fhr, const char *direct, const char *fname)
 {
 	time_t t;
@@ -179,7 +179,7 @@ static void restore_fileheader(FILEHEADER *fhr, const char *direct, const char *
 		strcpy(fhr->title, "UNKNOWN");
 	}
 
-	fhr->postno = get_only_postno(direct);
+	fhr->postno = get_only_postno(direct, 0, 0);
 	/*
 	 * Mark readed for bbspop3d
 	 */
@@ -291,9 +291,9 @@ static void get_only_name(char *dir, char *fname)
  * postno is for readrc mechanism
  * it reads from .DIR file the latest post 'postno' & returns next valid no.
  */
-static int get_only_postno(const char *dotdir)
+static int get_only_postno(const char *dotdir, int fd, int lock)
 {
-	int fd;
+	int nr;
 	int number = 1;
 	char finfo[PATHLEN];
 	INFOHEADER info;
@@ -301,18 +301,14 @@ static int get_only_postno(const char *dotdir)
 	setdotfile(finfo, dotdir, INFO_REC);
 	if (get_record(finfo, &info, IH_SIZE, 1) == 0) {
 		number = info.last_postno;
-	} else if ((fd = open(dotdir, O_RDONLY)) > 0) {
+	} else if (fd && (nr = get_num_records_byfd(fd, FH_SIZE)) > 0) {
 		FILEHEADER lastf;
-		struct stat st;
-
-		fstat(fd, &st);
-		if (st.st_size > 0 && st.st_size % FH_SIZE == 0)	/* debug */
-		{
-			lseek(fd, st.st_size - FH_SIZE, SEEK_SET);
-			if (myread(fd, &lastf, sizeof(lastf)) == sizeof(lastf))
-				number = lastf.postno;
-		}
-		close(fd);
+		if (get_record_byfd(fd, &lastf, FH_SIZE, nr, lock) == 0)
+			number = lastf.postno;
+	} else if (!fd && dotdir && (nr = get_num_records(dotdir, FH_SIZE)) > 0) {
+		FILEHEADER lastf;
+		if (get_record(dotdir, &lastf, FH_SIZE, nr) == 0)
+			number = lastf.postno;
 	}
 
 	if (number <= 0 || ++number > BRC_REALMAXNUM)
@@ -574,7 +570,7 @@ int append_article(char *fname, char *path, char *author, char *title,
 
 	/* get next valid postno from .DIR file if in the article mode */
 	if (artmode)
-		fhr->postno = get_only_postno(dotdir);
+		fhr->postno = get_only_postno(dotdir, 0, 0);
 	if (stamp)
 		strcpy(stamp, stampbuf);
 
@@ -869,7 +865,9 @@ int push_one_article(int ent, char *direct, int fd, int score)
 	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
 		save_pushcnt(fhr, score);
-		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) != -1
+		fhr->postno = get_only_postno(direct, fd, 0);
+		ReadRC_Addlist(fhr->postno);
+		if (lseek(fd, ((ent - 1) * FH_SIZE), SEEK_SET) != -1
 		    && write(fd, fhr, FH_SIZE) == FH_SIZE)
 			return 0;
 	}
