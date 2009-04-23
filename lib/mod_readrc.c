@@ -1,10 +1,6 @@
 
 #include "bbs.h"
 
-/* pp: readid, qq: readbit */
-extern void mymod(unsigned int id, int maxu, int *pp, unsigned char *qq);
-
-
 unsigned int rrc_changed = FALSE;
 struct readrc rrc_buf, myrrc;
 short new_visit = FALSE;
@@ -14,7 +10,6 @@ char currentuserid[IDLEN] = "\0";
 
 #define RRC_SIZE    sizeof(struct readrc)
 #define RRC_EXPTIME (14*86400)
-
 
 void ReadRC_Update()
 {
@@ -99,7 +94,6 @@ void ReadRC_Update()
 		unlink(fn_new);
 }
 
-
 void ReadRC_Expire()
 {
 	time_t now;
@@ -146,7 +140,6 @@ void ReadRC_Expire()
 	}
 }
 
-
 void ReadRC_Init(unsigned int bid, char *userid)
 {
 	int fd;
@@ -159,7 +152,7 @@ void ReadRC_Init(unsigned int bid, char *userid)
 	strncpy(currentuserid, userid, IDLEN - 1);
 	currentuserid[IDLEN - 1] = '\0';
 
-	new_visit = FALSE;		/* lasehu */
+	new_visit = FALSE;
 
 	ReadRC_Update();
 
@@ -172,7 +165,7 @@ void ReadRC_Init(unsigned int bid, char *userid)
 			{
 				memcpy(&myrrc, &rrc_buf, RRC_SIZE);
 				close(fd);
-				new_visit = TRUE;
+				new_visit = FALSE;
 				return;
 			}
 		}
@@ -180,11 +173,10 @@ void ReadRC_Init(unsigned int bid, char *userid)
 	}
 	memset(&myrrc, 0, RRC_SIZE);
 	myrrc.bid = bid;
-	myrrc.mtime = time(0);
+	myrrc.mtime = time(NULL);
 
-	new_visit = TRUE;	/* lasehu */
+	new_visit = TRUE;
 }
-
 
 unsigned char rrc_readbit;
 int rrc_readid;
@@ -225,161 +217,76 @@ int ReadRC_UnRead(int artno)
 	prints("\nrlist[%d] = [%2x], mem[%2x]", rrc_readid, rrc_readbit, myrrc.rlist[rrc_readid]);
 	getkey();
 #endif
-	return (myrrc.rlist[rrc_readid] & rrc_readbit) ? 0 : 1;
+	return !(myrrc.rlist[rrc_readid] & rrc_readbit);
 }
 
 
 #define DIRECTION_INC	1
 #define DIRECTION_DEC	0
 
-
 static void ReadRC_Mod(unsigned int no, int max, int *rbyte, unsigned char *rbit, int direction)
 {
-	unsigned char onebit = 0x1;
-	int shift;
-
-	shift = (no - 1) % 8;
-	onebit = onebit << shift;
-	*rbit = onebit;
-	if (direction == DIRECTION_INC)
-		shift = 7 - shift;
-	while (shift--)
-	{
-		if (direction == DIRECTION_INC)
-			onebit = onebit << 1;
-		else if (direction == DIRECTION_DEC)
-			onebit = onebit >> 1;
-		*rbit |= onebit;
+	mymod(no, BRC_MAXNUM, rbyte, rbit);
+	*rbit = (*rbit >> 1) - 1;
+	if (direction == DIRECTION_DEC) {
+		*rbit = ~(*rbit);
+		*rbit >>= 1;
 	}
-	*rbit &= ~(*rbit);
-	*rbyte = ((no - 1) / 8) % max;
 #ifdef DEBUG
 	prints("\nno = [%d], rbyte = [%d], rbit = [%02X]", no, *rbyte, *rbit);
 	getkey();
 #endif
 }
 
-
 static void ReadRC_Clean(int startno, int endno)
 {
 	int size;
 	int startbyte, endbyte;
 	unsigned char startbit, endbit;
-	unsigned char oribit;
 
 #ifdef DEBUG
 	prints("\nclean no[%d] ~ no[%d]", startno, endno);
 #endif
 	ReadRC_Mod(startno, BRC_MAXNUM, &startbyte, &startbit, DIRECTION_INC);
-	ReadRC_Mod(endno, BRC_MAXNUM, &endbyte, &endbit, DIRECTION_DEC);
+	ReadRC_Mod(endno,   BRC_MAXNUM, &endbyte,   &endbit,   DIRECTION_DEC);
 	size = endbyte - startbyte;
 #ifdef DEBUG
 	prints("\nstart [%d][%x] ~ end [%d][%x]",
 	       startbyte, startbit, endbyte, endbit);
 	getkey();
 #endif
-	if (size >= 1)
-	{
-		memcpy(&oribit, myrrc.rlist + startbyte, 1);
-		oribit &= (~startbit);
-		startbit |= oribit;
-		memset(myrrc.rlist + startbyte, startbit, 1);
+	myrrc.rlist[startbyte] &= startbit;
+	myrrc.rlist[endbyte]   &= endbit;
 
-		if (size >= 2)
-			memset(myrrc.rlist + startbyte + 1, 0, size - 1);
-
-		memcpy(&oribit, myrrc.rlist + endbyte, 1);
-		oribit &= (~endbit);
-		endbit |= oribit;
-		memset(myrrc.rlist + endbyte, endbit, 1);
-
-		myrrc.mtime = time(0);
-		if (!new_visit)
-			rrc_changed = TRUE;
-	}
+	if (size > 1)
+		memset(myrrc.rlist + startbyte + 1, 0, size - 1);
+	rrc_changed = 1;
 }
-
 
 void ReadRC_Refresh(char *boardname)
 {
-	time_t new_rtime;
-	int lastno, firstno;
-	int total;
+	int lastno, clean_len;
 	char fname[STRLEN];
-	FILEHEADER gfhbuf;
-	BOARDHEADER gbhbuf;
-
-	if (get_board(&gbhbuf, boardname) <= 0)
-		return;
-
-	new_rtime = gbhbuf.rewind_time;
-#ifdef DEBUG
-	prints("\nmtime = [%d], new_rtime = [%d]", myrrc.mtime, new_rtime);
-	getkey();
-#endif
-	if (new_rtime < 0)
-		new_rtime = 0;
-	if (myrrc.mtime < new_rtime)
-	{
-#ifdef DEBUG
-		prints("\nreset rlist first [%d] bytes", BRC_MAXNUM / 2);
-		getkey();
-#endif
-		ReadRC_Clean(1, BRC_REALMAXNUM / 2);
-		myrrc.mtime = new_rtime;
-		rrc_changed = 1;
-	}
 
 	setboardfile(fname, boardname, DIR_REC);
-	total = get_num_records(fname, FH_SIZE);
-	if (get_record(fname, &gfhbuf, FH_SIZE, 1) == 0)
-		firstno = gfhbuf.postno;
-	else
-		firstno = 1;
+	lastno = get_last_postno(fname, 0, 0);
 
-	if (get_record(fname, &gfhbuf, FH_SIZE, total) == 0)
-		lastno = gfhbuf.postno;
-	else
-		lastno = firstno;
-#ifdef DEBUG
-	prints("\nfirstno = [%d], lastno = [%d]", firstno, lastno);
-	getkey();
-#endif
-
-	if (firstno >= 1 && firstno <= BRC_REALMAXNUM
-	    && lastno >= 1 && lastno <= BRC_REALMAXNUM)
-	{
-		if (firstno > lastno)
-		{
-			ReadRC_Clean(lastno + 1, firstno - 1);
-		}
-		else
-		{
-/*
-			if (firstno > 1)
-				ReadRC_Clean(1, firstno - 1);
-*/
-			if (lastno < BRC_REALMAXNUM)
-				ReadRC_Clean(lastno + 1, BRC_REALMAXNUM);
-		}
+	clean_len = (BRC_REALMAXNUM / 3);
+	if (lastno + clean_len <= BRC_REALMAXNUM) {
+		ReadRC_Clean(lastno + 1, lastno + clean_len);
+	} else {
+		ReadRC_Clean(lastno + 1, BRC_REALMAXNUM);
+		ReadRC_Clean(1, clean_len + lastno - BRC_REALMAXNUM);
 	}
-#ifdef DEBUG
-	prints("\nafter ReadRC_Refresh()");
-	getkey();
-#endif
 }
-
 
 void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 {
 	ReadRC_Init(bid, userid);
-	if (bitset)
-	{
+	if (bitset) {
 		myrrc.mtime = time(0);
 		memset(myrrc.rlist, 0xFF, BRC_MAXNUM);
-	}
-	else
-	{
+	} else {
 		myrrc.mtime = 0;
 		memset(myrrc.rlist, 0x00, BRC_MAXNUM);
 	}

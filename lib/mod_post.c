@@ -1,46 +1,5 @@
-
 #include "bbs.h"
 #include <sys/stat.h>
-
-
-/*
- * update the rewind_time for some board,
- * user should update their readrc according this rewind_time
- */
-static int rewind_board(char *bname)
-{
-	int fd;
-	BOARDHEADER sbh;
-
-	if ((fd = open(BOARDS, O_RDWR)) > 0)
-	{
-		if (myflock(fd, LOCK_EX)) {
-			close(fd);
-			return -1;
-		}
-		while (read(fd, &sbh, sizeof(sbh)) == sizeof(sbh))
-		{
-			if (!strcmp(sbh.filename, bname))
-			{
-				sbh.rewind_time = time(0);
-				if (lseek(fd, -((off_t) sizeof(sbh)), SEEK_CUR) != -1)
-				{
-					if (write(fd, &sbh, sizeof(sbh)) == sizeof(sbh))
-					{
-						flock(fd, LOCK_UN);
-						close(fd);
-						return 0;
-					}
-				}
-				break;
-			}
-		}
-		flock(fd, LOCK_UN);
-		close(fd);
-	}
-	return -1;
-}
-
 
 /**
  ** send article or cancel message to usenet
@@ -144,10 +103,6 @@ int PublishPost(char *fname, char *userid, char *username,
 	{
 		if (!postpath)
 		{
- 			/* if this is the first post, then record/update the rewind
-			   time for this board */
-			if (artno == 1)
-				rewind_board(bname);
 			if (tonews
 #if EMAIL_LIMIT
 			    && ident == 7
