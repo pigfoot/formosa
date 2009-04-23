@@ -227,10 +227,10 @@ int ReadRC_UnRead(int artno)
 static void ReadRC_Mod(unsigned int no, int max, int *rbyte, unsigned char *rbit, int direction)
 {
 	mymod(no, BRC_MAXNUM, rbyte, rbit);
-	*rbit = (*rbit >> 1) - 1;
+	*rbit = *rbit - 1;
 	if (direction == DIRECTION_DEC) {
 		*rbit = ~(*rbit);
-		*rbit >>= 1;
+		*rbit <<= 1;
 	}
 #ifdef DEBUG
 	prints("\nno = [%d], rbyte = [%d], rbit = [%02X]", no, *rbyte, *rbit);
