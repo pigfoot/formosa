@@ -17,7 +17,6 @@ void ReadRC_Update()
 	short fail = FALSE;
 	int fdr, fdw;
 
-
 	if (currentuserid[0] == '\0')
 		return;
 #ifdef GUEST
@@ -43,7 +42,7 @@ void ReadRC_Update()
 		time_t now;
 
 		time(&now);
-		while (read(fdr, &rrc_buf, RRC_SIZE) == RRC_SIZE)
+		while (myread(fdr, &rrc_buf, RRC_SIZE) == RRC_SIZE)
 		{
 			if (!found)
 			{
@@ -139,7 +138,7 @@ void ReadRC_Expire()
 	}
 }
 
-void ReadRC_Init(unsigned int bid, char *userid)
+void ReadRC_Init(unsigned int bid, const char *userid)
 {
 	int fd;
 
@@ -283,10 +282,19 @@ void ReadRC_Refresh(char *boardname)
 {
 	int lastno, clean_len;
 	char fname[STRLEN];
+	INFOHEADER info;
 
 	setboardfile(fname, boardname, DIR_REC);
-	lastno = get_last_postno(fname, 0, 0);
+	if (get_last_info(fname, 0, &info) == -1) {
+		/*
+		 * Don't refresh if failed to get last postno
+		 */
+		bbslog("ERROR", "Getting INFO_REC.");
+		fprintf(stderr, "ERROR: Getting INFO_REC.");
+		return;
+	}
 
+	lastno = info.last_postno;
 	clean_len = (BRC_REALMAXNUM / 3);
 	if (lastno + clean_len <= BRC_REALMAXNUM) {
 		ReadRC_Clean(lastno + 1, lastno + clean_len);
@@ -309,4 +317,27 @@ void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 
 	if (!new_visit)
 		rrc_changed = TRUE;
+}
+
+int ReadRC_Board(const char *bname, const char *userid)
+{
+	int bid;
+	char filepath[PATHLEN];
+	INFOHEADER lastinfo;
+	FILEHEADER fh_buf;
+
+	bid = get_board_bid(bname);
+	if (bid == -1)
+		return 0;
+
+	setboardfile(filepath, bname, DIR_REC);
+	if (get_last_info(filepath, 0, &lastinfo) == -1)
+		return 0;
+
+	fh_buf.postno = lastinfo.last_postno;
+	fh_buf.mtime  = lastinfo.last_mtime;
+	strcpy(fh_buf.filename, lastinfo.last_filename);
+
+	ReadRC_Init(bid, userid);
+	return ReadRC_UnRead(&fh_buf);
 }

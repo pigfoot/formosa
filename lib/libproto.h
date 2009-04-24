@@ -68,7 +68,7 @@ char *modestring(USER_INFO *upent, int complete);
 int pack_article(const char *direct);
 int clean_dirent(const char *direct);
 int recover_dirent(const char *direct);
-int get_last_postno(const char *dotdir, int fd, int lock);
+int get_last_info(const char *dotdir, int fd, INFOHEADER *info);
 int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
 void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);
@@ -111,18 +111,19 @@ enum unread_enum {
 };
 void ReadRC_Update(void);
 void ReadRC_Expire(void);
-void ReadRC_Init(unsigned int bid, char *userid);
+void ReadRC_Init(unsigned int bid, const char *userid);
 void ReadRC_Addlist(int artno);
 int ReadRC_UnRead(const FILEHEADER *fh);
 void ReadRC_Refresh(char *boardname);
 void ReadRC_Visit(unsigned int bid, char *userid, int bitset);
+int ReadRC_Board(const char *bname, const char *userid);
 /* mod_record.c */
 long get_num_records(const char filename[], int size);
 long get_num_records1(const char filename[], int size);
 long get_num_records_byfd(int fd, int size);
 int append_record(const char filename[], void *record, size_t size);
 int get_record(const char *filename, void *rptr, size_t size, unsigned int id);
-int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id, int lock);
+int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id);
 int delete_record(char *filename, size_t size, unsigned int id);
 int substitute_record(char *filename, void *rptr, size_t size, unsigned int id);
 /* mod_sem.c */

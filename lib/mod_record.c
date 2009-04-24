@@ -55,7 +55,7 @@ int  append_record(const char filename[], void *record, size_t size)
 			close(fd);
 			return -1;
 		}
-		if (write(fd, record, size) != -1)
+		if (mywrite(fd, record, size) != -1)
 		{
 			flock(fd, LOCK_UN);
 			close(fd);
@@ -98,21 +98,11 @@ int get_record(const char *filename, void *rptr, size_t size, unsigned int id)
 /**
  ** get the nTH record by file descriptor
  **/
-int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id, int lock)
+int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id)
 {
-	if (lock && myflock(fd, LOCK_EX))
-		return -1;
-	if (lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1)
-	{
-		if (myread(fd, rptr, size) == size)
-		{
-			if (lock)
-				flock(fd, LOCK_UN);
+	if ((lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1) &&
+	    (myread(fd, rptr, size) == size))
 			return 0;
-		}
-	}
-	if (lock)
-		flock(fd, LOCK_UN);
 	return -1;
 }
 

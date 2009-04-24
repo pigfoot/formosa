@@ -121,7 +121,7 @@ static int cmpfun(const void *a, const void *b)
 	}
 	return na - nb;
 }
-static int get_only_postno(const char *dotdir, int fd, int lock);
+static int get_only_postno(const char *dotdir, int fd, FILEHEADER *fh);
 static void restore_fileheader(FILEHEADER *fhr, const char *direct, const char *fname)
 {
 	time_t t;
@@ -179,7 +179,12 @@ static void restore_fileheader(FILEHEADER *fhr, const char *direct, const char *
 		strcpy(fhr->title, "UNKNOWN");
 	}
 
-	fhr->postno = get_only_postno(direct, 0, 0);
+	if (get_only_postno(direct, 0, fhr) == -1) {
+		bbslog("ERROR", "Getting only postno. (%s)", direct);
+		fprintf(stderr, "ERROR: Getting only postno. (%s)", direct);
+		exit(1);
+	}
+
 	/*
 	 * Mark readed for bbspop3d
 	 */
@@ -288,50 +293,106 @@ static void get_only_name(char *dir, char *fname)
 
 /*
  * postno is for readrc mechanism
- * it reads from .DIR file the latest post 'postno' & returns next valid no.
+ * It reads the last postno information from INFO_REC
+ * If failed, scan all .DIR file to find the last postno.
+ * and write it back to INFO_REC.
  */
-int get_last_postno(const char *dotdir, int fd, int lock)
+int get_last_info(const char *dotdir, int fd, INFOHEADER *info)
 {
-	int nr;
-	int number = 1;
 	char finfo[PATHLEN];
-	INFOHEADER info;
 
 	setdotfile(finfo, dotdir, INFO_REC);
-	if (get_record(finfo, &info, IH_SIZE, 1) == 0) {
-		number = info.last_postno;
-	} else if (fd && (nr = get_num_records_byfd(fd, FH_SIZE)) > 0) {
-		FILEHEADER lastf;
-		if (get_record_byfd(fd, &lastf, FH_SIZE, nr, lock) == 0)
-			number = lastf.postno;
-	} else if (!fd && dotdir && (nr = get_num_records(dotdir, FH_SIZE)) > 0) {
-		FILEHEADER lastf;
-		if (get_record(dotdir, &lastf, FH_SIZE, nr) == 0)
-			number = lastf.postno;
+	if ((get_record(finfo, info, IH_SIZE, 1) != 0)) {
+		int i, nr, myfd;
+		FILEHEADER lastf, fhtmp;
+		time_t lastmtime = 0, mtime;
+
+		if (!dotdir && !fd)
+			return -1;
+
+		if (!fd) {
+			myfd = open(dotdir, O_RDWR | O_CREAT, 0644);
+			if (myfd == -1)
+				return -1;
+			if (myflock(myfd, LOCK_EX)) {
+				close(myfd);
+				return -1;
+			}
+		} else {
+			myfd = fd;
+		}
+
+		nr = get_num_records_byfd(myfd, FH_SIZE);
+		for (i = 1; i <= nr; ++i) {
+			if (get_record_byfd(myfd, &fhtmp, FH_SIZE, i) == 0) {
+				if (fhtmp.mtime)
+					mtime = fhtmp.mtime;
+				else if (fhtmp.filename[0] == 'M')
+					mtime = strtol(fhtmp.filename + 2, NULL, 10);
+				else
+					mtime = 0;
+
+				if (mtime > lastmtime) {
+					memcpy(&lastf, &fhtmp, FH_SIZE);
+					lastmtime = mtime;
+				}
+			} else {
+				break;
+			}
+		}
+
+		if (!fd) {
+			flock(myfd, LOCK_UN);
+			close(myfd);
+		}
+
+		if (i <= nr)
+			return -1;
+
+		memset(info, 0, IH_SIZE);
+		if (lastmtime) {
+			info->last_postno = lastf.postno;
+			info->last_mtime  = lastf.mtime;
+			strcpy(info->last_filename, lastf.filename);
+		} else {
+			/* There is no article yet. */
+			info->last_postno = 0;
+			info->last_mtime = 0;
+			strcpy(info->last_filename, "M.000000000.A");
+		}
+		if (substitute_record(finfo, info, IH_SIZE, 1) == -1)
+			return -1;
 	}
 
-	if (number <= 0 || number > BRC_REALMAXNUM)
-		number = 1;
-
-	return number;
+	return 0;
 }
-static int get_only_postno(const char *dotdir, int fd, int lock)
+
+static int get_only_postno(const char *dotdir, int fd, FILEHEADER *fhr)
 {
-	int number;
 	char finfo[PATHLEN];
 	INFOHEADER info;
 
-	number = get_last_postno(dotdir, fd, lock);
-	if (++number > BRC_REALMAXNUM)
-		number = 1;	/* reset the postno. */
+	if (get_last_info(dotdir, fd, &info) == -1) {
+		bbslog("ERROR", "Getting INFO_REC.");
+		fprintf(stderr, "ERROR: Getting INFO_REC.");
+		return -1;
+	}
+
+	if (++info.last_postno > BRC_REALMAXNUM)
+		info.last_postno = 1;	/* reset the postno. */
+
+	fhr->postno = info.last_postno;
+	info.last_mtime  = fhr->mtime;
+	strcpy(info.last_filename, fhr->filename);
 
 	setdotfile(finfo, dotdir, INFO_REC);
-	if (get_record(finfo, &info, IH_SIZE, 1) == -1)
-		memset(&info, 0, sizeof(info));
-	info.last_postno = number;
-	substitute_record(finfo, &info, IH_SIZE, 1);
+	if (substitute_record(finfo, &info, IH_SIZE, 1) == -1) {
+		bbslog("ERROR", "Updating INFO_REC. (%s)", finfo);
+		fprintf(stderr, "ERROR: Updating INFO_REC. (%s)", finfo);
+		return -1;
+	}
 
-	return number;
+	return 0;
 }
 
 /*
@@ -584,8 +645,9 @@ int append_article(char *fname, char *path, char *author, char *title,
 	sprintf(dotdir, "%s/%s", path, DIR_REC);
 
 	/* get next valid postno from .DIR file if in the article mode */
-	if (artmode)
-		fhr->postno = get_only_postno(dotdir, 0, 0);
+	/* 精華區 / 信箱 不需要用到 postno */
+	if (artmode && get_only_postno(dotdir, 0, fhr))
+		return -1;
 	if (stamp)
 		strcpy(stamp, stampbuf);
 
@@ -601,8 +663,9 @@ int append_article(char *fname, char *path, char *author, char *title,
  		return -1;
  	}
 
-	if (artmode)
+	if (artmode) {
 		return fhr->postno;
+	}
 	return 0;
 }
 
@@ -879,9 +942,10 @@ int push_one_article(int ent, char *direct, int fd, int score)
 	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
 	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
-		save_pushcnt(fhr, score);
-		fhr->postno = get_only_postno(direct, fd, 0);
 		fhr->mtime = time(NULL);
+		save_pushcnt(fhr, score);
+		if (get_only_postno(direct, fd, fhr))
+			return -1;
 		if (ReadRC_UnRead(fhr))
 			ReadRC_Addlist(fhr->postno);
 		if (lseek(fd, ((ent - 1) * FH_SIZE), SEEK_SET) != -1
