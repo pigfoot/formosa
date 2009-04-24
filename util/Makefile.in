@@ -50,8 +50,8 @@ debug: all
 $(LIBFILE): $(LIBSRCS)
 	cd ../lib; $(MAKE)
 
-idcheck bbsmail bbs-news: str_codec.o
-idcheck bbsmail bbs-news: LIBFILE+= str_codec.o
+idcheck bbs-news: str_codec.o
+idcheck bbs-news: LIBFILE+= str_codec.o
 %:  %.c $(LIBFILE)
 	$(CC) $(CFLAGS) $(DEFINES) -o $* $*.c $(LDLIBS) $(LIBFILE)
 
