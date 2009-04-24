@@ -104,11 +104,16 @@ int append_news(char *bname, char *fname, char *userid, char *username, char *ti
 int PublishPost(char *fname, char *userid, char *username, char *bname, char *title, char ident, char *fromhost, short tonews, char *postpath, unsigned char flag);
 int make_treasure_folder(char *direct, char *title, char *dirname);
 /* mod_readrc.c */
+enum unread_enum {
+	UNREAD_READED = 0,
+	UNREAD_NEW    = 1,
+	UNREAD_MOD    = 2,
+};
 void ReadRC_Update(void);
 void ReadRC_Expire(void);
 void ReadRC_Init(unsigned int bid, char *userid);
 void ReadRC_Addlist(int artno);
-int ReadRC_UnRead(int artno);
+int ReadRC_UnRead(const FILEHEADER *fh);
 void ReadRC_Refresh(char *boardname);
 void ReadRC_Visit(unsigned int bid, char *userid, int bitset);
 /* mod_record.c */

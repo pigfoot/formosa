@@ -187,7 +187,11 @@ struct fileheader {
 	unsigned char pushcnt;
 	unsigned char flags;
 	char unused1;
-	char owner[80];
+	char owner[72];
+	union {
+		unsigned char for32bit[8];
+		time_t mtime;
+	};
 	char title[67];
 	char delby[IDLEN];
 	unsigned int level;

@@ -1,4 +1,3 @@
-
 #include "bbs.h"
 
 unsigned int rrc_changed = FALSE;
@@ -9,7 +8,7 @@ char fname_readrc[PATHLEN];
 char currentuserid[IDLEN] = "\0";
 
 #define RRC_SIZE    sizeof(struct readrc)
-#define RRC_EXPTIME (14*86400)
+#define RRC_EXPTIME (90*86400)
 
 void ReadRC_Update()
 {
@@ -43,7 +42,6 @@ void ReadRC_Update()
 	{
 		time_t now;
 
-
 		time(&now);
 		while (read(fdr, &rrc_buf, RRC_SIZE) == RRC_SIZE)
 		{
@@ -52,6 +50,7 @@ void ReadRC_Update()
 				if (rrc_buf.bid == myrrc.bid)
 				{
 					found = TRUE;
+					myrrc.mtime = time(NULL);
 					if (write(fdw, &myrrc, RRC_SIZE) != RRC_SIZE)
 					{
 						fail = TRUE;
@@ -178,11 +177,11 @@ void ReadRC_Init(unsigned int bid, char *userid)
 	new_visit = TRUE;
 }
 
-unsigned char rrc_readbit;
-int rrc_readid;
 
 void ReadRC_Addlist(int artno)
 {
+	unsigned char rrc_readbit;
+	int rrc_readid;
 
 #ifdef DEBUG
 	prints("\nReadRC_Addlist()");
@@ -206,24 +205,37 @@ void ReadRC_Addlist(int artno)
 #endif
 }
 
-int ReadRC_UnRead(int artno)
+int ReadRC_UnRead(const FILEHEADER *fh)
 {
-#ifdef DEBUG
-	if (artno <= 0 || artno > BRC_REALMAXNUM)
-		return 1;
-#endif
-	mymod(artno, BRC_MAXNUM, &rrc_readid, &rrc_readbit);
-#ifdef DEBUG
-	prints("\nrlist[%d] = [%2x], mem[%2x]", rrc_readid, rrc_readbit, myrrc.rlist[rrc_readid]);
-	getkey();
-#endif
-	return !(myrrc.rlist[rrc_readid] & rrc_readbit);
+	unsigned char rrc_readbit;
+	int rrc_readid;
+	time_t t;
+	int rtval = UNREAD_MOD;
+
+	t = fh->mtime;
+	if (!t) {
+		t = strtol(fh->filename + 2, NULL, 10);
+		rtval = UNREAD_NEW;
+	}
+
+	if (time(NULL) - t > RRC_EXPTIME)
+		return UNREAD_READED;
+
+	/*
+	 * Shouldn't happen
+	 */
+	if (fh->postno <= 0 || fh->postno > BRC_REALMAXNUM)
+		return UNREAD_READED;
+
+	mymod(fh->postno, BRC_MAXNUM, &rrc_readid, &rrc_readbit);
+
+	return (myrrc.rlist[rrc_readid] & rrc_readbit) ? UNREAD_READED : rtval;
 }
 
-
-#define DIRECTION_INC	1
-#define DIRECTION_DEC	0
-
+enum direction_enum {
+	DIRECTION_DEC,
+	DIRECTION_INC
+};
 static void ReadRC_Mod(unsigned int no, int max, int *rbyte, unsigned char *rbit, int direction)
 {
 	mymod(no, BRC_MAXNUM, rbyte, rbit);
@@ -249,15 +261,19 @@ static void ReadRC_Clean(int startno, int endno)
 #endif
 	ReadRC_Mod(startno, BRC_MAXNUM, &startbyte, &startbit, DIRECTION_INC);
 	ReadRC_Mod(endno,   BRC_MAXNUM, &endbyte,   &endbit,   DIRECTION_DEC);
-	size = endbyte - startbyte;
 #ifdef DEBUG
 	prints("\nstart [%d][%x] ~ end [%d][%x]",
 	       startbyte, startbit, endbyte, endbit);
 	getkey();
 #endif
-	myrrc.rlist[startbyte] &= startbit;
-	myrrc.rlist[endbyte]   &= endbit;
+	if (startbyte != endbyte) {
+		myrrc.rlist[startbyte] &= startbit;
+		myrrc.rlist[endbyte]   &= endbit;
+	} else {
+		myrrc.rlist[startbyte] &= (startbit | endbit);
+	}
 
+	size = endbyte - startbyte;
 	if (size > 1)
 		memset(myrrc.rlist + startbyte + 1, 0, size - 1);
 	rrc_changed = 1;

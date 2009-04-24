@@ -110,11 +110,21 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 		else if (in_board)
 		{
 			if (type & FILE_RESV)
-				type = (ReadRC_UnRead(fhr->postno)) ? 'G' : 'g';
+				type = (ReadRC_UnRead(fhr)) ? 'G' : 'g';
 			else if (type & FILE_DELE)
-				type = (ReadRC_UnRead(fhr->postno)) ? 'D' : 'd';
-			else
-				type = (ReadRC_UnRead(fhr->postno)) ? 'N' : ' ';
+				type = (ReadRC_UnRead(fhr)) ? 'D' : 'd';
+			else {
+				switch (ReadRC_UnRead(fhr)) {
+				case UNREAD_NEW:
+					type = 'N';
+					break;
+				case UNREAD_MOD:
+					type = 'M';
+					break;
+				default:
+					type = ' ';
+				}
+			}
 		}
 		else
 		{

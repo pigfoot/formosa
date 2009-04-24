@@ -310,6 +310,9 @@ int get_last_postno(const char *dotdir, int fd, int lock)
 			number = lastf.postno;
 	}
 
+	if (number <= 0 || number > BRC_REALMAXNUM)
+		number = 1;
+
 	return number;
 }
 static int get_only_postno(const char *dotdir, int fd, int lock)
@@ -319,7 +322,7 @@ static int get_only_postno(const char *dotdir, int fd, int lock)
 	INFOHEADER info;
 
 	number = get_last_postno(dotdir, fd, lock);
-	if (number <= 0 || ++number > BRC_REALMAXNUM)
+	if (++number > BRC_REALMAXNUM)
 		number = 1;	/* reset the postno. */
 
 	setdotfile(finfo, dotdir, INFO_REC);
@@ -878,7 +881,9 @@ int push_one_article(int ent, char *direct, int fd, int score)
 	{
 		save_pushcnt(fhr, score);
 		fhr->postno = get_only_postno(direct, fd, 0);
-		ReadRC_Addlist(fhr->postno);
+		fhr->mtime = time(NULL);
+		if (ReadRC_UnRead(fhr))
+			ReadRC_Addlist(fhr->postno);
 		if (lseek(fd, ((ent - 1) * FH_SIZE), SEEK_SET) != -1
 		    && write(fd, fhr, FH_SIZE) == FH_SIZE)
 			return 0;
