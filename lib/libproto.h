@@ -115,7 +115,7 @@ void ReadRC_Init(unsigned int bid, const char *userid);
 void ReadRC_Addlist(int artno);
 int ReadRC_UnRead(const FILEHEADER *fh);
 void ReadRC_Refresh(char *boardname);
-void ReadRC_Visit(unsigned int bid, char *userid, int bitset);
+int ReadRC_Visit(unsigned int bid, char *userid, int bitset);
 int ReadRC_Board(const char *bname, int bid, const char *userid);
 /* mod_record.c */
 long get_num_records(const char filename[], int size);

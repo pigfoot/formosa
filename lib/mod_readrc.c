@@ -196,6 +196,7 @@ void ReadRC_Addlist(int artno)
 #endif
 	myrrc.rlist[rrc_readid] |= rrc_readbit;
 	rrc_changed = TRUE;
+	new_visit = FALSE;
 #ifdef DEBUG
 	if (myrrc.rlist[rrc_readid] & rrc_readbit)
 		prints("\nok!!");
@@ -284,6 +285,9 @@ void ReadRC_Refresh(char *boardname)
 	char fname[STRLEN];
 	INFOHEADER info;
 
+	if (new_visit)
+		return;
+
 	setboardfile(fname, boardname, DIR_REC);
 	if (get_last_info(fname, 0, &info) == -1) {
 		/*
@@ -304,19 +308,19 @@ void ReadRC_Refresh(char *boardname)
 	}
 }
 
-void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
+int ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 {
-	ReadRC_Init(bid, userid);
-	if (bitset) {
-		myrrc.mtime = time(0);
-		memset(myrrc.rlist, 0xFF, BRC_MAXNUM);
-	} else {
-		myrrc.mtime = 0;
-		memset(myrrc.rlist, 0x00, BRC_MAXNUM);
-	}
+	if (new_visit)
+		return -1;
 
-	if (!new_visit)
-		rrc_changed = TRUE;
+	ReadRC_Init(bid, userid);
+	if (bitset)
+		memset(myrrc.rlist, 0xFF, BRC_MAXNUM);
+	else
+		memset(myrrc.rlist, 0x00, BRC_MAXNUM);
+	rrc_changed = TRUE;
+
+	return 0;
 }
 
 int ReadRC_Board(const char *bname, int bid, const char *userid)

@@ -13,16 +13,24 @@ extern BOOL isBM;
 
 int visit_article(int ent, FILEHEADER *finfo, char *direct)
 {
-	if (!in_board)	/* ? */
+	int set;
+	if (!in_board)	/* 只有在看板位讀判斷是用postno */
 		return C_NONE;
 
 	getdata(b_line, 0, _msg_post_9, genbuf, 2, ECHONOSP | XLCASE);
 	if (genbuf[0] == 'y')
-		ReadRC_Visit(CurBList->bid, curuser.userid, 0xFF);
+		set = 1;
 	else if (genbuf[0] == 'n')
-		ReadRC_Visit(CurBList->bid, curuser.userid, 0x00);
+		set = 0;
 	else
 		return C_FOOT;
+
+	if (ReadRC_Visit(CurBList->bid, curuser.userid, set)) {
+		msg(ANSI_COLOR(1;31) "尚未讀任何文章" ANSI_RESET);
+		getkey();
+		return C_FOOT;
+	}
+
 	return C_INIT;
 }
 
