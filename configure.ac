@@ -42,27 +42,21 @@ if test -z "$makever"; then
 		AC_MSG_ERROR(GNU Make is not installed.)
 fi
 
-case ${target} in
-	*sun-sunos*)
-	systype=SunOS
-	OS_DEF="-DSUNOS"
-	LIBS="-ltermcap"
-	;;
-
-	*solaris*)
+case $host in
+	*-solaris*)
 	systype=Solaris
 	OS_DEF="-DSOLARIS -DSYSV"
 	CFLAGS="-O2 -Wunused"
 	LIBS="-ltermcap -lsocket -lnsl"
 	;;
 
-	*-freebsd*|*-netbsd*|*-bsdi*)
+	*-freebsd*|*-netbsd*|*-bsdi*|*-apple-darwin*)
 	systype=NetBSD_OR_FreeBSD
 	OS_DEF="-DBSD44"
 	LIBS="-ltermcap"
 	;;
 
-	*-linux*)
+	*-linux-*)
 	systype=LINUX
 	OS_DEF="-DSYSV -DLINUX -DTERMIOS"
 	LIBS=""
