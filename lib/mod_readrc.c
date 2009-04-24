@@ -319,16 +319,11 @@ void ReadRC_Visit(unsigned int bid, char *userid, int bitset)
 		rrc_changed = TRUE;
 }
 
-int ReadRC_Board(const char *bname, const char *userid)
+int ReadRC_Board(const char *bname, int bid, const char *userid)
 {
-	int bid;
 	char filepath[PATHLEN];
 	INFOHEADER lastinfo;
 	FILEHEADER fh_buf;
-
-	bid = get_board_bid(bname);
-	if (bid == -1)
-		return 0;
 
 	setboardfile(filepath, bname, DIR_REC);
 	if (get_last_info(filepath, 0, &lastinfo) == -1)
