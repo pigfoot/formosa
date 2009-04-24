@@ -161,6 +161,11 @@ typedef struct user_info {
  */
 struct infoheader {
 	int last_postno;
+	union {
+		unsigned char for32bit[8];
+		time_t last_mtime;
+	};
+	char last_filename[52];
 } __attribute__ ((packed));
 
 typedef struct infoheader INFOHEADER;

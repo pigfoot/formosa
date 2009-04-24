@@ -42,27 +42,21 @@ if test -z "$makever"; then
 		AC_MSG_ERROR(GNU Make is not installed.)
 fi
 
-case ${target} in
-	*sun-sunos*)
-	systype=SunOS
-	OS_DEF="-DSUNOS"
-	LIBS="-ltermcap"
-	;;
-
-	*solaris*)
+case $host in
+	*-solaris*)
 	systype=Solaris
 	OS_DEF="-DSOLARIS -DSYSV"
 	CFLAGS="-O2 -Wunused"
 	LIBS="-ltermcap -lsocket -lnsl"
 	;;
 
-	*-freebsd*|*-netbsd*|*-bsdi*)
+	*-freebsd*|*-netbsd*|*-bsdi*|*-apple-darwin*)
 	systype=NetBSD_OR_FreeBSD
 	OS_DEF="-DBSD44"
 	LIBS="-ltermcap"
 	;;
 
-	*-linux*)
+	*-linux-*)
 	systype=LINUX
 	OS_DEF="-DSYSV -DLINUX -DTERMIOS"
 	LIBS=""
@@ -86,9 +80,7 @@ if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
 fi
 
 ECHO_N=${ac_n}
-ECHO_C=${ac_c}
-ECHO_T=${ac_t}
-AC_SUBST(ac_n)
+AC_SUBST(ECHO_N)
 
 AC_PREFIX_DEFAULT(/home/bbs)
 test "x$prefix" = "xNONE" && prefix=$ac_default_prefix

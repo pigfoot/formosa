@@ -14,7 +14,7 @@ Ans:
    可參考下列步驟更新:
 
    bbs% make distclean
-   bbs% ./autogen
+   bbs% ./autogen.sh
    bbs% ./configure
    bbs% make update
 

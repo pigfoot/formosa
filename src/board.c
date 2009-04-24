@@ -67,7 +67,6 @@ int select_board()
 	return C_FULL;
 }
 
-
 static void board_entry(int x, void *ep, int idx, int top, int last, int rows)
 {
 	int num;
@@ -84,9 +83,12 @@ static void board_entry(int x, void *ep, int idx, int top, int last, int rows)
 		}
 		else
 		{
-			prints("  %c%4d %-16.16s %4s %2s%1s%3d %-28.28s %-12.12s\n",
+			prints("  %c%4d%1s%-16.16s %4s %2s%1s%3d %-28.28s %-12.12s\n",
 			       ZapRC_IsZapped(be1->bhr->bid, be1->bhr->ctime) ? '*' : ' ',
 			       (show_numposts && in_board) ? be1->binfr->numposts : num,
+			       (ReadRC_Board(be1->bhr->filename,
+					     be1->bhr->bid,
+					     curuser.userid)) ? "[1;31m+[m" : "",
 			       be1->bhr->filename,
 			       (be1->bhr->brdtype & BRD_NEWS) ? _msg_board_3 : "",
 #ifdef USE_IDENT

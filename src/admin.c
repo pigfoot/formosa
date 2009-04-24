@@ -336,7 +336,7 @@ static int new_board(BOARDHEADER *bhp)
 	{
 		if (myflock(fd, LOCK_EX))
 			goto lock_err;
-		for (bid = 1; read(fd, &bhbuf, BH_SIZE) == BH_SIZE; bid++)
+		for (bid = 1; myread(fd, &bhbuf, BH_SIZE) == BH_SIZE; bid++)
 		{
 			if (bhbuf.filename[0] == '\0' || bhbuf.bid == 0)
 				break;
@@ -348,7 +348,7 @@ static int new_board(BOARDHEADER *bhp)
 		}
 		if (bid != -1)
 		{
-			while (read(fd, &bhbuf, BH_SIZE) == BH_SIZE)
+			while (myread(fd, &bhbuf, BH_SIZE) == BH_SIZE)
 			{
 				if (!strcasecmp(bhbuf.filename, bhp->filename))
 				{
@@ -361,8 +361,8 @@ static int new_board(BOARDHEADER *bhp)
 			goto op_err;
 
 		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) == -1 ||
-		    read(fd, &bhbuf, BH_SIZE) != BH_SIZE ||
-		    bhbuf.filename[0] != '\0')
+		    (myread(fd, &bhbuf, BH_SIZE) == BH_SIZE &&
+		     bhbuf.filename[0] != '\0'))
 			goto op_err;
 
 		if (lseek(fd, (off_t) ((bid - 1) * BH_SIZE), SEEK_SET) == -1)
@@ -370,7 +370,7 @@ static int new_board(BOARDHEADER *bhp)
 
 		bhp->bid = bid;
 		bhp->ctime = time(NULL);
-		if (write(fd, bhp, BH_SIZE) == BH_SIZE)
+		if (mywrite(fd, bhp, BH_SIZE) == BH_SIZE)
 		{
 			char pathname[PATHLEN];
 
