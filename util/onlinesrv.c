@@ -21,6 +21,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
+#include "bbs_ipc.h"
 #include "config.h"
 #include "struct.h"
 #include "libproto.h"

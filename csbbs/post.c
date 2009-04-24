@@ -134,7 +134,7 @@ DoGetPostHead()
 			post_state = 'T';
 		else if (fileinfo.accessed & FILE_RESV)
 			post_state = 'E';
-		else if (!ReadRC_UnRead(fileinfo.postno))
+		else if (!ReadRC_UnRead(&fileinfo))
 			post_state = 'R';	/* readed post */
 		else
 			post_state = 'N';	/* new post */

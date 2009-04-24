@@ -413,7 +413,7 @@ static void readed_article(int ent, FILEHEADER *finfo, char *direct)
 	}
 	else if (in_board)
 	{
-		if (ReadRC_UnRead(finfo->postno))
+		if (ReadRC_UnRead(finfo))
 			ReadRC_Addlist(finfo->postno);
 	}
 }

@@ -70,7 +70,7 @@ int ShowArticle(char *filename, BOOL body_only, BOOL process)
 	   hyperlink keyword, keyword length, hyperlink legal character , open target
 	 */
 
-		{"http", 4, "./:~?'=-_!&#%*+@\\", " TARGET=\"new\""},
+		{"http", 4, "./:;~?'=-_!&#%*+@\\", " TARGET=\"new\""},
 		{"ftp", 3, "./:@-_&%", " TARGET=\"new\""},
 		{"news", 4, "./:", "\0"},
 		{"telnet", 6, ".:", "\0"},

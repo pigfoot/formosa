@@ -90,6 +90,7 @@
  *	¶€©wßt¨A¿…
  *******************************************************************/
 #include "ansi.h"
+#include "bbs_ipc.h"
 #include "common.h"
 #include "struct.h"
 #include "perm.h"

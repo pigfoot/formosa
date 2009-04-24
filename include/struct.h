@@ -144,9 +144,6 @@ typedef struct user_info {
 #define SEM_RSET	0	/* Reset semaphore */
 #endif
 
-#define UTMPSEM_KEY 1129
-
-
 /* Flags used in fileheader accessed */
 #define FILE_READ   0x01	/* mail readed*/
 #define FILE_DELE   0x02	/* article deleted */
@@ -190,7 +187,11 @@ struct fileheader {
 	unsigned char pushcnt;
 	unsigned char flags;
 	char unused1;
-	char owner[80];
+	char owner[72];
+	union {
+		unsigned char for32bit[8];
+		time_t mtime;
+	};
 	char title[67];
 	char delby[IDLEN];
 	unsigned int level;

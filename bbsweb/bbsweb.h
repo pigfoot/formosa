@@ -44,11 +44,6 @@
 /*
 	define share memory & cache parameter
 */
-#define SERVER_SHM_KEY				((key_t) 0x1928)
-#define SERVER_SEM_KEY				((key_t) 0x0100)
-#define FILE_SHM_KEY				((key_t) 0x1939-1)
-#define HTML_SHM_KEY				((key_t) 0x1940+1)
-
 #define NUM_CACHE_FILE 				(16)
 #define MAX_CACHE_FILE_SIZE			(32*1024)
 #define REAL_CACHE_FILE_SIZE 		(MAX_CACHE_FILE_SIZE-SF_SIZE-(2*sizeof(unsigned int))-(2*sizeof(time_t)))
