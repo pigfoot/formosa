@@ -52,7 +52,7 @@ int myflock(int fd, int op)
 
 size_t myread(int fd, void *p, size_t len)
 {
-	int rc;
+	int rc = 0;
 	char *buf = p;
 	size_t offset = 0;
 
@@ -79,7 +79,7 @@ size_t myread(int fd, void *p, size_t len)
 
 size_t mywrite(int fd, void *p, size_t len)
 {
-	int rc;
+	int rc = 0;
 	char *buf = p;
 	size_t offset = 0;
 
@@ -598,6 +598,8 @@ struct file_list *get_file_list(const char *dirpath, size_t *cnt, const char *pr
 
 	if (prefix)
 		pflen = strlen(prefix);
+	else
+		pflen = 0;
 
 	readdir_r(dir, d, &dp);
 	while (dp) {
@@ -615,7 +617,7 @@ struct file_list *get_file_list(const char *dirpath, size_t *cnt, const char *pr
 				goto memerr_out2;
 			}
 		}
-		if (prefix && strncmp(dp->d_name, prefix, pflen))
+		if (pflen && strncmp(dp->d_name, prefix, pflen))
 			goto next_file;
 		if (isfile(fpath))
 			strcpy(dl[dln++].fname, dp->d_name);
