@@ -86,9 +86,7 @@ if test "${ac_cv_needs_sys_siglist}" = "yes" ; then
 fi
 
 ECHO_N=${ac_n}
-ECHO_C=${ac_c}
-ECHO_T=${ac_t}
-AC_SUBST(ac_n)
+AC_SUBST(ECHO_N)
 
 AC_PREFIX_DEFAULT(/home/bbs)
 test "x$prefix" = "xNONE" && prefix=$ac_default_prefix
