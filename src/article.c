@@ -1047,9 +1047,6 @@ static int pushCheckPerm(FILEHEADER *finfo)
 	return 1;
 }
 
-#define ASCII_RED	"\033[1;31m"
-#define ASCII_GREEN	"\033[1;32m"
-#define ASCII_CLEAN	"\033[m"
 /*
  * 推文
  */
@@ -1066,7 +1063,7 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	if (!pushCheckPerm(finfo))
 		return C_NONE;
 
-	msg("\033[1m<<文章評分>>\033[m [y]推文 [n]呸文 [g]自訂推 [b]自訂呸 [q]放棄：");
+	msg(ANSI_COLOR(1) "<<文章評分>>\033[m [y]推文 [n]呸文 [g]自訂推 [b]自訂呸 [q]放棄：");
 	ch = igetkey();
 	switch (ch) {
 	case 'y':
@@ -1088,16 +1085,16 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_FULL;
 
 	if (ptr == cyes || ptr == cno) {
-		if (!getdata(b_line, 0, "\033[1;36m自訂：\033[m", ptr, 3, XECHO)) {
+		if (!getdata(b_line, 0, ANSI_COLOR(1;36) "自訂：" ANSI_RESET, ptr, 3, XECHO)) {
 			if (ptr == cyes)
 				ptr = yes;
 			else
 				ptr = no;
 		}
 	}
-	sprintf(msgbuf, "\033[36m%s\033[m %s%s" ASCII_CLEAN "：",
+	sprintf(msgbuf, ANSI_COLOR(36) "%s" ANSI_RESET " %s%s" ANSI_RESET "：",
 		curuser.userid,
-		(ptr == yes || ptr == cyes) ? ASCII_RED : ASCII_GREEN,
+		(ptr == yes || ptr == cyes) ? ANSI_COLOR(1;31) : ANSI_COLOR(1;32),
 		ptr);
 	if (!getdata(b_line, 0, msgbuf, pushline,
 	             PUSHLEN - strlen(curuser.userid) + 1, XECHO))
@@ -1162,6 +1159,9 @@ lock_err:
 
 		flock(fd, LOCK_UN);
 		close(fd);
+	} else {
+		msg(ANSI_COLOR(1;31) "系統錯誤: 推文失敗, 請回報給站長." ANSI_RESET);
+		ch = igetkey();
 	}
 
 	return C_FULL;
