@@ -145,6 +145,7 @@ int reserve_article(int ent, FILEHEADER *finfo, char *direct);
 int read_article(int ent, FILEHEADER *finfo, char *direct);
 int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop, int option);
 int delete_article(int ent, FILEHEADER *finfo, char *direct);
+int bm_pack_article(int ent, FILEHEADER *finfo, char *direct);
 int mail_article(int ent, FILEHEADER *finfo, char *direct);
 int cross_article(int ent, FILEHEADER *finfo, char *direct);
 int push_article(int ent, FILEHEADER *finfo, char *direct);

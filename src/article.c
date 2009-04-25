@@ -548,7 +548,6 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 	FILEHEADER *fhr = &fhGol;
 	int n = 0;
 
-
 	if ((fd = open(direct, O_RDWR)) < 0)
 		return -1;
 	if (myflock(fd, LOCK_EX)) {
@@ -796,7 +795,40 @@ delete_article(int ent, FILEHEADER *finfo, char *direct)
 	return C_LINE;
 }
 
+/*
+ * 清理已標記刪除的文章
+ */
+int
+bm_pack_article(int ent, FILEHEADER *finfo, char *direct)
+{
+	int ch;
 
+	/* first check for permission to delete */
+#ifdef GUEST
+	if (!strcmp(curuser.userid, GUEST))
+		return C_NONE;
+#endif
+
+	if (!in_board)
+		return C_NONE;
+
+	if (!hasBMPerm)
+		return C_NONE;
+
+	msg(ANSI_COLOR(1;33) "清理刪除文章"
+	    ANSI_RESET ": 此動作較耗費系統資源, 請一次整理完後再使用. 繼續?(y/n)[n] ");
+
+	/* once delete permission is confirmed, check delete option */
+	ch = igetkey();
+	if (ch == 'y' || ch == 'Y') {
+		pack_article(direct);
+		msg(ANSI_COLOR(1) "清除完畢" ANSI_RESET);
+		ch = igetkey();
+		return C_INIT;
+	}
+
+	return C_FOOT;
+}
 /*
  * mail article to someone in batch mode
  */
