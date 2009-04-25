@@ -1133,6 +1133,7 @@ struct one_key post_comms[] =
 	{'%', push_article},
 	{'m', mail_article},
 	{'d', delete_article},
+	{CTRL('D'), bm_pack_article},
 	{'g', reserve_article},	/* in_mail || in_board */
 	{'t', tag_article},
 	{'T', range_tag_article},
