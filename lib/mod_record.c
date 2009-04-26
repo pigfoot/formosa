@@ -182,7 +182,6 @@ int delete_record(char *filename, size_t size, unsigned int id)
 	return -1;
 }
 
-
 /**
  ** substitute the nTH record in file
  **/
@@ -208,5 +207,17 @@ int substitute_record(char *filename, void *rptr, size_t size, unsigned int id)
 		flock(fd, LOCK_UN);
 		close(fd);
 	}
+	return -1;
+}
+
+/**
+ ** substitute the nTH record by file descriptor
+ **/
+int substitute_record_byfd(int fd, void *rptr, size_t size, unsigned int id)
+{
+	if (lseek(fd, (off_t) ((id - 1) * size), SEEK_SET) != -1)
+		if (mywrite(fd, rptr, size) == size)
+			return 0;
+
 	return -1;
 }

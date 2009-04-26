@@ -42,7 +42,6 @@ disable
 	return 0;
 }
 
-
 /*
  * 修改文章標題
  */
@@ -59,12 +58,14 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_FOOT;
 	}
 
-	/* maybe file lock needed ? */
-	if (get_record(direct, fhr, FH_SIZE, ent) == -1)
-		return C_FOOT;
+	memcpy(fhr, finfo, FH_SIZE);
 	strcpy(fhr->title, title);
-	if (substitute_record(direct, fhr, FH_SIZE, ent) == -1)
-		return C_FOOT;
+	if (savely_substitute_dir(direct, 0, ent, finfo, fhr, TRUE) == -1) {
+		msg(ANSI_COLOR(1;31) "修改標題失敗" ANSI_RESET);
+		getkey();
+		return C_INIT;
+	}
+	strcpy(finfo->title, title);
 
 #ifdef USE_THREADING	/* syhu */
 	sync_threadfiles( fhr, direct);
@@ -114,7 +115,6 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 		chmod(fn_w, 0600);
 		myrename(fn_w, fn_r);
 	}
-	strcpy(finfo->title, title);
 	return C_LINE;
 }
 
@@ -260,7 +260,7 @@ int reserve_article(int ent, FILEHEADER *finfo, char *direct)
 	 * 3. 一般區文章, 惟有板主, 板主助手, 站長可
 	 */
 	if ((!in_mail && !in_board)
-	    || (!in_mail/* && !HAS_PERM(PERM_SYSOP)*/ && !hasBMPerm))
+	    || (!in_mail && !hasBMPerm))
 	{
 		return C_NONE;
 	}
@@ -568,7 +568,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 	}
 
  	/* begin checking each file entry to mark for delete  */
-	while (read(fd, fhr, FH_SIZE) == FH_SIZE)
+	while (myread(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
 		n++;
 
@@ -689,7 +689,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 			close(fd);
 			return -1;
 		}
-		if (write(fd, fhr, FH_SIZE) != FH_SIZE)
+		if (mywrite(fd, fhr, FH_SIZE) != FH_SIZE)
 		{
 			flock(fd, LOCK_UN);
 			close(fd);
@@ -876,7 +876,7 @@ static int mail_articles(FILEHEADER *finfo, char *direct, char *from, char *to, 
 	{
 		if ((ms = CreateMailSocket()) > 0)
 		{
-			while (read(fd, fhr, FH_SIZE) == FH_SIZE)
+			while (myread(fd, fhr, FH_SIZE) == FH_SIZE)
 			{
 				if (fhr->accessed & FILE_DELE || fhr->accessed & FILE_TREA)
 					continue;
@@ -1092,9 +1092,10 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	struct tm *tm;
 	struct stat st;
 
-	if (!pushCheckPerm(finfo))
+	if (!in_board || !pushCheckPerm(finfo))
 		return C_NONE;
 
+	move(b_lines, 0);
 	msg(ANSI_COLOR(1) "<<文章評分>>\033[m [y]推文 [n]呸文 [g]自訂推 [b]自訂呸 [q]放棄：");
 	ch = igetkey();
 	switch (ch) {
@@ -1132,14 +1133,10 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	             PUSHLEN - strlen(curuser.userid) + 1, XECHO))
 		return C_FULL;
 
-	if ((fd = open(direct, O_RDWR)) < 0)
+	if ((fd = open_and_lock(direct)) == -1)
 		return C_FULL;
-	if (myflock(fd, LOCK_EX)) {
-		rt = -1;
-		goto lock_err;
-	}
 
-	score = read_pushcnt(ent, direct, fd);
+	score = read_pushcnt(fd, ent, finfo);
 	if (score == PUSH_ERR) {
 		rt = -1;
 		goto push_err;
@@ -1154,16 +1151,13 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	else if ((ptr == no || ptr == cno) && score > SCORE_MIN)
 		--score;
 
-	save_pushcnt(finfo, score);
-	rt = push_one_article(ent, direct, fd, score);
+	rt = push_one_article(direct, fd, ent, finfo, score);
 push_err:
-	flock(fd, LOCK_UN);
-lock_err:
-	close(fd);
+	unlock_and_close(fd);
 
-	date = time(NULL);
-	tm = localtime(&date);
 	if (rt == 0) {
+		date = time(NULL);
+		tm = localtime(&date);
 		setdotfile(fn_art, direct, finfo->filename);
 		if ((fd = open(fn_art, O_RDWR | O_APPEND, 0600)) < 0)
 			return C_FULL;
@@ -1192,8 +1186,9 @@ lock_err:
 		flock(fd, LOCK_UN);
 		close(fd);
 	} else {
-		msg(ANSI_COLOR(1;31) "系統錯誤: 推文失敗, 請回報給站長." ANSI_RESET);
+		msg(ANSI_COLOR(1;31) "推文失敗" ANSI_RESET);
 		ch = igetkey();
+		return C_INIT;
 	}
 
 	return C_FULL;
@@ -1253,7 +1248,7 @@ int range_tag_article(int ent, FILEHEADER *finfo, char *direct)
 	{
 		if (lseek(fd, (off_t) ((n1 - 1) * FH_SIZE), SEEK_SET) != -1)
 		{
-			while (n1 <= n2 && read(fd, fhr, FH_SIZE) == FH_SIZE)
+			while (n1 <= n2 && myread(fd, fhr, FH_SIZE) == FH_SIZE)
 				tag_article(n1++, fhr, direct);
 		}
 		close(fd);

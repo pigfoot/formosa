@@ -903,23 +903,20 @@ int get_pushcnt(const FILEHEADER *fhr)
 /*
    讀取推文分數
 */
-int read_pushcnt(int ent, char *direct, int fd)
+int read_pushcnt(int fd, int ent, const FILEHEADER *ofhr)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
-	/* file opened/locked by src/article.c:push_article() */
-	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
-	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
-	{
-		return get_pushcnt(fhr);
-	}
-	return PUSH_ERR;
+	if (savely_read_dir(NULL, fd, ent, ofhr, fhr))
+		return PUSH_ERR;
+
+	return get_pushcnt(fhr);
 }
 
 /*
    轉換存入推文分數
 */
-void save_pushcnt(FILEHEADER *fhr, int score)
+static void save_pushcnt(FILEHEADER *fhr, int score)
 {
 	fhr->flags |= FHF_PUSHED;
 	if (score < 0) {
@@ -934,30 +931,23 @@ void save_pushcnt(FILEHEADER *fhr, int score)
 /*
    存入推文分數
 */
-int push_one_article(int ent, char *direct, int fd, int score)
+int push_one_article(const char *direct, int fd, int ent, FILEHEADER *ofhr, int score)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
-	/* file opened/locked by src/article.c:push_article() */
-	if (lseek(fd, (off_t) ((ent - 1) * FH_SIZE), SEEK_SET) != -1
-	    && read(fd, fhr, FH_SIZE) == FH_SIZE)
-	{
-		fhr->mtime = time(NULL);
-		save_pushcnt(fhr, score);
-		if (get_only_postno(direct, fd, fhr))
-			return -1;
-		if (ReadRC_UnRead(fhr))
-			ReadRC_Addlist(fhr->postno);
-		if (lseek(fd, ((ent - 1) * FH_SIZE), SEEK_SET) != -1
-		    && write(fd, fhr, FH_SIZE) == FH_SIZE)
-			return 0;
-	}
-	return -1;
+	memcpy(fhr, ofhr, FH_SIZE);
+	save_pushcnt(fhr, score);
+	if (savely_substitute_dir(direct, fd, ent, ofhr, fhr, TRUE))
+		return -1;
+	save_pushcnt(ofhr, score);
+	ReadRC_Addlist(fhr->postno);
+
+	return 0;
 }
 
 void write_article_header(FILE *fpw, const char *userid, const char *username,
-							const char *bname, const char *timestr,
-							const char *title, const char *origin)
+			const char *bname, const char *timestr,
+			const char *title, const char *origin)
 {
         /* sarek:02/08/2001 username 濾除ANSI控制碼 */
         fprintf(fpw, "發信人: %s (%s)", userid, esc_filter(username));
@@ -977,6 +967,94 @@ void write_article_header(FILE *fpw, const char *userid, const char *username,
 	fflush(fpw);
 }
 
+/*
+ * To prevent after board packed, and others did not update their list.
+ * The ent could be wrong, and the user might update the wrong .DIR entry.
+ */
+int savely_read_dir(const char *direct, int opened_fd, int ent,
+		const FILEHEADER *ofhr, FILEHEADER *nfhr)
+{
+	int fd, rtval = -1;
+
+	if (opened_fd)
+		fd = opened_fd;
+	else
+		fd = open_and_lock(direct);
+	if (fd == -1)
+		goto err_out;
+
+	if (get_record_byfd(fd, nfhr, FH_SIZE, ent) == -1)
+		goto out;
+
+	if (nfhr->postno == ofhr->postno && !strcmp(nfhr->title, ofhr->title)) {
+		/*
+		 * The ent position should be correct,
+		 * if postno and the title is the same.
+		 */
+		if (nfhr->accessed & FILE_DELE)
+			goto out;
+		rtval = 0;
+		goto out;
+	}
+
+	/*
+	 * Search for correct record if still there.
+	 * This could spend some CPU/DISK time.
+	 */
+	/*
+	 * FIXME: Just returning error for now.
+	 */
+
+out:
+	if (!opened_fd)
+		unlock_and_close(fd);
+err_out:
+	return rtval;
+}
+
+/*
+ * To prevent after board packed, and others did not update their list.
+ * The ent could be wrong, and the user might update the wrong .DIR entry.
+ */
+int savely_substitute_dir(const char *direct, int opened_fd, int ent,
+		const FILEHEADER *ofhr, FILEHEADER *nfhr,
+		unsigned char mark_unread)
+{
+	int fd, rtval = -1;
+	FILEHEADER tfhr;
+
+	if (opened_fd)
+		fd = opened_fd;
+	else
+		fd = open_and_lock(direct);
+	if (fd == -1)
+		goto err_out;
+
+	if (savely_read_dir(NULL, fd, ent, ofhr, &tfhr))
+		goto out;
+
+	if (mark_unread) {
+		nfhr->mtime = time(NULL);
+		get_only_postno(direct, fd, nfhr);
+	}
+	if (substitute_record_byfd(fd, nfhr, FH_SIZE, ent))
+		goto out;
+	rtval = 0;
+
+	/*
+	 * Search for correct record if still there.
+	 * This could spend some CPU/DISK time.
+	 */
+	/*
+	 * FIXME: Just returning error for now.
+	 */
+
+out:
+	if (!opened_fd)
+		unlock_and_close(fd);
+err_out:
+	return rtval;
+}
 
 /*
    標記刪除單篇文章
