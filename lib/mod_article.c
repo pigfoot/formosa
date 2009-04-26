@@ -977,6 +977,53 @@ void write_article_header(FILE *fpw, const char *userid, const char *username,
 	fflush(fpw);
 }
 
+/*
+ * To prevent after board packed, and others did not update their list.
+ * The ent could be wrong, and the user might update the wrong .DIR entry.
+ */
+int savely_substitute_dir(const char *direct, const FILEHEADER *ofhr,
+		FILEHEADER *nfhr, int ent, unsigned char mark_unread)
+{
+	int fd, rtval = -1;
+	FILEHEADER tfhr;
+
+	fd = open_and_lock(direct);
+	if (fd == -1)
+		goto err_out;
+
+	if (get_record_byfd(fd, &tfhr, FH_SIZE, ent) == -1)
+		goto out;
+
+	if (tfhr.postno == ofhr->postno && !strcmp(tfhr.title, ofhr->title)) {
+		/*
+		 * The ent position should be correct,
+		 * if postno and the title is the same.
+		 */
+		if (tfhr.accessed & FILE_DELE)
+			goto out;
+		if (mark_unread) {
+			nfhr->mtime = time(NULL);
+			get_only_postno(direct, fd, nfhr);
+		}
+		if (substitute_record_byfd(fd, nfhr, FH_SIZE, ent))
+			goto out;
+		rtval = 0;
+		goto out;
+	}
+
+	/*
+	 * Search for correct record if still there.
+	 * This could spend some CPU/DISK time.
+	 */
+	/*
+	 * FIXME: Just returning error for now.
+	 */
+
+out:
+	unlock_and_close(fd);
+err_out:
+	return rtval;
+}
 
 /*
    標記刪除單篇文章

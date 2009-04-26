@@ -50,6 +50,27 @@ int myflock(int fd, int op)
 	return rc;
 }
 
+int open_and_lock(const char *fname)
+{
+	int fd;
+
+	if ((fd = open(fname, O_RDWR)) == -1)
+		return -1;
+
+	if (myflock(fd, LOCK_EX)) {
+		close(fd);
+		return -1;
+	}
+
+	return fd;
+}
+
+void unlock_and_close(int fd)
+{
+	flock(fd, LOCK_UN);
+	close(fd);
+}
+
 size_t myread(int fd, void *p, size_t len)
 {
 	int rc = 0;

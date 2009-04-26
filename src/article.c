@@ -42,7 +42,6 @@ disable
 	return 0;
 }
 
-
 /*
  * 修改文章標題
  */
@@ -59,12 +58,14 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 		return C_FOOT;
 	}
 
-	/* maybe file lock needed ? */
-	if (get_record(direct, fhr, FH_SIZE, ent) == -1)
-		return C_FOOT;
+	memcpy(fhr, finfo, FH_SIZE);
 	strcpy(fhr->title, title);
-	if (substitute_record(direct, fhr, FH_SIZE, ent) == -1)
-		return C_FOOT;
+	if (savely_substitute_dir(direct, finfo, fhr, ent, TRUE) == -1) {
+		msg(ANSI_COLOR(1;31) "修改標題失敗" ANSI_RESET);
+		getkey();
+		return C_INIT;
+	}
+	strcpy(finfo->title, title);
 
 #ifdef USE_THREADING	/* syhu */
 	sync_threadfiles( fhr, direct);
@@ -114,7 +115,6 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 		chmod(fn_w, 0600);
 		myrename(fn_w, fn_r);
 	}
-	strcpy(finfo->title, title);
 	return C_LINE;
 }
 
@@ -260,7 +260,7 @@ int reserve_article(int ent, FILEHEADER *finfo, char *direct)
 	 * 3. 一般區文章, 惟有板主, 板主助手, 站長可
 	 */
 	if ((!in_mail && !in_board)
-	    || (!in_mail/* && !HAS_PERM(PERM_SYSOP)*/ && !hasBMPerm))
+	    || (!in_mail && !hasBMPerm))
 	{
 		return C_NONE;
 	}
@@ -568,7 +568,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 	}
 
  	/* begin checking each file entry to mark for delete  */
-	while (read(fd, fhr, FH_SIZE) == FH_SIZE)
+	while (myread(fd, fhr, FH_SIZE) == FH_SIZE)
 	{
 		n++;
 
@@ -689,7 +689,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 			close(fd);
 			return -1;
 		}
-		if (write(fd, fhr, FH_SIZE) != FH_SIZE)
+		if (mywrite(fd, fhr, FH_SIZE) != FH_SIZE)
 		{
 			flock(fd, LOCK_UN);
 			close(fd);
@@ -876,7 +876,7 @@ static int mail_articles(FILEHEADER *finfo, char *direct, char *from, char *to, 
 	{
 		if ((ms = CreateMailSocket()) > 0)
 		{
-			while (read(fd, fhr, FH_SIZE) == FH_SIZE)
+			while (myread(fd, fhr, FH_SIZE) == FH_SIZE)
 			{
 				if (fhr->accessed & FILE_DELE || fhr->accessed & FILE_TREA)
 					continue;
@@ -1253,7 +1253,7 @@ int range_tag_article(int ent, FILEHEADER *finfo, char *direct)
 	{
 		if (lseek(fd, (off_t) ((n1 - 1) * FH_SIZE), SEEK_SET) != -1)
 		{
-			while (n1 <= n2 && read(fd, fhr, FH_SIZE) == FH_SIZE)
+			while (n1 <= n2 && myread(fd, fhr, FH_SIZE) == FH_SIZE)
 				tag_article(n1++, fhr, direct);
 		}
 		close(fd);

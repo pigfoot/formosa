@@ -22,6 +22,8 @@ struct BoardList *SearchBoardList(char bname[]);
 /* misc.c */
 int flock(int fd, int op);
 int myflock(int fd, int op);
+int open_and_lock(const char *fname);
+void unlock_and_close(int fd);
 size_t myread(int fd, void *buf, size_t len);
 size_t mywrite(int fd, void *buf, size_t len);
 int mycp(const char *from, const char *to);
@@ -78,6 +80,7 @@ int read_pushcnt(int ent, char *direct, int fd);
 void save_pushcnt(FILEHEADER *fhr, int score);
 int push_one_article(int ent, char *direct, int fd, int score);
 void write_article_header(FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin);
+int savely_substitute_dir(const char *direct, const FILEHEADER *ofhr, FILEHEADER *nfhr, int ent, unsigned char mark_unread);
 int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, int option);
 /* mod_board.c */
 int can_see_board(BOARDHEADER *bhr, unsigned int userlevel);
@@ -126,6 +129,7 @@ int get_record(const char *filename, void *rptr, size_t size, unsigned int id);
 int get_record_byfd(int fd, void *rptr, size_t size, unsigned int id);
 int delete_record(char *filename, size_t size, unsigned int id);
 int substitute_record(char *filename, void *rptr, size_t size, unsigned int id);
+int substitute_record_byfd(int fd, void *rptr, size_t size, unsigned int id);
 /* mod_sem.c */
 int sem_init(key_t key);
 void sem_cleanup(int sem_id);
