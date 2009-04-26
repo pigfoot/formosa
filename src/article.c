@@ -548,20 +548,15 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 	FILEHEADER *fhr = &fhGol;
 	int n = 0;
 
-	if ((fd = open(direct, O_RDWR)) < 0)
+	if ((fd = open_and_lock(direct)) < 0)
 		return -1;
-	if (myflock(fd, LOCK_EX)) {
-		close(fd);
-		return -1;
-	}
 
 	/* jump to current post if not deleting tagged files */
 	if (!wtop)
 	{
 		if (lseek(fd, (ent - 1) * FH_SIZE, SEEK_SET) == -1)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 		n = ent - 1;
@@ -588,8 +583,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 				{
 					msg(_msg_article_1);
 					getkey();
-					flock(fd, LOCK_UN);
-					close(fd);
+					unlock_and_close(fd);
 					return -1;
 				}
 				continue;
@@ -614,13 +608,12 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 			{
 				uinfo.ever_delete_mail = 1;
 			}
-			else if (in_board /*&& !HAS_PERM(PERM_SYSOP)*/ && !hasBMPerm &&
-				 strcmp(fhr->owner, curuser.userid))
+			else if (in_board && !hasBMPerm &&
+				strcmp(fhr->owner, curuser.userid))
 			{
 				continue;
 			}
-			else if (!in_mail && !in_board /*&& !HAS_PERM(PERM_SYSOP)*/
-				 && !hasBMPerm)
+			else if (!in_mail && !in_board && !hasBMPerm)
 			{
 				continue;
 			}
@@ -685,14 +678,12 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
  		/* write back changes to .DIR file */
 		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) == -1)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 		if (mywrite(fd, fhr, FH_SIZE) != FH_SIZE)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 
@@ -700,15 +691,13 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
  		/* update .THREADHEAD & .THREADPOST files */
 		if( sync_threadfiles( fhr, direct ) == -1 )
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
  		}
 #endif
 	}
-	flock(fd, LOCK_UN);
-	close(fd);
-	if (!in_mail && !in_board)
+	unlock_and_close(fd);
+	if (!in_mail && !in_board) /* 精華區直接清除 */
 		pack_article(direct);
 	return 0;
 }
