@@ -76,11 +76,11 @@ void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);
 int reserve_one_article(int ent, char *direct);
 int get_pushcnt(const FILEHEADER *fhr);
-int read_pushcnt(int ent, char *direct, int fd);
-void save_pushcnt(FILEHEADER *fhr, int score);
-int push_one_article(int ent, char *direct, int fd, int score);
+int read_pushcnt(int fd, int ent, const FILEHEADER *ofhr);
+int push_one_article(const char *direct, int fd, int ent, FILEHEADER *ofhr, int score);
 void write_article_header(FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin);
-int savely_substitute_dir(const char *direct, const FILEHEADER *ofhr, FILEHEADER *nfhr, int ent, unsigned char mark_unread);
+int savely_read_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr);
+int savely_substitute_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr, unsigned char mark_unread);
 int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, int option);
 /* mod_board.c */
 int can_see_board(BOARDHEADER *bhr, unsigned int userlevel);

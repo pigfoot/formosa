@@ -60,7 +60,7 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 
 	memcpy(fhr, finfo, FH_SIZE);
 	strcpy(fhr->title, title);
-	if (savely_substitute_dir(direct, finfo, fhr, ent, TRUE) == -1) {
+	if (savely_substitute_dir(direct, 0, ent, finfo, fhr, TRUE) == -1) {
 		msg(ANSI_COLOR(1;31) "修改標題失敗" ANSI_RESET);
 		getkey();
 		return C_INIT;
@@ -1092,9 +1092,10 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	struct tm *tm;
 	struct stat st;
 
-	if (!pushCheckPerm(finfo))
+	if (!in_board || !pushCheckPerm(finfo))
 		return C_NONE;
 
+	move(b_lines, 0);
 	msg(ANSI_COLOR(1) "<<文章評分>>\033[m [y]推文 [n]呸文 [g]自訂推 [b]自訂呸 [q]放棄：");
 	ch = igetkey();
 	switch (ch) {
@@ -1132,14 +1133,10 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	             PUSHLEN - strlen(curuser.userid) + 1, XECHO))
 		return C_FULL;
 
-	if ((fd = open(direct, O_RDWR)) < 0)
+	if ((fd = open_and_lock(direct)) == -1)
 		return C_FULL;
-	if (myflock(fd, LOCK_EX)) {
-		rt = -1;
-		goto lock_err;
-	}
 
-	score = read_pushcnt(ent, direct, fd);
+	score = read_pushcnt(fd, ent, finfo);
 	if (score == PUSH_ERR) {
 		rt = -1;
 		goto push_err;
@@ -1154,16 +1151,13 @@ int push_article(int ent, FILEHEADER *finfo, char *direct)
 	else if ((ptr == no || ptr == cno) && score > SCORE_MIN)
 		--score;
 
-	save_pushcnt(finfo, score);
-	rt = push_one_article(ent, direct, fd, score);
+	rt = push_one_article(direct, fd, ent, finfo, score);
 push_err:
-	flock(fd, LOCK_UN);
-lock_err:
-	close(fd);
+	unlock_and_close(fd);
 
-	date = time(NULL);
-	tm = localtime(&date);
 	if (rt == 0) {
+		date = time(NULL);
+		tm = localtime(&date);
 		setdotfile(fn_art, direct, finfo->filename);
 		if ((fd = open(fn_art, O_RDWR | O_APPEND, 0600)) < 0)
 			return C_FULL;
@@ -1192,8 +1186,9 @@ lock_err:
 		flock(fd, LOCK_UN);
 		close(fd);
 	} else {
-		msg(ANSI_COLOR(1;31) "系統錯誤: 推文失敗, 請回報給站長." ANSI_RESET);
+		msg(ANSI_COLOR(1;31) "推文失敗" ANSI_RESET);
 		ch = igetkey();
+		return C_INIT;
 	}
 
 	return C_FULL;
