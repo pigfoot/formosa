@@ -408,6 +408,7 @@ static int vcmd_delete(int ent, VOTE *vinfo, char *direct)
 
 
 /*box*/
+static int vcmd_result(int ent, VOTE *vinfo, char *direct);
 static int vcmd_enter(int ent, VOTE *vinfo, char *direct)
 {
 	char tmpdir[PATHLEN];
@@ -423,8 +424,8 @@ static int vcmd_enter(int ent, VOTE *vinfo, char *direct)
 
 	if (time(0) > vinfo->end_time)
 	{
-		showmsg("投票活動早已結束了!");
-		return C_FULL;
+		showmsg("投票活動已經結束了, 看看結果吧!");
+		return vcmd_result(ent, vinfo, direct);
 	}
 
 	memset(&MyBox, 0, sizeof(MyBox));
