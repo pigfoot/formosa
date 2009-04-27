@@ -45,7 +45,6 @@ static int malloc_board(struct board_t *binfr)
 
 int CreateBoardList(const USEREC *curuserp)
 {
-	int i, j;
 	char fname_zaprc[PATHLEN];
 
 	cp = curuserp;
@@ -71,29 +70,6 @@ int CreateBoardList(const USEREC *curuserp)
 	}
 
 	apply_brdshm_board_t(malloc_board);
-
-	/* Merge spaces to tail */
-	for (i = 0; i < num_brds; i++)
-	{
-		if (!all_brds[i].bhr)
-		{
-			for (j = i; j < MAXBOARD; j++)
-			{
-				if (all_brds[j].bhr)
-				{
-					memcpy(&(all_brds[i]), &(all_brds[j]), sizeof(struct BoardList));
-					memset(&(all_brds[j]), 0, sizeof(struct BoardList));
-					break;
-				}
-			}
-		}
-	}
-
-#if 0
-	/* 為配合主選單的 (R)ead 功能 */
-	curbe = &(all_brds[0]);
-	CurBList = all_brds[0].bhr;
-#endif
 
 	return num_brds;
 }
