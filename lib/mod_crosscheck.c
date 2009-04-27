@@ -155,7 +155,7 @@ int reach_crosslimit(const char *userid, const char *fname)
 	clear_timeout_entries(hashidx);
 
 	cep = crosshm->hashtab + hashidx;
-	while (cep && cep->posthash) {
+	while (cep && cep->cnt) {
 		if (cep->posthash == posthash) {
 			cep->timeout = time(NULL) + CROSS_TIMEOUT;
 			if (++cep->cnt > CROSS_LIMIT)
