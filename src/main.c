@@ -20,6 +20,7 @@
 #include <netdb.h>
 #include <syslog.h>
 #include <pwd.h>
+#include <grp.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -147,7 +148,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	port = 23;
+	port = BBS_TCP_PORT;
 	inetd = 0;
 
 	if (argc > 1)
