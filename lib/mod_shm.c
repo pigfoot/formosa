@@ -24,6 +24,7 @@
 void attach_err(int key, char *name)
 {
 	fprintf(stderr, "[%s error] key = %X\n", name, key);
+	bbslog("[%s error]", "key = %X\n", name, key);
 	fflush(stderr);
 	exit(1);
 }
