@@ -184,23 +184,25 @@ void init_bbsenv()
 				exit(1);
 		}
 #ifdef CHROOT_BBS
-		if (chroot(HOMEBBS) == -1 || chdir("/") == -1)
-		{
-			if (setgid(grp->gr_gid) == -1)
+		if (getuid() != pwd->pw_uid) {
+			if (chroot(HOMEBBS) == -1 || chdir("/") == -1)
 			{
-					fprintf(stderr, "can't setgid\n");
-					fflush(stderr);
-					exit(1);
+				if (setgid(grp->gr_gid) == -1)
+				{
+						fprintf(stderr, "can't setgid\n");
+						fflush(stderr);
+						exit(1);
+				}
+				if (setuid(pwd->pw_uid) == -1)
+				{
+						fprintf(stderr, "can't setuid\n");
+						fflush(stderr);
+						exit(1);
+				}
+				fprintf(stderr, "\ncannot chroot: %s\n", HOMEBBS);
+				fflush(stderr);
+				exit(-1);
 			}
-			if (setuid(pwd->pw_uid) == -1)
-			{
-					fprintf(stderr, "can't setuid\n");
-					fflush(stderr);
-					exit(1);
-			}
-			fprintf(stderr, "\ncannot chroot: %s\n", HOMEBBS);
-			fflush(stderr);
-			exit(-1);
 		}
 #endif
 		load_bbsconf();
