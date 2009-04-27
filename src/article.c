@@ -1159,7 +1159,7 @@ push_err:
 		flock(fd, LOCK_UN);
 		close(fd);
 	} else {
-		msg(ANSI_COLOR(1;31) "推文失敗" ANSI_RESET);
+		msg(ANSI_COLOR(1;31) "推文失敗: 文章已更動" ANSI_RESET);
 		ch = igetkey();
 		return C_INIT;
 	}
