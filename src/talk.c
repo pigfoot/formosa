@@ -1191,7 +1191,7 @@ int msq_reply()		/* lthuang */
 #endif
 				unlink(fname);
 			}
-			if (retcode == -1)
+			if (retcode < 0)
 				msg(_msg_fail);
 			else
 				msg(_msg_finish);

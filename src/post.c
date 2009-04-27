@@ -569,9 +569,11 @@ int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath)
 #endif
 #endif
 
-			if (postno == -1)
+			if (postno < 0)
 			{
 				option &= ~PMP_POST;
+				if (postno == -2)
+					showmsg("請勿大量張貼相同文章");
 			}
 			else
 			{
@@ -687,10 +689,10 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 
 #ifdef	USE_THREADING	/* syhu */
 			if (PublishPost(fname, finfo->owner, NULL, NULL, finfo->title,
-				finfo->ident, NULL, FALSE, tpath, 0, -1, -1) == -1)
+				finfo->ident, NULL, FALSE, tpath, 0, -1, -1) < 0)
 #else
 			if (PublishPost(fname, finfo->owner, NULL, NULL, finfo->title,
-				finfo->ident, NULL, FALSE, tpath, 0) == -1)
+				finfo->ident, NULL, FALSE, tpath, 0) < 0)
 #endif
 			{
 				msg(_msg_fail);
@@ -760,10 +762,10 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 			{
 #ifdef USE_THREADING	/* syhu */
 				if (PublishPost(fname, fhr->owner, NULL, NULL,
-						fhr->title, fhr->ident, NULL, FALSE, tpath,0,-1,-1) != -1)
+						fhr->title, fhr->ident, NULL, FALSE, tpath,0,-1,-1) >= 0)
 #else
 				if (PublishPost(fname, fhr->owner, NULL, NULL,
-						fhr->title, fhr->ident, NULL, FALSE, tpath, 0) != -1)
+						fhr->title, fhr->ident, NULL, FALSE, tpath, 0) >= 0)
 #endif
 				{
 					++result;
@@ -778,11 +780,11 @@ int treasure_article(int ent, FILEHEADER *finfo, char *direct)
 #ifdef USE_THREADING	/* syhu */
 			if (PublishPost(fn_comb, curuser.userid, NULL, NULL,
 						_str_combined_treasure_title,
-						curuser.ident, NULL, FALSE, tpath, 0, -1, -1) != -1)
+						curuser.ident, NULL, FALSE, tpath, 0, -1, -1) >= 0)
 #else
 			if (PublishPost(fn_comb, curuser.userid, NULL, NULL,
 						_str_combined_treasure_title,
-						curuser.ident, NULL, FALSE, tpath, 0) != -1)
+						curuser.ident, NULL, FALSE, tpath, 0) >= 0)
 #endif
 				result = 1;
 			else

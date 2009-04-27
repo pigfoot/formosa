@@ -959,20 +959,8 @@ int mail_article(int ent, FILEHEADER *finfo, char *direct)
 int cross_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char bname[BNAMELEN], fnori[PATHLEN], title[STRLEN];
-	int tonews;
+	int tonews, rc;
 	BOARDHEADER bh_cross;
-
-#if 0
-	static int cnt = 0;
-
-	if (++cnt > 8)
-	{
-		msg("注意!! 請勿轉貼超過 10 個看板!! 公告事項請張貼 main-menu 板");
-		getkey();
-		if (cnt > 10)
-			return C_NONE;
-	}
-#endif
 
 #ifdef KHBBS
 	msg("注意! 轉貼篇數請勿超過本站規定(請查詢站規第4條), 違者將砍除帳號!");
@@ -1033,24 +1021,20 @@ int cross_article(int ent, FILEHEADER *finfo, char *direct)
 
 #ifdef USE_THREADING	/* syhu */
 	/*  post on board, postpath is NULL */
-/*
-	if (PublishPost(fnori, curuser.userid, curuser.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1) == -1)
-*/
-	if (PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1) == -1)
+	rc = PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
+			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1);
 #else
-/*
-	if (PublishPost(fnori, curuser.userid, curuser.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0) == -1)
-*/
-	if (PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0) == -1)
+	rc = PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
+			curuser.ident, uinfo.from, tonews, NULL, 0);
 #endif
-
-		showmsg(_msg_fail);
-	else
+	if (rc < 0) {
+		if (rc == -2)
+			showmsg("請勿大量轉貼相同文章");
+		else
+			showmsg(_msg_fail);
+	} else {
 		showmsg(_msg_finish);
+	}
 	return C_FULL;
 }
 

@@ -85,6 +85,8 @@ int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, in
 /* mod_board.c */
 int can_see_board(BOARDHEADER *bhr, unsigned int userlevel);
 int check_board_acl(char *boardname, char *userid);
+/* mod_crosscheck.c */
+int reach_crosslimit(const char *userid, const char *fname);
 /* mod_mail.c */
 int InvalidEmailAddr(char *addr);
 char *find_fqdn(char *a, struct hostent *p);

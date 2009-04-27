@@ -978,7 +978,7 @@ int adminCancelUser()
 #endif
 				unlink(fnori);
 			}
-			if (retval == -1)
+			if (retval < 0)
 				showmsg(_msg_fail);
 			else
 				showmsg(_msg_finish);
