@@ -1,6 +1,6 @@
 HOMEBBS := @HOMEBBS@
-BBS_UID := @BBS_UID@
-BBS_GID := @BBS_GID@
+BBS_USERNAME := @BBS_USERNAME@
+BBS_GROUPNAME := @BBS_GROUPNAME@
 
 all:
 
@@ -14,7 +14,7 @@ distclean:
 
 install:
 	cp ../bbshome/doc/*_HELP $(HOMEBBS)/doc/
-	chown $(BBS_UID):$(BBS_GID) $(HOMEBBS)/doc/*_HELP
+	chown $(BBS_USERNAME):$(BBS_GROUPNAME) $(HOMEBBS)/doc/*_HELP
 
 .PHONY: all debug install install_once clean distclean
 

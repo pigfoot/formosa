@@ -11,8 +11,13 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <pwd.h>
+#include <grp.h>
 #include "bbs.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifndef LOCK_EX
 # define LOCK_EX               F_LOCK     /* exclusive lock */
@@ -158,34 +163,47 @@ void setdotfile(register char *buf, const char *dotfile, const char *fname)
 
 void init_bbsenv()
 {
-/*
-	if (chdir(HOMEBBS) == -1)
-	{
-		fprintf(stderr, "\ncannot chdir: %s", HOMEBBS);
-		fflush(stderr);
-		exit(-2);
-	}
-*/
-	chdir(HOMEBBS);
-
-	if (getuid() != BBS_UID)
-	{
+		struct group *grp = NULL;
+		struct passwd *pwd = NULL;
+		if (chdir(HOMEBBS) == -1)
+		{
+				fprintf(stderr, "can't chdir: %s\n", HOMEBBS);
+				fflush(stderr);
+				exit(1);
+		}
+		if (NULL == (pwd = getpwnam(BBS_USERNAME)))
+		{
+				fprintf(stderr, "can't find username: %s\n", BBS_USERNAME);
+				fflush(stderr);
+				exit(1);
+		}
+		if (NULL == (grp = getgrnam(BBS_GROUPNAME)))
+		{
+				fprintf(stderr, "can't find groupname: %s\n", BBS_GROUPNAME);
+				fflush(stderr);
+				exit(1);
+		}
 #ifdef CHROOT_BBS
 		if (chroot(HOMEBBS) == -1 || chdir("/") == -1)
 		{
+			if (setgid(grp->gr_gid) == -1)
+			{
+					fprintf(stderr, "can't setgid\n");
+					fflush(stderr);
+					exit(1);
+			}
+			if (setuid(pwd->pw_uid) == -1)
+			{
+					fprintf(stderr, "can't setuid\n");
+					fflush(stderr);
+					exit(1);
+			}
 			fprintf(stderr, "\ncannot chroot: %s\n", HOMEBBS);
 			fflush(stderr);
 			exit(-1);
 		}
 #endif
-		if (setgid(BBS_GID) == -1 || setuid(BBS_UID) == -1)
-		{
-			fprintf(stderr, "\nplease run this program in bbs\n");
-			fflush(stderr);
-			exit(-1);
-		}
-	}
-	load_bbsconf();
+		load_bbsconf();
 }
 
 

@@ -89,25 +89,27 @@ AC_DEFINE_UNQUOTED(HOMEBBS, "$prefix")
 HOMEBBS=$prefix
 AC_SUBST(HOMEBBS)
 
-BBS_UID_DEFAULT=9999
-AC_ARG_WITH(bbs-uid,
-	[  --with-bbs-uid=number
-			  BBS User ID (default 9999)],
-	[ BBS_UID=$withval ],
-	[ BBS_UID=$BBS_UID_DEFAULT ]
+BBS_USERNAME_DEFAULT="bbs"
+AC_ARG_WITH(bbs-username,
+	[  --with-bbs-username=name
+			  BBS User Name (default bbs)],
+	[ BBS_USERNAME=$withval ],
+	[ BBS_USERNAME=$BBS_USERNAME_DEFAULT ]
 )
-AC_SUBST(BBS_UID)
-AC_SUBST(BBS_UID_DEFAULT)
+AC_DEFINE([BBS_USERNAME], [], [Define the UserName of BBS])
+AC_DEFINE_UNQUOTED(BBS_USERNAME, "$BBS_USERNAME")
+AC_SUBST(BBS_USERNAME)
 
-BBS_GID_DEFAULT=999
-AC_ARG_WITH(bbs-gid,
-	[  --with-bbs-gid=number
-			  BBS Group ID (default 999)],
-	[ BBS_GID=$withval ],
-	[ BBS_GID=$BBS_GID_DEFAULT ]
+BBS_GROUPNAME_DEFAULT="bbs"
+AC_ARG_WITH(bbs-groupname,
+	[  --with-bbs-groupname=name
+			  BBS Group Name (default bbs)],
+	[ BBS_GROUPNAME=$withval ],
+	[ BBS_GROUPNAME=$BBS_GROUPNAME_DEFAULT ]
 )
-AC_SUBST(BBS_GID)
-AC_SUBST(BBS_GID_DEFAULT)
+AC_DEFINE([BBS_GROUPNAME], [], [Define the GroupName of BBS])
+AC_DEFINE_UNQUOTED(BBS_GROUPNAME, "$BBS_GROUPNAME")
+AC_SUBST(BBS_GROUPNAME)
 
 BBS_TCP_PORT_DEFAULT=23
 AC_ARG_WITH(tcp-port,
@@ -116,8 +118,9 @@ AC_ARG_WITH(tcp-port,
 	[ BBS_TCP_PORT=$withval ],
 	[ BBS_TCP_PORT=$BBS_TCP_PORT_DEFAULT ]
 )
+AC_DEFINE([BBS_TCP_PORT], [], [Define the port to use for BBS services])
+AC_DEFINE_UNQUOTED(BBS_TCP_PORT, $BBS_TCP_PORT)
 AC_SUBST(BBS_TCP_PORT)
-AC_SUBST(BBS_TCP_PORT_DEFAULT)
 
 dnl Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h sgtty.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h sys/vfs.h syslog.h termios.h unistd.h utime.h utmp.h utmpx.h])

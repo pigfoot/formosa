@@ -175,9 +175,9 @@
 # define BBSTITLE    "中山大學 Formosa BBS-美麗之島"
   */
 # undef MAXACTIVE
-# define MAXACTIVE   5000
+# define MAXACTIVE (4096)
 # undef MAXBOARD
-# define MAXBOARD 800
+# define MAXBOARD (4096)
 # undef PAGE_LIMIT
 # define PAGE_LIMIT 1
 # define CAPTURE_BOARD	"keepmessage"
