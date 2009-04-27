@@ -940,6 +940,7 @@ int push_one_article(const char *direct, int fd, int ent, FILEHEADER *ofhr, int 
 	if (savely_substitute_dir(direct, fd, ent, ofhr, fhr, TRUE))
 		return -1;
 	save_pushcnt(ofhr, score);
+	ofhr->postno = fhr->postno;
 	ReadRC_Addlist(fhr->postno);
 
 	return 0;
