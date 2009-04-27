@@ -441,17 +441,17 @@ static int capture_mail(int ent, FILEHEADER *finfo, char *direct)
 #ifdef	USE_THREADING	/* syhu */
 /*
 	if (PublishPost(fnori, curuser.userid, curuser.username, CAPTURE_BOARD,
-		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0,-1,-1) == -1)
+		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0,-1,-1) < 0)
 */
 	if (PublishPost(fnori, curuser.userid, uinfo.username, CAPTURE_BOARD,
-		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0,-1,-1) == -1)
+		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0,-1,-1) < 0)
 #else
 /*
 	if (PublishPost(fnori, curuser.userid, curuser.username, CAPTURE_BOARD,
-		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0) == -1)
+		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0) < 0)
 */
 	if (PublishPost(fnori, curuser.userid, uinfo.username, CAPTURE_BOARD,
-		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0) == -1)
+		"[信件記錄]", curuser.ident, uinfo.from, FALSE, NULL, 0) < 0)
 #endif
 		showmsg(_msg_fail);
 	else

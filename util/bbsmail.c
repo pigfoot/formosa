@@ -194,7 +194,7 @@ int do_plan(const char *r_file)
 #define REACH_SPAM_POST_NUM	1
 #define SEARCH_MAIL		0
 #define SEARCH_POST		1
-#define SPAM_TIMEOUT		600
+#define SPAM_TIMEOUT		1800
 
 struct spam
 {
@@ -384,10 +384,10 @@ int do_post(const char *r_file)
 
 #ifdef USE_THREADING	/* syhu */
 	if (PublishPost(fname, minfo.sender, user.username, minfo.board,
-	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0, -1, -1) == -1)
+	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0, -1, -1) < 0)
 #else
 	if (PublishPost(fname, minfo.sender, user.username, minfo.board,
-	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0) == -1)	/* 轉信出去 */
+	                subject, user.ident, "E-Mail Post", TRUE, postpath, 0) < 0)	/* 轉信出去 */
 #endif
 	{
 		unlink(fname);

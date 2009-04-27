@@ -271,10 +271,10 @@ PostArticle(char *pbuf, BOARDHEADER * board, char *post_path)
 	{
 #ifdef USE_THREADING		/* syhu */
 		if (PublishPost(fname, username, curuser.username, board->filename,
-				subject, curuser.ident, request_rec->fromhost, tonews, post_path, flag, -1, -1) == -1)
+				subject, curuser.ident, request_rec->fromhost, tonews, post_path, flag, -1, -1) < 0)
 #else
 		if (PublishPost(fname, username, curuser.username, board->filename,
-				subject, curuser.ident, request_rec->fromhost, tonews, post_path, flag) == -1)
+				subject, curuser.ident, request_rec->fromhost, tonews, post_path, flag) < 0)
 #endif
 		{
 			strcpy(WEBBBS_ERROR_MESSAGE, "PublishPost Error");

@@ -273,6 +273,7 @@ void load_bbsconf ()
 	MULTILOGINS = bbsconf_eval("MULTILOGINS", 3);			/* 最多允許同時幾次重覆上線 */
 	MAX_SIG_LINES = bbsconf_eval("MAX_SIG_LINES", 4);		/* 簽名檔行數 */
 	MAX_SIG_NUM = bbsconf_eval("MAX_SIG_NUM", 3);			/* 簽名檔個數 */
+	CROSS_LIMIT = bbsconf_eval("CROSS_LIMIT", 5);			/* CrossPost個數限制 (0: 不限制) */
 	IDLE_TIMEOUT = bbsconf_eval("IDLE_TIMEOUT", 40);		/* 使用者閒置時間 */
 	MAX_MAILGROUPS = bbsconf_eval("MAX_MAILGROUPS", 70);		/* 群組寄信人數 */
 	MAX_KEEP_MAIL = bbsconf_eval("MAX_KEEP_MAIL", 100);		/* 一般使用者信箱保留信件封數 */

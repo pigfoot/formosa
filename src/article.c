@@ -548,20 +548,15 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 	FILEHEADER *fhr = &fhGol;
 	int n = 0;
 
-	if ((fd = open(direct, O_RDWR)) < 0)
+	if ((fd = open_and_lock(direct)) < 0)
 		return -1;
-	if (myflock(fd, LOCK_EX)) {
-		close(fd);
-		return -1;
-	}
 
 	/* jump to current post if not deleting tagged files */
 	if (!wtop)
 	{
 		if (lseek(fd, (ent - 1) * FH_SIZE, SEEK_SET) == -1)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 		n = ent - 1;
@@ -588,8 +583,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 				{
 					msg(_msg_article_1);
 					getkey();
-					flock(fd, LOCK_UN);
-					close(fd);
+					unlock_and_close(fd);
 					return -1;
 				}
 				continue;
@@ -614,13 +608,12 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 			{
 				uinfo.ever_delete_mail = 1;
 			}
-			else if (in_board /*&& !HAS_PERM(PERM_SYSOP)*/ && !hasBMPerm &&
-				 strcmp(fhr->owner, curuser.userid))
+			else if (in_board && !hasBMPerm &&
+				strcmp(fhr->owner, curuser.userid))
 			{
 				continue;
 			}
-			else if (!in_mail && !in_board /*&& !HAS_PERM(PERM_SYSOP)*/
-				 && !hasBMPerm)
+			else if (!in_mail && !in_board && !hasBMPerm)
 			{
 				continue;
 			}
@@ -685,14 +678,12 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
  		/* write back changes to .DIR file */
 		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) == -1)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 		if (mywrite(fd, fhr, FH_SIZE) != FH_SIZE)
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
 		}
 
@@ -700,15 +691,13 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
  		/* update .THREADHEAD & .THREADPOST files */
 		if( sync_threadfiles( fhr, direct ) == -1 )
 		{
-			flock(fd, LOCK_UN);
-			close(fd);
+			unlock_and_close(fd);
 			return -1;
  		}
 #endif
 	}
-	flock(fd, LOCK_UN);
-	close(fd);
-	if (!in_mail && !in_board)
+	unlock_and_close(fd);
+	if (!in_mail && !in_board) /* 精華區直接清除 */
 		pack_article(direct);
 	return 0;
 }
@@ -970,20 +959,8 @@ int mail_article(int ent, FILEHEADER *finfo, char *direct)
 int cross_article(int ent, FILEHEADER *finfo, char *direct)
 {
 	char bname[BNAMELEN], fnori[PATHLEN], title[STRLEN];
-	int tonews;
+	int tonews, rc;
 	BOARDHEADER bh_cross;
-
-#if 0
-	static int cnt = 0;
-
-	if (++cnt > 8)
-	{
-		msg("注意!! 請勿轉貼超過 10 個看板!! 公告事項請張貼 main-menu 板");
-		getkey();
-		if (cnt > 10)
-			return C_NONE;
-	}
-#endif
 
 #ifdef KHBBS
 	msg("注意! 轉貼篇數請勿超過本站規定(請查詢站規第4條), 違者將砍除帳號!");
@@ -1044,24 +1021,20 @@ int cross_article(int ent, FILEHEADER *finfo, char *direct)
 
 #ifdef USE_THREADING	/* syhu */
 	/*  post on board, postpath is NULL */
-/*
-	if (PublishPost(fnori, curuser.userid, curuser.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1) == -1)
-*/
-	if (PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1) == -1)
+	rc = PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
+			curuser.ident, uinfo.from, tonews, NULL, 0, -1, -1);
 #else
-/*
-	if (PublishPost(fnori, curuser.userid, curuser.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0) == -1)
-*/
-	if (PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
-			curuser.ident, uinfo.from, tonews, NULL, 0) == -1)
+	rc = PublishPost(fnori, curuser.userid, uinfo.username, bname, title,
+			curuser.ident, uinfo.from, tonews, NULL, 0);
 #endif
-
-		showmsg(_msg_fail);
-	else
+	if (rc < 0) {
+		if (rc == -2)
+			showmsg("請勿大量轉貼相同文章");
+		else
+			showmsg(_msg_fail);
+	} else {
 		showmsg(_msg_finish);
+	}
 	return C_FULL;
 }
 

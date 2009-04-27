@@ -289,11 +289,11 @@ char *bname;
 #ifdef	USE_THREADING	/* syhu */
 	 	if (PublishPost(fname, "SYSOP", "系統管理者",
 	 	                bname, title, 7, "localhost",
-	                    FALSE, NULL, 0, -1, -1) == 0)
+	                    FALSE, NULL, 0, -1, -1) >= 0)
 #else
 	 	if (PublishPost(fname, "SYSOP", "系統管理者",
 	 	                bname, title, 7, "localhost",
-	                    FALSE, NULL, 0) == 0)
+	                    FALSE, NULL, 0) >= 0)
 #endif
 		{
 			unlink(fname);

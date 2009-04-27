@@ -63,8 +63,8 @@ int PublishPost(char *fname, char *userid, char *username,
 			short tonews, char *postpath, unsigned char flag,
 			int thrheadpos, int thrpostidx)
 /*
- * int thrheadpos; 							 position in .THREADHEAD file
- * int thrpostidx;								index in .THREADPOST file
+ * int thrheadpos; 		position in .THREADHEAD file
+ * int thrpostidx;		index in .THREADPOST file
  * */
 
 #else
@@ -76,6 +76,8 @@ int PublishPost(char *fname, char *userid, char *username,
 	char timestamp[15], tempfile[PATHLEN], pathTmp[PATHLEN];
 	int artno;
 
+	if (reach_crosslimit(userid, fname))
+		return -2;
 
 	/* copy the post to a temp. location first, all the processing will
 	   be done on this temp file until it's finished */
