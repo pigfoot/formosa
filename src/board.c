@@ -11,12 +11,10 @@ static CLASSHEADER *cur_cs = NULL;
 
 static BOOL show_numposts = FALSE;
 
-
 int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple)
 {
 	struct word *bwtop = NULL;
 	int i;
-
 
 	if (!num_brds)
 	{

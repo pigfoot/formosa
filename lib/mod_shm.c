@@ -24,7 +24,7 @@
 void attach_err(int key, char *name)
 {
 	fprintf(stderr, "[%s error] key = %X\n", name, key);
-	bbslog("[%s error]", "key = %X\n", name, key);
+	bbslog("ERROR", "[%s error] key = %X\n", name, key);
 	fflush(stderr);
 	exit(1);
 }
@@ -245,10 +245,10 @@ static int cmp_brdt_bname(const void *a, const void *b)
 BOOL fast_rebuild = FALSE;
 
 static struct board_t *all_brdt[MAXBOARD];
-static int all_brdt_isset;
 int resolve_brdshm()
 {
 	int fd, i, n;
+	static time_t last_mtime = 0;
 
 	if (!brdshm)
 		brdshm = attach_shm(BRDSHM_KEY, sizeof(struct BRDSHM));
@@ -261,7 +261,7 @@ int resolve_brdshm()
 
 			n = 0;
 			memset(brdshm->brdt, 0, sizeof(brdshm->brdt));
-			while (read(fd, &bhbuf, BH_SIZE) == BH_SIZE)
+			while (myread(fd, &bhbuf, BH_SIZE) == BH_SIZE)
 			{
 				if (bhbuf.bid < 1 || bhbuf.bid > MAXBOARD)
 					continue;
@@ -293,18 +293,18 @@ int resolve_brdshm()
 			qsort(all_brdt, n, sizeof(struct board_t *), cmp_brdt_bname);
 			for (n = 0; n < brdshm->number; n++)
 				(all_brdt[n])->rank = n+1;
-			all_brdt_isset = 1;
+			last_mtime = brdshm->mtime;
 		}
 	}
 
-	if (!all_brdt_isset) {
+	if (last_mtime != brdshm->mtime) {
 		for (i = 0, n = 0; n < MAXBOARD; ++n) {
 			if (brdshm->brdt[n].rank != 0)
 				all_brdt[i++] = &(brdshm->brdt[n]);
 		}
 		qsort(all_brdt, brdshm->number,
 			sizeof(struct board_t *), cmp_brdt_bname);
-		all_brdt_isset = 1;
+		last_mtime = brdshm->mtime;
 	}
 
 	return brdshm->number;
@@ -339,7 +339,6 @@ int get_board_bid(const char *bname)
 }
 
 void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
-//int (*fptr)(BOARDHEADER *bhr);
 {
 	register int i;
 
@@ -354,7 +353,6 @@ void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
 }
 
 void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
-//int (*fptr)(struct board_t *binfr);
 {
 	register int i;
 
