@@ -41,16 +41,11 @@ LIBS     = -L../../lib -lbbs $(LDLIBS)
 
 GARBAGE  = a.out core 
 
-PROGS  = moduser list_postno
+PROGS  = fixbid moduser list_postno
 
 LIBFILE = ../../lib/libbbs.a
 
-LIBSRCS  = ../../lib/bbslib.c ../../lib/conf.c ../../lib/misc.c \
-           ../../lib/mod_article.c ../../lib/mod_board.c \
-           ../../lib/mod_talk.c ../../lib/mod_mail.c ../../lib/mod_net.c \
-           ../../lib/mod_pass.c ../../lib/mod_post.c ../../lib/mod_readrc.c \
-           ../../lib/mod_record.c ../../lib/mod_sem.c ../../lib/mod_shm.c \
-           ../../lib/mod_user.c ../../lib/mod_zap.c ../../lib/modetype.c
+LIBSRCS  = $(shell ls ../../lib/*.c)
 
 all: $(PROGS)
 
@@ -58,6 +53,13 @@ $(PROGS): $(LIBFILE)
 
 $(LIBFILE): $(LIBSRCS)
 	cd ../../lib; make libbbs.a
+
+install: $(PROGS)
+	mkdir -p $(HOMEBBS)/bin
+	for F in $(PROGS); do \
+		(cd $(HOMEBBS); [ ! -f ./bin/$$F ] || mv -f ./bin/$$F ./bin/$$F.old); \
+		cp -p $$F $(HOMEBBS)/bin; \
+	done
 
 bquota: bquota.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) $(LIBFILE)
@@ -119,7 +121,7 @@ showboard: showboard.c $(INCLUDES)
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
 
 fixbid: fixbid.c
-	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS) ../bbslib.o
+	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
 
 fixoldpush: fixoldpush.c
 	$(CC) $(CFLAGS) $(DEFINES) -o $@ $@.c $(LIBS)
