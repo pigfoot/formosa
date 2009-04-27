@@ -184,6 +184,44 @@ else
 	AC_MSG_ERROR([System MUST support poll(2)])
 fi
 
+dnl Checking BBS User
+AC_MSG_CHECKING([BBS User: $BBS_USERNAME])
+AC_TRY_RUN([
+#include <string.h>
+#include <sys/types.h>
+#include <pwd.h>
+				int main()
+				{
+				struct passwd *pwd = NULL;
+				if (NULL == (pwd = getpwnam("$BBS_USERNAME"))) return -1;
+				return 0;
+				} ],
+				[ enableval=yes ],
+				[ enableval=no ])
+AC_MSG_RESULT($enableval)
+if test "x${enableval}" = "xno"; then
+AC_MSG_ERROR([make sure bbs account existed or use --with-bbs-username instead.])
+fi
+
+dnl Checking BBS Group
+AC_MSG_CHECKING([BBS Group: $BBS_GROUPNAME])
+AC_TRY_RUN([
+#include <string.h>
+#include <sys/types.h>
+#include <grp.h>
+				int main()
+				{
+				struct group *grp = NULL;
+				if (NULL == (grp = getgrnam("$BBS_GROUPNAME"))) return -1;
+				return 0;
+				} ],
+				[ enableval=yes ],
+				[ enableval=no ])
+AC_MSG_RESULT($enableval)
+if test "x${enableval}" = "xno"; then
+AC_MSG_ERROR([make sure bbs group existed or use --with-bbs-groupname instead.])
+fi
+
 AC_CONFIG_FILES([Makefile
 				bbsweb/Makefile
 				bbsweb/util/Makefile
