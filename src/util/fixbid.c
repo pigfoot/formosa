@@ -1,52 +1,40 @@
-
 #include "bbs.h"
 
-void
-main ()
+int main (int argn, char **argv)
 {
-	BOARDHEADER max_brdh;
-	unsigned int maxbid = 0;
-	int fd;
+	BOARDHEADER brdh;
+	int fd, i, num, really = 0;
 
-	if ((fd = open (BOARDS, O_RDWR | O_CREAT)) > 0)
-	{
-		flock (fd, LOCK_EX);
-		while (read (fd, &max_brdh, sizeof (max_brdh)) == sizeof (max_brdh))
-		{
-			if (max_brdh.filename[0] == '\0' || max_brdh.bid <= 0)
-				continue;
-			if (max_brdh.bid > maxbid)
-				maxbid = max_brdh.bid;
-		}
+	init_bbsenv();
 
-		if (lseek (fd, 0, SEEK_SET) != -1)
-		{
-			while (read (fd, &max_brdh, sizeof (max_brdh)) == sizeof (max_brdh))
-			{
-				if (max_brdh.filename[0] == '\0')
-					continue;
-#if 1
-				if (max_brdh.ctime < 900000000 || max_brdh.ctime > 999999999)
-				{
-					max_brdh.ctime = 0;
-					if (lseek (fd, -((off_t) BH_SIZE), SEEK_CUR) == -1)
-						break;
-					if (write (fd, &max_brdh, BH_SIZE) != BH_SIZE)
-						break;
-				}
-#else
-				if (max_brdh.bid <= 0 || max_brdh.bid > MAXBOARD)
-				{
-					max_brdh.bid = ++maxbid;
-					if (lseek (fd, -((off_t) BH_SIZE), SEEK_CUR) == -1)
-						break;
-					if (write (fd, &max_brdh, BH_SIZE) != BH_SIZE)
-						break;
-				}
-#endif
+	if (argn != 2 || strcmp(argv[1], "Really"))
+		printf("Use \"%s Really\" to actually writing changes.\n", argv[0]);
+	else
+		really = 1;
+
+	fd = open_and_lock(BOARDS);
+	if (fd == -1) {
+		printf("File opening error(%s).\n", BOARDS);
+		return -1;
+	}
+
+	num = get_num_records_byfd(fd, sizeof(BOARDHEADER));
+	for (i = 1; i <= num; ++i) {
+		get_record_byfd(fd, &brdh, sizeof(BOARDHEADER), i);
+		if (brdh.filename[0] == '\0')
+			continue;
+		if (brdh.bid != i) {
+			printf("%d should be %d\n", brdh.bid, i);
+			if (really) {
+				brdh.bid = i;
+				substitute_record_byfd(fd, &brdh, sizeof(BOARDHEADER), i);
 			}
 		}
-		flock (fd, LOCK_UN);
-		close (fd);
 	}
+
+	unlock_and_close(fd);
+
+	printf("Fix finished.\n");
+
+	return 0;
 }

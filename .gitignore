@@ -35,6 +35,7 @@ src/genlogin
 src/util/list_postno
 src/util/moduser
 src/util/fixoldpush
+src/util/fixbid
 util/bbs-news
 util/bbs2g4
 util/bbsfingerd
