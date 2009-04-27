@@ -204,7 +204,7 @@ AC_MSG_ERROR([make sure bbs account existed or use --with-bbs-username instead.]
 fi
 
 dnl Checking BBS Group
-AC_MSG_CHECKING([BBS User: $BBS_GROUPNAME])
+AC_MSG_CHECKING([BBS Group: $BBS_GROUPNAME])
 AC_TRY_RUN([
 #include <string.h>
 #include <sys/types.h>
