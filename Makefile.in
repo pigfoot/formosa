@@ -28,10 +28,6 @@ update: kill_process install
 	$(HOMEBBS)/bin/bbsd @BBS_TCP_PORT@
 	$(HOMEBBS)/bin/bbsweb
 
-config:
-	./autogen.sh
-	./configure
-
 config_bbs3:
 	./autogen.sh
 	CFLAGS=-DNSYSUBBS3 ./configure --prefix=/apps/bbs
