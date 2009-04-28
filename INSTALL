@@ -104,11 +104,11 @@ Bug reports
 	bug-tracking system at <URL><TBD>. The bug system is also suitable
 	to submit feature requests.
 
-	* Use mailing-lis
-	Please email to: formosabbs@googlegroups.com
+	* Use mailing-list
+	Please mailto:formosabbs@googlegroups.com?subject=[FBCE BUG]
 
 	* Use BBS
-	Please post to: FormosaBBS board _AT_ bbs.CDPA.cc
+	Please telnet://bbs.CDPA.cc FormosaBBS board.
 	__________________________________________________________________
 
 Chapter 5. Runtime Configuration

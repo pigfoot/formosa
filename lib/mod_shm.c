@@ -298,12 +298,12 @@ int resolve_brdshm()
 	}
 
 	if (last_mtime != brdshm->mtime) {
+		int rank;
 		for (i = 0, n = 0; n < MAXBOARD; ++n) {
-			if (brdshm->brdt[n].rank != 0)
-				all_brdt[i++] = &(brdshm->brdt[n]);
+			rank = brdshm->brdt[n].rank;
+			if (rank > 0)
+				all_brdt[rank - 1] = &(brdshm->brdt[n]);
 		}
-		qsort(all_brdt, brdshm->number,
-			sizeof(struct board_t *), cmp_brdt_bname);
 		last_mtime = brdshm->mtime;
 	}
 
@@ -341,29 +341,21 @@ int get_board_bid(const char *bname)
 void apply_brdshm(int (*fptr)(BOARDHEADER *bhr))
 {
 	register int i;
+	int num;
 
-	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (brdshm->brdt[i].bhr.filename[0])
-			(*fptr)(&(brdshm->brdt[i].bhr));
-		else
-			break;
-	}
+	num = resolve_brdshm();
+	for (i = 0; i < num; ++i)
+		(*fptr)(&(all_brdt[i]->bhr));
 }
 
 void apply_brdshm_board_t(int (*fptr)(struct board_t *binfr))
 {
 	register int i;
+	int num;
 
-	resolve_brdshm();
-	for (i = 0; i < MAXBOARD; i++)
-	{
-		if (brdshm->brdt[i].bhr.filename[0])
-			(*fptr)(&(brdshm->brdt[i]));
-		else
-			break;
-	}
+	num = resolve_brdshm();
+	for (i = 0; i < num; ++i)
+		(*fptr)(all_brdt[i]);
 }
 
 unsigned int get_board(BOARDHEADER *bhead, char *bname)
