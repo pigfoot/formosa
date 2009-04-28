@@ -61,6 +61,7 @@ void setboardfile(register char *buf, const char *bname, const char *filename);
 void setvotefile(register char *buf, const char *bname, const char *filename);
 void settreafile(register char *buf, const char *bname, const char *filename);
 void setmailfile(char *buf, const char *userid, const char *filename);
+void setnotefile(char *buf, const char *userid, const char *filename);
 void setdotfile(register char *buf, const char *dotfile, const char *fname);
 void init_bbsenv(void);
 int host_deny(char *host);
@@ -107,6 +108,7 @@ int checkpasswd(char *passwd, char *test);
 /* mod_post.c */
 int append_news(char *bname, char *fname, char *userid, char *username, char *title, char opt);
 int PublishPost(char *fname, char *userid, char *username, char *bname, char *title, char ident, char *fromhost, short tonews, char *postpath, unsigned char flag);
+int publish_note(char *title, USEREC *urcp);
 int make_treasure_folder(char *direct, char *title, char *dirname);
 /* mod_readrc.c */
 enum unread_enum {

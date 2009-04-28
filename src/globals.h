@@ -20,6 +20,7 @@ extern char genbuf[1024];
 
 extern BOOL in_board;	/* TRUE */
 extern BOOL in_mail;	/* FALSE */
+extern BOOL in_note;	/* FALSE */
 extern BOOL talkrequest;	/* FALSE */
 extern BOOL msqrequest;	/* FALSE */
 
