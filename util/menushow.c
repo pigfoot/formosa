@@ -8,7 +8,7 @@ menushow_parsefile (path, list)
      struct MSList *list;
 {
 	FILE *fp;
-	char *p1, *p2, line[512];
+	char *p1, *p2, line[2048];
 	char buf[MENUSHOW_BODY];
 #ifdef NSYSUBBS
 	BOOL is_cna_news;

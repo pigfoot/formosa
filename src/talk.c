@@ -155,9 +155,6 @@ int t_bpager()
 int QueryUser(char *userid, USER_INFO *upent)
 {
 	int save_umode, retval;
-#if 0
-	FILE *planfile;
-#endif
 
 	/* NOTE: the size of genbuf must be enough to accommodate output string */
 	retval = query_user(curuser.userlevel, userid, upent, genbuf, strip_ansi); //sarek:02/19/2001
@@ -177,27 +174,6 @@ int QueryUser(char *userid, USER_INFO *upent)
 
 	/* show plan file */
 	sethomefile(genbuf, userid, UFNAME_PLANS);
-#if	0
-	if ((planfile = fopen(genbuf, "r")) != NULL)
-	{
-		register int i = 1;
-
-		move(b_line, 0);
-		clrtoeol();
-		outs(_msg_talk_18);
-		igetkey();
-		move(i, 0);
-		clrtobot();
-		while (++i <= b_line && fgets(genbuf, sizeof(genbuf), planfile))
-			outs(genbuf);
-		fclose(planfile);
-	}
-	else
-	{
-		outs(_msg_talk_19);
-	}
-	pressreturn();
-#endif
 	if (!access(genbuf, F_OK))
         {
                 move(b_line, 0);

@@ -1644,6 +1644,12 @@ int cursor_menu( int y, int x,
 				cmode = C_FULL;
 				continue;
 			}
+			else if (ch == CTRL('W'))
+			{
+				PrepareNote();
+				cmode = C_FULL;
+				continue;
+			}
 			else if (ch == KEY_LEFT)
 				return 0;
 			else if (ch == 'Q' && cm_findkey)

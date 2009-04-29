@@ -61,6 +61,7 @@ void setboardfile(register char *buf, const char *bname, const char *filename);
 void setvotefile(register char *buf, const char *bname, const char *filename);
 void settreafile(register char *buf, const char *bname, const char *filename);
 void setmailfile(char *buf, const char *userid, const char *filename);
+void setnotefile(char *buf, const char *userid, const char *filename);
 void setdotfile(register char *buf, const char *dotfile, const char *fname);
 void init_bbsenv(void);
 int host_deny(char *host);
@@ -70,7 +71,7 @@ char *modestring(USER_INFO *upent, int complete);
 int pack_article(const char *direct);
 int clean_dirent(const char *direct);
 int recover_dirent(const char *direct);
-int get_last_info(const char *dotdir, int fd, INFOHEADER *info);
+int get_last_info(const char *dotdir, int fd, INFOHEADER *info, int force);
 int append_article(char *fname, char *path, char *author, char *title, char ident, char *stamp, int artmode, int flag, char *fromhost);
 void include_ori(char *rfile, char *wfile, char reply_mode);
 int include_sig(const char *name, const char *wfile, int num);
@@ -79,8 +80,8 @@ int get_pushcnt(const FILEHEADER *fhr);
 int read_pushcnt(int fd, int ent, const FILEHEADER *ofhr);
 int push_one_article(const char *direct, int fd, int ent, FILEHEADER *ofhr, int score);
 void write_article_header(FILE *fpw, const char *userid, const char *username, const char *bname, const char *timestr, const char *title, const char *origin);
-int savely_read_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr);
-int savely_substitute_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr, unsigned char mark_unread);
+int safely_read_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr);
+int safely_substitute_dir(const char *direct, int opened_fd, int ent, const FILEHEADER *ofhr, FILEHEADER *nfhr, unsigned char mark_unread);
 int delete_one_article(int ent, FILEHEADER *finfo, char *direct, char *delby, int option);
 /* mod_board.c */
 int can_see_board(BOARDHEADER *bhr, unsigned int userlevel);
@@ -107,6 +108,7 @@ int checkpasswd(char *passwd, char *test);
 /* mod_post.c */
 int append_news(char *bname, char *fname, char *userid, char *username, char *title, char opt);
 int PublishPost(char *fname, char *userid, char *username, char *bname, char *title, char ident, char *fromhost, short tonews, char *postpath, unsigned char flag);
+int publish_note(char *title, USEREC *urcp);
 int make_treasure_folder(char *direct, char *title, char *dirname);
 /* mod_readrc.c */
 enum unread_enum {

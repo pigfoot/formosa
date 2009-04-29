@@ -203,3 +203,56 @@ int make_treasure_folder(char *direct, char *title, char *dirname)
 	rmdir(path);
 	return -1;
 }
+
+int publish_note(char *title, USEREC *urcp)
+{
+	char tempfile[PATHLEN];
+	char path[PATHLEN];
+	char bname[BNAMELEN+1];
+	char *postpath = NULL;
+	int postno, tonews = FALSE;
+	FILE *fpw;
+
+	sprintf(tempfile, "tmp/post%05d", (int) getpid());
+	unlink(tempfile);
+	snprintf(bname, sizeof(bname), "n_%s", urcp->userid);
+
+
+	if ((fpw = fopen(tempfile, "w")) != NULL)
+	{
+	    write_article_header(fpw, urcp->userid, urcp->username, bname,
+			     NULL, title, NULL);
+	    fprintf(fpw, "\n");
+	} else
+		return -1;
+
+	fclose(fpw);
+
+	setnotefile(path, urcp->userid, NULL);
+	postpath = path;
+
+	if (!isdir(path))
+	{
+		if (mkdir(path, 0700) == -1)
+			return -1;
+	}
+
+#ifndef IGNORE_CASE
+	postno = PublishPost(tempfile, urcp->userid, urcp->username,
+		bname, title, urcp->ident,
+		NULL /* upent->from */, tonews, postpath, 0);
+#else
+	postno = PublishPost(tempfile,
+		strcasecmp(urcp->fakeuserid, urcp->userid) ?
+			urcp->userid : urcp->fakeuserid,
+		urcp->username,
+		bname, title, urcp->ident,
+		NULL /* urcp->from */, tonews, postpath, 0);
+#endif
+	unlink(tempfile);
+
+	/* TODO: ReadRC_* */
+
+	return 0;
+
+}

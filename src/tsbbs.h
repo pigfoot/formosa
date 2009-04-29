@@ -246,6 +246,7 @@ int read_help(void);
 int has_postperm(BOARDHEADER *bh1);
 int PrepareMail(char *fn_src, char *to, char *title);
 int PreparePost(char *fn_src, char *to, char *title, int option, char *postpath);
+int PrepareNote();
 int do_post(int ent, FILEHEADER *finfo, char *direct);
 int treasure_article(int ent, FILEHEADER *finfo, char *direct);
 int mkdir_treasure(int ent, FILEHEADER *finfo, char *direct);

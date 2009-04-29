@@ -12,6 +12,8 @@ mkdir ${HOMEBBS}/home
 chown bbs ${HOMEBBS}/home
 mkdir ${HOMEBBS}/mail
 chown bbs ${HOMEBBS}/mail
+mkdir ${HOMEBBS}/note
+chown bbs ${HOMEBBS}/note
 for i in 0 a b c d e f g h i j k l m n o p q r s t u v w x y z ;
 do
 	mkdir ${HOMEBBS}/home/$i
@@ -20,6 +22,9 @@ do
 	mkdir ${HOMEBBS}/mail/$i
 	chown bbs ${HOMEBBS}/mail/$i
 	chgrp bbs ${HOMEBBS}/mail/$i
+	mkdir ${HOMEBBS}/note/$i
+	chown bbs ${HOMEBBS}/note/$i
+	chgrp bbs ${HOMEBBS}/note/$i
 done
 
 

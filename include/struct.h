@@ -420,6 +420,7 @@ enum ULOGIN {
 #define BBSPATH_DELUSER  "deluser"   /*存放被刪除之帳號密碼檔目錄 */
 #define BBSPATH_BOARDS   "boards"    /* 板面目錄 */
 #define BBSPATH_TREASURE "treasure"  /* 精華區目錄 */
+#define BBSPATH_NOTE     "note"      /* 短箋 */
 #define BBSPATH_REALUSER "realuser"  /* User認證編碼資料目錄 */
 #define BBSPATH_IDENT    "ID"
 

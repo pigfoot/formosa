@@ -97,7 +97,6 @@ void setboardfile(register char *buf, const char *bname, const char *filename)
 		sprintf(buf, "%s/%s", BBSPATH_BOARDS, bname);
 }
 
-
 void setvotefile(register char *buf, const char *bname, const char *filename)
 {
 	if (filename)
@@ -137,6 +136,30 @@ void setmailfile(char *buf, char *userid, const char *filename)
 		sprintf(buf, "%s/%c/%s/%s", UFNAME_MAIL, c, userid, filename);
 	else
 		sprintf(buf, "%s/%c/%s", UFNAME_MAIL, c, userid);
+}
+
+
+#ifndef IGNORE_CASE
+void setnotefile(char *buf, const char *userid, const char *filename)
+#else
+void setnotefile(char *buf, char *userid, const char *filename)
+#endif
+{
+	register unsigned char c = *userid;
+
+	if (isupper(c))
+		c = tolower(c);
+	else if (!islower(c))
+		c = '0';
+
+#ifdef IGNORE_CASE
+        strtolow(userid);
+#endif
+
+	if (filename)
+		sprintf(buf, "%s/%c/%s/%s", BBSPATH_NOTE, c, userid, filename);
+	else
+		sprintf(buf, "%s/%c/%s", BBSPATH_NOTE, c, userid);
 }
 
 

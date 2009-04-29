@@ -398,6 +398,25 @@ static int mail1(char *to)
 	return 0;
 }
 
+int PrepareNote()
+{
+	int rc;
+	int save_umode = uinfo.mode;
+	char title[TTLEN];
+
+	update_umode(POSTING);
+
+	if (!getdata(b_line, 0, "¯d¨¥¡G", title, TTLEN, XECHO))
+		return -1;
+
+	rc = publish_note(title, &curuser);
+	if (rc != 0)
+		return rc;
+
+	update_umode(save_umode);
+
+	return 0;
+}
 
 int PrepareMail(char *fn_src, char *to, char *title)
 {
