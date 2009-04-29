@@ -155,6 +155,7 @@ int t_bpager()
 int QueryUser(char *userid, USER_INFO *upent)
 {
 	int save_umode, retval;
+	int qtype;
 
 	/* NOTE: the size of genbuf must be enough to accommodate output string */
 	retval = query_user(curuser.userlevel, userid, upent, genbuf, strip_ansi); //sarek:02/19/2001
@@ -174,6 +175,21 @@ int QueryUser(char *userid, USER_INFO *upent)
 
 	/* show plan file */
 	sethomefile(genbuf, userid, UFNAME_PLANS);
+
+	qtype = vans("[1]¦W¤ùÀÉ [2]¯d¨¥ª© ");
+	switch (qtype)
+	{
+	default:
+	case '1':
+                pmore(genbuf, TRUE);
+		break;
+	case '2':
+		NoteBoard(userid);
+		break;
+	}
+
+
+#if 0
 	if (!access(genbuf, F_OK))
         {
                 move(b_line, 0);
@@ -187,6 +203,7 @@ int QueryUser(char *userid, USER_INFO *upent)
                 outs(_msg_talk_19);
                 pressreturn();
         }
+#endif
 	uinfo.destid[0] = '\0';	/* lthuang */
 	update_umode(save_umode);
 
@@ -208,7 +225,7 @@ int t_query()
 	clrtoeol();
 	if (getdata(1, 0, _msg_talk_21, userid, sizeof(userid), ECHONOSP))
 		QueryUser(userid, NULL);
-	return C_FULL;
+	return C_LOAD;
 }
 
 

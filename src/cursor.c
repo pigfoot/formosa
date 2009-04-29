@@ -252,11 +252,16 @@ int rcmd_postno(int ent, FILEHEADER *finfo, char *direct)
 
 int rcmd_query(int ent, FILEHEADER *finfo, char *direct)
 {
+	/* XXX 看版/精華區/短箋 共用 Read(), 在這裡跳掉避免 function stack
+	 * 一直長, i.e. 看版->QueryUser->短箋->QueryUse ... */
+	if (in_note)
+		return C_NONE;
+
 	if (finfo->owner[0] != '#' && !strchr(finfo->owner, '.') &&
 	    !strchr(finfo->owner, '@'))
 	{
 		QueryUser(finfo->owner, NULL);
-		return C_FULL;
+		return C_LOAD;
 	}
 	msg("作者/發信人來自站外，無法查詢！");		/* lthuang */
 	getkey();
@@ -1332,6 +1337,9 @@ int Read()
 			}
 
 			setboardfile(tmpdir, CurBList->filename, DIR_REC);
+			if (in_note)
+				setnotefile(tmpdir, CurBList->filename, DIR_REC);
+
 			opt = 1;
 			ccur = &(curbe->bcur);
 		}
@@ -1641,7 +1649,7 @@ int cursor_menu( int y, int x,
 			else if (ch == CTRL('Q'))
 			{
 				t_query();
-				cmode = C_FULL;
+				cmode = C_LOAD;
 				continue;
 			}
 			else if (ch == CTRL('W'))

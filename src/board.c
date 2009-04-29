@@ -333,6 +333,29 @@ int Boards()
 	return C_LOAD;
 }
 
+/* ¶i¤Jµuºàª© */
+int NoteBoard(char *userid)
+{
+	BOARDHEADER bh;
+	struct BoardList be;
+
+	memset(&bh, 0, sizeof(bh));
+	memset(&be, 0, sizeof(be));
+
+	strlcpy(bh.filename, userid, sizeof(bh.filename));
+	CurBList = &bh;
+	curbe = &be;
+	curbe->bhr = CurBList;
+
+	in_note = TRUE;
+	Read();
+	CurBList = NULL;
+	curbe = NULL;
+	in_note = FALSE;
+
+	return 0;
+}
+
 
 static struct BoardList *SearchBoardList_by_bid(unsigned bid)
 {

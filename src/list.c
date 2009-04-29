@@ -355,7 +355,7 @@ static int ucmd_query(int ent, struct pickup *pkent, char *direct)
 	if (uentp->userid[0])
 	{
 		QueryUser(uentp->userid, uentp);
-		return C_FULL;
+		return C_LOAD;
 	}
 	return C_NONE;
 }
