@@ -60,7 +60,7 @@ int title_article(int ent, FILEHEADER *finfo, char *direct)
 
 	memcpy(fhr, finfo, FH_SIZE);
 	strcpy(fhr->title, title);
-	if (savely_substitute_dir(direct, 0, ent, finfo, fhr, TRUE) == -1) {
+	if (safely_substitute_dir(direct, 0, ent, finfo, fhr, TRUE) == -1) {
 		msg(ANSI_COLOR(1;31) "修改標題失敗" ANSI_RESET);
 		getkey();
 		return C_INIT;
@@ -546,19 +546,23 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 {
 	int fd;
 	FILEHEADER *fhr = &fhGol;
-	int n = 0;
+	INFOHEADER linfo;
+	int n = 0, rtval = -1;
+	unsigned char last_deleted = 0;
 
 	if ((fd = open_and_lock(direct)) < 0)
 		return -1;
 
+	if (get_last_info(direct, fd, &linfo, FALSE) == -1)
+		goto err_out;
+
 	/* jump to current post if not deleting tagged files */
 	if (!wtop)
 	{
+		if (safely_read_dir(direct, fd, ent, finfo, fhr))
+			goto err_out;
 		if (lseek(fd, (ent - 1) * FH_SIZE, SEEK_SET) == -1)
-		{
-			unlock_and_close(fd);
-			return -1;
-		}
+			goto err_out;
 		n = ent - 1;
 	}
 
@@ -583,12 +587,12 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 				{
 					msg(_msg_article_1);
 					getkey();
-					unlock_and_close(fd);
-					return -1;
+					goto err_out;
 				}
 				continue;
 			}
 		}
+
 		/* check if we need to mail it back to author */
 		if (option == 'r')
 		{
@@ -632,6 +636,9 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 				else
 					xstrncpy(fhr->delby, curuser.userid, IDLEN);
 				fhr->accessed |= FILE_DELE;
+				if (!last_deleted &&
+				    !strcmp(fhr->filename, linfo.last_filename))
+					last_deleted = 1;
 			}
 		}
 		else if (option == 'u')
@@ -650,6 +657,7 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 				/* unset delete-mark and clear 'delby' */
 				fhr->accessed &= ~FILE_DELE;
 				memset(fhr->delby, 0, IDLEN);
+				last_deleted = 1;
 			}
 			else
 				continue;
@@ -676,30 +684,28 @@ int delete_articles(int ent, FILEHEADER *finfo, char *direct, struct word *wtop,
 		}
 
  		/* write back changes to .DIR file */
-		if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) == -1)
-		{
-			unlock_and_close(fd);
-			return -1;
-		}
-		if (mywrite(fd, fhr, FH_SIZE) != FH_SIZE)
-		{
-			unlock_and_close(fd);
-			return -1;
-		}
+		/* .DIR is locked in this time, and the ent from cursor menu
+		 * is not used. So we don't need safely_substitute_dir here.
+		 */
+		if (substitute_record_byfd(fd, fhr, FH_SIZE, n) == -1)
+			goto err_out;
 
 #ifdef USE_THREADING	/* syhu */
  		/* update .THREADHEAD & .THREADPOST files */
-		if( sync_threadfiles( fhr, direct ) == -1 )
-		{
-			unlock_and_close(fd);
-			return -1;
- 		}
+		if (sync_threadfiles( fhr, direct ) == -1)
+			goto err_out;
 #endif
 	}
+	rtval = 0;
+err_out:
+	if (last_deleted)
+		get_last_info(direct, fd, &linfo, TRUE);
+
 	unlock_and_close(fd);
-	if (!in_mail && !in_board) /* 精華區直接清除 */
+	if (!rtval && !in_mail && !in_board) /* 精華區直接清除 */
 		pack_article(direct);
-	return 0;
+
+	return rtval;
 }
 
 
@@ -765,16 +771,14 @@ delete_article(int ent, FILEHEADER *finfo, char *direct)
 		if (prompt == _msg_article_6)
 			return C_FOOT;
 	case 'd':
-		if (delete_articles(ent, finfo, direct, clip, ch) == 0 &&
-		    !in_mail && !in_board)
-		{
-			return C_INIT;
-		}
+		delete_articles(ent, finfo, direct, clip, ch);
+		return C_INIT;
 		break;
 	case 'u':
 		if (prompt == _msg_article_8)
 			return C_NONE;
-		delete_articles(ent, finfo, direct, clip, ch);
+		if (delete_articles(ent, finfo, direct, clip, ch))
+			return C_INIT;
 		break;
 	default:
 		return C_FOOT;

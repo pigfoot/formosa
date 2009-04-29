@@ -297,12 +297,12 @@ static void get_only_name(char *dir, char *fname)
  * If failed, scan all .DIR file to find the last postno.
  * and write it back to INFO_REC.
  */
-int get_last_info(const char *dotdir, int fd, INFOHEADER *info)
+int get_last_info(const char *dotdir, int fd, INFOHEADER *info, int force)
 {
 	char finfo[PATHLEN];
 
 	setdotfile(finfo, dotdir, INFO_REC);
-	if ((get_record(finfo, info, IH_SIZE, 1) != 0)) {
+	if (force || (get_record(finfo, info, IH_SIZE, 1) != 0)) {
 		int i, nr, myfd;
 		FILEHEADER lastf, fhtmp;
 		time_t lastmtime = 0, mtime;
@@ -325,6 +325,9 @@ int get_last_info(const char *dotdir, int fd, INFOHEADER *info)
 		nr = get_num_records_byfd(myfd, FH_SIZE);
 		for (i = 1; i <= nr; ++i) {
 			if (get_record_byfd(myfd, &fhtmp, FH_SIZE, i) == 0) {
+				if (fhtmp.accessed & FILE_DELE)
+					continue;
+
 				if (fhtmp.mtime)
 					mtime = fhtmp.mtime;
 				else if (fhtmp.filename[0] == 'M')
@@ -372,7 +375,7 @@ static int get_only_postno(const char *dotdir, int fd, FILEHEADER *fhr)
 	char finfo[PATHLEN];
 	INFOHEADER info;
 
-	if (get_last_info(dotdir, fd, &info) == -1) {
+	if (get_last_info(dotdir, fd, &info, FALSE) == -1) {
 		bbslog("ERROR", "Getting INFO_REC.");
 		fprintf(stderr, "ERROR: Getting INFO_REC.");
 		return -1;
@@ -907,7 +910,7 @@ int read_pushcnt(int fd, int ent, const FILEHEADER *ofhr)
 {
 	FILEHEADER *fhr = &genfhbuf;
 
-	if (savely_read_dir(NULL, fd, ent, ofhr, fhr))
+	if (safely_read_dir(NULL, fd, ent, ofhr, fhr))
 		return PUSH_ERR;
 
 	return get_pushcnt(fhr);
@@ -937,7 +940,7 @@ int push_one_article(const char *direct, int fd, int ent, FILEHEADER *ofhr, int 
 
 	memcpy(fhr, ofhr, FH_SIZE);
 	save_pushcnt(fhr, score);
-	if (savely_substitute_dir(direct, fd, ent, ofhr, fhr, TRUE))
+	if (safely_substitute_dir(direct, fd, ent, ofhr, fhr, TRUE))
 		return -1;
 	save_pushcnt(ofhr, score);
 	ofhr->postno = fhr->postno;
@@ -972,7 +975,7 @@ void write_article_header(FILE *fpw, const char *userid, const char *username,
  * To prevent after board packed, and others did not update their list.
  * The ent could be wrong, and the user might update the wrong .DIR entry.
  */
-int savely_read_dir(const char *direct, int opened_fd, int ent,
+int safely_read_dir(const char *direct, int opened_fd, int ent,
 		const FILEHEADER *ofhr, FILEHEADER *nfhr)
 {
 	int fd, rtval = -1;
@@ -992,7 +995,8 @@ int savely_read_dir(const char *direct, int opened_fd, int ent,
 		 * The ent position should be correct,
 		 * if postno and the title is the same.
 		 */
-		if (nfhr->accessed & FILE_DELE)
+		if (!(ofhr->accessed & FILE_DELE) &&
+		    nfhr->accessed & FILE_DELE)
 			goto out;
 		rtval = 0;
 		goto out;
@@ -1017,7 +1021,7 @@ err_out:
  * To prevent after board packed, and others did not update their list.
  * The ent could be wrong, and the user might update the wrong .DIR entry.
  */
-int savely_substitute_dir(const char *direct, int opened_fd, int ent,
+int safely_substitute_dir(const char *direct, int opened_fd, int ent,
 		const FILEHEADER *ofhr, FILEHEADER *nfhr,
 		unsigned char mark_unread)
 {
@@ -1031,7 +1035,7 @@ int savely_substitute_dir(const char *direct, int opened_fd, int ent,
 	if (fd == -1)
 		goto err_out;
 
-	if (savely_read_dir(NULL, fd, ent, ofhr, &tfhr))
+	if (safely_read_dir(NULL, fd, ent, ofhr, &tfhr))
 		goto out;
 
 	if (mark_unread) {

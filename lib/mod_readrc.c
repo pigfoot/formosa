@@ -289,7 +289,7 @@ void ReadRC_Refresh(char *boardname)
 		return;
 
 	setboardfile(fname, boardname, DIR_REC);
-	if (get_last_info(fname, 0, &info) == -1) {
+	if (get_last_info(fname, 0, &info, FALSE) == -1) {
 		/*
 		 * Don't refresh if failed to get last postno
 		 */
@@ -330,7 +330,7 @@ int ReadRC_Board(const char *bname, int bid, const char *userid)
 	FILEHEADER fh_buf;
 
 	setboardfile(filepath, bname, DIR_REC);
-	if (get_last_info(filepath, 0, &lastinfo) == -1)
+	if (get_last_info(filepath, 0, &lastinfo, FALSE) == -1)
 		return 0;
 
 	fh_buf.postno = lastinfo.last_postno;
