@@ -155,6 +155,7 @@ int range_tag_article(int ent, FILEHEADER *finfo, char *direct);
 /* board.c */
 int namecomplete_board(BOARDHEADER *bhp, char *data, BOOL simple);
 int select_board(void);
+int NoteBoard(char *userid);
 int Boards(void);
 int Class(void);
 /* chat.c */
