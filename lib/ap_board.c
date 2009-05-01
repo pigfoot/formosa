@@ -73,11 +73,14 @@ int CreateBoardList(const USEREC *curuserp)
 	apply_brdshm_board_t(malloc_board);
 
 	/* Merge spaces to tail */
-	for (i = 0; i < num_brds; i++)
+	for (i = 0, j = 0; i < num_brds; i++)
 	{
 		if (!all_brds[i].bhr)
 		{
-			for (j = i; j < num_alloc_brds; j++)
+			if (j < i)
+				j = i;
+
+			while (++j < num_alloc_brds)
 			{
 				if (all_brds[j].bhr)
 				{
@@ -86,6 +89,9 @@ int CreateBoardList(const USEREC *curuserp)
 					break;
 				}
 			}
+
+			if (j >= num_alloc_brds)
+				break;
 		}
 	}
 
