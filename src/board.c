@@ -54,6 +54,7 @@ int select_board()
 
 		if ((be1 = SearchBoardList(bname)) != NULL)
 		{
+			in_note = FALSE;
 			curbe = be1;
 			CurBList = be1->bhr;
 #if 0
@@ -276,6 +277,7 @@ static int bcmd_enter(int ent, struct BoardList *bent, char *direct)
 	else
 		curbe = &(all_brds[board_ccur - 1]);
 	CurBList = curbe->bhr;
+	in_note = FALSE;
 	Read();		/* Enter to Read menu */
 	return C_LOAD;
 }
@@ -336,22 +338,30 @@ int Boards()
 /* ¶i¤Jµuºàª© */
 int NoteBoard(char *userid)
 {
-	BOARDHEADER bh;
-	struct BoardList be;
+	static BOARDHEADER bh, *note_bh = NULL;
+	static struct BoardList be, *note_be = NULL;
 
-	memset(&bh, 0, sizeof(bh));
-	memset(&be, 0, sizeof(be));
+	if (!strcmp(userid, GUEST))
+		return 0;
+
+	if (!note_bh) {
+		note_bh = &bh;
+		memset(&bh, 0, sizeof(bh));
+	}
+	if (!note_be) {
+		note_be = &be;
+		memset(&be, 0, sizeof(be));
+		note_be->bhr = note_bh;
+	}
 
 	strlcpy(bh.filename, userid, sizeof(bh.filename));
-	CurBList = &bh;
-	curbe = &be;
-	curbe->bhr = CurBList;
+	strlcpy(bh.owner,    userid, sizeof(bh.owner));
+
+	CurBList = note_bh;
+	curbe = note_be;
 
 	in_note = TRUE;
 	Read();
-	CurBList = NULL;
-	curbe = NULL;
-	in_note = FALSE;
 
 	return 0;
 }

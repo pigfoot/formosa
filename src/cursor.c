@@ -736,8 +736,11 @@ void title_func(char *text1, char *text2)
 	while (len-- > 0)
 		outc(' ');
 
-	prints(_msg_title_func,
-	       CurBList ? CurBList->filename : _msg_not_choose_board);
+	if (in_note)
+		prints("¯d¨¥ªO¡G%-14.14s [m", CurBList->filename);
+	else
+		prints(_msg_title_func,
+		       CurBList ? CurBList->filename : _msg_not_choose_board);
 }
 
 
@@ -1316,8 +1319,25 @@ int Read()
 #endif
 		comm = post_comms;
 
-		if (in_board)	/* ¤@¯ë°Ï */
+		if (in_note)	/* ­Ó¤HµuÅÒª© */
 		{
+			setnotefile(tmpdir, CurBList->filename, DIR_REC);
+			opt = 1;
+			ccur = &(curbe->bcur);
+		}
+		/* CoolDavid 2009.05.01:
+		 *	¥Ø«ein_board¥u¬O¤@­Óswitch
+		 *		TRUE: ¾\Åª¬ÝªO
+		 *		FALSE: ¾\ÅªºëµØ°Ï
+		 *	©Ò¥Hin_board = TRUE¨Ã¤£¥Nªí¨Ï¥ÎªÌ¥¿¦b¬ÝªO¤¤¾\Åª,
+		 *	©Î¬O¤w¸g¿ï¾Ü¤F¬Y¬ÝªO
+		 */
+		else if (in_board)	/* ¤@¯ë°Ï */
+		{
+			/*
+			 * ±qºëµØ°Ïªº¤l¥Ø¿ý«ö¤Ftab°h¥Xcursor_menu, ¦^¨ì³o­ÓLoop
+			 * ªº®É­Ô¶¶«K§âºëµØ°Ïªºdepth­°¨ì³Ì¤W¼h
+			 */
 			nowdepth = 1;
 
 			ReadRC_Init(CurBList->bid, curuser.userid);
@@ -1337,8 +1357,6 @@ int Read()
 			}
 
 			setboardfile(tmpdir, CurBList->filename, DIR_REC);
-			if (in_note)
-				setnotefile(tmpdir, CurBList->filename, DIR_REC);
 
 			opt = 1;
 			ccur = &(curbe->bcur);
@@ -1364,7 +1382,7 @@ int Read()
 				hasBMPerm = TRUE;
 				isBM = TRUE;
 			}
-			else
+			else if (!in_note) /* ¥Ø«e¤@¯ë¬ÝªO¤~¦³BM_ASSISTANT */
 			{
 				setboardfile(genbuf, CurBList->filename, BM_ASSISTANT);
 				if (seekstr_in_file(genbuf, curuser.userid))
@@ -1382,7 +1400,7 @@ int Read()
 		      post_title, read_btitle, read_entry, read_get, read_max,
 				  NULL, opt, FALSE);
 
-		if (!in_board && nowdepth > 1 && ret == 0)
+		if (!in_note && !in_board && nowdepth > 1 && ret == 0)
 		{
 			char *pt;
 
@@ -1395,7 +1413,7 @@ int Read()
 		}
 
 		/* if have read post, update the record of readrc */
-		if (in_board)
+		if (!in_note && in_board)
 			ReadRC_Update();
 
 		if (ret == 0)
@@ -1404,10 +1422,8 @@ int Read()
 	return C_LOAD;
 }
 
-
 #define CX_GET    0x6666
 #define CX_CURS   0x5555
-
 
 int autoch = 0;
 #define MAX_HDRSIZE	(256)
