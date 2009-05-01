@@ -77,7 +77,7 @@ int CreateBoardList(const USEREC *curuserp)
 	{
 		if (!all_brds[i].bhr)
 		{
-			for (j = i; j < MAXBOARD; j++)
+			for (j = i; j < num_alloc_brds; j++)
 			{
 				if (all_brds[j].bhr)
 				{
