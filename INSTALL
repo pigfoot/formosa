@@ -9,6 +9,7 @@ Installing Formosa BBS Community Edition (FBCE)
 
 		Gentoo/Linux installation notes
 		Debian GNU/Linux installation notes
+		CentOS installation notes
 		FreeBSD installation notes
 		Mac OS X installation notes
 		Solaris installation notes
@@ -56,17 +57,27 @@ Chapter 2. Source Installation on Unix systems
 
 	Prerequisite software for compiling:
 
-		* An ANSI C compiler
-		* autoconf: version 2.61+
-		* automake: version 1.10+
+		* GNU Compiler Collection: version 3.4.6+
+		(http://gcc.gnu.org/)
+		* Perl: version 5.8+
+		(http://www.perl.org/)
+		* GNU Make: version 3.8+
+		(http://www.gnu.org/software/make/)
+		* GNU M4: version 1.4+
+		(http://www.gnu.org/software/m4/)
+		* GNU Autoconf: version 2.59+
+		(http://www.gnu.org/software/autoconf/)
+		* GNU Automake: version 1.10+
+		(http://www.gnu.org/software/automake/)
 
 	Support platforms:
 
-		* Gentoo/Linux
-		* Debian GNU/Linux
-		* FreeBSD
+		* Gentoo/Linux 2.6+
+		* Debian GNU/Linux 2.6+
+		* CentOS 5+
+		* FreeBSD 7+
 		* Mac OS X
-		* Solaris
+		* Solaris 10+
 
 Gentoo/Linux installation notes
 
@@ -75,8 +86,8 @@ Gentoo/Linux installation notes
 3.	cd fbce-x_x_x
 4.	./autogen.sh
 5.	./configure --prefix=$homebbs --enable-feature=
-6.	make
-7.	make install
+6.	gmake
+7.	gmake install
 	__________________________________________________________________
 
 Chapter 3. Binary Installation on Unix systems
