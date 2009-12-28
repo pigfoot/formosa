@@ -729,6 +729,35 @@ XECHO, urcNew.fakeuserid);
 	return 0;
 }
 
+int display_user_log(const char *userid)
+{
+	char fn_logfile[PATHLEN];
+
+	if (!userid || userid[0] == '\0')
+		return -1;
+
+#ifdef IGNORE_CASE
+        strtolow(userid);
+#endif
+	sethomefile(fn_logfile, userid, UFNAME_RECORDS);
+
+	return more(fn_logfile, TRUE);
+}
+
+int display_user_register(const char *userid)
+{
+	char fn_regfile[PATHLEN];
+
+	if (!userid || userid[0] == '\0')
+		return -1;
+
+#ifdef IGNORE_CASE
+        strtolow(userid);
+#endif
+	sprintf(fn_regfile, "%s/%s", BBSPATH_REALUSER, userid);
+
+	return more(fn_regfile, TRUE);
+}
 
 int x_uflag()
 {

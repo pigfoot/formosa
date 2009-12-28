@@ -117,6 +117,7 @@ extern int b_line; /* The bottom line of screen */
  */
 /* admin.c */
 int adminMaintainUser(void);
+int adminDisplayUserLog(void);
 void setskinfile(char *fname, char *boardname, char *skin);
 int adminCreateBoard(void);
 int adminMaintainBoard(void);
@@ -359,6 +360,8 @@ int x_plan(void);
 int x_override(void);
 int x_blacklist(void);
 int set_user_info(char *userid);
+int display_user_log(const char *userid);
+int display_user_register(const char *userid);
 int x_uflag(void);
 int x_bakpro(void);
 int x_viewnote(void);
