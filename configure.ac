@@ -37,9 +37,11 @@ if test -z "${MAKE}"; then
 	if test -z "${MAKE}"; then
 	dnl use AC_PATH_PROG because we need to set variable to the absolute name of gmake if found.
 		AC_PATH_PROG([MAKE], [gmake], [], [/usr/bin:/usr/local/bin:/usr/sfw/bin:/usr/local/gnu/bin])
-	elif test -z "${MAKE}"; then
-		AC_CHECK_PROG([MAKE], [make], [], [])
-	elif test -z "${MAKE}"; then
+	fi
+	if test -z "${MAKE}"; then
+		AC_CHECK_PROG([MAKE], [make], [make], [])
+	fi
+	if test -z "${MAKE}"; then
 		AC_PATH_PROG([MAKE], [make], [no], [/bin:/usr/bin])
 	fi
 fi
