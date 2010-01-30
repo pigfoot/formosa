@@ -30,11 +30,17 @@ AC_PATH_PROG(TRUE,true)
 
 dnl Checking make utility
 if test -z "${MAKE}"; then
-	dnl Find GNU Make. 1) search $PATH, 2) search specified path
+	dnl Find GNU Make.	1) search $PATH
+	dnl			2) search specified path
+	dnl			3) search make for linux
 	AC_CHECK_PROG([MAKE], [gmake], [gmake], [])
 	if test -z "${MAKE}"; then
 	dnl use AC_PATH_PROG because we need to set variable to the absolute name of gmake if found.
-		AC_PATH_PROG([MAKE], [gmake], [no], [/usr/bin:/usr/local/bin:/usr/sfw/bin:/usr/local/gnu/bin])
+		AC_PATH_PROG([MAKE], [gmake], [], [/usr/bin:/usr/local/bin:/usr/sfw/bin:/usr/local/gnu/bin])
+	elif test -z "${MAKE}"; then
+		AC_CHECK_PROG([MAKE], [make], [], [])
+	elif test -z "${MAKE}"; then
+		AC_PATH_PROG([MAKE], [make], [no], [/bin:/usr/bin])
 	fi
 fi
 makever=`${MAKE} --version 2>&1 | grep "GNU Make"`
