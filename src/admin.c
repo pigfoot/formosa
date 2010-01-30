@@ -18,7 +18,6 @@ struct conf
 	char *desc;
 };
 
-
 const struct conf conf_files[] =
 {
 	{WELCOME, "進站公告"},
@@ -53,7 +52,6 @@ const struct conf conf_files[] =
 	{ NULL, NULL }
 };
 
-
 int adminMaintainUser()
 {
 	char userid[IDLEN];
@@ -67,6 +65,27 @@ int adminMaintainUser()
 	return C_FULL;
 }
 
+int adminDisplayUserLog()
+{
+	char userid[IDLEN], buf[STRLEN];
+
+	move(2, 0);
+	clrtobot();
+	if (getdata(2, 0, _msg_ent_userid, userid, sizeof(userid), ECHONOSP))
+	{
+		getdata(3, 0, "顯示登入記錄?(y/n)[n]", buf, 3, ECHONOSP | XLCASE);
+		if (buf[0] == 'y')
+			display_user_log(userid);
+
+		move(0, 0);
+		clrtobot();
+
+		getdata(3, 0, "顯示註冊資料?(y/n)[n]", buf, 3, ECHONOSP | XLCASE);
+		if (buf[0] == 'y')
+			display_user_register(userid);
+	}
+	return C_FULL;
+}
 
 #ifdef	WEB_BOARD
 #define MAX_NR_BRDTYPE	(8)

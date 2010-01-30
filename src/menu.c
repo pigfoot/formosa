@@ -13,6 +13,7 @@ extern struct commands MainMenu[];
 struct commands AdminMenu[] =
 {
 	{'i', PERM_SYSOP, NULL, adminMaintainUser, ADMIN, "User Info", "更改使用者資料"},
+	{'l', PERM_SYSOP, NULL, adminDisplayUserLog, ADMIN, "User Log", "顯示使用者記錄"},
 #ifdef USE_DELUSER
 	{'d', PERM_SYSOP, NULL, adminDeleteUser, ADMIN, "Delete User", "刪除一位使用者"},
 #endif
