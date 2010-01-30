@@ -5,7 +5,7 @@
  * 修改Makefile configure
  	* 增加 make config_bbs3 可以直接產生西灣專用Makefile
 	* 修改configure, 接收--prefix當作HOMEBBS
-	* 修改依些 Makefile.in 讓 make install[bin] 路徑正接收HOMEBBS
+	* 修改 Makefile.in 讓 make install[bin] 路徑正接收HOMEBBS
 
 11 November 1999, version 1.4.0
 -------------------------------
