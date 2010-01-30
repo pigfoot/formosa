@@ -25,7 +25,7 @@
  * bbs2g4 支援 board shm 與 sorted board list by boardname
  * select board - in-case sensitive
  * 增加 doc/NewGuide - 新使用者須知
- * 分類看板排序 - by name or not 
+ * 分類看板排序 - by name or not
  * 使用者閒置過久, 強迫離線後, 自動將線上訊息備份
  * 修正空精華區無法建立目錄的問題
  * 修正 asuka 改錯 bbs-news code (當張貼文章至 news server失敗時處理不當)
@@ -77,7 +77,7 @@
  * 更新 FAQ
  * 加入手動身份認證至 Admin 選單 (util/syscheck.c)
  * 加入寄信給全站板主至 Admin 選單 (util/mailbm.c)
- * 加入 util/delthread.c 
+ * 加入 util/delthread.c
  * 加入 util/fixdir.c
  * 編名片檔, 進板畫面可引入暫存檔
  * 限制帳號合法字串: '-' 字元只能再帳號中出現一次, 且不能在最頭尾的位置
@@ -126,14 +126,14 @@
 
  * [bbsmail] now can automatically provide 'antispam' function
  * 加入 FormosaBBS 首頁 (http://cc.nsysu.edu.tw/~lasehu/formosabbs.html)
-      安裝手冊INSTALL, 
-      安裝FAQ, 
-      身份認證FAQ, 
+      安裝手冊INSTALL,
+      安裝FAQ,
+      身份認證FAQ,
       簡易安裝QuickStart
  * INSTALL 安裝手冊 - 新增 userstat 線上使用者統計
 
- * [language] Support multi-language version, 'conf/clang.cf' for chinese 
-   language, 'conf/elang.cf' for english language. User can online change 
+ * [language] Support multi-language version, 'conf/clang.cf' for chinese
+   language, 'conf/elang.cf' for english language. User can online change
    his usual language.
 
  * 新板主上任, 自動提升等級為 100
@@ -170,7 +170,7 @@
  * board.filename  - 板名長度 (BNAME_LEN)
    board.attrib	- ....., 有 IDENT_ATTRIB 屬性之板面, 不接受未認證使用者張貼
    including bbsmail (e-mail post), cross-post
- * source/util/TRAN-dotboards.c   
+ * source/util/TRAN-dotboards.c
    for Formosa v0.9.0 to Formosa v1.0.0
 
 
@@ -206,9 +206,9 @@ Formosa BBS 1.0.0
   + Add the two-level hierarchical 'home' directory.
     Like this:
                home/u/userid
-    or         
+    or
                home/l/lthuang
-    
+
     Some OS does not accomodate too many sub-directory in the
     same directory, and for system performance, opening, searching,
     so we use this hierarchical architecture.
@@ -268,15 +268,15 @@ Formosa BBS 1.0.0
     and xyz --> info
 
   [bbs-news]
-  + Support NNTP 'XOVER' command for better performance 
+  + Support NNTP 'XOVER' command for better performance
     when ask news server for new articles, command 'STAT' not used
     any more.
 
   [bbspop3]
   + Support 'POP3' for bbs
- 
+
   [bbs2g4]
-  + BBS to Gopher gateway, gopher client can connect to our bbs 
+  + BBS to Gopher gateway, gopher client can connect to our bbs
     station to get post or treasure.
 
   [msginfo]
@@ -285,7 +285,7 @@ Formosa BBS 1.0.0
 
   [note]
   + Also can call note as notepad. Like bulletin, you can
-    leave any message on the note, and other ones will see the 
+    leave any message on the note, and other ones will see the
     messages.
 
   [semaphore]
@@ -297,7 +297,7 @@ Formosa BBS 1.0.0
     reading.
 
   [class]
-  + Add 'CLASS' menu, according to configuration file 'class.cf' to 
+  + Add 'CLASS' menu, according to configuration file 'class.cf' to
     dynamically produce the menu structure, the menu can be multi-level
     tree, each board can appear in difference level in the tree.
 
@@ -311,7 +311,7 @@ Formosa BBS 1.0.0
   [bmas]
   + bmas (Assistant of Board Manager) option provided.
 	All of the function about bmas (Assistant of Board Manager),
-	refer to add_bmas(), display_bmas(), delete_bmas() for detail, 
+	refer to add_bmas(), display_bmas(), delete_bmas() for detail,
 	if you are interested what the function do.
 
   [post]
@@ -324,7 +324,7 @@ Formosa BBS 1.0.0
 	character is valid.
 
   [userec]
-  + Add firstlogin to struct userec 
+  + Add firstlogin to struct userec
 	refer to struct.h
 
   [xyz]
@@ -336,7 +336,7 @@ Formosa BBS 1.0.0
   - User cannot undelete the post by himselft
 
   [mail]
-  - DirectSMTP() check the response from the mail server step by step 
+  - DirectSMTP() check the response from the mail server step by step
 	to verify sending mail is finished correctly.
 
   [origin]
@@ -352,11 +352,11 @@ Formosa BBS 1.0.0
 	If the board have the brdtype 'BRDTYPE_PRIVATE', only the users
 	whose userlevel are greater than the level of the board can see it.
 	If the board have the brdtype 'BRDTYPE_UNZAP', no one can zap it.
-	Otherwise, the userlevel of the users are greater than the level of 
-	the board can post on it.   
+	Otherwise, the userlevel of the users are greater than the level of
+	the board can post on it.
 
   [boardheader]
-  - Remove the big array and add new attribution and flags 
+  - Remove the big array and add new attribution and flags
 	into 'sturct boardheader'
 	bid:
 	brdtype:
@@ -374,7 +374,7 @@ Formosa BBS 1.0.0
   + Add the option switch for signature file
 	user can decide to whether tag the option switch on or off
 	If the option is off, user don't use signature.
-    
+
   [signatures]
   + Several signatures can be choose when you need it. Now,
     when you want edit them, we can let you choose which one you
@@ -383,7 +383,7 @@ Formosa BBS 1.0.0
   [editor]
   - Enhance editor key: CTRL('Y') immediately delete one line
 
-  [viewer] 
+  [viewer]
   - When reading article, user can go back to read the previous pages.
 
   [kick]
@@ -402,7 +402,7 @@ Formosa BBS 1.0.0
 
     1. mark the thread
     2. move the thread into one article and copy/move to treausre.
-    
+
 
 Other Feature in older version
 ------------------------------

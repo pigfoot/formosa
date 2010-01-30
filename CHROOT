@@ -15,16 +15,16 @@ chroot 安全環境設定
 
       #undef CHROOT_BBS
 
-      改為 
+      改為
 
       #define CHROOT_BBS
 
       再按照下列步驟, 重新編譯原始程式.
 
-        bbs% make clean    
+        bbs% make clean
         bbs% make all
         bbs% make install
-    
+
       OK 以後，請先別急著執行 bbs，必須先完成下列步驟
 
       ******<<<< 製作重要目錄 >>>>*********
@@ -44,8 +44,8 @@ chroot 安全環境設定
         (2) 在 /etc/rc.local 內加入
 
             /etc/mount -at lo
-       
-        (3) 以 root 身份立刻執行 
+
+        (3) 以 root 身份立刻執行
 
             % mount -at lo
 
@@ -58,7 +58,7 @@ chroot 安全環境設定
 				        ^^^^^^^^^---> 請依自己的 BBS Home 修改
                                       並請先建好以上三個空目錄。
 
-        (2) 
+        (2)
             % mkdir -p /home/bbs/usr/share/lib/terminfo/v
             % cp /usr/share/lib/terminfo/v/vt100 \
                  /home/bbs/usr/share/lib/terminfo/v

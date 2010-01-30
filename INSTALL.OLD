@@ -62,7 +62,7 @@
        改以支援不同的作業系統, 歡迎將原始程式碼寄回給我們.
        <email:formosabbs@googlegroups.com>
 
-    DEMOE SITES 
+    DEMOE SITES
 
        (1) 中山福爾摩莎 (~1999/06/16)
         作業系統：Solaris 2.7
@@ -78,7 +78,7 @@
         RAM: 64MB
         SWAP: 96MB
         最大上線人數: 120 (未達極限)
-          
+
        (3) 澎湖資教網路
         作業系統: SunOS 4.1.3_U1
         主機: Sun SuperSparc
@@ -89,7 +89,7 @@
        硬碟：視站的規模大小而定。
 
 
-四、設定 BBS 相關的帳號： 
+四、設定 BBS 相關的帳號：
 
     請在 /etc/passwd 內設定一新使用者, 如下所示
 
@@ -128,14 +128,14 @@
     (1b)
 
          bbs% rpm -ivh FormosaBBS-1.3.0-1.i386.rpm
-    
+
     (1c) 以 git 取得開發中的最新程式：
 
       bbs% git clone git://github.com/pigfoot/formosa.git
       bbs% cd formosa
 
     接著同 (1a):
-    
+
       bbs% ./autogen.sh
       bbs% ./configure
       bbs% make
@@ -157,7 +157,7 @@
     (4) 修改
 
         主選單 -> (a)dmin 管理者辦公室 -> (e)dit config 編輯設定檔案
-    
+
         1) 進站公告
         8) 新使用者須知
         9) 認證說明信函
@@ -174,7 +174,7 @@
     情形下, 必須為主機管理者, 所以請以 root 身份執行下列指令:
 
       bbs% /home/bbs/bin/bbsd <port>
- 
+
     執行完之後, bbs 站就可以算啟動了.
 
     好！現在大致完成了，您可以連接您的主機來試一下了。
@@ -194,7 +194,7 @@
       --------------------------------------------------------------
       NAME
           bbsmail - Internet E-mail 收信程式
- 
+
       SYNOPSIS
           bbsmail [-v]
 
@@ -249,7 +249,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       --------------------------------------------------------------
       NAME
           bbsnews - 轉信程式
- 
+
       SYNOPSIS
           bbsnews
 
@@ -258,28 +258,28 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       CONFIGURATION FILE
           ~bbs/news/bbs-news.conf (從系統以 bbs 身份直接編修)
           主選單 -> (a)dmin 管理者辦公室 -> 轉信設定
-       
+
           設定 news server ip, port, 本站名稱與組織代號
 
           1. 第一次啟動時, 請先設一兩個 BNLink line 先測試看看.
           2. 如果不想拿舊的 News article, GET 欄請寫 no
           3. 請選定一個 News Server, 選定後就別再改變, 否則轉信將會不正常,
              所以請謹慎選擇.
-          4. 你必須在選定的 News Server 有 post article 的權限, 才能 output 
+          4. 你必須在選定的 News Server 有 post article 的權限, 才能 output
              bbs posts.
 
           設定檔更改之後, 必須重新啟動 bbs-news 或等到 bbs-news 處理下次再
-          啟動轉信程序才會生效. 
+          啟動轉信程序才會生效.
           (bbs-news process 每處理完一輪迴 B-N-Link 之後, 會重讀一次
            bbs-news.conf 內容.)
-       
+
       STARTUP
           開機自動執行檔
 
       --------------------------------------------------------------
       NAME
           deluser - 帳號刪除程式
- 
+
       SYNOPSIS
           deluser day3 day49 day50 day100
 
@@ -292,7 +292,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       --------------------------------------------------------------
       NAME
           expire - 過期/標記刪除佈告清除程式
- 
+
       SYNOPSIS
           expire [UpperBound] [Range]
 
@@ -302,7 +302,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 
       Examples:
           expire 3000 500
-          ==> 若板面佈告超過 3000 篇, 系統自動刪除到剩 
+          ==> 若板面佈告超過 3000 篇, 系統自動刪除到剩
               2500 (= 3000 - 500) 篇.
 
       CONFIGURATION FILE
@@ -344,7 +344,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
           -c      指動 allow/deny 模式 (預設: 不啟動)
 
           自 FormosaBBS v1.0.0 版起, 提供 Web 介面的 BBS 站系統, 與 HTTP 1.0
-          相容, 您可很簡單地自行規畫 Web BBS 站的外觀, 只要修改 HTML 檔案, 
+          相容, 您可很簡單地自行規畫 Web BBS 站的外觀, 只要修改 HTML 檔案,
           即可立即變換出不同的風貌. 相關檔案皆擺在於 'HTML/' 及 'HTML/image/'
           目錄中.
 
@@ -366,28 +366,28 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
           bbspop3d - bbs pop3 daemon 提供 BBS 離線取信服務
 
       SYNOPSIS
-          bbspop3d 
+          bbspop3d
 
-      --------------------------------------------------------------      
+      --------------------------------------------------------------
       NAME
           bbsfingerd - bbs finger daemon
 
       SYNOPSIS
           bbsfingerd
-      
-      --------------------------------------------------------------            
+
+      --------------------------------------------------------------
       NAME
           menushow - 秀圖模式程式
 
       SYNOPSIS
           mehushow RefreshSeconds
 
-      例如: 
+      例如:
           RefreshSeconds 設為 600 表示每 600 秒自動更新，Run as Daemon
           RefreshSeconds 設為 0 表示更新一次後結束，Call by Crontab
 
       CONFIGURATION FILE
-          ~bbs/conf/menushow 
+          ~bbs/conf/menushow
 
           設定檔範例:
            #秀圖模式設定檔
@@ -402,7 +402,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       STARTUP
           crontab, 開機執行
 
-      --------------------------------------------------------------            
+      --------------------------------------------------------------
       NAME
           userstat - 每日線上使用者統計
 
@@ -412,19 +412,19 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       STARTUP
           crontab
 
-      --------------------------------------------------------------            
+      --------------------------------------------------------------
 
 八、BBS 身份認證系統：
 
       於 /etc/passwd 加入 (建立一帳號 syscheck)
-	
+
       syscheck:##syscheck:9999:999:syscheck:/home/bbs:/home/bbs/bin/syscheck
 
       然後確認執行
 
       bbs% cd ~bbs; ln -s ../ID .
 
-      --------------------------------------------------------------            
+      --------------------------------------------------------------
       NAME
           idcheck - 身分認證查核
 
@@ -432,9 +432,9 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
           認證系統運作程序:
 
           1. User 於站上填寫個人認證申請資料後, 系統將會以 'syscheck' 名義
-             寄信至 user 的 e-mail address. 
-          2. User 收到信後, 必須將原信回覆給 'syscheck' 以確認此 
-             e-mail address 確實為該 user所有. 
+             寄信至 user 的 e-mail address.
+          2. User 收到信後, 必須將原信回覆給 'syscheck' 以確認此
+             e-mail address 確實為該 user所有.
           3. 認證查核系統(idcheck程式)收到來自 User 的回覆信, 將查核與當初
              的認證申請資料是否一致, 若一切正確無誤, 則自動將 User 個人資料
              更新為 '已通過認證'.
@@ -451,21 +451,21 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
       STARTUP
           crontab
 
-      -------------------------------------------------------------- 
+      --------------------------------------------------------------
       NAME
           syscheck - 手動審核認證申請
-      
+
       DESCRIPTION
 
       STARTUP
-          進入系統主機, 以 syscheck 身分登錄 (非bbs user), 依照 
+          進入系統主機, 以 syscheck 身分登錄 (非bbs user), 依照
           /etc/passwd 的設定, 呼叫 login shell - syscheck
 
-      --------------------------------------------------------------       
+      --------------------------------------------------------------
 
 
 九、開機自動執行檔
-    
+
       (1) 將各程式加入開機自動執行檔：
 
           ＃＃ Linux
@@ -499,7 +499,7 @@ R$+ < @ $=w . >         $#local $: $1       regular local name
 00,05,10,15,20,25,30,35,40,45,50,55 * * * * (/home/bbs/bin/bbsmail; /home/bbs/bin/userstat -c; /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
 #
 # 請於負荷低時執行 (如清晨). 執行後並未真正刪除帳號，只是把過期帳號資料移到
-#        /home/bbs/home/.del     
+#        /home/bbs/home/.del
 #        /home/bbs/mail/.del
 # 為了讓站長有拯救帳號的機會
 #
@@ -590,7 +590,7 @@ telnet          23/tcp
 ntelnet         24/tcp          normal login port
 
       改好以上兩個檔案，reboot 後即可生效，以後正常 login 請 telnet 24
-      例如 telnet bbs 24   或是  
+      例如 telnet bbs 24   或是
            telnet bbs#24   (此種寫法適用在 NCSA Telnet）
 
 

@@ -49,6 +49,6 @@ done
 (cd ${HOMEBBS}; gzip -dc FormosaBBS-${VERSION}-bin.tar.gz | tar xf - )
 
 for i in edit log realuser tmp write ID ;
-do 
+do
 	chmod 0700 ${HOMEBBS}
 done
