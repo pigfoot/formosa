@@ -79,15 +79,35 @@ Chapter 2. Source Installation on Unix systems
 		* Mac OS X
 		* Solaris 10+
 
-Gentoo/Linux installation notes
+ubuntu/Linux Pre-install packages
+1.	apt-get install make
+2.	apt-get install m4
+3.	apt-get install automake
+4.	apt-get install autoconf
+5.	apt-get install perl
+6.	apt-get install git-core
+7.	apt-get install gcc
+8.	apt-get install libc6-dev
+9.	apt-get install ncurses-dev
 
-1.	gunzip fbce-x_x_x.tar.gz
-2.	tar -xvf fbce-x_x_x.tar
-3.	cd fbce-x_x_x
-4.	./autogen.sh
-5.	./configure --prefix=$homebbs --enable-feature=
-6.	gmake
-7.	gmake install
+Linux installation notes
+
+1.	git clone git://github.com/pigfoot/formosa.git
+2.	cd formosa
+3.	./autogen.sh
+4.	./configure --prefix=$homebbs --enable-feature=
+5.	make
+6.	make install
+
+Non-Linux installation notes
+
+1.	git clone git://github.com/pigfoot/formosa.git
+2.	cd formosa
+3.	./autogen.sh
+4.	./configure --prefix=$homebbs --enable-feature=
+5.	gmake
+6.	gmake install
+
 	__________________________________________________________________
 
 Chapter 3. Binary Installation on Unix systems
