@@ -66,6 +66,6 @@ done
 
 (cd ${HOMEBBS}/boards; ln -s ../ID . )
 
-${INSTALL} -m 770 -g bbs -o bbs /bin/sort     ${HOMEBBS}/bin
+${INSTALL} -m 770 -g bbs -o bbs ${HOMEBBS}/bin
 
 echo "Install finished..."
