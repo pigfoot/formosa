@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ([2.61])
+AC_PREREQ([2.59])
 AC_INIT([FormosaBBS], [1.5.0], [formosabbs@googlegroups.com])
 AC_CONFIG_SRCDIR([include/bbs.h])
 AC_CONFIG_HEADERS([config.h])
@@ -44,14 +44,14 @@ fi
 
 case $host in
 	*-solaris*)
-	systype=Solaris
+	systype=SOLARIS
 	OS_DEF="-DSOLARIS -DSYSV"
 	CFLAGS="-O2 -Wunused"
 	LIBS="-ltermcap -lsocket -lnsl"
 	;;
 
 	*-freebsd*|*-netbsd*|*-bsdi*|*-apple-darwin*)
-	systype=NetBSD_OR_FreeBSD
+	systype=BSD
 	OS_DEF="-DBSD44"
 	LIBS="-ltermcap"
 	;;
