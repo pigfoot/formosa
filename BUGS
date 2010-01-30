@@ -5,16 +5,16 @@ KNOWN BUGS
 If you change (MAX_SIG_LINES * MAX_SIG_NUM) > 24, the screen will
 be broken.
 
-bbsweb: 
+bbsweb:
 	cannot bind specified address
-previw signature: 
+previw signature:
 	6 lines
 bbs-news:
 	articles may be re-get again as unwanted posts
 auto-forward:
 	check wether if null e-mail address
 expire + packbbs:
-	if these two program are running at the same, it may cause some 
+	if these two program are running at the same, it may cause some
 	problems, eg: .DIR disappeared.
 
 csbbs:

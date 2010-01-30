@@ -2,12 +2,12 @@
   FormosaBBS v1.5-current 安裝手冊 <簡易版> for Linux
 
 
- 作業系統需求 
- ============ 
+ 作業系統需求
+ ============
 
   Linux (Gentoo, Debian), FreeBSD, MacOS 10.5, Solaris 10 (x86 and sparc)
-    
- 
+
+
  安裝步驟
  ========
 
@@ -21,7 +21,7 @@
 
      <URL:http://github.com/pigfoot/formosa/tree/master>
 
-  3. 
+  3.
 
      bbs% cd ~bbs/
 
@@ -29,12 +29,12 @@
      bbs% gzip -dc FormosaBBS-1.1.1.tar.gz | tar xf -
      bbs% cd FormosaBBS-1.1.1
      bbs% ./autogen.sh
-     bbs% ./configure             
+     bbs% ./configure
 
-     接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數, 
+     接著回答一些設定上的問題, 如: 中文站名, 英文站名, 最大上線人數,
      最多看板個數, 主機 domain, IP Address, 是否採用身份認證系統.
 
-     bbs% make                   
+     bbs% make
      bbs% make install_once
 
      (1b)
@@ -46,7 +46,7 @@
      bbs% cd formosa
 
      接著同 (1a):
-    
+
      bbs% ./autogen.sh
      bbs% ./configure
      bbs% make
@@ -103,7 +103,7 @@ R$+ < @ $=w . >         $#local $: $1           regular local name
      bbs%  ~bbs/bin/bbs-news
 
   7. 身份認證自動回函系統
-     bbs% useradd -u 9999 -o -g bbs -d /home/bbs -s /home/bbs/bin/syscheck 
+     bbs% useradd -u 9999 -o -g bbs -d /home/bbs -s /home/bbs/bin/syscheck
             syscheck
 
   8. bbs - gopher, pop3, finger 服務
@@ -116,10 +116,10 @@ R$+ < @ $=w . >         $#local $: $1           regular local name
      bbs% vi ~bbs/conf/menushow
 
  10. 編修進站畫面
-     bbs% vi ~bbs/conf/welcome 
+     bbs% vi ~bbs/conf/welcome
 
  11. 系統維護與管理(開機自動執行檔,crontab)：
-    
+
       (1) 將各程式加入開機自動執行檔：
 
           ＃＃ Linux 2.x.x
@@ -138,7 +138,7 @@ R$+ < @ $=w . >         $#local $: $1           regular local name
           /home/bbs/bin/bbsweb                      # bbs web server
           /home/bbs/bin/csbbsd                      # client-server-based bbs
           /home/bbs/bin/bbs-news                    # bbs news process
-          /home/bbs/bin/menushow 0                  
+          /home/bbs/bin/menushow 0
           /home/bbs/bin/onlinesrv
 
       (2) 設定 crontab
@@ -149,10 +149,10 @@ R$+ < @ $=w . >         $#local $: $1           regular local name
    /usr/bin/uptime > /home/bbs/conf/SHOW_UPTIME )
 10 5 * * * /home/bbs/bin/deluser 10 30 90 365
 0 3 * * * /bin/rm -fr /home/bbs/home/.del /home/bbs/mail/.del
-30 8 * * * (/home/bbs/bin/expire 3500 500; 
-   /home/bbs/bin/packbbs -b ID -p > /dev/null; 
+30 8 * * * (/home/bbs/bin/expire 3500 500;
+   /home/bbs/bin/packbbs -b ID -p > /dev/null;
    /home/bbs/bin/userstat -k -p sysop )
 0,10,20,30,40,50 * * * * /home/bbs/bin/idcheck
 00,20,40 * * * * /home/bbs/bin/menushow 0
-10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1 
+10 4 * * * (/bin/find /home/bbs/edit /home/bbs/tmp -mtime +1
 	-exec /bin/rm -f {}; > /dev/null 2>&1)

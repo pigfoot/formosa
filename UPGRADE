@@ -5,7 +5,7 @@ Big Endian <=> Little Endian
 If you want to change your platfrom from PC to Workstation,
 you'll need do byteorder converting.
 
-If not, please skip to next section, don't run the folllowing 
+If not, please skip to next section, don't run the folllowing
 commands (NOTE!!), or your system will be crash.
 
 cd ~bbs/boards

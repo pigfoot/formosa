@@ -44,7 +44,7 @@ smile
 好友說明
 好友上站通知
 unlimit length online message, 過長的message, right-scroll ?
-讓使用者選擇 message 
+讓使用者選擇 message
    - 是否顯示 nickname
    - 回顧訊息是否顯示自己送出的訊息
 
@@ -63,10 +63,10 @@ auto-forward
 -------------
 把e-mail改成bbs@bbs.nsysu.edu.tw, 要使用自動轉寄，
   不要填中山的信箱,又沒有用到自動轉寄，為何麼它不讓我改呢？
-auto-foward: docuemnts, and more stickly check e-mail addr field, avoiding 
+auto-foward: docuemnts, and more stickly check e-mail addr field, avoiding
              looping back to myself
 Auto-foward support 未認證使用者 and e-mail post
-若自站外寄信給站內使用者, 且站內使用者開啟 auto-forward, 
+若自站外寄信給站內使用者, 且站內使用者開啟 auto-forward,
               若 auto-forward 失敗, 會造成退信給 MAILER-DAEMON
 
 
@@ -113,7 +113,7 @@ talk.c: if username including ansi-code, fill the needed space to string
 bbschatd: support non-poll
 在某分類或全部看板中列出含有某人文章的看板列表, 並自動將 ccur 指到到該篇
 class: admin, edit, board class type, new board, bbsweb
-board name aliase: 
+board name aliase:
 irc:
 .PASSWDS, .USERIDX: fix, sync
 十大熱門話題: 每日/每週/每月/每年
@@ -121,7 +121,7 @@ irc:
 各使用者張貼佈告排行
 生日列表
 看板分類/新增看板
-getdata: CTRL-A, CTRL-E, CTRL-U, CTRL-K 
+getdata: CTRL-A, CTRL-E, CTRL-U, CTRL-K
 vote: item exchange
 三信: deluser
 phbbs: bbsd, bbs-news denied by nsysu-news

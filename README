@@ -37,17 +37,17 @@ DIRECTORIES
 FREEBSD
 --------
 
-1. If you want to set the bbs in chroot environment, 
-   you need: 
-   
+1. If you want to set the bbs in chroot environment,
+   you need:
+
     /usr/share/misc/termcap
     /usr/share/misc/termcap.db
-    
+
    just copy or mount these file onto the bbs home directory.
 
 2.  ## please use des-crypt ##
 
-   Because FreeBSD default use md5-crypt, not des-crypt, 
+   Because FreeBSD default use md5-crypt, not des-crypt,
    with our bbs program, please use des-crypt, you need not
    change your system library, just take a copy of 'libdescrypt.a',
    when linking the bbs program, make the lib file visible.

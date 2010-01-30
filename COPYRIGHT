@@ -5,16 +5,16 @@ By using FormosaBBS, you agree to be bound by the following:
 COPYRIGHT
 ---------
 
-This software product, FormosaBBS, is copyrighted(C) 1999 by 
-Lite Huang, ±ç©ú³¹, §d«T¾U, ªL·C¼y and the National Sun Yat-sen 
-University (NSYSU), Kaohsiung, with all rights reserved. Development 
+This software product, FormosaBBS, is copyrighted(C) 1999 by
+Lite Huang, ±ç©ú³¹, §d«T¾U, ªL·C¼y and the National Sun Yat-sen
+University (NSYSU), Kaohsiung, with all rights reserved. Development
 is funded by the Computer Center (CC) of NSYSU.
 
 
 LICENSE
 -------
 
-If you intend to use FormosaBBS, you must consider consulting the 
+If you intend to use FormosaBBS, you must consider consulting the
 CC of NSYSU first, please email to bbsmaster@cc.nsysu.edu.tw.
 
 This program is distributed "as is" and WITHOUT ANY WARRANTY; without
@@ -35,7 +35,7 @@ MAXACTIVE      64          Maximum number of online users
 HOMEBBS        /home/bbs   BBS home directory
 BBS_UID        9999        BBS UID
 BBS_GID        999         BBS GID
-CHROOT_BBS     No          Not use chroot system 
+CHROOT_BBS     No          Not use chroot system
                            (chroot can enforce system security)
 LOGINASNEW     Yes         Allow registeration of newuser
 BBSLOG_MAIL    No          Disable mail logging

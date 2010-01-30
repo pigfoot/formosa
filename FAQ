@@ -188,7 +188,7 @@ Ans:
     ~bbs/home/[0,a-z]/userid/
     ~bbs/mail/[0,a-z]/userid/
 
-    例如: 
+    例如:
     SYSOP 的個人資料在 ~bbs/home/s/SYSOP/
     SYSOP 的個人信箱在 ~bbs/mail/s/SYSOP/
 
@@ -202,9 +202,9 @@ Ans:
     % ps aux | grep bbs-news
 
     若已啟動, 再查看 ~bbs/news/bbs-news.log 的記錄
-    若出現 
-    411 No such group 
-    則表示您所設定的 News Server 並無此 group 存在, 
+    若出現
+    411 No such group
+    則表示您所設定的 News Server 並無此 group 存在,
     或您無權限讀取該 group.
 
 
@@ -216,10 +216,10 @@ Ans:
     卻也沒有見到任何反應。請問：我該怎麼辦呢？
 Ans:
     請下載 ftp://ftp.nsysu.edu.tw/NSYSU/BBS/1.1.1/bbsmail.c
-    
+
     % cd util
     % make clean
-    % make 
+    % make
     % make install
 
     另外 ftp://ftp.nsysu.edu.tw/NSYSU/BBS/1.1.1/bbsmail-antispam.c
@@ -230,7 +230,7 @@ Ans:
 Ans:
     ftp://ftp.nsysu.edu.tw/NSYSU/Client-Server-BBS/csbbs-u13.exe
 
-    相關網頁    
+    相關網頁
     http://ftp/NSYSU/BBS/docs/csbbs.html
 
     最新版本 Ultra PreRelease 13 新功能
@@ -239,7 +239,7 @@ Ans:
       可以從檔案褽犎峎Owin98桌面上任何地方，把現成的文字檔拖到寄新信或是
       貼佈告的視窗放下，就會把該檔案的內容讀進來了。
     * 再列出佈告標題的視窗，加入一查詢的按鈕，可以方便的馬上查詢所選擇的
-      該篇佈告的作者資料。 
+      該篇佈告的作者資料。
     * 使用新的排序方法，大幅改進列出線上人時，排序的速度。
 
 
