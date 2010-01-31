@@ -5,10 +5,16 @@ Installing Formosa BBS Community Edition (FBCE)
 	Preface
 	1. General Installation Considerations
 	2. Source Installation on Unix systems
+
+		Ubuntu/Linux Pre-install packages
+		Linux installation notes
+		Non-Linux OS installation notes
+
 	3. Binary Installation on Unix systems
 
 		Gentoo/Linux installation notes
 		Debian GNU/Linux installation notes
+		Ubuntu/Linux installation notes
 		CentOS installation notes
 		FreeBSD installation notes
 		Mac OS X installation notes
@@ -53,7 +59,7 @@ Chapter 2. Source Installation on Unix systems
 
 	When FBCE is configured, you are ready to build the module and/or
 	executables. The command make should take care of this. If it fails
-	and	you can't figure out why, see the Problems section.
+	and you can't figure out why, see the Problems section.
 
 	Prerequisite software for compiling:
 
@@ -70,16 +76,18 @@ Chapter 2. Source Installation on Unix systems
 		* GNU Automake: version 1.10+
 		(http://www.gnu.org/software/automake/)
 
-	Support platforms:
+	Supported platforms:
 
 		* Gentoo/Linux 2.6+
 		* Debian GNU/Linux 2.6+
+		* Ubuntu/Linux 2.6+
 		* CentOS 5+
 		* FreeBSD 7+
 		* Mac OS X
 		* Solaris 10+
 
-ubuntu/Linux Pre-install packages
+Ubuntu/Linux Pre-install packages
+
 1.	apt-get install make
 2.	apt-get install m4
 3.	apt-get install automake
@@ -99,7 +107,7 @@ Linux installation notes
 5.	make
 6.	make install
 
-Non-Linux installation notes
+Non-Linux OS installation notes
 
 1.	git clone git://github.com/pigfoot/formosa.git
 2.	cd formosa

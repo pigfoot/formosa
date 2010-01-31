@@ -5,7 +5,7 @@
  作業系統需求
  ============
 
-  Linux (Gentoo, Debian), FreeBSD, MacOS 10.5, Solaris 10 (x86 and sparc)
+  Linux (Gentoo, Debian, Ubuntu), FreeBSD, MacOS 10.5, Solaris 10 (x86 and sparc)
 
 
  安裝步驟
@@ -122,7 +122,7 @@ R$+ < @ $=w . >         $#local $: $1           regular local name
 
       (1) 將各程式加入開機自動執行檔：
 
-          ＃＃ Linux 2.x.x
+          ＃＃ Linux 2.x
           /etc/rc.d/rc.local 加入下列數行：
           ＃＃ Solaris 2.x
           /etc/rc2.d/S72inetsvc 加入下列數行：
