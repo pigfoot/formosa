@@ -56,15 +56,8 @@ static void sendckm_log(char *fmt, ...)
 
 static int send_checkmail(char email[], char stamp[])
 {
-	char *p;
 	char from[80], title[80];
 	extern char myhostname[];
-
-	/* sarek:02/23/2001:Allow specified email address */
-	if ((p = strchr(email, '.')) != NULL)
-		if (strchr(p, '@') != NULL)
-			if ((p = xgrep(email, ALLOWIDENT)) == NULL)
-				return -1;
 
 	get_hostname_hostip();
 	sprintf(from, "syscheck@%s", myhostname);
@@ -251,15 +244,15 @@ int x_idcheck()
 
 				if (*p == '\0')
 					outs("\n不接受主機 IP 形式的 e-mail 帳號!");
-				else if ((p = xgrep(buf, BADIDENT)) != NULL)
-				{
-					if (!strchr(p, '@') || p[0] == '@')
+				else if ((p = xgrep(buf, ALLOWIDENT)) == NULL ||
+					 (p = xgrep(buf, BADIDENT)) != NULL) {
+					if (p && (!strchr(p, '@') || p[0] == '@'))
 						outs(_msg_ident_7);
 					else
 						outs(_msg_ident_21);
-				}
-				else
+				} else {
 					break;
+				}
 
 				/*
 				 * not allow user use the e-mail address which
