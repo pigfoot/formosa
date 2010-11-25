@@ -661,6 +661,7 @@ static int resend_confirm(int ent, FILEHEADER *finfo, char *direct)
 	char msgbuf[128];
 
 	if (!IsRealSysop ||
+	    (finfo->accessed & FILE_DELE) ||
 	    strncmp("id", CurBList->filename, 3) ||
 	    !in_board)
 		return C_NONE;
