@@ -408,6 +408,7 @@ enum ULOGIN {
 #define UFNAME_SIGNATURES	"signatures"
 #define UFNAME_ZAPRC		"zaprc"
 #define UFNAME_IDENT		"ident"
+#define UFNAME_IDENT_STAMP	"identstamp"
 
 #define UFNAME_EDIT		"edit"
 #define UFNAME_MAIL		"mail"

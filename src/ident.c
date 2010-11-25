@@ -68,10 +68,10 @@ static int send_checkmail(const char *email, const char *stamp, const char *user
 	return 0;
 }
 
-int resend_checkmail(const char *stamp, const char *userid, char *msgbuf)
+static int retrive_checkemail(const char *stamp, const char *userid, char *email, char *msgbuf)
 {
-	static const char *email_pattern = "電子郵件信箱(請務必確實填寫正確)：";
-	char *ptr, email[128], fpath[128];
+	static const char * const email_pattern = "電子郵件信箱(請務必確實填寫正確)：";
+	char *ptr, fpath[128];
 
 	sprintf(fpath, "%s/%s", BBSPATH_IDENT, stamp);
 	ptr = fgrep(email_pattern, fpath);
@@ -84,6 +84,18 @@ int resend_checkmail(const char *stamp, const char *userid, char *msgbuf)
 	if ((ptr = xgrep(email, ALLOWIDENT)) == NULL ||
 	    (ptr = xgrep(email, BADIDENT)) != NULL) {
 		sprintf(msgbuf, "認証E-Mail不合法: %s(%s)", email, userid);
+		return -1;
+	}
+
+	return 0;
+}
+
+int resend_checkmail(const char *stamp, const char *userid, char *msgbuf)
+{
+
+	char email[128];
+
+	if (retrive_checkemail(stamp, userid, email, msgbuf)) {
 		return -1;
 	} else if (send_checkmail(email, stamp, userid)) {
 		sprintf(msgbuf, "認証信補寄失敗: %s(%s)", email, userid);
@@ -112,6 +124,31 @@ static int check_cname(char *name)
 	return 0;
 }
 
+static void save_ident_stamp(const char *userid, const char *stamp)
+{
+	char fpath[128];
+	FILE *fp;
+
+	sethomefile(fpath, userid, UFNAME_IDENT_STAMP);
+	if ((fp = fopen(fpath, "w")) == NULL)
+		return;
+	fprintf(fp, "%s", stamp);
+	fclose(fp);
+}
+
+static int is_waiting_confirm(const char *userid, char *stamp)
+{
+	char fpath[128], email[128], msgbuf[128];
+	FILE *fp;
+
+	sethomefile(fpath, userid, UFNAME_IDENT_STAMP);
+	if ((fp = fopen(fpath, "r")) == NULL)
+		return 0;
+	fscanf(fp, "%s", stamp);
+	fclose(fp);
+
+	return !retrive_checkemail(stamp, userid, email, msgbuf);
+}
 
 /*
  * 填寫身份認證申請書
@@ -119,7 +156,7 @@ static int check_cname(char *name)
 int x_idcheck()
 {
 	FILE *fpi;
-	char title[STRLEN], *p, buf[STRLEN], stamp[15], email[80];
+	char title[STRLEN], *p, buf[STRLEN], stamp[16], email[80];
 	char identfile[PATHLEN];
 	char *check_item[] =
 	{
@@ -151,6 +188,17 @@ int x_idcheck()
 		outs("\n您已通過身分認證, 請即刻離線再上站即可!");
 		pressreturn();
 		return C_FULL;
+	}
+
+	if (is_waiting_confirm(curuser.userid, stamp)) {
+		clear();
+		outs("您已填過註冊單，是否直接重送認証信？[N/y]");
+		if (igetkey() == 'y') {
+			resend_checkmail(stamp, curuser.userid, buf);
+			prints("\n%s", buf);
+			pressreturn();
+			return C_FULL;
+		}
 	}
 
 	pmore("doc/ident", TRUE);
@@ -340,15 +388,15 @@ int x_idcheck()
 	}
 	if (!is_passport)
 	{
-		if (send_checkmail(email, stamp, curuser.userid) == 0)
-		{
+		save_ident_stamp(curuser.userid, stamp);
+		if (send_checkmail(email, stamp, curuser.userid) == 0) {
 			move(b_line - 2, 0);
 			clrtoeol();
 			prints(_msg_ident_9, email);
 			pressreturn();
-		}
-		else
+		} else {
 			showmsg(_msg_ident_8);
+		}
 	}
 	unlink(identfile);
 	return C_FULL;
