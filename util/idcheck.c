@@ -104,12 +104,10 @@ char *fname, *path, *owner, *title;
 }
 
 
-int
-del_ident_article(stamp_fn)
-char *stamp_fn;
+static int del_ident_article(const char *stamp_fn, const char *userid)
 {
 	int fd;
-	FILEHEADER fh, *fhr = &fh;
+	FILEHEADER fh;
 	char filename[PATHLEN];
 
 	sprintf(filename, "ID/%s", DIR_REC);
@@ -119,26 +117,23 @@ char *stamp_fn;
 		close(fd);
 		return -1;
 	}
-	while (read(fd, fhr, FH_SIZE) == FH_SIZE)
+	while (read(fd, &fh, FH_SIZE) == FH_SIZE)
 	{
-		if (!strcmp(fhr->filename, stamp_fn))
+		if (!strcmp(fh.owner, userid))
 		{
-			fhr->accessed |= FILE_DELE;
-			xstrncpy(fhr->delby, "idcheck", IDLEN);
-			if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) != -1)
-			{
-				if (write(fd, fhr, FH_SIZE) == FH_SIZE)
-				{
-					flock(fd, LOCK_UN);
-					close(fd);
-					return 0;
-				}
+			fh.accessed |= FILE_DELE;
+			xstrncpy(fh.delby, "idcheck", IDLEN);
+			if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) == -1 ||
+			    write(fd, &fh, FH_SIZE) != FH_SIZE) {
+				flock(fd, LOCK_UN);
+				close(fd);
+				return -1;
 			}
 		}
 	}
 	flock(fd, LOCK_UN);
 	close(fd);
-	return -1;
+	return 0;
 }
 
 
@@ -289,7 +284,7 @@ char *subject;
 #ifdef DEBUG
 	dprintf(4, ("=> del_ident_article [%s]\n", stamp_fn));
 #endif
-	del_ident_article(stamp_fn);
+	del_ident_article(stamp_fn, userid);
 
 	strcpy(buf, "tmp/idented");
 	if ((fps = fopen(buf, "w")) != NULL)
