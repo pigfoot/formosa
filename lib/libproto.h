@@ -184,7 +184,7 @@ void aloha_edit(const char *src_id, const char *trg_id, int option);
 #endif
 /* mod_user.c */
 BOOL invalid_new_userid(char *userid);
-unsigned int get_passwd(USEREC *urcp, char *userid);
+unsigned int get_passwd(USEREC *urcp, const char *userid);
 unsigned int update_passwd(USEREC *urcp);
 unsigned int update_user_passfile(USEREC *urcp);
 unsigned int new_user(USEREC *ubuf, BOOL force);

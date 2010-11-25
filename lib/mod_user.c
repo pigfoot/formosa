@@ -82,20 +82,22 @@ BOOL invalid_new_userid(char *userid)
 /**
  ** get user information from password file
  **/
-unsigned int get_passwd(USEREC *urcp, char *userid)
+unsigned int get_passwd(USEREC *urcp, const char *userid)
 {
 	int fd;
-	char fn_passwd[PATHLEN];
+	char fn_passwd[PATHLEN], copieduserid[IDLEN + 1];
 	USEREC urcTmp, *u = (urcp) ? urcp : &urcTmp;
 
 	/* when urctTmp is NULL, just checking whether the account is exist */
 	if (userid == NULL || userid[0] == '\0')
 		return 0;
+
+        strcpy(copieduserid, userid);
 #ifdef IGNORE_CASE
-        strtolow(userid);
+        strtolow(copieduserid);
 #endif
 
-	sethomefile(fn_passwd, userid, UFNAME_PASSWDS);
+	sethomefile(fn_passwd, copieduserid, UFNAME_PASSWDS);
 	if ((fd = open(fn_passwd, O_RDONLY)) > 0)
 	{
 		if (read(fd, u, sizeof(USEREC)) == sizeof(USEREC))

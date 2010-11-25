@@ -79,6 +79,15 @@ char cond;
 	}
 }
 
+static int is_ident_ok(const char *userid)
+{
+	USEREC usr;
+
+	if (get_passwd(&usr, userid) > 0 && usr.ident == 7)
+		return 1;
+
+	return 0;
+}
 
 int
 do_article(fname, path, owner, title)
@@ -119,7 +128,8 @@ static int del_ident_article(const char *stamp_fn, const char *userid)
 	}
 	while (read(fd, &fh, FH_SIZE) == FH_SIZE)
 	{
-		if (!strcmp(fh.owner, userid))
+		if (!(fh.accessed & FILE_DELE) &&
+		    (!strcmp(fh.owner, userid) || is_ident_ok(userid)))
 		{
 			fh.accessed |= FILE_DELE;
 			xstrncpy(fh.delby, "idcheck", IDLEN);
