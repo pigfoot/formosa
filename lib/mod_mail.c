@@ -85,10 +85,15 @@ static int DirectSMTPMail(int ms, const char *fname,
 	net_printf(ms, "From: %s\r\n", from);
 	net_printf(ms, "To: %s\r\n", to);
 
-	net_printf(ms, "Subject: %s\r\n", title);
+	output_rfc2047_qp(gbufTmp, title, "BIG5");
+	net_printf(ms, "Subject: %s\r\n", gbufTmp);
 	if (forward)	/* lthuang */
 		net_printf(ms, "X-Forwarded-By: %s.bbs@%s", forward, myhostname);
-	net_printf(ms, "X-Disclaimer: [%s] %s\r\n\r\n", BBSTITLE, _msg_x_disclaimer);
+	net_printf(ms, "Content-Type: text/plain; charset=BIG5\r\n");
+	output_rfc2047_qp(gbufTmp, BBSTITLE, "BIG5");
+	net_printf(ms, "X-Disclaimer: [%s]", gbufTmp);
+	output_rfc2047_qp(gbufTmp, _msg_x_disclaimer, "BIG5");
+	net_printf(ms, " %s\r\n\r\n", gbufTmp);
 
 	while (fgets(gbufTmp, sizeof(gbufTmp), fp))
 	{

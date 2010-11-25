@@ -250,5 +250,6 @@ void str_notab(char *buf);
 int mmdecode(const unsigned char *src, char encode, volatile unsigned char *dst);
 void str_decode(unsigned char *str);
 void str_deqp(char *d, const char *src);
+void output_rfc2047_qp(char *output, const char *str, const char *charset);
 
 #endif

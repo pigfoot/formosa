@@ -297,3 +297,52 @@ out:
 	*dst = '\0';
 }
 
+/*-------------------------------------------------------*/
+/* RFC2047 QP encode                                     */
+/* author : PaulLiu.bbs@bbs.cis.nctu.edu.tw		 */
+/* merged-by: cooldavid@cooldavid.org			 */
+/*-------------------------------------------------------*/
+
+void output_rfc2047_qp(char *output, const char *str, const char *charset)
+{
+        int i, olen;
+	char ch;
+        static char tb1[16] = {'0','1','2','3','4','5','6','7','8','9', 'A','B','C','D','E','F'};
+
+	output[0] = '\0';
+	olen = 0;
+        /* 如果字串開頭有 US_ASCII printable characters，可先行輸出，這樣比較好看，也比較相容 */
+        for (i = 0 ; (ch = str[i]) != '\0' ; ++i) {
+                if (ch != '=' && ch != '?' && ch != '_' && ch > '\x1f' && ch < '\x7f')
+			output[olen++] = ch;
+                else
+                        break;
+        }
+	output[olen] = '\0';
+
+        if (ch != '\0') { /* 如果都沒有特殊字元就結束 */
+                /* 開始 encode */
+		strcat(output, "=?");
+		strcat(output, charset);
+		strcat(output, "?Q?");
+		olen = strlen(output);
+                for ( ; (ch = str[i]) != '\0' ; ++i) {
+                        /* 如果是 non-printable 字元就要轉碼 */
+                        /* 範圍: '\x20' ~ '\x7e' 為 printable, 其中 =, ?, _, 空白, 為特殊符號也要轉碼 */
+
+                        if (ch == '=' || ch == '?' || ch == '_' || ch <= '\x1f' || ch >= '\x7f') {
+				output[olen++] = '=';
+				output[olen++] =  tb1[(ch >> 4) & '\x0f'];
+				output[olen++] =  tb1[ch & '\x0f'];
+				output[olen] = '\0';
+                        } else if (ch == ' ') {     /* 空白比較特殊, 轉成 '_' 或 "=20" */
+				strcat(output, "=20");
+				olen += 3;
+                        } else {
+				output[olen++] = ch;
+				output[olen] = '\0';
+			}
+                }
+		strcat(output, "?=");
+        }
+}
