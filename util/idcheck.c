@@ -113,7 +113,7 @@ char *fname, *path, *owner, *title;
 }
 
 
-static int del_ident_article(const char *stamp_fn, const char *userid)
+static int del_ident_article(const char *userid)
 {
 	int fd;
 	FILEHEADER fh;
@@ -129,7 +129,7 @@ static int del_ident_article(const char *stamp_fn, const char *userid)
 	while (read(fd, &fh, FH_SIZE) == FH_SIZE)
 	{
 		if (!(fh.accessed & FILE_DELE) &&
-		    (!strcmp(fh.owner, userid) || is_ident_ok(userid)))
+		    (!strcmp(fh.owner, userid) || is_ident_ok(fh.owner)))
 		{
 			fh.accessed |= FILE_DELE;
 			xstrncpy(fh.delby, "idcheck", IDLEN);
@@ -292,9 +292,9 @@ char *subject;
 	a_encode(srcfile, buf, destfile);
 
 #ifdef DEBUG
-	dprintf(4, ("=> del_ident_article [%s]\n", stamp_fn));
+	dprintf(4, ("=> del_ident_article [%s]\n", userid));
 #endif
-	del_ident_article(stamp_fn, userid);
+	del_ident_article(userid);
 
 	strcpy(buf, "tmp/idented");
 	if ((fps = fopen(buf, "w")) != NULL)
