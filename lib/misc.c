@@ -346,11 +346,11 @@ static void strlwr(char *q)
 }
 
 
-char *xgrep(char *pattern, char *filename)
+char *xgrep(const char *pattern, const char *filename)
 {
 	FILE *fp;
-	static char buf[128];
-	char lower_pattern[80], *ptr;
+	static char buf[256];
+	char lower_pattern[128], *ptr;
 
 	if ((fp = fopen(filename, "r")) != NULL)
 	{
@@ -380,6 +380,31 @@ char *xgrep(char *pattern, char *filename)
 	return (char *)NULL;
 }
 
+char *fgrep(const char *pattern, const char *filename)
+{
+	FILE *fp;
+	static char buf[256];
+	char *ptr;
+
+	if ((fp = fopen(filename, "r")) != NULL) {
+		while (fgets(buf, sizeof(buf), fp)) {
+			if ((ptr = strchr(buf, '\n')) != NULL)
+				*ptr = '\0';
+			if ((ptr = strchr(buf, '#')))
+				*ptr = '\0';
+			if (buf[0] == '\0')
+				continue;
+
+			ptr = strstr(buf, pattern);
+			if (ptr) {
+				fclose(fp);
+				return ptr;
+			}
+		}
+		fclose(fp);
+	}
+	return (char *)NULL;
+}
 
 int append_file(char *afile, char *rfile)
 {

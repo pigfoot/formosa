@@ -53,21 +53,48 @@ static void sendckm_log(char *fmt, ...)
 	append_record("log/sendckm.log", obuf, strlen(obuf));
 }
 
-
-static int send_checkmail(char email[], char stamp[])
+static int send_checkmail(const char *email, const char *stamp, const char *userid)
 {
-	char from[80], title[80];
+	char from[80], to[80], title[80];
 	extern char myhostname[];
 
 	get_hostname_hostip();
 	sprintf(from, "syscheck@%s", myhostname);
-	sprintf(title, "NSYSU_BBS ( %s %s )", curuser.userid, stamp);
-	if (SendMail(-1, IDENT_DOC, from, email, title, 7) == -1)
+	sprintf(title, "NSYSU_BBS ( %s %s )", userid, stamp);
+	strcpy(to, email);
+	if (SendMail(-1, IDENT_DOC, from, to, title, 7) == -1)
 		return -1;
 	sendckm_log("%s", email);	/* lthuang */
 	return 0;
 }
 
+int resend_checkmail(const char *stamp, const char *userid, char *msgbuf)
+{
+	static const char *email_pattern = "電子郵件信箱(請務必確實填寫正確)：";
+	char *ptr, email[128], fpath[128];
+
+	sprintf(fpath, "%s/%s", BBSPATH_IDENT, stamp);
+	ptr = fgrep(email_pattern, fpath);
+	if (!ptr) {
+		strcpy(msgbuf, "無法從註冊單取得E-Mail");
+		return -1;
+	}
+
+	strcpy(email, ptr + strlen(email_pattern));
+	if ((ptr = xgrep(email, ALLOWIDENT)) == NULL ||
+	    (ptr = xgrep(email, BADIDENT)) != NULL) {
+		sprintf(msgbuf, "認証E-Mail不合法: %s(%s)", email, userid);
+		return -1;
+	} else if (send_checkmail(email, stamp, userid)) {
+		sprintf(msgbuf, "認証信補寄失敗: %s(%s)", email, userid);
+		return -1;
+	} else {
+		sprintf(msgbuf, "認証信已補寄: %s(%s)", email, userid);
+		return -1;
+	}
+
+	return 0;
+}
 
 /*
  * Check Chinese string
@@ -313,7 +340,7 @@ int x_idcheck()
 	}
 	if (!is_passport)
 	{
-		if (send_checkmail(email, stamp) == 0)
+		if (send_checkmail(email, stamp, curuser.userid) == 0)
 		{
 			move(b_line - 2, 0);
 			clrtoeol();

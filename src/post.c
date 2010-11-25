@@ -224,7 +224,10 @@ int bm_manage_file()
  */
 int read_help()
 {
-	pmore(READ_HELP, TRUE);
+	if (!strncmp("id", CurBList->filename, 3))
+		pmore(ID_READ_HELP, TRUE);
+	else
+		pmore(READ_HELP, TRUE);
 	return C_FULL;
 }
 

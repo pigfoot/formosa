@@ -654,6 +654,23 @@ int resv_backward(int ent, FILEHEADER *finfo, char *direct)
 	return C_MOVE;
 }
 
+#ifdef USE_IDENT
+static int resend_confirm(int ent, FILEHEADER *finfo, char *direct)
+{
+	extern BOOL IsRealSysop;
+	char msgbuf[128];
+
+	if (!IsRealSysop ||
+	    strncmp("id", CurBList->filename, 3) ||
+	    !in_board)
+		return C_NONE;
+
+	resend_checkmail(finfo->filename, finfo->owner, msgbuf);
+	msg(msgbuf);
+	getkey();
+	return C_FOOT;
+}
+#endif
 
 static int tag_thread(int ent, FILEHEADER *finfo, char *direct)
 {
@@ -1164,6 +1181,9 @@ struct one_key post_comms[] =
 	{'=', thread_original},
 	{'-', resv_backward},
 	{'+', resv_forward},
+#ifdef USE_IDENT
+	{'@', resend_confirm},
+#endif
 	{CTRL('X'), delthread},
 #if USE_THREAD
 	{'~', thr_read},	/* in_board */

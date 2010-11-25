@@ -197,8 +197,11 @@ void abort_bbs(int s);
 int Announce(void);
 void Formosa(char *host, int argc, char **argv);
 /* globals.c */
+#ifdef USE_IDENT
 /* ident.c */
 int x_idcheck(void);
+int resend_checkmail(const char *stamp, const char *userid, char *msgbuf);
+#endif
 /* io.c */
 void oflush(void);
 void output(char *s, int len);

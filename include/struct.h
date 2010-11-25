@@ -444,6 +444,7 @@ enum ULOGIN {
 
 #define BOARD_HELP   "doc/BOARD_HELP"
 #define READ_HELP    "doc/READ_HELP"
+#define ID_READ_HELP "doc/ID_READ_HELP"
 #define MAIL_HELP    "doc/MAIL_HELP"
 #define EDIT_HELP    "doc/EDIT_HELP"
 #define PMORE_HELP   "doc/PMORE_HELP"
