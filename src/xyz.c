@@ -744,6 +744,7 @@ int display_user_log(const char *userid)
 	return more(fn_logfile, TRUE);
 }
 
+#ifdef USE_IDENT
 int display_user_register(const char *userid)
 {
 	char fn_regfile[PATHLEN];
@@ -754,10 +755,13 @@ int display_user_register(const char *userid)
 #ifdef IGNORE_CASE
         strtolow(userid);
 #endif
-	sprintf(fn_regfile, "%s/%s", BBSPATH_REALUSER, userid);
+	sprintf(fn_regfile, "%s/%c/%c/%s",
+			BBSPATH_REALUSER,
+			dirch(userid[0]), dirch(userid[1]), userid);
 
 	return more(fn_regfile, TRUE);
 }
+#endif
 
 int x_uflag()
 {

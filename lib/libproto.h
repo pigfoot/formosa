@@ -202,6 +202,10 @@ int ZapRC_IsZapped(register int bid, time_t brd_ctime);
 void ZapRC_DoZap(register unsigned int bid);
 void ZapRC_DoUnZap(register unsigned int bid);
 int ZapRC_ValidBid(register unsigned int bid);
+#ifdef USE_IDENT
+/* mod_ident.c */
+char dirch(char ch);
+#endif
 /* strlcat.c */
 size_t strlcat(char *dst, const char *src, size_t siz);
 /* strlcpy.c */

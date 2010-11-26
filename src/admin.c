@@ -80,9 +80,11 @@ int adminDisplayUserLog()
 		move(0, 0);
 		clrtobot();
 
+#ifdef USE_IDENT
 		getdata(3, 0, "顯示註冊資料?(y/n)[n]", buf, 3, ECHONOSP | XLCASE);
 		if (buf[0] == 'y')
 			display_user_register(userid);
+#endif
 	}
 	return C_FULL;
 }
