@@ -17,136 +17,6 @@
 int debug = 0;
 #endif
 
-
-int
-a_encode(file1, file2, file3)
-char *file1, *file2, *file3;
-{
-/*
-	char gbuf[128];
-*/
-
-	if (mycp(file1, file2) == -1)
-		return -1;
-/*
-#ifdef NSYSUBBS
-	sprintf(gbuf, "%s -e %s \"%s\"", BIN_PGP, file2, PUBLIC_KEY);
-#ifdef DEBUG
-	dprintf(3, ("file: %s\n", file2));
-	dprintf(2, ("command: %s\n", gbuf));
-#endif
-	system(gbuf);
-	sprintf(gbuf, "%s.pgp", file2);
-#ifdef DEBUG
-	dprintf(2, ("pgp: %s\n", gbuf));
-#endif
-	if (isfile(gbuf))
-	{
-		if (rename(gbuf, file3) == 0)
-		{
-			unlink(file2);
-			return 0;
-		}
-	}
-#endif
-*/
-#ifdef DEBUG
-	dprintf(2, ("nopgp: %s\n", file2));
-#endif
-	if (rename(file2, file3) == -1)
-	{
-		unlink(file2);
-		return -1;
-	}
-	return 0;
-}
-
-
-void
-a_ok(name, cond)		/* write check level */
-char name[15];
-char cond;
-{
-	USEREC usr;
-
-	if (get_passwd(&usr, name) > 0)
-	{
-#ifdef DEBUG
-		dprintf(2, ("user: %s", usr.userid));
-#endif
-		usr.ident = cond;
-		update_passwd(&usr);
-	}
-}
-
-static int is_ident_ok(const char *userid)
-{
-	USEREC usr;
-
-	if (get_passwd(&usr, userid) > 0 && usr.ident == 7)
-		return 1;
-
-	return 0;
-}
-
-int
-do_article(fname, path, owner, title)
-char *fname, *path, *owner, *title;
-{
-	char *p;
-	struct fileheader fh;
-
-	if (mycp(fname, path))
-		return -1;
-	p = strrchr(path, '/') + 1;
-	bzero(&fh, sizeof(fh));
-	strcpy(fh.filename, p);
-	strcpy(fh.owner, owner);
-	strcpy(fh.title, title);
-	strcpy(p, DIR_REC);
-	if (append_record(path, &fh, sizeof(fh)) == 0)
-	{
-		strcpy(p, fh.filename);
-		return 0;
-	}
-	return -1;
-}
-
-
-static int del_ident_article(const char *userid)
-{
-	int fd;
-	FILEHEADER fh;
-	char filename[PATHLEN];
-
-	sprintf(filename, "ID/%s", DIR_REC);
-	if ((fd = open(filename, O_RDWR)) < 0)
-		return -1;
-	if (myflock(fd, LOCK_EX)) {
-		close(fd);
-		return -1;
-	}
-	while (read(fd, &fh, FH_SIZE) == FH_SIZE)
-	{
-		if (!(fh.accessed & FILE_DELE) &&
-		    (!strcmp(fh.owner, userid) || is_ident_ok(fh.owner)))
-		{
-			fh.accessed |= FILE_DELE;
-			xstrncpy(fh.delby, "idcheck", IDLEN);
-			if (lseek(fd, -((off_t) FH_SIZE), SEEK_CUR) == -1 ||
-			    write(fd, &fh, FH_SIZE) != FH_SIZE) {
-				flock(fd, LOCK_UN);
-				close(fd);
-				return -1;
-			}
-		}
-	}
-	flock(fd, LOCK_UN);
-	close(fd);
-	return 0;
-}
-
-
 /***************************************************
  * 認證失敗，刪除那個id所真正擁有的認證比對檔案，  *
  * 避免有人多猜幾次檔名就命中。					   *
@@ -156,15 +26,15 @@ del_cmp_file(userid, subject)	/* wnlee */
 char *userid, *subject;
 {
 	FILEHEADER fh;
-	char fname[PATHLEN];
+	char direct[PATHLEN], fname[PATHLEN];
 	int fd;
 	FILE *fpw;
 
-	sprintf(fname, "ID/%s", DIR_REC);
-	if ((fd = open(fname, O_RDWR)) < 0 )
+	sprintf(direct, "ID/%s", DIR_REC);
+	if ((fd = open(direct, O_RDONLY)) < 0 )
 	{
 #ifdef DEBUG
-		printf("cannot open: ", fname);
+		printf("cannot open: ", direct);
 #endif
 		return -1;
 	}
@@ -193,6 +63,7 @@ char *userid, *subject;
 	flock(fd, LOCK_UN);
 	fclose(fpw);
 	close(fd);
+	clean_dirent(direct);
 	return 0;
 }
 
@@ -203,8 +74,8 @@ char *filename;
 char *subject;
 {
 	FILE *fps;
-	char stamp_fn[PATHLEN], srcfile[PATHLEN], destfile[PATHLEN];
-	char title[STRLEN], userid[STRLEN], *tmp, buf[512], realuserid[IDLEN+1];
+	char stamp_fn[PATHLEN], srcfile[PATHLEN];
+	char userid[STRLEN], *tmp, buf[512], realuserid[IDLEN+1];
 	int i;
 
 #ifdef DEBUG
@@ -268,58 +139,8 @@ char *subject;
 		return -1;
 	}
 
-	sethomefile(buf, userid, UFNAME_IDENT);
-	if (append_file(buf, filename) == -1)
-		return -1;
-
-#ifdef DEBUG
-	dprintf(2, ("\n=> a_ok "));
-#endif
-	a_ok(userid, 7);
-
-	sprintf(destfile, "%s/%s", BBSPATH_REALUSER, userid);
-	sprintf(title, "身份確認: %s", userid);
-
-#ifdef DEBUG
-	dprintf(4, ("=> do_article\n"));
-#endif
-	do_article(srcfile, destfile, userid, title);
-
-	sprintf(buf, "tmp/%sPGP", userid);
-#ifdef DEBUG
-	dprintf(3, ("=> a_encode\n"));
-#endif
-	a_encode(srcfile, buf, destfile);
-
-#ifdef DEBUG
-	dprintf(4, ("=> del_ident_article [%s]\n", userid));
-#endif
-	del_ident_article(userid);
-
-	strcpy(buf, "tmp/idented");
-	if ((fps = fopen(buf, "w")) != NULL)
-	{
-		char title[] = "[通知] 您已通過本站身份認證！";
-
-		write_article_header(fps, "SYSOP", "系統管理者", NULL, NULL, title, NULL);
-		fclose(fps);
-
-		append_file(buf, IDENTED);
-
-		/* mail to user to infor that he has been idented in our bbs */
-		if (SendMail(-1, buf, "SYSOP", userid, title, 7) < 0)
-		{
-/*
-			bbslog("ERROR", "idcheck: SendMail fail for idented notify!\n");
-*/
-		}
-
-		unlink(buf);
-	}
-
-	return 0;
+	return pass_user_ident(userid, filename, stamp_fn);
 }
-
 
 /**********************************************************************
  *	get_subject() 把未經編碼的 subject 直接取出

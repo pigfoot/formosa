@@ -14,7 +14,7 @@ char myhostip[HOSTLEN] = "127.0.0.1";
 /**
  ** 是否為不合法的 email address
  **/
-int InvalidEmailAddr(char *addr)
+int InvalidEmailAddr(const char *addr)
 {
 	unsigned char ch, lastch = '\0';
 	short mode;
@@ -178,7 +178,7 @@ int get_hostname_hostip()
 }
 
 
-BOOL is_emailaddr(char *to)
+BOOL is_emailaddr(const char *to)
 {
 	register char *ptr;
 	char *at;
@@ -205,7 +205,7 @@ BOOL is_emailaddr(char *to)
  * 寄信至站外
  **************************************************************/
 static int SendMail_Internet(int ms, char *fname,
-				char *from, char *to,
+				char *from, const char *to,
 				char *title, char *forward)
 {
 	int msTmp, result;
@@ -240,7 +240,7 @@ static int SendMail_Internet(int ms, char *fname,
 }
 
 
-int CheckMail(USEREC *urc, char *to, BOOL strict)
+int CheckMail(USEREC *urc, const char *to, BOOL strict)
 {
 	char dotdir[PATHLEN];
 	int total;
@@ -268,7 +268,7 @@ int CheckMail(USEREC *urc, char *to, BOOL strict)
 /**************************************************************
  * 寄信給站上使用者
  **************************************************************/
-static int SendMail_Local(char *fname,char *from, char *to, char *title,
+static int SendMail_Local(char *fname,char *from, const char *to, char *title,
 						char ident)
 {
 	USEREC urcTmp;
@@ -335,7 +335,7 @@ static int SendMail_Local(char *fname,char *from, char *to, char *title,
 }
 
 
-int SendMail(int ms, char *fname, char *from, char *to, char *title, char ident)
+int SendMail(int ms, char *fname, char *from, const char *to, char *title, char ident)
 {
 	if (is_emailaddr(to))
 		return SendMail_Internet(ms, fname, from, to, title, NULL);

@@ -755,9 +755,7 @@ int display_user_register(const char *userid)
 #ifdef IGNORE_CASE
         strtolow(userid);
 #endif
-	sprintf(fn_regfile, "%s/%c/%c/%s",
-			BBSPATH_REALUSER,
-			dirch(userid[0]), dirch(userid[1]), userid);
+	get_realuser_path(fn_regfile, userid);
 
 	return more(fn_regfile, TRUE);
 }

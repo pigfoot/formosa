@@ -41,7 +41,7 @@ int can_override(char *userid, char *whoasks)
  * kmwang:20000610:查詢 whoasks 是否在 userid 的壞友名單中
  * in_blacklist( userid, whoasks )
  */
-int in_blacklist(char *userid, char *whoasks)
+int in_blacklist(const char *userid, char *whoasks)
 {
         FILE *fp;
         char buf[PATHLEN];

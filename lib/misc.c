@@ -406,7 +406,7 @@ char *fgrep(const char *pattern, const char *filename)
 	return (char *)NULL;
 }
 
-int append_file(char *afile, char *rfile)
+int append_file(const char *afile, const char *rfile)
 {
 	int cc;
 	char buf[8192];

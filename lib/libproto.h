@@ -37,7 +37,7 @@ char *xstrncpy(register char *dst, const char *src, size_t n);
 char *xstrcat(register char *dst, const char *src, size_t maxlen);
 char *xgrep(const char *pattern, const char *filename);
 char *fgrep(const char *pattern, const char *filename);
-int append_file(char *afile, char *rfile);
+int append_file(const char *afile, const char *rfile);
 char *Ctime(register time_t *clock);
 void xsort(void *a, size_t n, size_t es, int (*cmp)(void));
 
@@ -90,12 +90,12 @@ int check_board_acl(char *boardname, char *userid);
 /* mod_crosscheck.c */
 int reach_crosslimit(const char *userid, const char *fname);
 /* mod_mail.c */
-int InvalidEmailAddr(char *addr);
+int InvalidEmailAddr(const char *addr);
 char *find_fqdn(char *a, struct hostent *p);
 int get_hostname_hostip(void);
-BOOL is_emailaddr(char *to);
-int CheckMail(USEREC *urc, char *to, BOOL strict);
-int SendMail(int ms, char *fname, char *from, char *to, char *title, char ident);
+BOOL is_emailaddr(const char *to);
+int CheckMail(USEREC *urc, const char *to, BOOL strict);
+int SendMail(int ms, char *fname, char *from, const char *to, char *title, char ident);
 int CreateMailSocket(void);
 int CloseMailSocket(int ms);
 int CheckNewmail(const char *name, BOOL force_chk);
@@ -164,7 +164,7 @@ void rebuild_classhm(void);
 void dump_classhm(void);
 /* mod_talk.c */
 int can_override(char *userid, char *whoasks);
-int in_blacklist(char *userid, char *whoasks);
+int in_blacklist(const char *userid, char *whoasks);
 int malloc_array(struct array *a, char *filename);
 int cmp_array(struct array *a, char *whoasks);
 void free_array(struct array *a);
@@ -204,7 +204,9 @@ void ZapRC_DoUnZap(register unsigned int bid);
 int ZapRC_ValidBid(register unsigned int bid);
 #ifdef USE_IDENT
 /* mod_ident.c */
-char dirch(char ch);
+void get_realuser_path(char *fpath, const char *userid);
+int is_ident_ok(const char *userid);
+int pass_user_ident(const char *userid, const char *ident_mailheader, const char *stamp);
 #endif
 /* strlcat.c */
 size_t strlcat(char *dst, const char *src, size_t siz);
