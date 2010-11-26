@@ -201,6 +201,7 @@ void Formosa(char *host, int argc, char **argv);
 /* ident.c */
 int x_idcheck(void);
 int resend_checkmail(const char *stamp, const char *userid, char *msgbuf);
+int do_manual_confirm(const char *stamp, const char *userid);
 #endif
 /* io.c */
 void oflush(void);

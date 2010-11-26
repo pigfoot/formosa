@@ -108,6 +108,36 @@ int resend_checkmail(const char *stamp, const char *userid, char *msgbuf)
 	return 0;
 }
 
+int do_manual_confirm(const char *stamp, const char *userid)
+{
+	FILE *fh;
+	int rc;
+	char fpath[128];
+	time_t now = time(NULL);
+
+	rc = vansf("手動通過使用者 %s 認証[N/y]? ", userid);
+	if (rc == 'y') {
+		sethomefile(fpath, userid, "sysopconfirm");
+		if ((fh = fopen(fpath, "w")) == NULL) {
+			vmsgf("暫存檔 %s 開啟失敗", fpath);
+			return -1;
+		}
+		fprintf(fh, "站長 %s 手動認証 %s 於 %s\n",
+			curuser.userid, userid, ctime(&now));
+		fclose(fh);
+
+		rc = pass_user_ident(userid, fpath, stamp);
+		if (rc == -1)
+			vmsgf("%s 手動認証失敗", userid);
+		else
+			vmsgf("%s 已手動認証", userid);
+		unlink(fpath);
+		return rc;
+	}
+
+	return -1;
+}
+
 /*
  * Check Chinese string
  */

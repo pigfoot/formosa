@@ -671,6 +671,21 @@ static int resend_confirm(int ent, FILEHEADER *finfo, char *direct)
 	getkey();
 	return C_FOOT;
 }
+
+static int manual_confirm(int ent, FILEHEADER *finfo, char *direct)
+{
+	extern BOOL IsRealSysop;
+
+	if (!IsRealSysop ||
+	    (finfo->accessed & FILE_DELE) ||
+	    strncmp("id", CurBList->filename, 3) ||
+	    !in_board)
+		return C_NONE;
+
+	if (do_manual_confirm(finfo->filename, finfo->owner))
+		return C_FOOT;
+	return C_LOAD;
+}
 #endif
 
 static int tag_thread(int ent, FILEHEADER *finfo, char *direct)
@@ -1184,6 +1199,7 @@ struct one_key post_comms[] =
 	{'+', resv_forward},
 #ifdef USE_IDENT
 	{'@', resend_confirm},
+	{'#', manual_confirm},
 #endif
 	{CTRL('X'), delthread},
 #if USE_THREAD
