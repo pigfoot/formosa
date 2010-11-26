@@ -528,20 +528,21 @@ int _getdata(int line, int col, const char *prompt, char *buf, int len, int echo
 static int
 getdata2vgetflag(int echo)
 {
+    char newecho = VGET_DEFAULT;
     assert(echo != GCARRY);
 
-    if (echo == LCECHO)
-        echo = VGET_LOWERCASE;
-    else if (echo == NUMECHO)
-        echo = VGET_DIGITS;
-    else if (echo == NOECHO)
-        echo = VGET_PASSWORD;
-    else if (echo == XNOSP || echo == ECHONOSP)
-    	echo = VGET_NO_SPACE;
-    else
-        echo = VGET_DEFAULT;
+    if (echo == NOECHO) {
+        newecho = VGET_NOECHO;
+    } else {
+	if (echo & LCECHO)
+	    newecho |= VGET_LOWERCASE;
+	if (echo & NUMECHO)
+	    newecho |= VGET_DIGITS;
+	if ((echo & XNOSP) || (echo & ECHONOSP))
+	    newecho |= VGET_NO_SPACE;
+    }
 
-    return echo;
+    return newecho;
 }
 
 
