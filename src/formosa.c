@@ -184,9 +184,27 @@ static void user_init()
 	/*
 	 * If user multi-login,
 	 * we should not remove the exist message. by lthuang
+	 * otherwise, we try to backup it to user's mailbox. by cooldavid
 	 */
-	if (multi_logins < 2)
+	if (multi_logins < 2 && isfile(ufile_write)
+#ifdef GUEST
+	    && strcmp(curuser.userid, GUEST)
+#endif
+	   ) {
+		char fname[PATHLEN];
+
+		if (!check_mail_num(0)) {
+			sprintf(fname, "tmp/_writebackup.%s", curuser.userid);
+			if (get_message_file(fname, "[備份] 訊息記錄") == 0)
+			{
+				SendMail(-1, fname, curuser.userid, curuser.userid,
+						 "[備份] 訊息記錄", curuser.ident);
+				unlink(fname);
+			}
+		}
 		unlink(ufile_write);
+	}
+
 	/*
 	 * Some user complain that there were some mail mark deleted in
 	 * their mail box for a long time. In fact, they do not logout
