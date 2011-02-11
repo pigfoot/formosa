@@ -56,9 +56,11 @@ distclean: clean
 	@-rm -rf autom4te.cache
 
 install: target := install
-install: $(HOMEBBS)/bin $(SUBDIRS)
+install: $(HOMEBBS)/bin $(HOMEBBS)/doc $(SUBDIRS)
 
 $(HOMEBBS)/bin:
 	mkdir -p $@
 	chown -R @BBS_USERNAME@:@BBS_GROUPNAME@ $@
-
+$(HOMEBBS)/doc:
+	mkdir -p $@
+	chown -R @BBS_USERNAME@:@BBS_GROUPNAME@ $@
