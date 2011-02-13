@@ -56,11 +56,17 @@ distclean: clean
 	@-rm -rf autom4te.cache
 
 install: target := install
-install: $(HOMEBBS)/bin $(HOMEBBS)/doc $(SUBDIRS)
+install: $(HOMEBBS)/bin $(HOMEBBS)/doc $(HOMEBBS)/home $(SUBDIRS)
 
 $(HOMEBBS)/bin:
 	mkdir -p $@
 	chown -R @BBS_USERNAME@:@BBS_GROUPNAME@ $@
 $(HOMEBBS)/doc:
 	mkdir -p $@
+	chown -R @BBS_USERNAME@:@BBS_GROUPNAME@ $@
+$(HOMEBBS)/home: #bbslib.c
+	mkdir -p $@
+	for i in a b c d e f g h i j k l m n o p q r s t u v w h y z; do \
+		mkdir -p $@/$i;\
+	done
 	chown -R @BBS_USERNAME@:@BBS_GROUPNAME@ $@
