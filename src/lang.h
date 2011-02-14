@@ -283,7 +283,7 @@ struct LANG {
 #define	_str_combined_treasure_title	MsgInfo(327)	/*	"[¾ã²z] ¤w¼Ð°O¤å³¹"	*/
 
 #define	_msg_read_2	MsgInfo(340)	/*	"ªO¥D¡G%-12.12s"	*/
-#define	_msg_read_3	MsgInfo(345)	/*	"\n(h)»¡©ú (Ctrl-p)±i¶K (s)´«¬ÝªO (Tab)ºëµØ°Ï¤Á´« (</>)(a/A)·j´M ([/])¥DÃD¾\\Åª\n(d)§R°£ (m)±H¥X (E)­×§ï½s¿è (b)¶iªOµe­± ($)³Ì«á (v)§ë²¼ (x)Âà¶K (U)¬d¸ßµo«H¤H\n[7m   ½s¸¹     µo«H¤H         ¤é´Á    ¼ÐÃD                                       [m"	*/
+#define	_msg_read_3	MsgInfo(345)	/*	"\n(h)»¡©ú (Ctrl-p)±i¶K (s)´«¬ÝªO (Tab)ºëµØ°Ï¤Á´« (</>)(a/A)·j´M ([/])¥DÃD¾\\Åª\n(d)§R°£ (m)±H¥X (E)­×§ï½s¿è (b)¶iªOµe­± ($)³Ì«á (v)§ë²¼ (x)Âà¶K (U)¬d¸ßµo«H¤H\n[7m   ½s¸¹     µo«H¤H         ¤é´Á     ¼ÐÃD                                      [m"	*/
 #define	_msg_read_4	MsgInfo(346)	/*	"[¥Ø¿ý]"	*/
 #define	_msg_read_7	MsgInfo(349)	/*	" <<¥»½g¤w³Q %s §R°£>>"	*/
 #define	_msg_read_10	MsgInfo(331)	/*	"\n¥»¼hºëµØ°ÏµL§G§i.\n\n­Y­n±i¶K²Ä¤@½g, ½Ð¨Ï¥ÎÂà¶K¿ï¶µ(t)"	*/
