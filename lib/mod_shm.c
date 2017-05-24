@@ -254,7 +254,7 @@ int resolve_brdshm()
 		brdshm = attach_shm(BRDSHM_KEY, sizeof(struct BRDSHM));
 
 	if (!brdshm->mtime) {
-		if ((fd = open(BOARDS, O_RDONLY)) > 0) {
+		if ((fd = open(BOARDS, O_RDONLY | O_CREAT, 0600 )) > 0) {
 			struct stat st;
 			BOARDHEADER bhbuf;
 			char bfname[PATHLEN];

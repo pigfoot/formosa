@@ -1,5 +1,5 @@
 
-支援
+支援 
 ====
 
 Gentoo Linux
@@ -16,7 +16,7 @@ Solaris 10 (x86 and sparc)
     * bbspop3d (bbs 提供 pop3 取信服務)
     * bbsgopherd (bbs 提供 gopher 服務)
     * bbsweb (bbs 提供 www 服務)
-    * bbschatd (多人聊天室 chatroom)
+    * bbschatd (多人聊天室 chatroom)    
     * bbs-news (轉信)
     * bbsd (Telnet-based bbs daemon)
     * csbbsd (Client-server-based bbs daemon)

@@ -72,7 +72,7 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 	register int num, len;
 	int score;
 	unsigned char *str;
-	static char chdate[9];
+	char chdate[10];
 	time_t date;
 	struct tm *tm;
 	register unsigned char type;
@@ -90,7 +90,7 @@ void read_entry(int x, void *ent, int idx, int top, int last, int rows)
 		else
 		{
 			tm = localtime(&date);
-			sprintf(chdate, "%02d.%02d.%02d",
+			sprintf(chdate, "%3d.%02d.%02d",
 				tm->tm_year - 11, tm->tm_mon + 1, tm->tm_mday);
 		}
 

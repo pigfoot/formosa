@@ -56,8 +56,7 @@ static char check = 0;
 /*
  * reaper - clean up zombie children
  */
-static void
-reaper()
+static void reaper()
 {
 	while (wait3(NULL, WNOHANG, (struct rusage *) 0) > 0)
 		/* empty */ ;
@@ -66,11 +65,7 @@ reaper()
 #endif
 
 
-static int
-DoBBS(from, argc, argv)
-struct sockaddr_in *from;
-int argc;
-char *argv[];
+static int DoBBS(struct sockaddr_in *from,int argc,char *argv)
 {
 	char *host;
 	int on;
